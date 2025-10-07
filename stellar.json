@@ -526,7 +526,7 @@
                         "parse_directives": [
                             {
                                 "function_tag": "GET_BLOCKNUM",
-                                "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"getLatestLedger\",\"id\":1}",
+                                "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"getLatestLedger\",\"params\":[],\"id\":1}",
                                 "result_parsing": {
                                     "parser_arg": [
                                         "0",
@@ -555,12 +555,12 @@
                             {
                                 "name": "chain-id",
                                 "parse_directive": {
-                                    "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"getNetwork\",\"id\":1}",
+                                    "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"getNetwork\",\"params\":[],\"id\":1}",
                                     "function_tag": "VERIFICATION",
                                     "result_parsing": {
                                         "parser_arg": [
                                             "0",
-                                            "passphrase"
+                                            "networkPassphrase"
                                         ],
                                         "parser_func": "PARSE_CANONICAL"
                                     },
@@ -568,7 +568,8 @@
                                 },
                                 "values": [
                                     {
-                                        "expected_value": "Public Global Stellar Network ; September 2015"
+                                        "expected_value": "Public Global Stellar Network ; September 2015",
+                                        "severity": "Warning"
                                     }
                                 ]
                             }
@@ -621,7 +622,7 @@
                         "enabled": true,
                         "collection_data": {
                             "api_interface": "jsonrpc",
-                            "internal_path": "/",
+                            "internal_path": "",
                             "type": "POST",
                             "add_on": ""
                         },
@@ -633,17 +634,18 @@
                             {
                                 "name": "chain-id",
                                 "parse_directive": {
-                                    "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"getNetwork\",\"id\":1}",
+                                    "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"getNetwork\",\"params\":[],\"id\":1}",
                                     "function_tag": "VERIFICATION",
                                     "result_parsing": {
-                                        "parser_arg": ["0", "passphrase"],
+                                        "parser_arg": ["0", "networkPassphrase"],
                                         "parser_func": "PARSE_CANONICAL"
                                     },
                                     "api_name": "getNetwork"
                                 },
                                 "values": [
                                     {
-                                        "expected_value": "Test SDF Network ; September 2015"
+                                        "expected_value": "Test SDF Network ; September 2015",
+                                        "severity": "Warning"
                                     }
                                 ]
                             }
