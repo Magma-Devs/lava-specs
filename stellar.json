@@ -526,7 +526,7 @@
                         "parse_directives": [
                             {
                                 "function_tag": "GET_BLOCKNUM",
-                                "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"getLatestLedger\", \"id\":1}",
+                                "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"getLatestLedger\", params: null, \"id\":1}",
                                 "result_parsing": {
                                     "parser_arg": [
                                         "0",
