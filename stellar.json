@@ -560,7 +560,7 @@
                                     "result_parsing": {
                                         "parser_arg": [
                                             "0",
-                                            "networkPassphrase"
+                                            "passphrase"
                                         ],
                                         "parser_func": "PARSE_CANONICAL"
                                     },
@@ -568,8 +568,7 @@
                                 },
                                 "values": [
                                     {
-                                        "expected_value": "Public Global Stellar Network ; September 2015",
-                                        "severity": "Warning"
+                                        "expected_value": "Public Global Stellar Network ; September 2015"
                                     }
                                 ]
                             }
@@ -637,7 +636,7 @@
                                     "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"getNetwork\",\"id\":1}",
                                     "function_tag": "VERIFICATION",
                                     "result_parsing": {
-                                        "parser_arg": ["0", "networkPassphrase"],
+                                        "parser_arg": ["0", "passphrase"],
                                         "parser_func": "PARSE_CANONICAL"
                                     },
                                     "api_name": "getNetwork"
