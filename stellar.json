@@ -568,7 +568,8 @@
                                 },
                                 "values": [
                                     {
-                                        "expected_value": "Public Global Stellar Network ; September 2015"
+                                        "expected_value": "Public Global Stellar Network ; September 2015",
+                                        "severity": "Warning"
                                     }
                                 ]
                             }
@@ -642,7 +643,10 @@
                                     "api_name": "getNetwork"
                                 },
                                 "values": [
-                                    { "expected_value": "Test SDF Network ; September 2015" }
+                                    {
+                                        "expected_value": "Test SDF Network ; September 2015",
+                                        "severity": "Warning"
+                                    }
                                 ]
                             }
                         ],
