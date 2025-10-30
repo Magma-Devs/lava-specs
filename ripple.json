@@ -48,7 +48,7 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "gateway_balances",
+                                "name": "/gateway_balances",
                                 "block_parsing": {
                                     "parser_arg": [
                                         "latest"
@@ -66,7 +66,7 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "account_lines",
+                                "name": "/account_lines",
                                 "block_parsing": {
                                     "parser_arg": [
                                         "latest"
@@ -84,7 +84,7 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "submit",
+                                "name": "/submit",
                                 "block_parsing": {
                                     "parser_arg": [
                                         "latest"
@@ -102,7 +102,7 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "server_state",
+                                "name": "/server_state",
                                 "block_parsing": {
                                     "parser_arg": [
                                         "latest"
@@ -120,7 +120,7 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "fee",
+                                "name": "/fee",
                                 "block_parsing": {
                                     "parser_arg": [
                                         "latest"
@@ -138,7 +138,7 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "tx",
+                                "name": "/tx",
                                 "block_parsing": {
                                     "parser_arg": [
                                         "latest"
@@ -156,7 +156,7 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "ledger",
+                                "name": "/ledger",
                                 "block_parsing": {
                                     "parser_arg": [
                                         "0",
@@ -176,7 +176,7 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "server_info",
+                                "name": "/server_info",
                                 "block_parsing": {
                                     "parser_arg": [
                                         "latest"
@@ -205,11 +205,11 @@
                                         "0",
                                         "result",
                                         "ledger",
-                                        "ledger_hash"
+                                        "ledger_index"
                                     ],
                                     "parser_func": "PARSE_CANONICAL"
                                 },
-                                "api_name": "ledger"
+                                "api_name": "/ledger"
                             },
                             {
                                 "function_tag": "GET_BLOCKNUM",
@@ -223,7 +223,7 @@
                                     ],
                                     "parser_func": "PARSE_CANONICAL"
                                 },
-                                "api_name": "ledger"
+                                "api_name": "/ledger"
                             }
                         ],
                         "verifications": [
@@ -241,7 +241,7 @@
                                         ],
                                         "parser_func": "PARSE_CANONICAL"
                                     },
-                                    "api_name": "server_info"
+                                    "api_name": "/server_info"
                                 },
                                 "values": [
                                     {
