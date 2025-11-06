@@ -1158,7 +1158,7 @@
                                     ],
                                     "parser_func": "PARSE_BY_ARG"
                                 },
-                                "compute_units": 50,
+                                "compute_units": 100,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
@@ -1176,7 +1176,7 @@
                                     ],
                                     "parser_func": "PARSE_BY_ARG"
                                 },
-                                "compute_units": 50,
+                                "compute_units": 100,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
@@ -1194,7 +1194,7 @@
                                     ],
                                     "parser_func": "PARSE_BY_ARG"
                                 },
-                                "compute_units": 50,
+                                "compute_units": 100,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
@@ -1212,7 +1212,7 @@
                                     ],
                                     "parser_func": "DEFAULT"
                                 },
-                                "compute_units": 50,
+                                "compute_units": 100,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
@@ -1248,7 +1248,7 @@
                                     ],
                                     "parser_func": "PARSE_BY_ARG"
                                 },
-                                "compute_units": 20,
+                                "compute_units": 100,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
