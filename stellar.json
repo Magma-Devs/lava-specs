@@ -221,7 +221,7 @@
                                 "result_parsing": {
                                     "parser_arg": [
                                         "0",
-                                        "sequence"
+                                        "hash"
                                     ],
                                     "parser_func": "PARSE_CANONICAL"
                                 },
@@ -235,7 +235,6 @@
                                 "parsers": [
                                     {
                                         "parse_path": ".result._embedded.records[0].sequence",
-                                        "value": "*",
                                         "parse_type": "RESULT"
                                     }
                                 ]
@@ -327,7 +326,7 @@
                                     "parser_arg": [
                                         "latest"
                                     ],
-                                    "parser_func": "PARSE_CANONICAL"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 10,
                                 "enabled": true,
@@ -345,7 +344,7 @@
                                     "parser_arg": [
                                         "latest"
                                     ],
-                                    "parser_func": "PARSE_CANONICAL"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 10,
                                 "enabled": true,
@@ -527,7 +526,7 @@
                         "parse_directives": [
                             {
                                 "function_tag": "GET_BLOCKNUM",
-                                "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"getLatestLedger\",\"id\":1}",
+                                "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"getLatestLedger\", \"params\": null, \"id\":1}",
                                 "result_parsing": {
                                     "parser_arg": [
                                         "0",
@@ -539,13 +538,13 @@
                             },
                             {
                                 "function_tag": "GET_BLOCK_BY_NUM",
-                                "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"getLedgers\",\"params\":{\"startLedger\":%d,\"pagination\":{\"limit\":1}},\"id\":1}",
+                                "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"getLedgers\",\"params\":{\"startLedger\":%d,\"limit\":1},\"id\":1}",
                                 "result_parsing": {
                                     "parser_arg": [
                                         "0",
                                         "ledgers",
                                         "0",
-                                        "sequence"
+                                        "hash"
                                     ],
                                     "parser_func": "PARSE_CANONICAL"
                                 },
@@ -556,7 +555,7 @@
                             {
                                 "name": "chain-id",
                                 "parse_directive": {
-                                    "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"getNetwork\",\"id\":1}",
+                                    "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"getNetwork\", \"params\": {}, \"id\":1}",
                                     "function_tag": "VERIFICATION",
                                     "result_parsing": {
                                         "parser_arg": [
@@ -610,18 +609,6 @@
                         "verifications": [
                             {
                                 "name": "chain-id",
-                                "parse_directive": {
-                                    "function_template": "/",
-                                    "function_tag": "VERIFICATION",
-                                    "result_parsing": {
-                                        "parser_arg": [
-                                            "0",
-                                            "network_passphrase"
-                                        ],
-                                        "parser_func": "PARSE_CANONICAL"
-                                    },
-                                    "api_name": "/"
-                                },
                                 "values": [
                                     {
                                         "expected_value": "Test SDF Network ; September 2015"
@@ -645,18 +632,6 @@
                         "verifications": [
                             {
                                 "name": "chain-id",
-                                "parse_directive": {
-                                    "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"getNetwork\",\"id\":1}",
-                                    "function_tag": "VERIFICATION",
-                                    "result_parsing": {
-                                        "parser_arg": [
-                                            "0",
-                                            "passphrase"
-                                        ],
-                                        "parser_func": "PARSE_CANONICAL"
-                                    },
-                                    "api_name": "getNetwork"
-                                },
                                 "values": [
                                     {
                                         "expected_value": "Test SDF Network ; September 2015"
