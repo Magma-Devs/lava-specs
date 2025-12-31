@@ -11,7 +11,7 @@
                     "ETH1"
                 ],
                 "reliability_threshold": 268435455,
-                "data_reliability_enabled": true,
+                "data_reliability_enabled": false,
                 "block_distance_for_finalized_data": 7,
                 "blocks_in_finalization_proof": 3,
                 "average_block_time": 350,
@@ -919,7 +919,7 @@
                     "SONIC"
                 ],
                 "reliability_threshold": 268435455,
-                "data_reliability_enabled": true,
+                "data_reliability_enabled": false,
                 "block_distance_for_finalized_data": 7,
                 "blocks_in_finalization_proof": 3,
                 "average_block_time": 350,

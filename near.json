@@ -8,7 +8,7 @@
                 "name": "near mainnet",
                 "enabled": true,
                 "reliability_threshold": 268435455,
-                "data_reliability_enabled": true,
+                "data_reliability_enabled": false,
                 "block_distance_for_finalized_data": 3,
                 "blocks_in_finalization_proof": 3,
                 "average_block_time": 1200,
@@ -712,7 +712,7 @@
                     "NEAR"
                 ],
                 "reliability_threshold": 268435455,
-                "data_reliability_enabled": true,
+                "data_reliability_enabled": false,
                 "block_distance_for_finalized_data": 3,
                 "blocks_in_finalization_proof": 3,
                 "average_block_time": 1200,
