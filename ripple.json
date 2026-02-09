@@ -12,7 +12,7 @@
                 "block_distance_for_finalized_data": 4,
                 "blocks_in_finalization_proof": 3,
                 "average_block_time": 4000,
-                "allowed_block_lag_for_qos_sync": 5,
+                "allowed_block_lag_for_qos_sync": 3,
                 "imports": [],
                 "shares": 1,
                 "min_stake_provider": {
@@ -23,7 +23,7 @@
                     {
                         "enabled": true,
                         "collection_data": {
-                            "api_interface": "rest",
+                            "api_interface": "jsonrpc",
                             "internal_path": "",
                             "type": "POST",
                             "add_on": ""
@@ -33,11 +33,13 @@
                                 "name": "account_info",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "latest"
+                                        "0",
+                                        "ledger_index"
                                     ],
-                                    "parser_func": "DEFAULT"
+                                    "parser_func": "PARSE_CANONICAL",
+                                    "default_value": "validated"
                                 },
-                                "compute_units": 10,
+                                "compute_units": 20,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
@@ -48,14 +50,16 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "/gateway_balances",
+                                "name": "gateway_balances",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "latest"
+                                        "0",
+                                        "ledger_index"
                                     ],
-                                    "parser_func": "DEFAULT"
+                                    "parser_func": "PARSE_CANONICAL",
+                                    "default_value": "validated"
                                 },
-                                "compute_units": 10,
+                                "compute_units": 60,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
@@ -66,14 +70,16 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "/account_lines",
+                                "name": "account_lines",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "latest"
+                                        "0",
+                                        "ledger_index"
                                     ],
-                                    "parser_func": "DEFAULT"
+                                    "parser_func": "PARSE_CANONICAL",
+                                    "default_value": "validated"
                                 },
-                                "compute_units": 10,
+                                "compute_units": 20,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
@@ -84,12 +90,72 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "/submit",
+                                "name": "account_channels",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "latest"
+                                        "0",
+                                        "ledger_index"
                                     ],
-                                    "parser_func": "DEFAULT"
+                                    "parser_func": "PARSE_CANONICAL",
+                                    "default_value": "validated"
+                                },
+                                "compute_units": 20,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "account_currencies",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "0",
+                                        "ledger_index"
+                                    ],
+                                    "parser_func": "PARSE_CANONICAL",
+                                    "default_value": "validated"
+                                },
+                                "compute_units": 20,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "account_tx",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "0",
+                                        "ledger_index_min"
+                                    ],
+                                    "parser_func": "PARSE_CANONICAL",
+                                    "default_value": "validated"
+                                },
+                                "compute_units": 20,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "submit",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        ""
+                                    ],
+                                    "parser_func": "EMPTY"
                                 },
                                 "compute_units": 10,
                                 "enabled": true,
@@ -97,19 +163,75 @@
                                     "deterministic": false,
                                     "local": false,
                                     "subscription": false,
-                                    "stateful": 1
+                                    "stateful": 1,
+                                    "hanging_api": true
                                 },
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "/server_state",
+                                "name": "submit_multisigned",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "latest"
+                                        ""
                                     ],
-                                    "parser_func": "DEFAULT"
+                                    "parser_func": "EMPTY"
                                 },
                                 "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 1,
+                                    "hanging_api": true
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "server_state",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        ""
+                                    ],
+                                    "parser_func": "EMPTY"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "fee",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        ""
+                                    ],
+                                    "parser_func": "EMPTY"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "tx",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        ""
+                                    ],
+                                    "parser_func": "EMPTY"
+                                },
+                                "compute_units": 20,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
@@ -120,52 +242,16 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "/fee",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
-                                    "stateful": 0
-                                },
-                                "extra_compute_units": 0
-                            },
-                            {
-                                "name": "/tx",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
-                                    "stateful": 0
-                                },
-                                "extra_compute_units": 0
-                            },
-                            {
-                                "name": "/ledger",
+                                "name": "ledger",
                                 "block_parsing": {
                                     "parser_arg": [
                                         "0",
-                                        "result",
                                         "ledger_index"
                                     ],
-                                    "parser_func": "PARSE_CANONICAL"
+                                    "parser_func": "PARSE_CANONICAL",
+                                    "default_value": "validated"
                                 },
-                                "compute_units": 10,
+                                "compute_units": 20,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
@@ -176,19 +262,131 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "/server_info",
+                                "name": "ledger_closed",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "latest"
+                                        ""
                                     ],
-                                    "parser_func": "DEFAULT"
+                                    "parser_func": "EMPTY"
                                 },
                                 "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "ledger_current",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        ""
+                                    ],
+                                    "parser_func": "EMPTY"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "server_info",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        ""
+                                    ],
+                                    "parser_func": "EMPTY"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "book_offers",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "0",
+                                        "ledger_index"
+                                    ],
+                                    "parser_func": "PARSE_CANONICAL",
+                                    "default_value": "validated"
+                                },
+                                "compute_units": 60,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
                                     "local": false,
                                     "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "ripple_path_find",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "0",
+                                        "ledger_index"
+                                    ],
+                                    "parser_func": "PARSE_CANONICAL",
+                                    "default_value": "validated"
+                                },
+                                "compute_units": 60,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "subscribe",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        ""
+                                    ],
+                                    "parser_func": "EMPTY"
+                                },
+                                "compute_units": 1000,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": true,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "unsubscribe",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        ""
+                                    ],
+                                    "parser_func": "EMPTY"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": true,
                                     "stateful": 0
                                 },
                                 "extra_compute_units": 0
@@ -205,11 +403,11 @@
                                         "0",
                                         "result",
                                         "ledger",
-                                        "ledger_index"
+                                        "ledger_hash"
                                     ],
                                     "parser_func": "PARSE_CANONICAL"
                                 },
-                                "api_name": "/ledger"
+                                "api_name": "ledger"
                             },
                             {
                                 "function_tag": "GET_BLOCKNUM",
@@ -223,7 +421,30 @@
                                     ],
                                     "parser_func": "PARSE_CANONICAL"
                                 },
-                                "api_name": "/ledger"
+                                "api_name": "ledger"
+                            },
+                            {
+                                "function_tag": "SUBSCRIBE",
+                                "api_name": "subscribe"
+                            },
+                            {
+                                "function_template": "{\"method\":\"unsubscribe\",\"params\":[{\"streams\":[]}]}",
+                                "function_tag": "UNSUBSCRIBE",
+                                "api_name": "unsubscribe"
+                            },
+                            {
+                                "function_tag": "GET_EARLIEST_BLOCK",
+                                "function_template": "{\"method\":\"ledger\",\"params\":[{\"ledger_index\":\"earliest\",\"transactions\":false,\"expand\":false,\"owner_funds\":false}]}",
+                                "result_parsing": {
+                                    "parser_arg": [
+                                        "0",
+                                        "result",
+                                        "ledger",
+                                        "ledger_index"
+                                    ],
+                                    "parser_func": "PARSE_CANONICAL"
+                                },
+                                "api_name": "ledger"
                             }
                         ],
                         "verifications": [
@@ -241,16 +462,39 @@
                                         ],
                                         "parser_func": "PARSE_CANONICAL"
                                     },
-                                    "api_name": "/server_info"
+                                    "api_name": "server_info"
                                 },
                                 "values": [
                                     {
                                         "expected_value": "0"
                                     }
                                 ]
+                            },
+                            {
+                                "name": "pruning",
+                                "parse_directive": {
+                                    "function_tag": "GET_EARLIEST_BLOCK"
+                                },
+                                "values": [
+                                    {
+                                        "latest_distance": 8193
+                                    },
+                                    {
+                                        "extension": "archive",
+                                        "expected_value": "0"
+                                    }
+                                ]
                             }
                         ],
-                        "extensions": []
+                        "extensions": [
+                            {
+                                "name": "archive",
+                                "cu_multiplier": 5,
+                                "rule": {
+                                    "block": 8192
+                                }
+                            }
+                        ]
                     }
                 ]
             },
@@ -263,7 +507,7 @@
                 "block_distance_for_finalized_data": 4,
                 "blocks_in_finalization_proof": 3,
                 "average_block_time": 4000,
-                "allowed_block_lag_for_qos_sync": 5,
+                "allowed_block_lag_for_qos_sync": 2,
                 "imports": [
                     "XRP"
                 ],
@@ -276,7 +520,7 @@
                     {
                         "enabled": true,
                         "collection_data": {
-                            "api_interface": "rest",
+                            "api_interface": "jsonrpc",
                             "internal_path": "",
                             "type": "POST",
                             "add_on": ""
