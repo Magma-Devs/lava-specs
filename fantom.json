@@ -1,7 +1,7 @@
 {
     "proposal": {
         "title": "Add Specs: Fantom",
-        "description": "Adding new specification support for relaying Fantom data on Lava",
+        "description": "Updated fantom spec for better relaying of fantom data",
         "specs": [
             {
                 "index": "FTM250",
@@ -48,17 +48,64 @@
                                     "stateful": 0
                                 },
                                 "extra_compute_units": 0
+                            },
+                            {
+                                "name": "dag_getHeads",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "dag_getEventPayload",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        ""
+                                    ],
+                                    "parser_func": "EMPTY"
+                                },
+                                "compute_units": 20,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "dag_getEvent",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        ""
+                                    ],
+                                    "parser_func": "EMPTY"
+                                },
+                                "compute_units": 20,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
                             }
                         ],
                         "headers": [],
-                        "inheritance_apis": [
-                            {
-                                "api_interface": "jsonrpc",
-                                "internal_path": "",
-                                "type": "POST",
-                                "add_on": ""
-                            }
-                        ],
+                        "inheritance_apis": [],
                         "parse_directives": [
                             {
                                 "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"eth_blockNumber\",\"params\":[],\"id\":1}",
@@ -164,6 +211,60 @@
                         },
                         "apis": [
                             {
+                                "name": "trace_block",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "0"
+                                    ],
+                                    "parser_func": "PARSE_BY_ARG"
+                                },
+                                "compute_units": 200,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "trace_filter",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 200,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "trace_transaction",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 200,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
                                 "name": "trace_get",
                                 "block_parsing": {
                                     "parser_arg": [
@@ -175,23 +276,13 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
+                                    "local": true,
                                     "subscription": false,
                                     "stateful": 0
                                 },
                                 "extra_compute_units": 0
                             }
                         ],
-                        "headers": [],
-                        "inheritance_apis": [
-                            {
-                                "api_interface": "jsonrpc",
-                                "internal_path": "",
-                                "type": "POST",
-                                "add_on": "trace"
-                            }
-                        ],
-                        "parse_directives": [],
                         "verifications": [
                             {
                                 "name": "trace",
@@ -214,28 +305,6 @@
                             }
                         ],
                         "extensions": []
-                    },
-                    {
-                        "enabled": true,
-                        "collection_data": {
-                            "api_interface": "jsonrpc",
-                            "internal_path": "",
-                            "type": "POST",
-                            "add_on": "debug"
-                        },
-                        "apis": [],
-                        "headers": [],
-                        "inheritance_apis": [
-                            {
-                                "api_interface": "jsonrpc",
-                                "internal_path": "",
-                                "type": "POST",
-                                "add_on": "debug"
-                            }
-                        ],
-                        "parse_directives": [],
-                        "verifications": [],
-                        "extensions": []
                     }
                 ]
             },
@@ -246,6 +315,17 @@
                 "imports": [
                     "FTM250"
                 ],
+                "reliability_threshold": 268435455,
+                "data_reliability_enabled": true,
+                "block_distance_for_finalized_data": 0,
+                "blocks_in_finalization_proof": 1,
+                "average_block_time": 1000,
+                "allowed_block_lag_for_qos_sync": 10,
+                "shares": 1,
+                "min_stake_provider": {
+                    "denom": "ulava",
+                    "amount": "5000000000"
+                },
                 "api_collections": [
                     {
                         "enabled": true,
@@ -257,42 +337,22 @@
                         },
                         "apis": [],
                         "headers": [],
-                        "inheritance_apis": [
-                            {
-                                "api_interface": "jsonrpc",
-                                "internal_path": "",
-                                "type": "POST",
-                                "add_on": ""
-                            }
-                        ],
+                        "inheritance_apis": [],
                         "parse_directives": [],
                         "verifications": [
                             {
                                 "name": "chain-id",
-                                "parse_directive": {
-                                    "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"eth_chainId\",\"params\":[],\"id\":1}",
-                                    "function_tag": "VERIFICATION",
-                                    "result_parsing": {
-                                        "parser_arg": [
-                                            "0"
-                                        ],
-                                        "parser_func": "PARSE_BY_ARG",
-                                        "encoding": "hex"
-                                    },
-                                    "api_name": "eth_chainId"
-                                },
                                 "values": [
                                     {
                                         "expected_value": "0xfa2"
                                     }
                                 ]
                             }
-                        ],
-                        "extensions": []
+                        ]
                     }
                 ]
             }
         ]
     },
-    "deposit": "10000000ulava"
+    "deposit": "10001000ulava"
 }
