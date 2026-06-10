@@ -1,0 +1,19 @@
+{
+  "proposal": {
+    "specs": [
+      {
+        "index": "BAD",
+        "api_collections": [
+          {
+            "extensions": [
+              { "name": "archive", "cu_multiplier": 5, "rule": { "block": 100000 } }
+            ],
+            "verifications": [
+              { "name": "pruning", "values": [ { "latest_distance": 100000 } ] }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

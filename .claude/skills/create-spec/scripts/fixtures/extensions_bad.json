@@ -1,0 +1,24 @@
+{
+  "proposal": {
+    "specs": [
+      {
+        "index": "BADCHAIN",
+        "api_collections": [
+          {
+            "collection_data": {"api_interface": "jsonrpc", "add_on": ""},
+            "extensions": [
+              {"name": "archive"},
+              {"name": "archive", "cu_multiplier": 5, "rule": {"block": 1000}}
+            ],
+            "verifications": []
+          },
+          {
+            "collection_data": {"api_interface": "jsonrpc", "add_on": "trace"},
+            "extensions": [],
+            "verifications": []
+          }
+        ]
+      }
+    ]
+  }
+}

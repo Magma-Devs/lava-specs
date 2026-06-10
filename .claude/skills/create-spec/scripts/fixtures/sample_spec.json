@@ -1,0 +1,20 @@
+{
+  "proposal": {
+    "specs": [
+      {
+        "index": "TESTCHAIN",
+        "imports": [],
+        "api_collections": [
+          {
+            "collection_data": {"api_interface": "jsonrpc"},
+            "parse_directives": [
+              {"function_tag": "GET_BLOCKNUM", "api_name": "eth_blockNumber", "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"eth_blockNumber\",\"params\":[],\"id\":1}"},
+              {"function_tag": "GET_BLOCK_BY_NUM", "api_name": "eth_getBlockByNumber", "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"eth_getBlockByNumber\",\"params\":[\"0x%x\", false],\"id\":1}"},
+              {"function_tag": "VERIFICATION", "api_name": "eth_chainId", "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"eth_chainId\",\"params\":[],\"id\":1}"}
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
