@@ -1,0 +1,36 @@
+{
+  "proposal": {
+    "specs": [
+      {
+        "index": "BADCHAIN",
+        "api_collections": [
+          {
+            "collection_data": {"api_interface": "jsonrpc"},
+            "apis": [
+              {
+                "name": "eth_blockNumber",
+                "compute_units": 10,
+                "block_parsing": {"parser_func": "EMPTY"},
+                "category": {"deterministic": true}
+              },
+              {
+                "name": "eth_getBlock",
+                "enabled": true,
+                "compute_units": 20,
+                "block_parsing": {"parser_func": "PARSE_BY_ARG", "parser_arg": [{"nested": "object"}]},
+                "category": {"deterministic": true}
+              },
+              {
+                "name": "eth_blockNumber",
+                "enabled": true,
+                "compute_units": 10,
+                "block_parsing": {"parser_func": "EMPTY", "parser_arg": [""]},
+                "category": {"deterministic": true}
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
