@@ -10,12 +10,12 @@
 #        gh api -X PUT /repos/<owner>/<repo>/actions/permissions/workflow \
 #          -f default_workflow_permissions=write -F can_approve_pull_request_reviews=true
 #   3. The create-spec skill must be present on `main`.
-#   4. Secret GHCR_PAT — a consolidated classic PAT with repo + workflow +
-#      read:packages scopes. THIS workflow uses GHCR_PAT only to open the PR
+#   4. Secret BOT_PAT — a consolidated classic PAT with repo + workflow +
+#      read:packages scopes. THIS workflow uses BOT_PAT only to open the PR
 #      (so pull_request events fire for spec_pipeline.yml). The read:packages
 #      scope is used by spec_pipeline.yml when it pulls the smart-router image.
 #
-# The PR is opened with GHCR_PAT so that pull_request events fire and
+# The PR is opened with BOT_PAT so that pull_request events fire and
 # spec_pipeline.yml (boot/probe/review phases) triggers automatically.
 #
 # Manual trigger: Actions tab -> "Create Spec" -> Run workflow.
@@ -259,9 +259,9 @@ jobs:
         env:
           # PAT (not GITHUB_TOKEN): a GITHUB_TOKEN-opened PR does NOT fire
           # pull_request events, which spec_pipeline.yml needs. One consolidated
-          # classic PAT is stored as GHCR_PAT (repo + workflow here; the
+          # classic PAT is stored as BOT_PAT (repo + workflow here; the
           # read:packages scope is used by spec_pipeline.yml, not this step).
-          GH_TOKEN: ${{ secrets.GHCR_PAT }}
+          GH_TOKEN: ${{ secrets.BOT_PAT }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           CHAIN: ${{ github.event.inputs.chain_name }}
         run: |

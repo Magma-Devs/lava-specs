@@ -59,17 +59,18 @@ on the PR event with no explicit `gh workflow run` plumbing, and future PR-event
 automation (reviewers, gating checks) is unlocked. PR author becomes the PAT's
 user rather than `github-actions[bot]`.
 
-**Single consolidated PAT.** Rather than a second secret, reuse **one** PAT for
-both jobs it needs to do — open the PR *and* pull the private GHCR image. A
-**classic** PAT with scopes `repo` + `workflow` + `read:packages` covers all of it
-(classic is preferred over fine-grained, which is fussy for GHCR org packages).
-The existing `GHCR_PAT` secret is widened to this scope and reused for PR creation;
-keeping the name avoids re-creating the secret (it is simply used in more steps
-now). **Consequence:** the PAT becomes *required in every setup*, not just personal
-forks — today `GHCR_PAT` is optional and same-org runs fall back to `GITHUB_TOKEN`
-for GHCR; now it must always be present, because every run needs the PAT-opened PR
-so `pull_request` events fire. The GHCR login's `${{ secrets.GHCR_PAT ||
-secrets.GITHUB_TOKEN }}` fallback can stay or be simplified to the PAT directly.
+**Single consolidated PAT (`BOT_PAT`).** Rather than a second secret, **one** PAT
+does every privileged job: open the PR, drive the `gh` API, pull the private GHCR
+image, and authenticate the agent. A **classic** PAT with scopes `repo` +
+`workflow` + `read:packages` covers all of it (classic is preferred over
+fine-grained, which is fussy for GHCR org packages). It is named `BOT_PAT` — a
+role-neutral name, since it is no longer registry-specific (the older `GHCR_PAT`
+name was misleading once the PAT also opens PRs and posts comments). **Consequence:**
+the PAT is *required in every setup*, not just personal forks — the old arrangement
+where a GHCR-only PAT was optional and same-org runs fell back to `GITHUB_TOKEN` no
+longer applies, because every run needs the PAT-opened PR so `pull_request` events
+fire. The GHCR login keeps a `${{ secrets.BOT_PAT || secrets.GITHUB_TOKEN }}`
+fallback for resilience.
 
 ### 2. `spec_pipeline.yml` — Phases 8 → 9 → 10 → 11 → summary
 **Triggers:**
@@ -158,9 +159,9 @@ PR thread and approves/merges via normal GitHub review. No auto-merge.
 ## Carried-over constraints (from prior CI runs)
 
 - **GHCR auth:** Phase 8/10b pull the private `ghcr.io/magma-devs/smart-router:main`.
-  Now folded into the single consolidated PAT above (`GHCR_PAT`, widened to `repo`
+  Now folded into the single consolidated PAT above (`BOT_PAT`, scopes `repo`
   + `workflow` + `read:packages`), which is required in all setups — the old
-  "same-org falls back to `GITHUB_TOKEN`, optional `GHCR_PAT`" arrangement no
+  "same-org falls back to `GITHUB_TOKEN`, optional GHCR-only PAT" arrangement no
   longer applies.
 - **Subscriptions require a ws upstream** (see WebSocket handling above).
 - **Concurrency:** keep the per-chain concurrency group so re-runs for the same
