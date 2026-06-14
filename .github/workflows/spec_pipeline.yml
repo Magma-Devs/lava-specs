@@ -97,6 +97,19 @@ jobs:
           # Export each parsed key as a step output.
           while IFS='=' read -r k v; do echo "$k=$v" >> "$GITHUB_OUTPUT"; done < /tmp/cmd.env
 
+      # If a /rerun-* comment was NOT a recognised command (parser returned
+      # IS_COMMAND=false), tell the author instead of silently no-op'ing — the
+      # job otherwise just skips every downstream step with no in-PR signal.
+      - name: Notify unrecognised command
+        if: github.event_name == 'issue_comment' && steps.cmd.outputs.IS_COMMAND != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.BOT_PAT }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.issue.number }}
+        run: |
+          set -euo pipefail
+          gh pr comment "$PR" --repo "$REPO" --body "⚠️ Unrecognised command. Valid commands: \`/rerun-probe\` (Phase 8 — optional \`mainnet=URL testnet=URL\`), \`/rerun-review\` (9), \`/rerun-fix\` (10), \`/rerun-final\` (11), \`/rerun-from <8|9|10|11>\`."
+
       # Fail fast (seconds) on a grossly-misconfigured BOT_PAT before the
       # ~hour-long agent run. We can verify auth + write access cheaply; for a
       # classic token we also hard-fail on a missing 'repo' scope. We do NOT use a
@@ -135,6 +148,27 @@ jobs:
             echo "::warning::BOT_PAT is a fine-grained PAT (no OAuth scopes header). Auth + write access confirmed; ensure it has 'Pull requests: Read and write' (post comments) and that its owner can pull the Magma-Devs/smart-router GHCR package (Phase 8)."
           fi
           echo "Pre-flight OK."
+
+      # Transparency: acknowledge in the PR thread that the run has started and is
+      # really going to do work (token verified). issue_comment runs never appear
+      # as PR checks, so this comment + the per-phase comments are the in-PR signal.
+      - name: Acknowledge in PR
+        if: steps.cmd.outputs.IS_COMMAND == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.BOT_PAT }}
+          REPO: ${{ github.repository }}
+          PR: ${{ steps.pr.outputs.number }}
+          PHASE: ${{ steps.cmd.outputs.START_PHASE }}
+          EVENT: ${{ github.event_name }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          if [ "$EVENT" = "pull_request" ]; then
+            msg="🤖 **Spec pipeline started** on PR open — running **Phase 8 → 11 → summary**. Results post here as comments. [View run]($RUN_URL)"
+          else
+            msg="🤖 **Command acknowledged** — running the spec pipeline from **Phase ${PHASE}** to the end. Progress and results post here as comments. [View run]($RUN_URL)"
+          fi
+          gh pr comment "$PR" --repo "$REPO" --body "$msg"
 
       - name: Resolve endpoints
         id: endpoints
