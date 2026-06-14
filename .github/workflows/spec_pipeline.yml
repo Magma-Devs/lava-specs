@@ -85,6 +85,12 @@ jobs:
               echo "MAINNET_URLS="; echo "TESTNET_URLS="; echo "HINTS="
             } > /tmp/cmd.env
           else
+            # Export IS_COMMAND=true up-front so the "Report failure to PR" step
+            # still fires if the parser rejects a malformed command (it exits 2
+            # under set -e, before the export loop below could run). For a valid
+            # command the loop re-exports the same value; for a non-command body
+            # the loop overwrites it with false (last write wins).
+            echo "IS_COMMAND=true" >> "$GITHUB_OUTPUT"
             bash .github/scripts/parse_rerun_command.sh "$COMMENT_BODY" > /tmp/cmd.env
           fi
           cat /tmp/cmd.env
