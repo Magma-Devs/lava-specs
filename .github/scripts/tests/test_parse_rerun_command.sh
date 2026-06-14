@@ -71,9 +71,9 @@ out="$(bash "$SCRIPT" "/rerun-probe")"
 check "probe -> start 8" "START_PHASE=8" "$out"
 check "probe -> end 8 (single phase)" "END_PHASE=8" "$out"
 
-# 12. /rerun-from runs from N to the END of the pipeline (END=12)
+# 12. /rerun-from runs from N to the END of the pipeline (END=11)
 out="$(bash "$SCRIPT" "/rerun-from 9")"
 check "from 9 -> start 9"  "START_PHASE=9"  "$out"
-check "from 9 -> end 12"   "END_PHASE=12"   "$out"
+check "from 9 -> end 11"   "END_PHASE=11"   "$out"
 
 exit $fail
