@@ -102,32 +102,24 @@ jobs:
             echo "::error::BOT_PAT lacks write access to $REPO. Its owner ($login) must be a collaborator with write, and the token must grant Contents + Pull requests write (fine-grained) or the 'repo' scope (classic)."
             exit 1
           fi
-          # 4) Informational scope warnings (classic tokens only — fine-grained
-          #    PATs report no scopes, so these are skipped for them).
+          # 4) Classic tokens: the 'repo' scope is what authorizes createPullRequest,
+          #    so we can hard-fail on its absence. Fine-grained tokens report NO
+          #    scopes here, and there is no reliable non-mutating probe for their
+          #    'Pull requests: write' permission (GitHub returns 404 on the pulls
+          #    endpoint even for fully-authorized fine-grained tokens — a POST probe
+          #    false-negatives), so we warn rather than block to avoid failing a
+          #    token that actually works.
           norm=",$(printf '%s' "$scopes" | tr -d ' '),"
           if [ -n "$scopes" ]; then
+            case "$norm" in
+              *",repo,"*) echo "OK: classic 'repo' scope present — can create PRs." ;;
+              *) echo "::error::BOT_PAT (classic) is missing the 'repo' scope — gh pr create will fail with 'Resource not accessible by personal access token (createPullRequest)'. Regenerate with repo + workflow + read:packages."; exit 1 ;;
+            esac
             case "$norm" in *",read:packages,"*) : ;; *) echo "::warning::BOT_PAT missing 'read:packages' — spec_pipeline.yml needs it to pull the smart-router image from GHCR." ;; esac
             case "$norm" in *",workflow,"*) : ;; *) echo "::warning::BOT_PAT missing 'workflow' scope — only needed if it must push workflow-file changes." ;; esac
+          else
+            echo "::warning::BOT_PAT is a fine-grained PAT (no OAuth scopes header). Auth + write access are confirmed, but this preflight cannot non-mutatingly verify 'Pull requests: write'. If gh pr create later fails with 'createPullRequest', grant 'Pull requests: Read and write' for $REPO."
           fi
-          # 5) Authoritative PR-create permission probe — works for BOTH classic and
-          #    fine-grained tokens. POST a pull request with head==base==main:
-          #    GitHub enforces authorization (403 if the token lacks PR-create)
-          #    BEFORE it validates the body (422 for a same-branch request — which
-          #    proves we ARE authorized). head==base is always rejected, so this
-          #    never actually opens a PR.
-          code="$(curl -sS -o /tmp/pr_probe.json -w '%{http_code}' -X POST \
-            -H "Authorization: token $GH_TOKEN" \
-            -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/$REPO/pulls" \
-            -d '{"title":"[preflight] BOT_PAT permission probe - ignore","head":"main","base":"main"}' || echo "000")"
-          echo "PR-create permission probe HTTP status: $code"
-          case "$code" in
-            422) echo "OK: BOT_PAT is authorized to create PRs (422 = expected same-branch validation; no PR created)." ;;
-            403) echo "::error::BOT_PAT cannot create PRs (403). Fine-grained PAT: grant 'Pull requests: Read and write' for $REPO. Classic PAT: add the 'repo' scope."; head -c 400 /tmp/pr_probe.json; echo; exit 1 ;;
-            404) echo "::error::BOT_PAT cannot access $REPO (404) — token lacks repo access or metadata permission."; exit 1 ;;
-            201) echo "::warning::Probe unexpectedly opened a PR (201) for head==base — unusual; check for and close a stray PR." ;;
-            *)   echo "::warning::PR-create probe returned unexpected status $code; continuing. Body:"; head -c 400 /tmp/pr_probe.json; echo ;;
-          esac
           echo "Pre-flight OK."
 
       - name: Compute branch name
