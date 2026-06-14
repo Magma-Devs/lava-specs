@@ -5,10 +5,11 @@
 # space-separated allow-list in $ALLOWED_SECRETS, reading the value from the
 # same-named environment variable. Exit 2 on a malformed command/secret.
 set -uo pipefail
+set -f  # no globbing — we word-split untrusted comment tokens
 
 body="${1:-$(cat)}"
 body_flat="$(printf '%s' "$body" | tr '\n' ' ')"
-first_line="$(printf '%s\n' "$body" | head -n1)"
+IFS= read -r first_line <<<"$body" || true
 cmd="$(printf '%s' "$first_line" | awk '{print $1}')"
 
 emit() { printf '%s=%s\n' "$1" "$2"; }
