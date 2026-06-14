@@ -1,0 +1,193 @@
+# Runs create-spec Phases 8 -> 11 -> summary against an OPEN PR, as one
+# claude-code-action job. Two ways in:
+#   - pull_request: opened  -> auto-start the full 8->summary sequence
+#   - issue_comment: created with a body starting "/rerun-<phase>" -> re-run
+#     that phase to the end, optionally with amended endpoints / hints.
+# State lives in the PR: the spec is the committed <chain>.json on the branch;
+# every phase posts its report as a PR comment; a resumed phase reconstructs
+# context from those comments (see references/phase-entrypoints.md).
+#
+# Required repo secrets:
+#   CLAUDE_CODE_OAUTH_TOKEN - subscription auth (same as create_spec.yml).
+#   GHCR_PAT - one classic PAT, scopes: repo + workflow + read:packages. Used to
+#     pull the smart-router image AND as the github_token for gh pr comment. It is
+#     also the identity that opens the PR in create_spec.yml, so pull_request
+#     events fire (a GITHUB_TOKEN-opened PR would not trigger this workflow).
+# Optional (referenced from a comment as use=NAME; only these names are honored):
+#   PAID_RPC_1, PAID_RPC_2, PAID_RPC_3, PAID_WS_1 - keyed paid/archive node URLs,
+#     auto-masked by Actions so the key never lands in a PR comment or log.
+name: "Spec Pipeline (Phases 8-11)"
+
+on:
+  pull_request:
+    types: [opened]
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: write
+  pull-requests: write
+  packages: read
+
+concurrency:
+  group: spec-pipeline-${{ github.event.pull_request.number || github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    # Run only for: a PR opened by our automation, OR a /rerun-* comment on a PR.
+    if: >
+      (github.event_name == 'pull_request') ||
+      (github.event_name == 'issue_comment' &&
+       github.event.issue.pull_request != null &&
+       startsWith(github.event.comment.body, '/rerun-'))
+    steps:
+      - name: Resolve PR ref
+        id: pr
+        env:
+          GH_TOKEN: ${{ secrets.GHCR_PAT }}
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "number=${{ github.event.pull_request.number }}" >> "$GITHUB_OUTPUT"
+            echo "head=${{ github.event.pull_request.head.ref }}"   >> "$GITHUB_OUTPUT"
+          else
+            num="${{ github.event.issue.number }}"
+            head="$(gh pr view "$num" --repo "${{ github.repository }}" --json headRefName --jq .headRefName)"
+            echo "number=$num"  >> "$GITHUB_OUTPUT"
+            echo "head=$head"    >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.pr.outputs.head }}
+          fetch-depth: 0
+
+      - name: Parse rerun command
+        id: cmd
+        env:
+          # Allow-list of secret names a comment may reference via use=NAME.
+          ALLOWED_SECRETS: "PAID_RPC_1 PAID_RPC_2 PAID_RPC_3 PAID_WS_1"
+          PAID_RPC_1: ${{ secrets.PAID_RPC_1 }}
+          PAID_RPC_2: ${{ secrets.PAID_RPC_2 }}
+          PAID_RPC_3: ${{ secrets.PAID_RPC_3 }}
+          PAID_WS_1:  ${{ secrets.PAID_WS_1 }}
+          COMMENT_BODY: ${{ github.event.comment.body }}
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            # Auto-start: no comment, default to Phase 8, no endpoint override.
+            {
+              echo "IS_COMMAND=true"; echo "START_PHASE=8"
+              echo "MAINNET_URLS="; echo "TESTNET_URLS="; echo "HINTS="
+            } > /tmp/cmd.env
+          else
+            bash .github/scripts/parse_rerun_command.sh "$COMMENT_BODY" > /tmp/cmd.env
+          fi
+          cat /tmp/cmd.env
+          # Export each parsed key as a step output.
+          while IFS='=' read -r k v; do echo "$k=$v" >> "$GITHUB_OUTPUT"; done < /tmp/cmd.env
+
+      - name: Resolve endpoints
+        id: endpoints
+        if: steps.cmd.outputs.IS_COMMAND == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GHCR_PAT }}
+          COMMENT_MAINNET: ${{ steps.cmd.outputs.MAINNET_URLS }}
+          COMMENT_TESTNET: ${{ steps.cmd.outputs.TESTNET_URLS }}
+        run: |
+          set -euo pipefail
+          # The PR body lives on GitHub, not the branch. Fetch it so the ENDPOINTS
+          # block (written by create_spec.yml) can be parsed as the fallback source.
+          gh pr view "${{ steps.pr.outputs.number }}" --repo "${{ github.repository }}" \
+            --json body --jq .body > /tmp/pr_body.md || true
+          PR_BODY_FILE=/tmp/pr_body.md bash .github/scripts/resolve_endpoints.sh > /tmp/ep.env
+          cat /tmp/ep.env
+          while IFS='=' read -r k v; do echo "$k=$v" >> "$GITHUB_OUTPUT"; done < /tmp/ep.env
+
+      - name: Setup Node
+        if: steps.cmd.outputs.IS_COMMAND == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install probe tools
+        if: steps.cmd.outputs.IS_COMMAND == 'true'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+          GRPCURL_VERSION=1.9.1
+          curl -fsSL "https://github.com/fullstorydev/grpcurl/releases/download/v${GRPCURL_VERSION}/grpcurl_${GRPCURL_VERSION}_linux_x86_64.tar.gz" \
+            | sudo tar -xz -C /usr/local/bin grpcurl
+          grpcurl --version || true
+
+      - name: Log into GHCR
+        if: steps.cmd.outputs.IS_COMMAND == 'true'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_PAT || secrets.GITHUB_TOKEN }}
+
+      - name: Run pipeline phases
+        id: run
+        if: steps.cmd.outputs.IS_COMMAND == 'true'
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ secrets.GHCR_PAT }}
+          show_full_output: false
+          display_report: false
+          claude_args: |
+            --model opus
+            --dangerously-skip-permissions
+            --max-turns 1000
+          prompt: |
+            Run the /create-spec skill in RESUMABLE mode for an OPEN pull request.
+
+            Start at Phase ${{ steps.cmd.outputs.START_PHASE }}. Do NOT run Phases
+            1-7. Reconstruct context from the committed <chain>.json on this branch
+            and the existing PR comments, exactly as
+            references/phase-entrypoints.md specifies (read that file fully first).
+
+            Context:
+            - PR_NUMBER: ${{ steps.pr.outputs.number }}
+            - Repo: ${{ github.repository }}
+            - Endpoint source: ${{ steps.endpoints.outputs.ENDPOINT_SOURCE }}
+            - MAINNET_URLS: ${{ steps.endpoints.outputs.MAINNET_URLS }}
+            - TESTNET_URLS: ${{ steps.endpoints.outputs.TESTNET_URLS }}
+            - ADDITIONAL_DATA (hints/docs/corrections): ${{ steps.cmd.outputs.HINTS }}
+
+            Rules for this unattended run:
+            - Probe every provided URL over BOTH http and ws (subscription methods
+              need ws). If the spec has subscription methods and no URL answers ws,
+              STOP and post a PR comment asking for a ws-capable node.
+            - If MAINNET_URLS and TESTNET_URLS are both empty, research public nodes
+              yourself (the normal Phase 3/8 fallback).
+            - After EACH phase, post its report as a PR comment via
+              `gh pr comment ${{ steps.pr.outputs.number }} --body-file <report>`,
+              with a bold one-line header naming the phase.
+            - At every STOP-and-ask gate, auto-decide with the conservative default
+              and record it. Report the Phase 11 verdict HONESTLY (never upgrade
+              CHANGES REQUESTED to APPROVED).
+            - Do NOT perform any git commit/push for the spec content other than what
+              the phases already do; the branch is already checked out.
+            - End by posting the Phase 12 summary checklist as a final PR comment.
+
+      - name: Report failure to PR
+        if: failure() && steps.cmd.outputs.IS_COMMAND == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GHCR_PAT }}
+        run: |
+          set -euo pipefail
+          gh pr comment "${{ steps.pr.outputs.number }}" --repo "${{ github.repository }}" --body "$(cat <<'EOF'
+          **Spec pipeline failed** (Phase ${{ steps.cmd.outputs.START_PHASE }}). See the [run log](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}).
+
+          Retry with amended input by commenting, e.g.:
+          `/rerun-probe mainnet=https://your-archive-node/rpc`
+          or reference a stored secret node: `/rerun-probe mainnet=use=PAID_RPC_1`
+          EOF
+          )"
