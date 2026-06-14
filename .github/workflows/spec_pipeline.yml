@@ -75,7 +75,7 @@ jobs:
           PAID_RPC_2: ${{ secrets.PAID_RPC_2 }}
           PAID_RPC_3: ${{ secrets.PAID_RPC_3 }}
           PAID_WS_1:  ${{ secrets.PAID_WS_1 }}
-          COMMENT_BODY: ${{ github.event.comment.body }}
+          COMMENT_BODY: "${{ github.event.comment.body }}"
         run: |
           set -euo pipefail
           if [ "${{ github.event_name }}" = "pull_request" ]; then
