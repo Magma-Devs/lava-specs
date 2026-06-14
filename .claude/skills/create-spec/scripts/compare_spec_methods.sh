@@ -5,9 +5,10 @@
 #   spec-methods-diff <spec.json> <methods-file>
 #   spec-methods-diff <spec.json> -          # read methods from stdin
 #
-# Walks .imports[] transitively. Parent specs are resolved from
-# <specs-root>/{mainnet-1,testnet-2}/specs/<index-lowercased>.json, where
-# <specs-root> is the nearest ancestor dir containing those subdirs.
+# Walks .imports[] transitively. This repo is flat: every spec is a *.json at
+# the repo root. Parent specs are resolved by CONTENT, not filename — every
+# *.json beside the candidate is scanned and imports are matched to whichever
+# file declares that index (e.g. ETH1 lives in ethereum.json, not eth1.json).
 
 set -euo pipefail
 export LC_ALL=C
@@ -21,36 +22,31 @@ SPEC=$(realpath -- "$1")
 LIST=$2
 [[ -r "$SPEC" ]] || { echo "cannot read spec: $SPEC" >&2; exit 1; }
 
-# Locate the specs-root (ancestor containing mainnet-1/specs or testnet-2/specs).
-SEARCH=$(dirname "$SPEC")
-SPECS_ROOT=""
-while [[ "$SEARCH" != "/" ]]; do
-  if [[ -d "$SEARCH/mainnet-1/specs" || -d "$SEARCH/testnet-2/specs" ]]; then
-    SPECS_ROOT=$SEARCH; break
-  fi
-  SEARCH=$(dirname "$SEARCH")
-done
-[[ -n "$SPECS_ROOT" ]] || {
-  echo "could not locate specs root above $SPEC (need mainnet-1/specs or testnet-2/specs)" >&2
-  exit 1; }
+# Resolve parent specs by CONTENT, not filename: a spec file may hold several
+# indexes (e.g. ethereum.json holds ETH1, SEP1, HOL1) and is not named after any
+# of them. Build an index -> file map by scanning every *.json beside the
+# candidate (the flat repo root). First registration wins.
+declare -A INDEX_FILE
 
-file_env() {
-  # Given a file path under $SPECS_ROOT/<env>/specs/, return <env>.
-  printf '%s' "$1" | sed -E "s#^${SPECS_ROOT//#/\\#}/([^/]+)/specs/.*#\1#"
+register_dir() {  # index every *.json in a directory into INDEX_FILE
+  local dir=$1 f idx
+  [[ -d "$dir" ]] || return 0
+  shopt -s nullglob
+  for f in "$dir"/*.json; do
+    while IFS= read -r idx; do
+      [[ -z "$idx" || -n "${INDEX_FILE[$idx]:-}" ]] && continue
+      INDEX_FILE[$idx]=$f
+    done < <(jq -r '.proposal.specs[]?.index // empty' "$f" 2>/dev/null)
+  done
+  shopt -u nullglob
 }
 
-resolve_parent() {
-  local idx_lower order=()
-  idx_lower=$(printf '%s' "$1" | tr '[:upper:]' '[:lower:]')
-  case "${2:-}" in
-    testnet-2) order=(testnet-2 mainnet-1) ;;
-    mainnet-1) order=(mainnet-1 testnet-2) ;;
-    *)         order=(mainnet-1 testnet-2) ;;
-  esac
-  for d in "${order[@]}"; do
-    local f="$SPECS_ROOT/$d/specs/$idx_lower.json"
-    [[ -f "$f" ]] && { printf '%s\n' "$f"; return 0; }
-  done
+# Flat repo: all specs live beside the candidate. Scan that one directory.
+register_dir "$(dirname "$SPEC")"
+
+resolve_parent() {  # $1 = index -> prints source file path, or fails
+  local f=${INDEX_FILE[$1]:-}
+  [[ -n "$f" ]] && { printf '%s\n' "$f"; return 0; }
   return 1
 }
 
@@ -66,15 +62,14 @@ done
 while ((${#queue[@]})); do
   cur=${queue[0]}; queue=("${queue[@]:1}")
   cur_file=${SEEN[$cur]}
-  cur_env=$(file_env "$cur_file")
   while IFS= read -r p; do
     [[ -z "$p" ]] && continue
     [[ -n "${SEEN[$p]:-}" ]] && continue
-    if pf=$(resolve_parent "$p" "$cur_env"); then
+    if pf=$(resolve_parent "$p"); then
       SEEN[$p]=$pf
       queue+=("$p")
     else
-      echo "warn: parent spec '$p' not found under $SPECS_ROOT/{$cur_env,...}/specs/" >&2
+      echo "warn: parent spec '$p' not found in any spec file at the repo root" >&2
     fi
   done < <(jq -r --arg idx "$cur" '.proposal.specs[] | select(.index == $idx) | .imports[]?' "$cur_file")
 done
@@ -106,7 +101,7 @@ WANTED=$(
 
 # Transparency: print the resolved chain before the diff.
 {
-  echo "Resolved spec chain (specs_root=$SPECS_ROOT):"
+  echo "Resolved spec chain (by index content):"
   for idx in "${!SEEN[@]}"; do
     echo "  $idx <- ${SEEN[$idx]}"
   done

@@ -14,6 +14,8 @@ create-spec probes only FREE-TIER RPC nodes. A method unsupported on free-tier m
 - NEVER tell the fixer to set `enabled: false`.
 - Output is a watch-list note for the user + the Phase 8 probe, nothing more.
 
+Pipeline-wide rule (you enforce the advisory side of it): `enabled: false` is legal ONLY with positive evidence of absence — official docs explicitly stating unsupported/removed, or the chain's node-client implementation lacking the method — recorded with a URL in `docs/<chain>/DISABLED_JUSTIFICATIONS.md`. Probe errors of any kind never qualify.
+
 ## Algorithm
 
 1. Extract enabled methods:

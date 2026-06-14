@@ -229,7 +229,7 @@ This is a hard rule with two distinct reasons:
 - Move on. Treat the chain as if no prior spec exists in this repo.
 
 **What you MUST do** instead of reaching for git history:
-- Search the current working tree (`specs/mainnet-1/`, `specs/testnet-1/`, `specs/testnet-2/`) for sibling chains in the same ecosystem (e.g., `sui.json` for IOTA, `osmosis.json` for a new Cosmos chain).
+- Search the current working tree (the repo root, where all specs live flat as `<chain>.json`) for sibling chains in the same ecosystem (e.g., `sui.json` for IOTA, `osmosis.json` for a new Cosmos chain).
 - Read those sibling specs as templates. Recommend them via the standard Option B (import) or Option C (template) outputs.
 - Build from the chain's official documentation as the primary source of truth.
 

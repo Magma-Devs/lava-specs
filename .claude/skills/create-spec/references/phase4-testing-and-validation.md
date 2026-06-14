@@ -34,6 +34,7 @@ curl -X POST -H "Content-Type: application/json" \
    - [ ] Verify GET_BLOCKNUM returns current block number
    - [ ] Verify GET_BLOCK_BY_NUM returns block hash correctly
    - [ ] Verify GET_EARLIEST_BLOCK works for pruning detection
+   - [ ] Runtime confirmation: after the Phase 8 router boot, check `curl -s http://localhost:7779/metrics` — `lava_rpcsmartrouter_latest_block` > 0 proves the router parsed `GET_BLOCKNUM` through this spec (see smart-router-tester Step 3.5)
 
 4. **Test Verifications**:
    - [ ] Run chain-id verification against mainnet and testnet
@@ -79,27 +80,26 @@ curl -X POST -H "Content-Type: application/json" \
 ## Step 4.5: WebSocket / Subscription Testing
 **Objective**: Validate that subscription-based methods (`eth_subscribe`, `eth_unsubscribe`) work end-to-end over WebSocket — *not just over HTTP, where they correctly fail with -32601*.
 
-> ⚠️ **Provider config requirement, easy to miss.** If the spec inherits `eth_subscribe` from ETH1 (or otherwise enables it), the **provider's `node-urls` must include a `wss://` entry**, not just `https://`. Without it, the provider runs fine for regular HTTP requests, but subscriptions fail at the provider with:
+> ⚠️ **Router config requirement, easy to miss.** If the spec inherits `eth_subscribe` from ETH1 (or otherwise enables it), the **`direct-rpc` block's `node-urls` must include a `wss://` entry**, not just `https://`. Without it, the router serves regular HTTP requests fine, but subscriptions fail upstream with:
 >
 > ```
 > ERR no chain proxy supporting requested extensions and internal path
 >     extensions=websocket internalPath=
 > ```
 >
-> Lava auto-detects the protocol from the URL scheme — just add the wss URL alongside the https URL:
+> The protocol is auto-detected from the URL scheme — just add the wss URL alongside the https URL in the smart-router config:
 >
 > ```yaml
-> endpoints:
->   - api-interface: jsonrpc
+> direct-rpc:
+>   - name: <chain>-upstream-1
 >     chain-id: <CHAIN>
->     network-address:
->       address: 127.0.0.1:2220
+>     api-interface: jsonrpc
 >     node-urls:
 >       - url: https://<chain-rpc>
 >       - url: wss://<chain-rpc>     # required for eth_subscribe to reach upstream
 > ```
 
-**Tasks** (run against `ws://<consumer-host>/ws`):
+**Tasks** (run against `ws://localhost:3360`):
 - [ ] Open a WebSocket connection — verify the upgrade succeeds (`101 Switching Protocols`)
 - [ ] Send a regular request (`eth_chainId`) over WS — verify normal request/response works
 - [ ] Send `eth_subscribe` with a **valid subscription type** (e.g. `["newHeads"]`, `["logs", {...}]`) — Monad and most EVM chains reject `params:[]` with `Invalid params`. Common valid types per chain: `newHeads`, `logs`. Note: some chains (e.g. Monad) explicitly do NOT support `syncing` or `newPendingTransactions` channels.
@@ -107,6 +107,6 @@ curl -X POST -H "Content-Type: application/json" \
 - [ ] Send `eth_unsubscribe` with the returned subscription id — verify cleanup
 - [ ] Send a **disabled** method over WS (e.g. `eth_accounts` if disabled) — verify Lava's `api not supported` codepath fires the same as for HTTP
 
-If WS request/response works but subscriptions fail with `no chain proxy supporting ... websocket`, the spec is fine — fix the provider's `node-urls`.
+If WS request/response works but subscriptions fail with `no chain proxy supporting ... websocket`, the spec is fine — fix the router's `direct-rpc` `node-urls`.
 
 END-OF-PHASE4-SENTINEL

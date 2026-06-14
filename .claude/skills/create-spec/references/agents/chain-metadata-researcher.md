@@ -35,15 +35,20 @@ Consult official documentation in this order:
 1. **Chain's official developer documentation** (docs.chainname.io, devnet.chainname.io, etc.)
 2. **Chain's GitHub repositories** (reference implementations, protocol specs)
 3. **Official block explorers** (chain explorer, etc.)
+4. **`ethereum-lists/chains`** (github.com/ethereum-lists/chains) — EVM chains only; the version-controlled, canonical source for `chainId`/`networkId`/RPC that backs chainlist.org. Prefer it over chainlist's UI when they disagree.
+5. **L2Beat** (l2beat.com) — rollups / L2s only; **primary source for finality** (`block_distance_for_finalized_data`, finality type, DA model), which L2 docs often omit or state imprecisely.
 
 ### Step 2: Cross-Reference Sources
 
 For each metadata field, validate against at least 2 independent authoritative sources:
 
 - **Block explorers** (Etherscan for Ethereum, Mintscan for Cosmos, SolanaFM for Solana, etc.)
-- **Chain registries** (Cosmos Chain Registry for Cosmos SDK chains, chainlist.org for EVM chains)
+- **Chain registries** (Cosmos Chain Registry + Ping.pub / Keplr chain-registry for Cosmos SDK chains; chainlist.org / `ethereum-lists/chains` for EVM chains)
+- **Finality/block-time aggregators** (Chainspect — chainspect.app — for time-to-finality and block time when docs omit them; L2Beat for rollups)
 - **Data aggregators** (CoinGecko, DefiLlama, Messari) — use for verification only, not primary
 - **Community resources** (Lava docs, protocol documentation)
+
+> Source discipline: this list is **ranked**. Do not pull from arbitrary websites/blogs/SEO pages — they invite spurious "conflicts" against canonical sources. For the high-value fields (`average_block_time`, chain IDs, finality) a live RPC measurement or a canonical registry always beats a website. Add a source only when it fills a gap the ranked sources above leave open.
 
 ### Step 3: Flag Conflicts
 

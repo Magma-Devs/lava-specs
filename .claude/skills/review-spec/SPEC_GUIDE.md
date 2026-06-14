@@ -265,7 +265,7 @@ Excluded (deprecated): /addresses/{address}/txs, /assets/{asset}/txs
 **Objective**: Choose a unique spec identifier
 
 **Tasks**:
-- [ ] Review existing specs in `mainnet-1/specs/`, `testnet-1/specs/`, `testnet-2/specs/`
+- [ ] Review existing specs at the repo root (all specs live flat as `<chain>.json`)
 - [ ] Choose a unique, short index (3-10 characters, uppercase)
 - [ ] Follow naming conventions:
   - Mainnet: `CHAINNAME` (e.g., `ETH1`, `POLYGON`, `STRK`)
@@ -296,9 +296,9 @@ Testnet: MYCHAINT
    - Instant finality: 1 block
 
 3. **`blocks_in_finalization_proof`**
-   - Formula: `1000ms / average_block_time`
-   - Minimum: 1
-   - Examples: Ethereum=3 (1000/13000≈0.08→3), Polygon=3, StarkNet=3
+   - Finality-typed: `3` for probabilistic finality (PoW / slow PoS); `1` for fast/instant finality (BFT, Tendermint/Cosmos, instant-settlement L2s — base.json and optimism.json use 1)
+   - Fallback ONLY when the finality model can't be confidently classified: `max(ceil(1000ms / average_block_time), 3)`
+   - Examples: Ethereum=3, Polygon=3, StarkNet=3, Base/Optimism=1 — do not flag `1` on a fast-finality chain
 
 4. **`allowed_block_lag_for_qos_sync`**
    - Formula: `10000ms / average_block_time` AND >= 1
@@ -1458,7 +1458,7 @@ curl -X POST -H "Content-Type: application/json" \
 #### Step 5.1: Create Spec Documentation
 **Objective**: Provide comprehensive documentation for the spec
 
-**Create**: `specs/docs/[CHAINNAME]/SPEC_IMPLEMENTATION.md`
+**Create**: `docs/[CHAINNAME]/SPEC_IMPLEMENTATION.md`
 
 **Template**:
 ```markdown
@@ -1523,7 +1523,7 @@ curl -X POST -H "Content-Type: application/json" \
 #### Step 5.2: Create API Reference
 **Objective**: Document each API method in detail
 
-**Create**: `specs/docs/[CHAINNAME]/API_REFERENCE.md`
+**Create**: `docs/[CHAINNAME]/API_REFERENCE.md`
 
 **Template**:
 ```markdown
@@ -1574,7 +1574,7 @@ curl -X POST -H "Content-Type: application/json" \
 #### Step 5.3: Create Testing Guide
 **Objective**: Help others test and verify the spec
 
-**Create**: `specs/docs/[CHAINNAME]/TESTING_GUIDE.md`
+**Create**: `docs/[CHAINNAME]/TESTING_GUIDE.md`
 
 **Template**:
 ```markdown
@@ -1589,7 +1589,7 @@ curl -X POST -H "Content-Type: application/json" \
 
 ### 1. Validate Spec File
 ```bash
-jq . specs/mainnet-1/specs/chainname.json
+jq . chainname.json
 ```
 
 ### 2. Test Chain ID Verification
@@ -1625,7 +1625,7 @@ curl -X POST -H "Content-Type: application/json" \
 #### Step 5.4: Create Quick Start Guide
 **Objective**: Help providers get started quickly
 
-**Create**: `specs/docs/[CHAINNAME]/QUICK_START.md`
+**Create**: `docs/[CHAINNAME]/QUICK_START.md`
 
 **Template**:
 ```markdown
@@ -1698,21 +1698,16 @@ lavad tx pairing stake-provider \
 - Include both mainnet and testnet specs in one proposal
 - Testnet should inherit from mainnet (use `imports`)
 - Only override what's different in testnet (typically just verifications)
-- Deposit: 10,000 LAVA (10000000ulava) is standard
+- Deposit: `10000000ulava` (10,000 LAVA) is the mandated standard — flag any other value
 
 #### Step 6.2: Save Proposal Files
 **Objective**: Store proposal in correct locations
 
-**Save Locations**:
+**Save Location**:
 ```bash
-# For new specs being proposed
-specs/undeployed/chainname.json
-
-# After governance approval, move to:
-specs/mainnet-1/specs/chainname.json  # For mainnet deployment
-# or
-specs/testnet-1/specs/chainname.json  # For testnet only
-specs/testnet-2/specs/chainname.json  # For testnet-2 only
+# All specs live flat at the repo root, one file per chain. A single
+# <chain>.json holds both the mainnet and testnet entries under proposal.specs[].
+chainname.json
 ```
 
 #### Step 6.3: Create Proposal Description
@@ -1813,7 +1808,7 @@ See full test results: [link to testing documentation]
 - [ ] **Governance Prep**
   - [ ] Proposal JSON formatted correctly
   - [ ] Proposal description written
-  - [ ] Deposit amount confirmed (10,000 LAVA)
+  - [ ] Deposit amount confirmed (`10000000ulava`)
   - [ ] Community feedback gathered (if applicable)
 
 #### Step 7.2: Submit to GitHub
@@ -1830,7 +1825,7 @@ git checkout -b add-spec-chainname
 2. **Add your spec files**
 ```bash
 # Add spec proposal
-cp /path/to/chainname.json specs/undeployed/chainname.json
+cp /path/to/chainname.json chainname.json
 
 # Add documentation
 mkdir -p specs/docs/CHAINNAME
@@ -1842,7 +1837,7 @@ cp /path/to/docs/* specs/docs/CHAINNAME/
 
 3. **Commit changes**
 ```bash
-git add specs/undeployed/chainname.json
+git add chainname.json
 git add specs/docs/CHAINNAME/
 git commit -m "Add specification for [Chain Name]
 
@@ -1865,7 +1860,7 @@ git push origin add-spec-chainname
 This PR adds support for [Chain Name] to Lava Network.
 
 ## Changes
-- Added spec file: `specs/undeployed/chainname.json`
+- Added spec file: `chainname.json`
 - Added documentation in `specs/docs/CHAINNAME/`
 - Includes [X] APIs ([Y] standard, [Z] chain-specific)
 
@@ -1891,7 +1886,7 @@ This PR adds support for [Chain Name] to Lava Network.
 **Command**:
 ```bash
 lavad tx gov submit-legacy-proposal spec-add \
-  "specs/undeployed/chainname.json" \
+  "chainname.json" \
   -y \
   --from "YOUR_ACCOUNT_NAME" \
   --gas-adjustment "1.5" \
@@ -1924,12 +1919,9 @@ lavad query gov votes [PROPOSAL_ID] --chain-id "lava-mainnet-1"
 
 **Once Proposal Passes**:
 
-1. **Update File Locations**:
-```bash
-# Move from undeployed to mainnet-1
-git mv specs/undeployed/chainname.json specs/mainnet-1/specs/chainname.json
-git commit -m "Move [Chain Name] spec to mainnet-1 after governance approval"
-```
+1. **File Location**: this repo is flat — the spec already lives at the repo
+   root as `<index-lowercased>.json` (e.g. `katana.json`). There is no
+   undeployed/mainnet-1 directory move; nothing to relocate after approval.
 
 2. **Update Documentation**:
    - Add deployment date to docs
@@ -1997,7 +1989,7 @@ git commit -m "Move [Chain Name] spec to mainnet-1 after governance approval"
 #### Step 8.3: Versioning & Changelog
 **Maintain History**:
 
-**Create**: `specs/docs/[CHAINNAME]/CHANGELOG.md`
+**Create**: `docs/[CHAINNAME]/CHANGELOG.md`
 ```markdown
 # [CHAIN_NAME] Specification Changelog
 
@@ -2084,9 +2076,9 @@ git commit -m "Move [Chain Name] spec to mainnet-1 after governance approval"
 ### Internal Resources
 - **Spec Protobuf**: `proto/lavanet/lava/spec/spec.proto`
 - **ServiceApi Protobuf**: `proto/lavanet/lava/spec/service_api.proto`
-- **Existing Specs**: `specs/mainnet-1/specs/`
+- **Existing Specs**: ``
 - **CU Pricing Reference**: `ethereum.json` (ETH1), `tendermint.json` (TENDERMINT) — use for baseline alignment
-- **Example Documentation**: `specs/docs/KASPA/`, `specs/docs/STRK/`
+- **Example Documentation**: `docs/KASPA/`, `docs/STRK/`
 
 ### External Resources
 - **Lava Documentation**: https://docs.lavanet.xyz
@@ -2218,7 +2210,7 @@ git commit -m "Move [Chain Name] spec to mainnet-1 after governance approval"
 If you encounter issues or have questions:
 
 1. **Check existing specs** for similar chains
-2. **Review documentation** in `specs/docs/`
+2. **Review documentation** in `docs/`
 3. **Ask in Discord** - Lava community channel
 4. **Open GitHub issue** for spec-related questions
 5. **Consult Lava docs** at https://docs.lavanet.xyz

@@ -188,7 +188,7 @@ Follow the workflow with these overrides for autonomous eval mode:
 - Phase 5 (Inheritance audit): EXECUTE conditionally — only if mainnet draft's `imports` array is non-empty
 - Phase 6 (Completeness checklist): EXECUTE
 - Phase 7 (Write & jq validation): EXECUTE BUT override the output path (see below)
-- Phase 8 (Provider boot + probe): SKIP entirely — takes 5–15 minutes; not part of eval scoring
+- Phase 8 (Smart-router boot + probe): SKIP entirely — not part of eval scoring
 - Phase 9 (Parallel reviewers): SKIP
 - Phase 10 (Synthesize gaps + fix pass): SKIP
 - Phase 10b (Smoke regression): SKIP
@@ -197,13 +197,13 @@ Follow the workflow with these overrides for autonomous eval mode:
 
 OUTPUT PATH OVERRIDE: write the final spec JSON to
   /tmp/eval-spec/{iteration}/{chain_name}.json
-instead of `specs/testnet-2/specs/<chain>.json`.
+instead of the repo-root `<chain>.json`.
 
 Treat all "ask the user" / "STOP for user review" / "wait for user to challenge the table" instructions as no-ops — print the requested artifact (e.g. the calculations table, pre-write summary) to your own output for the audit trail, then proceed without waiting.
 
 After writing, run `jq . /tmp/eval-spec/{iteration}/{chain_name}.json > /dev/null` to confirm valid JSON. If it fails, fix and re-write until exit 0.
 
-Do NOT invoke /review-spec, /review-and-fix-spec, or any other skill. Do NOT touch git. Do NOT write to specs/testnet-2/specs/ or anywhere outside /tmp/eval-spec/.
+Do NOT invoke /review-spec, /review-and-fix-spec, or any other skill. Do NOT touch git. Do NOT write a spec to the repo root or anywhere outside /tmp/eval-spec/.
 ```
 
 For any agent that times out, write an empty placeholder so Step 3 can still process all 7:
@@ -376,8 +376,8 @@ One of:
 ## Out of scope
 
 - Editing `eval-lava-spec/` or any skill other than `create-spec/`
-- Running `/create-spec`'s Phase 8 provider boot during eval (too slow; not part of scoring)
+- Running `/create-spec`'s Phase 8 smart-router boot during eval (not part of scoring)
 - Any git operations (`git add`, `git commit`, `git push`) — user handles git manually
-- Writing to `specs/testnet-2/specs/` or anywhere outside `/tmp/eval-spec/` during generation
+- Writing a spec to the repo root or anywhere outside `/tmp/eval-spec/` during generation
 
 If the user asks for any of these, surface the limitation and confirm scope before continuing.

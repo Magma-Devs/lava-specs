@@ -29,28 +29,31 @@ LIST=$2
 [[ -r "$SPEC" ]] || { echo "cannot read spec: $SPEC" >&2; exit 1; }
 [[ -r "$LIST" ]] || { echo "cannot read directives file: $LIST" >&2; exit 1; }
 
-# Locate specs-root (ancestor containing mainnet-1/specs or testnet-2/specs).
-SEARCH=$(dirname "$SPEC")
-SPECS_ROOT=""
-while [[ "$SEARCH" != "/" ]]; do
-  if [[ -d "$SEARCH/mainnet-1/specs" || -d "$SEARCH/testnet-2/specs" ]]; then
-    SPECS_ROOT=$SEARCH; break
-  fi
-  SEARCH=$(dirname "$SEARCH")
-done
+# Resolve parent specs by CONTENT, not filename (same algorithm as
+# compare_spec_methods.sh). This repo is flat: every spec is a *.json at the
+# repo root, beside the candidate. Scan that directory and match imports to
+# whichever file declares the index (e.g. ETH1 lives in ethereum.json).
+declare -A INDEX_FILE
 
-resolve_parent() {
-  if [[ -z "$SPECS_ROOT" ]]; then
-    echo "warn: cannot resolve parent spec '$1' (no specs root found above candidate spec)" >&2
-    return 1
-  fi
-  local idx_lower
-  idx_lower=$(printf '%s' "$1" | tr '[:upper:]' '[:lower:]')
-  for d in testnet-2 mainnet-1; do
-    local f="$SPECS_ROOT/$d/specs/$idx_lower.json"
-    [[ -f "$f" ]] && { printf '%s\n' "$f"; return 0; }
+register_dir() {  # index every *.json in a directory into INDEX_FILE
+  local dir=$1 f idx
+  [[ -d "$dir" ]] || return 0
+  shopt -s nullglob
+  for f in "$dir"/*.json; do
+    while IFS= read -r idx; do
+      [[ -z "$idx" || -n "${INDEX_FILE[$idx]:-}" ]] && continue
+      INDEX_FILE[$idx]=$f
+    done < <(jq -r '.proposal.specs[]?.index // empty' "$f" 2>/dev/null)
   done
-  echo "warn: parent spec '$1' not found under $SPECS_ROOT/{testnet-2,mainnet-1}/specs/" >&2
+  shopt -u nullglob
+}
+
+register_dir "$(dirname "$SPEC")"
+
+resolve_parent() {  # $1 = index -> prints source file path, or fails
+  local f=${INDEX_FILE[$1]:-}
+  [[ -n "$f" ]] && { printf '%s\n' "$f"; return 0; }
+  echo "warn: parent spec '$1' not found in any spec file at the repo root" >&2
   return 1
 }
 
