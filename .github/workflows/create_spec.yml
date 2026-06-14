@@ -10,23 +10,13 @@
 #        gh api -X PUT /repos/<owner>/<repo>/actions/permissions/workflow \
 #          -f default_workflow_permissions=write -F can_approve_pull_request_reviews=true
 #   3. The create-spec skill must be present on `main`.
-#   4. GHCR access to the private smart-router image. Phase 8/10b pull
-#      `ghcr.io/magma-devs/smart-router:main`. How to authenticate depends on
-#      WHERE this repo lives:
-#        - Same org as the package (Magma-Devs/lava-specs): the built-in
-#          GITHUB_TOKEN works if the package is org-internal, OR (if private)
-#          after granting this repo read access: Magma-Devs/smart-router ->
-#          Packages -> smart-router -> Package settings -> "Manage Actions
-#          access" -> add this repository (Read). Leave GHCR_PAT unset.
-#        - Personal fork (e.g. you/lava-specs, a different owner): the built-in
-#          GITHUB_TOKEN CANNOT pull another org's package. Create a classic PAT
-#          with `read:packages` owned by a user who has read access to the
-#          smart-router package, and store it as the repo secret GHCR_PAT. The
-#          login step prefers GHCR_PAT when set.
+#   4. Secret GHCR_PAT — a consolidated classic PAT with repo + workflow +
+#      read:packages scopes. Used to open the PR (a GITHUB_TOKEN-opened PR does
+#      NOT fire pull_request events, which spec_pipeline.yml needs). Also used
+#      by spec_pipeline.yml to pull the private smart-router from GHCR.
 #
-# The PR is opened with the automatic GITHUB_TOKEN (author: github-actions[bot]).
-# NOTE: GitHub does not auto-run pull_request CI for a GITHUB_TOKEN-opened PR;
-# push a commit or close/reopen the PR to trigger checks.
+# The PR is opened with GHCR_PAT so that pull_request events fire and
+# spec_pipeline.yml (boot/probe/review phases) triggers automatically.
 #
 # Manual trigger: Actions tab -> "Create Spec" -> Run workflow.
 name: "Create Spec"
@@ -60,7 +50,6 @@ on:
 permissions:
   contents: write
   pull-requests: write
-  packages: read   # pull the private smart-router image from GHCR (Phase 8/10b)
 
 # Per-chain: serialize only runs for the SAME chain (they race on the same
 # branch/PR). Different chains run in parallel — each run gets its own VM, so the
@@ -113,86 +102,11 @@ jobs:
           git push -u origin "$name"
 
       # Node 22 guarantees a global `WebSocket` so the agent can probe ws/
-      # subscription chains (eth_subscribe) through the smart-router without npm installs.
+      # subscription chains (eth_subscribe) without npm installs.
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-
-      # Phase 8/10b no longer build any lava binaries: they boot the spec inside
-      # the dockerized smart-router (ghcr.io/magma-devs/smart-router:main) and
-      # probe every method through it. ubuntu-latest ships Docker preinstalled
-      # and running, and this job runs on the host (not in a `container:`), so
-      # the agent can `docker run` directly — NO docker-in-docker service needed.
-      # We only install the probe tooling the agent uses against localhost:3360:
-      #   preinstalled on ubuntu-latest: curl, awk, sed, timeout, tee, python3,
-      #     node (Node 22 pinned above for WebSocket), docker;
-      #   installed below: jq (robust to runner-image changes), grpcurl (gRPC-
-      #     interface probes — fetched as a release binary, no Go toolchain).
-      - name: Install probe tools (for create-spec Phase 8/10b)
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y jq
-          GRPCURL_VERSION=1.9.1
-          curl -fsSL "https://github.com/fullstorydev/grpcurl/releases/download/v${GRPCURL_VERSION}/grpcurl_${GRPCURL_VERSION}_linux_x86_64.tar.gz" \
-            | sudo tar -xz -C /usr/local/bin grpcurl
-          grpcurl --version || true
-
-      # Log in to GHCR so the agent's `docker pull` of the private smart-router
-      # image succeeds. Credentials land in the runner user's docker config,
-      # which the claude-code-action step (same user, same host) reuses.
-      # Personal fork: set a GHCR_PAT secret (classic PAT with read:packages,
-      # owned by a user with read access to Magma-Devs/smart-router) — the
-      # built-in GITHUB_TOKEN cannot pull a package owned by another org.
-      # Same org: leave GHCR_PAT unset; GITHUB_TOKEN is used (the `||` fallback).
-      - name: Log into GHCR (for the smart-router image)
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_PAT || secrets.GITHUB_TOKEN }}
-
-      # Fail fast: pull (and sanity-probe) the smart-router image right after
-      # login, so a GHCR access/auth misconfig surfaces in seconds instead of
-      # ~1.5h into the agent run when Phase 8 first reaches for it. The full
-      # boot + method probe is exercised by Phase 8 itself; here we only confirm
-      # the image pulls and runs. The pull also warms the local docker cache, so
-      # the agent's later `docker image inspect`/pull is a credential-free hit.
-      - name: Pull + probe smart-router image (pre-flight)
-        env:
-          # Boolean only — never the secret value. false ⇒ GITHUB_TOKEN fallback.
-          HAS_PAT: ${{ secrets.GHCR_PAT != '' }}
-        run: |
-          set -euo pipefail
-          IMAGE=ghcr.io/magma-devs/smart-router:main
-          echo "Auth source: GHCR_PAT present = ${HAS_PAT}  (false ⇒ logged in with GITHUB_TOKEN)"
-          echo "Pulling $IMAGE ..."
-          if ! docker pull "$IMAGE"; then
-            echo "::error::Pull DENIED — the credential used has no read access to ${IMAGE}."
-            if [ "${HAS_PAT}" != "true" ]; then
-              echo "::error::GHCR_PAT secret is NOT set; the built-in GITHUB_TOKEN was used. A personal fork's GITHUB_TOKEN cannot pull another org's private package. Add a repo secret GHCR_PAT = classic PAT with read:packages, SSO-authorized for Magma-Devs."
-            else
-              echo "::error::GHCR_PAT IS set but pull was still denied. Verify it is a CLASSIC PAT with read:packages, SSO-authorized for Magma-Devs, owned by an account with read access to the smart-router package."
-            fi
-            exit 1
-          fi
-          docker image inspect "$IMAGE" --format 'Pulled OK: {{index .RepoDigests 0}}'
-          # Probe that the image actually executes (no config/specs/network
-          # needed). Run with no args + a short timeout: the entrypoint prints
-          # its startup banner ("Process Started" / "Running Smart Router")
-          # BEFORE it needs a config, then exits — that's expected. We only hard
-          # fail on a genuine container-exec failure (arch mismatch / missing
-          # binary), which Docker reports as "exec format error".
-          echo "Probing image entrypoint ..."
-          out="$(timeout 15 docker run --rm "$IMAGE" 2>&1 || true)"
-          echo "$out" | head -20
-          if echo "$out" | grep -qiE "exec format error|cannot execute binary"; then
-            echo "::error::smart-router image failed to execute — arch/binary problem (see output above)"; exit 1
-          elif echo "$out" | grep -qiE "Process Started|Running Smart Router|RPCSmartRouter"; then
-            echo "Image runs (entrypoint started)."
-          else
-            echo "::warning::Image pulled and ran without an exec error, but the startup banner was not seen — continuing (Phase 8 will do the full boot)."
-          fi
 
       - name: Run create-spec
         id: run
@@ -231,7 +145,11 @@ jobs:
             - Additional data (docs URLs, node URLs, inheritance hints): ${{ github.event.inputs.additional_data }}
 
             Execution rules for this unattended CI run:
-            - Run the FULL 12-phase pipeline, INCLUDING the Phase 8 smart-router boot and the Phase 10b re-probe.
+            - Run ONLY Phases 1 through 7 (research → network params → synthesis →
+              static validation → write <chain>.json → jq validation). STOP after
+              Phase 7 produces a jq-valid <chain>.json. Do NOT run Phase 8 or later
+              — the spec_pipeline.yml workflow runs the boot/probe/review phases
+              after the PR opens. Skip the Phase 9/11 reviewer tables in pr_body.md.
             - There is NO human available. At EVERY STOP-and-ask gate (archive
               extension include/omit, block-time disagreement >20%, existing-file
               prompt, archive NEEDS_HUMAN_DECISION), DO NOT stop — auto-decide with
@@ -323,6 +241,11 @@ jobs:
             ### Sources used
             - **Docs:** <doc URLs cited>
             - **RPC nodes:** <mainnet + testnet node URLs probed>
+            <!-- ENDPOINTS — machine-readable; spec_pipeline.yml resolve_endpoints.sh parses this. -->
+            <!-- ENDPOINTS
+            mainnet: <comma-separated mainnet RPC URLs you probed, no spaces inside a URL>
+            testnet: <comma-separated testnet RPC URLs, or leave blank if none>
+            -->
             - **Upstream parent spec:** <parent spec imported, if any>
 
             ### Calculations table
@@ -407,7 +330,10 @@ jobs:
 
       - name: Open pull request
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # PAT (not GITHUB_TOKEN): a GITHUB_TOKEN-opened PR does NOT fire
+          # pull_request events, which spec_pipeline.yml needs. One consolidated
+          # classic PAT (repo + workflow + read:packages) is stored as GHCR_PAT.
+          GH_TOKEN: ${{ secrets.GHCR_PAT }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           CHAIN: ${{ github.event.inputs.chain_name }}
         run: |
