@@ -32,4 +32,12 @@ echo "no endpoints here" > "$TMP/empty.md"
 out="$(COMMENT_MAINNET="" COMMENT_TESTNET="" PR_BODY_FILE="$TMP/empty.md" bash "$SCRIPT")"
 check "self_research source" "ENDPOINT_SOURCE=self_research"   "$out"
 
+# 4. CRLF PR body (GitHub API delivers \r\n) -> no carriage return in the URL
+printf '## chain\r\n<!-- ENDPOINTS\r\nmainnet: https://crlf-main/rpc\r\ntestnet: https://crlf-test/rpc\r\n-->\r\nbody\r\n' > "$TMP/crlf.md"
+out="$(COMMENT_MAINNET="" COMMENT_TESTNET="" PR_BODY_FILE="$TMP/crlf.md" bash "$SCRIPT")"
+check "crlf mainnet clean" "MAINNET_URLS=https://crlf-main/rpc" "$out"
+check "crlf testnet clean" "TESTNET_URLS=https://crlf-test/rpc" "$out"
+# the resolved line must not contain a carriage return
+if printf '%s' "$out" | grep -q $'\r'; then echo "FAIL - carriage return leaked"; fail=1; else echo "ok   - no carriage return leaked"; fi
+
 exit $fail

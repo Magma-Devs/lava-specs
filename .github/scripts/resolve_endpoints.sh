@@ -14,8 +14,8 @@ if [ -z "$mainnet" ] && [ -z "$testnet" ]; then
   source_label="pr_body"
   if [ -n "${PR_BODY_FILE:-}" ] && [ -f "$PR_BODY_FILE" ]; then
     block="$(awk '/<!-- ENDPOINTS/{f=1;next} /-->/{f=0} f' "$PR_BODY_FILE")"
-    mainnet="$(printf '%s\n' "$block" | sed -nE 's/^mainnet:[[:space:]]*//p' | tr -d ' ')"
-    testnet="$(printf '%s\n' "$block" | sed -nE 's/^testnet:[[:space:]]*//p' | tr -d ' ')"
+    mainnet="$(printf '%s\n' "$block" | sed -nE 's/^mainnet:[[:space:]]*//p' | head -1 | tr -d ' \r')"
+    testnet="$(printf '%s\n' "$block" | sed -nE 's/^testnet:[[:space:]]*//p' | head -1 | tr -d ' \r')"
   fi
 fi
 
