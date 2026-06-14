@@ -43,6 +43,20 @@ To read a reference file fully:
 3. The final chunk MUST contain the sentinel. If you have not seen it, you have not finished — continue reading from a higher offset.
 4. Do NOT begin the next phase until you have observed the sentinel.
 
+## Resumable entry points (CI pipeline only)
+
+When invoked by `spec_pipeline.yml`, the orchestrator prompt may say **"Start at
+Phase N"** (N ∈ {8,9,10,11}) with a `PR_NUMBER` and pre-resolved endpoint lists. In
+that mode you SKIP Phases 1-7 and reconstruct context from the committed
+`<chain>.json` + prior PR comments. Read the full contract before doing anything else:
+
+- `.claude/skills/create-spec/references/phase-entrypoints.md` (observe `END-OF-PHASE-ENTRYPOINTS-SENTINEL`)
+
+The full-read sentinel enforcement below applies only to the reference files for the
+phases you will actually run (Phase N..end); you need not observe sentinels for the
+skipped earlier phases. A normal interactive run (no "Start at Phase N") is unaffected
+and runs Phases 1-12 linearly as documented.
+
 ## Phase 1 — Pre-flight
 
 **First action of the run — record the start time** so Phase 12 can report wall-clock elapsed and scope the token tally to this run only:
