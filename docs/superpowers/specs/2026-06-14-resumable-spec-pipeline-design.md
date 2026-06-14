@@ -51,14 +51,25 @@ Manual dispatch → parallel research → network params → synthesis → jq va
 commit draft spec → **open PR**. Then it stops. `pr_body.md` already records the
 probed `RPC nodes:` URLs, which Phase 8 reads as its default endpoint set.
 
-**Change:** the PR is opened with a **PAT** (new repo secret `PR_PAT`; fine-grained
-*contents: write* + *pull-requests: write*, or classic `repo` + `workflow`) instead
-of `GITHUB_TOKEN`. Rationale: GitHub deliberately does **not** fire `pull_request`
-events for a PR opened by `GITHUB_TOKEN` (recursion guard — the current workflow
-header documents this). A PAT-opened PR fires `pull_request: opened` naturally, so
-the pipeline can trigger on the PR event with no explicit `gh workflow run`
-plumbing, and future PR-event automation (reviewers, gating checks) is unlocked.
-PR author becomes the PAT's user rather than `github-actions[bot]`.
+**Change:** the PR is opened with a **PAT** instead of `GITHUB_TOKEN`. Rationale:
+GitHub deliberately does **not** fire `pull_request` events for a PR opened by
+`GITHUB_TOKEN` (recursion guard — the current workflow header documents this). A
+PAT-opened PR fires `pull_request: opened` naturally, so the pipeline can trigger
+on the PR event with no explicit `gh workflow run` plumbing, and future PR-event
+automation (reviewers, gating checks) is unlocked. PR author becomes the PAT's
+user rather than `github-actions[bot]`.
+
+**Single consolidated PAT.** Rather than a second secret, reuse **one** PAT for
+both jobs it needs to do — open the PR *and* pull the private GHCR image. A
+**classic** PAT with scopes `repo` + `workflow` + `read:packages` covers all of it
+(classic is preferred over fine-grained, which is fussy for GHCR org packages).
+The existing `GHCR_PAT` secret is widened to this scope and reused for PR creation;
+keeping the name avoids re-creating the secret (it is simply used in more steps
+now). **Consequence:** the PAT becomes *required in every setup*, not just personal
+forks — today `GHCR_PAT` is optional and same-org runs fall back to `GITHUB_TOKEN`
+for GHCR; now it must always be present, because every run needs the PAT-opened PR
+so `pull_request` events fire. The GHCR login's `${{ secrets.GHCR_PAT ||
+secrets.GITHUB_TOKEN }}` fallback can stay or be simplified to the PAT directly.
 
 ### 2. `spec_pipeline.yml` — Phases 8 → 9 → 10 → 11 → summary
 **Triggers:**
@@ -147,8 +158,10 @@ PR thread and approves/merges via normal GitHub review. No auto-merge.
 ## Carried-over constraints (from prior CI runs)
 
 - **GHCR auth:** Phase 8/10b pull the private `ghcr.io/magma-devs/smart-router:main`.
-  Same-org repo uses `GITHUB_TOKEN`; a personal fork needs `GHCR_PAT` (classic PAT,
-  `read:packages`). Unchanged by this design.
+  Now folded into the single consolidated PAT above (`GHCR_PAT`, widened to `repo`
+  + `workflow` + `read:packages`), which is required in all setups — the old
+  "same-org falls back to `GITHUB_TOKEN`, optional `GHCR_PAT`" arrangement no
+  longer applies.
 - **Subscriptions require a ws upstream** (see WebSocket handling above).
 - **Concurrency:** keep the per-chain concurrency group so re-runs for the same
   chain serialize on the shared branch/PR.
