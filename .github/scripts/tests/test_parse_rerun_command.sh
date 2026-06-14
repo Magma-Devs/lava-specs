@@ -40,11 +40,12 @@ out="$(bash "$SCRIPT" "thanks, looks good")"; code=$?
 check "non-command -> false" "IS_COMMAND=false" "$out"
 expect_exit "non-command -> exit 0" 0 "$code"
 
-# 6. command aliases map to phases
+# 6. named commands map to a single phase (START==END)
 for pair in "rerun-review 9" "rerun-fix 10" "rerun-final 11"; do
   set -- $pair
   out="$(bash "$SCRIPT" "/$1")"
-  check "/$1 -> phase $2" "START_PHASE=$2" "$out"
+  check "/$1 -> start phase $2" "START_PHASE=$2" "$out"
+  check "/$1 -> end phase $2 (single)" "END_PHASE=$2" "$out"
 done
 
 # 7. /rerun-from with explicit phase, and a bad phase
@@ -64,5 +65,15 @@ check "glob not expanded" "HINTS=look at * and ?" "$out"
 # 10. testnet use=SECRET resolves symmetrically to mainnet
 out="$(ALLOWED_SECRETS="PAID_RPC_2" PAID_RPC_2="https://paid-t/rpc" bash "$SCRIPT" "/rerun-probe testnet=use=PAID_RPC_2")"
 check "testnet secret resolved" "TESTNET_URLS=https://paid-t/rpc" "$out"
+
+# 11. single-phase commands run EXACTLY one phase
+out="$(bash "$SCRIPT" "/rerun-probe")"
+check "probe -> start 8" "START_PHASE=8" "$out"
+check "probe -> end 8 (single phase)" "END_PHASE=8" "$out"
+
+# 12. /rerun-from runs from N to the END of the pipeline (END=12)
+out="$(bash "$SCRIPT" "/rerun-from 9")"
+check "from 9 -> start 9"  "START_PHASE=9"  "$out"
+check "from 9 -> end 12"   "END_PHASE=12"   "$out"
 
 exit $fail
