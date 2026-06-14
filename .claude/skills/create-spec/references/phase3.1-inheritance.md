@@ -252,10 +252,10 @@ Concrete procedure:
 ```bash
 # 1. List parent collection methods (per add_on)
 jq -r '.proposal.specs[0].api_collections[] | select(.collection_data.add_on == "") | .apis[].name' \
-    specs/mainnet-1/specs/<parent>.json | sort > /tmp/parent_main.txt
+    <parent>.json | sort > /tmp/parent_main.txt
 
 jq -r '.proposal.specs[0].api_collections[] | select(.collection_data.add_on == "debug") | .apis[].name' \
-    specs/mainnet-1/specs/<parent>.json | sort > /tmp/parent_debug.txt
+    <parent>.json | sort > /tmp/parent_debug.txt
 
 # 2. From the chain's official JSON-RPC docs, write the supported method list to a file:
 #    /tmp/chain_supported.txt  (one method per line, sorted)

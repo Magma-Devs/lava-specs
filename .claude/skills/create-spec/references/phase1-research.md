@@ -94,7 +94,7 @@ Excluded (deprecated): /addresses/{address}/txs, /assets/{asset}/txs
 **Objective**: Choose a unique spec identifier
 
 **Tasks**:
-- [ ] Review existing specs in `mainnet-1/specs/`, `testnet-1/specs/`, `testnet-2/specs/`
+- [ ] Review existing specs (the `*.json` files at the repo root — this repo is flat)
 - [ ] Choose a unique, short index (3-10 characters, uppercase)
 - [ ] Follow naming conventions:
   - Mainnet: `CHAINNAME` (e.g., `ETH1`, `POLYGON`, `STRK`)

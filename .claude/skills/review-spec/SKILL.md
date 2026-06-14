@@ -21,10 +21,10 @@ To guarantee you read the whole file (it may exceed the Read tool's default limi
 Do NOT begin Phase 1 until you have observed the sentinel.
 
 If the chain already has documentation or a previous review, check:
-- **Chain docs**: `specs/docs/<CHAIN_NAME>/`
+- **Chain docs**: `docs/<CHAIN_NAME>/`
 
 For existing spec patterns, reference:
-- **Existing specs**: `specs/mainnet-1/specs/`, `specs/testnet-2/specs/`
+- **Existing specs**: the repo root, where all specs live flat as `<chain>.json`
 
 ## Arguments
 
@@ -49,7 +49,7 @@ Verify these values against the chain's actual characteristics. Read the spec gu
 |-----------|---------------|
 | `average_block_time` | Measure on live network (milliseconds) |
 | `block_distance_for_finalized_data` | Based on consensus: PoW=6-12, BFT=1-3, instant=1 |
-| `blocks_in_finalization_proof` | `1000ms / average_block_time`, minimum 3 |
+| `blocks_in_finalization_proof` | Finality-typed: `3` for probabilistic finality (PoW / slow PoS); `1` for fast/instant finality (BFT, Tendermint/Cosmos, instant-settlement L2s — e.g. base.json, optimism.json use 1); fallback ONLY when the finality model is unclear: `max(ceil(1000ms / average_block_time), 3)`. Do not flag a spec for using `1` when its finality model is fast/instant. |
 | `allowed_block_lag_for_qos_sync` | `10000ms / average_block_time`, minimum 1 |
 | `reliability_threshold` | Standard: `268435455` (1/16 VRF ratio) |
 | `data_reliability_enabled` | `true` for production chains |
@@ -156,7 +156,7 @@ Produce a gap report in markdown with:
 - **Evidence**: cite specific line numbers from the spec, API docs, and spec guide
 - **Impact**: explain what breaks or degrades if the gap is not fixed
 
-Save the report to `specs/docs/<CHAIN_NAME>/SPEC_REVIEW_GAPS.md`.
+Save the report to `docs/<CHAIN_NAME>/SPEC_REVIEW_GAPS.md`.
 
 After the report, summarize:
 - Total number of endpoints reviewed

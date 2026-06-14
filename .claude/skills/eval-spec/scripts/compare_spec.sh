@@ -6,8 +6,8 @@
 #   scripts/compare_spec.sh <candidate.json> <gold.json> [SPEC_INDEX]
 #
 # Examples:
-#   scripts/compare_spec.sh specs/testnet-2/specs/iota.json /tmp/iota.gold.json
-#   scripts/compare_spec.sh specs/testnet-2/specs/xrp.json /tmp/ripple.gold.json XRP
+#   scripts/compare_spec.sh iota.json /tmp/iota.gold.json
+#   scripts/compare_spec.sh ripple.json /tmp/ripple.gold.json XRP
 #
 # If SPEC_INDEX is omitted, the script uses the first spec entry from the gold.
 #

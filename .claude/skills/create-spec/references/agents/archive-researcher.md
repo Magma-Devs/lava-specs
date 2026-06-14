@@ -192,14 +192,14 @@ Combine Layers 1 + 2 into concrete spec values:
 
 - **rule.block** and **pruning.latest_distance** — integers, both derived from the documented retention window expressed in BLOCKS. There is no lookup table — compute the window directly:
 
-  1. Normalize `documented_retention` to a block count `retention_blocks`:
-     - retention already in blocks (e.g. "1024 blocks") → use it directly.
-     - retention in time (e.g. "~2 h", "7 days") → `retention_blocks = retention_seconds ÷ average_block_time` (use `average_block_time` from chain-metadata-researcher).
-     - retention unknown / undocumented → set `retention_blocks = unknown`.
-  2. Set both `rule.block = retention_blocks` and `pruning.latest_distance = retention_blocks`.
-  3. When `retention_blocks = unknown`, fall back to the conservative default `1000` for both fields AND flag it explicitly in the reason ("retention undocumented — conservative default 1000").
+  1. Normalize to a block count `retention_blocks`, walking this hierarchy and stopping at the first level that yields a value:
+     - **Documented retention in blocks** (e.g. "1024 blocks") → use it directly.
+     - **Documented retention in time** (e.g. "~2 h", "7 days") → `retention_blocks = retention_seconds ÷ average_block_time` (use `average_block_time` from chain-metadata-researcher).
+     - **Reference-node-client default** — you already mined the client's pruning flags + defaults in Layer 1 (repo README, `--help`, config samples). Use the client's default pruned-state retention: e.g. geth-family clients (geth, op-geth, bor, avalanchego) retain ~128 recent states → `retention_blocks = 128` (matches the ETH1/Avalanche-C sibling-spec convention of 127/128). Cite the flag name + source URL. This level applies whenever you identified WHICH client the chain runs, even if the chain's own docs say nothing about retention — almost no chain documents retention directly, but the client always defines it.
+     - **Time-based fallback (last resort)** — keep ~1 hour of blocks: `retention_blocks = ceil(3,600,000 ms ÷ average_block_time)`. Flag it explicitly in the reason ("retention undocumented, client default unknown — 1h fallback = <n> blocks").
+  2. Set both `rule.block = retention_blocks` and `pruning.latest_distance = retention_blocks`, and record WHICH hierarchy level produced the value (`documented-blocks` | `documented-time` | `client-default` | `1h-fallback`).
 
-  Worked example: a chain with ~2 h retention and 8 s blocks → `retention_blocks ≈ 7200 ÷ 8 = 900`, so `rule.block = 900`. (The old table would have emitted 100000 here — ~111× too large.)
+  Worked example: a chain with ~2 h retention and 8 s blocks → `retention_blocks ≈ 7200 ÷ 8 = 900`, so `rule.block = 900`. (The old table would have emitted 100000 here — ~111× too large.) Worked example 2: retention undocumented, but the chain runs op-geth → `retention_blocks = 128` (client-default), NOT the 1h fallback.
 
 - **pruning verification expected_value** — Always emit `*` for chains today. No chain currently exposes a stable queryable pruning marker in its status/health RPC. If you believe you have found one, do NOT emit a concrete value — instead set `status: NEEDS_HUMAN_DECISION` and document your finding in the Conflicts section so the orchestrator + user can decide.
 
@@ -238,9 +238,9 @@ Return EXACTLY this structure, with `<placeholders>` filled in. No leading or tr
 ## Recommendation
 - has_archive (mainnet): yes|no|chain-discretion — <reason>
 - has_archive (testnet): yes|no|chain-discretion — <reason>
-- retention_blocks: <int or "unknown"> — <how derived: blocks direct | seconds÷block_time | unknown>
-- rule.block: <int> — = retention_blocks (or conservative 1000 if unknown)
-- pruning.latest_distance: <int> — = retention_blocks (or conservative 1000 if unknown)
+- retention_blocks: <int> — <derivation level: documented-blocks | documented-time | client-default | 1h-fallback>
+- rule.block: <int> — = retention_blocks
+- pruning.latest_distance: <int> — = retention_blocks
 - pruning expected_value: <value or "*"> — <reason>
 
 ## Conflicts
