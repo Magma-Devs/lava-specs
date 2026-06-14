@@ -97,6 +97,49 @@ jobs:
           # Export each parsed key as a step output.
           while IFS='=' read -r k v; do echo "$k=$v" >> "$GITHUB_OUTPUT"; done < /tmp/cmd.env
 
+      # Fail fast (seconds) if BOT_PAT cannot post PR comments — otherwise the
+      # misconfig only surfaces deep inside the ~hour-long agent run when it tries
+      # `gh pr comment`. The head==base==main POST is the same authoritative probe
+      # used by create_spec.yml: 403 ⇒ no Pull-requests:write; 422 ⇒ authorized
+      # (same-branch request is rejected at validation, so no PR is created).
+      - name: Pre-flight — verify BOT_PAT can comment on PRs
+        if: steps.cmd.outputs.IS_COMMAND == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.BOT_PAT }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          if [ -z "${GH_TOKEN:-}" ]; then
+            echo "::error::BOT_PAT secret is empty/unset."; exit 1
+          fi
+          if ! login="$(gh api user --jq .login 2>/dev/null)"; then
+            echo "::error::BOT_PAT failed to authenticate (gh api user) — token invalid or expired."; exit 1
+          fi
+          echo "BOT_PAT authenticates as: $login"
+          # Classic-token scope hint: this workflow pulls the GHCR image, so warn
+          # if read:packages is absent (fine-grained PATs report no scopes here).
+          scopes="$(curl -sS -o /dev/null -D - -H "Authorization: token $GH_TOKEN" https://api.github.com/user \
+            | tr -d '\r' | awk -F': ' 'tolower($1)=="x-oauth-scopes"{print $2}')"
+          norm=",$(printf '%s' "$scopes" | tr -d ' '),"
+          if [ -n "$scopes" ]; then
+            case "$norm" in *",read:packages,"*) : ;; *) echo "::warning::BOT_PAT (classic) missing 'read:packages' — the GHCR pull of the smart-router image (Phase 8) will fail." ;; esac
+          fi
+          # Authoritative Pull-requests:write probe (covers gh pr comment too).
+          code="$(curl -sS -o /tmp/pr_probe.json -w '%{http_code}' -X POST \
+            -H "Authorization: token $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/$REPO/pulls" \
+            -d '{"title":"[preflight] BOT_PAT permission probe - ignore","head":"main","base":"main"}' || echo "000")"
+          echo "PR-permission probe HTTP status: $code"
+          case "$code" in
+            422) echo "OK: BOT_PAT has Pull-requests:write — it can post phase comments." ;;
+            403) echo "::error::BOT_PAT lacks Pull-requests:write — it cannot post phase comments. Fine-grained PAT: grant 'Pull requests: Read and write' for $REPO. Classic PAT: add the 'repo' scope."; head -c 400 /tmp/pr_probe.json; echo; exit 1 ;;
+            404) echo "::error::BOT_PAT cannot access $REPO (404) — token lacks repo access or metadata permission."; exit 1 ;;
+            201) echo "::warning::Probe unexpectedly opened a PR (201) for head==base — unusual; check for and close a stray PR." ;;
+            *)   echo "::warning::PR-permission probe returned unexpected status $code; continuing. Body:"; head -c 400 /tmp/pr_probe.json; echo ;;
+          esac
+          echo "Pre-flight OK."
+
       - name: Resolve endpoints
         id: endpoints
         if: steps.cmd.outputs.IS_COMMAND == 'true'
