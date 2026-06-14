@@ -79,10 +79,10 @@ jobs:
         run: |
           set -euo pipefail
           if [ "${{ github.event_name }}" = "pull_request" ]; then
-            # Auto-start on PR open: run the WHOLE pipeline (Phase 8 -> 12), no
+            # Auto-start on PR open: run the WHOLE pipeline (Phase 8 -> 11), no
             # endpoint override.
             {
-              echo "IS_COMMAND=true"; echo "START_PHASE=8"; echo "END_PHASE=12"
+              echo "IS_COMMAND=true"; echo "START_PHASE=8"; echo "END_PHASE=11"
               echo "MAINNET_URLS="; echo "TESTNET_URLS="; echo "HINTS="
             } > /tmp/cmd.env
           else
@@ -240,11 +240,12 @@ jobs:
             the committed <chain>.json on this branch and the existing PR comments,
             exactly as references/phase-entrypoints.md specifies (read it fully first).
 
-            Phase numbering for the run span: 8 = smart-router boot + probe,
+            Phase numbering for the run span (8 → 11): 8 = smart-router boot + probe,
             9 = parallel reviewers, 10 = synthesize gaps + fix (+10b smoke re-probe),
-            11 = final reviewer verdict, 12 = summary checklist. When START==END you
-            run EXACTLY that one phase and post only its comment (no summary unless
-            END is 12).
+            11 = final reviewer verdict AND the closing Phase-12 summary checklist
+            (the summary is the tail of Phase 11 here — there is no separate Phase 12
+            in the run span). When START==END you run EXACTLY that one phase and post
+            only its comment(s).
 
             Context:
             - PR_NUMBER: ${{ steps.pr.outputs.number }}
@@ -270,8 +271,9 @@ jobs:
               CHANGES REQUESTED to APPROVED).
             - Do NOT perform any git commit/push for the spec content other than what
               the phases already do; the branch is already checked out.
-            - Only when Phase 12 is within the run span, end by posting the Phase 12
-              summary checklist as a final PR comment.
+            - Only when the run span reaches Phase 11, after the verdict comment also
+              post the closing Phase-12 summary checklist as a final PR comment. If
+              the span ends before Phase 11, do NOT post a summary.
 
       - name: Report failure to PR
         if: failure() && steps.cmd.outputs.IS_COMMAND == 'true'

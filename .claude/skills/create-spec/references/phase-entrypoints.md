@@ -7,10 +7,12 @@ reconstruct context from committed state and run Phase N → end.
 
 ## Inputs the workflow passes in the prompt
 
-- `START_PHASE` / `END_PHASE` — the run span (inclusive). Run Phase `START_PHASE`
-  through `END_PHASE` and then STOP — do NOT run any phase past `END_PHASE`. A
-  single-phase command has `START_PHASE == END_PHASE` (run exactly that one phase);
-  `/rerun-from N` and the PR-open auto-start have `END_PHASE = 12` (run to the end).
+- `START_PHASE` / `END_PHASE` — the run span (inclusive), within 8–11. Run Phase
+  `START_PHASE` through `END_PHASE` and then STOP — do NOT run any phase past
+  `END_PHASE`. A single-phase command has `START_PHASE == END_PHASE` (run exactly
+  that one phase); `/rerun-from N` and the PR-open auto-start have `END_PHASE = 11`
+  (run to the end). Phase 11 also emits the closing Phase-12 summary checklist —
+  there is no separate Phase 12 in the span.
 - `PR_NUMBER` — the open PR for this chain; the spec is the committed `<chain>.json`
   on the checked-out branch.
 - `MAINNET_URLS`, `TESTNET_URLS` — comma-separated endpoint lists already resolved
@@ -64,15 +66,15 @@ recognises. Inventing one (e.g. `/rerun-phase8`) silently no-ops — the job run
 the parser returns `IS_COMMAND=false`, and every downstream step skips.
 
 The **named** commands re-run EXACTLY their one phase (`START==END`). Only
-`/rerun-from N` runs from phase N through the end (`END=12`).
+`/rerun-from N` runs from phase N through the end of the span (`END=11`).
 
 | Command | Runs | Optional args |
 |---|---|---|
 | `/rerun-probe` | Phase 8 only (boot + probe) | `mainnet=<url\|use=SECRET>[,…] testnet=<url\|use=SECRET>[,…]` + free-text hints |
 | `/rerun-review` | Phase 9 only (reviewers) | — |
 | `/rerun-fix` | Phase 10 only (fix + 10b) | — |
-| `/rerun-final` | Phase 11 only (final review) | — |
-| `/rerun-from <8\|9\|10\|11>` | that phase → Phase 12 (to the end) | as for the matching command |
+| `/rerun-final` | Phase 11 only (final review + summary) | — |
+| `/rerun-from <8\|9\|10\|11>` | that phase → Phase 11 (to the end) | as for the matching command |
 
 So `/rerun-probe` re-runs ONLY Phase 8 and posts only its comment; to also re-run
 the reviews/fix/verdict on top of a new probe, use `/rerun-from 8`. To retry a
@@ -108,15 +110,15 @@ Phase 11.
 
 Read `<chain>.json` and the latest fix-log comment. Run Phase 11. Post the verdict
 (APPROVED / CHANGES REQUESTED with the TALLY) as a PR comment. Do NOT halt on
-CHANGES REQUESTED in CI — record the verdict honestly. If `END_PHASE` is 11, STOP
-after the verdict comment (do NOT post a Phase 12 summary). Only if `END_PHASE` is
-12 do you then run Phase 12 and post the summary checklist as a final comment.
+CHANGES REQUESTED in CI — record the verdict honestly. Phase 11 is always the end of
+the span (11 is the maximum `END_PHASE`), so after the verdict also run Phase 12 and
+post the closing summary checklist as a final comment, then STOP.
 
-**Run-stats scope (do not misreport totals).** Phase 12 (and therefore the
-run-stats report) only runs when `END_PHASE` is 12. This is a *resumable* run
-covering only Phases `START_PHASE`–12, in a separate workflow run from the
+**Run-stats scope (do not misreport totals).** The closing summary (and its
+run-stats report) only runs when the span reaches Phase 11. This is a *resumable*
+run covering only Phases `START_PHASE`–11, in a separate workflow run from the
 create_spec job that ran Phases 1–7. Label the time/tokens explicitly as
-**"this pipeline run (Phases `START_PHASE`–12)"** — do NOT present them as a 1–12
+**"this pipeline run (Phases `START_PHASE`–11)"** — do NOT present them as a 1–11
 grand total. The Phases 1–7 time/tokens live in the create_spec run and its PR body;
 the true total is the two runs added together (state that, rather than printing a
 number that looks complete but only covers one part). Any retry hint must use the

@@ -15,7 +15,8 @@ cmd="$(printf '%s' "$first_line" | awk '{print $1}')"
 emit() { printf '%s=%s\n' "$1" "$2"; }
 
 # Named commands re-run EXACTLY one phase (START==END). Only /rerun-from runs
-# from the given phase through the end of the pipeline (END=12, the summary).
+# from the given phase through the end of the pipeline (END=11 — Phase 11 also
+# emits the closing summary checklist).
 case "$cmd" in
   /rerun-probe)  start=8;  end=8 ;;
   /rerun-review) start=9;  end=9 ;;
@@ -27,7 +28,7 @@ case "$cmd" in
       8|9|10|11) ;;
       *) echo "ERROR: /rerun-from needs a phase in {8,9,10,11}, got '$start'" >&2; exit 2 ;;
     esac
-    end=12 ;;
+    end=11 ;;
   *)
     emit IS_COMMAND false
     exit 0 ;;
