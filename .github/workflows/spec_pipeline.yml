@@ -79,9 +79,10 @@ jobs:
         run: |
           set -euo pipefail
           if [ "${{ github.event_name }}" = "pull_request" ]; then
-            # Auto-start: no comment, default to Phase 8, no endpoint override.
+            # Auto-start on PR open: run the WHOLE pipeline (Phase 8 -> 12), no
+            # endpoint override.
             {
-              echo "IS_COMMAND=true"; echo "START_PHASE=8"
+              echo "IS_COMMAND=true"; echo "START_PHASE=8"; echo "END_PHASE=12"
               echo "MAINNET_URLS="; echo "TESTNET_URLS="; echo "HINTS="
             } > /tmp/cmd.env
           else
@@ -158,15 +159,21 @@ jobs:
           GH_TOKEN: ${{ secrets.BOT_PAT }}
           REPO: ${{ github.repository }}
           PR: ${{ steps.pr.outputs.number }}
-          PHASE: ${{ steps.cmd.outputs.START_PHASE }}
+          START: ${{ steps.cmd.outputs.START_PHASE }}
+          END: ${{ steps.cmd.outputs.END_PHASE }}
           EVENT: ${{ github.event_name }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           set -euo pipefail
-          if [ "$EVENT" = "pull_request" ]; then
-            msg="🤖 **Spec pipeline started** on PR open — running **Phase 8 → 11 → summary**. Results post here as comments. [View run]($RUN_URL)"
+          if [ "$START" = "$END" ]; then
+            scope="**Phase ${START}** only"
           else
-            msg="🤖 **Command acknowledged** — running the spec pipeline from **Phase ${PHASE}** to the end. Progress and results post here as comments. [View run]($RUN_URL)"
+            scope="**Phase ${START} → ${END}**"
+          fi
+          if [ "$EVENT" = "pull_request" ]; then
+            msg="🤖 **Spec pipeline started** on PR open — running ${scope}. Results post here as comments. [View run]($RUN_URL)"
+          else
+            msg="🤖 **Command acknowledged** — running ${scope}. Progress and results post here as comments. [View run]($RUN_URL)"
           fi
           gh pr comment "$PR" --repo "$REPO" --body "$msg"
 
@@ -227,14 +234,23 @@ jobs:
           prompt: |
             Run the /create-spec skill in RESUMABLE mode for an OPEN pull request.
 
-            Start at Phase ${{ steps.cmd.outputs.START_PHASE }}. Do NOT run Phases
-            1-7. Reconstruct context from the committed <chain>.json on this branch
-            and the existing PR comments, exactly as
-            references/phase-entrypoints.md specifies (read that file fully first).
+            Run Phases ${{ steps.cmd.outputs.START_PHASE }} through ${{ steps.cmd.outputs.END_PHASE }}
+            INCLUSIVE, then STOP. Do NOT run Phases 1-7, and do NOT run any phase
+            after Phase ${{ steps.cmd.outputs.END_PHASE }}. Reconstruct context from
+            the committed <chain>.json on this branch and the existing PR comments,
+            exactly as references/phase-entrypoints.md specifies (read it fully first).
+
+            Phase numbering for the run span: 8 = smart-router boot + probe,
+            9 = parallel reviewers, 10 = synthesize gaps + fix (+10b smoke re-probe),
+            11 = final reviewer verdict, 12 = summary checklist. When START==END you
+            run EXACTLY that one phase and post only its comment (no summary unless
+            END is 12).
 
             Context:
             - PR_NUMBER: ${{ steps.pr.outputs.number }}
             - Repo: ${{ github.repository }}
+            - START_PHASE: ${{ steps.cmd.outputs.START_PHASE }}
+            - END_PHASE: ${{ steps.cmd.outputs.END_PHASE }}
             - Endpoint source: ${{ steps.endpoints.outputs.ENDPOINT_SOURCE }}
             - MAINNET_URLS: ${{ steps.endpoints.outputs.MAINNET_URLS }}
             - TESTNET_URLS: ${{ steps.endpoints.outputs.TESTNET_URLS }}
@@ -246,7 +262,7 @@ jobs:
               STOP and post a PR comment asking for a ws-capable node.
             - If MAINNET_URLS and TESTNET_URLS are both empty, research public nodes
               yourself (the normal Phase 3/8 fallback).
-            - After EACH phase, post its report as a PR comment via
+            - After EACH phase in the span, post its report as a PR comment via
               `gh pr comment ${{ steps.pr.outputs.number }} --body-file <report>`,
               with a bold one-line header naming the phase.
             - At every STOP-and-ask gate, auto-decide with the conservative default
@@ -254,19 +270,25 @@ jobs:
               CHANGES REQUESTED to APPROVED).
             - Do NOT perform any git commit/push for the spec content other than what
               the phases already do; the branch is already checked out.
-            - End by posting the Phase 12 summary checklist as a final PR comment.
+            - Only when Phase 12 is within the run span, end by posting the Phase 12
+              summary checklist as a final PR comment.
 
       - name: Report failure to PR
         if: failure() && steps.cmd.outputs.IS_COMMAND == 'true'
         env:
           GH_TOKEN: ${{ secrets.BOT_PAT }}
+          REPO: ${{ github.repository }}
+          PR: ${{ steps.pr.outputs.number }}
+          START: ${{ steps.cmd.outputs.START_PHASE }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           set -euo pipefail
-          gh pr comment "${{ steps.pr.outputs.number }}" --repo "${{ github.repository }}" --body "$(cat <<'EOF'
-          **Spec pipeline failed** (Phase ${{ steps.cmd.outputs.START_PHASE }}). See the [run log](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}).
-
-          Retry with amended input by commenting, e.g.:
-          `/rerun-probe mainnet=https://your-archive-node/rpc`
-          or reference a stored secret node: `/rerun-probe mainnet=use=PAID_RPC_1`
-          EOF
-          )"
+          # Suggest the command whose span matches the phase that was running.
+          case "$START" in
+            8)  cmd='/rerun-probe   (optionally `/rerun-probe mainnet=https://your-node/rpc`, or `mainnet=use=PAID_RPC_1` for a stored secret node)' ;;
+            9)  cmd='/rerun-review' ;;
+            10) cmd='/rerun-fix' ;;
+            11) cmd='/rerun-final' ;;
+            *)  cmd="/rerun-from $START" ;;
+          esac
+          gh pr comment "$PR" --repo "$REPO" --body "$(printf '**Spec pipeline failed** (started at Phase %s). See the [run log](%s).\n\nRetry by commenting:\n`%s`\n\nTo also re-run every later phase on top of the fix, use `/rerun-from %s` instead.' "$START" "$RUN_URL" "$cmd" "$START")"

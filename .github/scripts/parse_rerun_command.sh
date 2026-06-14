@@ -14,17 +14,20 @@ cmd="$(printf '%s' "$first_line" | awk '{print $1}')"
 
 emit() { printf '%s=%s\n' "$1" "$2"; }
 
+# Named commands re-run EXACTLY one phase (START==END). Only /rerun-from runs
+# from the given phase through the end of the pipeline (END=12, the summary).
 case "$cmd" in
-  /rerun-probe)  start=8 ;;
-  /rerun-review) start=9 ;;
-  /rerun-fix)    start=10 ;;
-  /rerun-final)  start=11 ;;
+  /rerun-probe)  start=8;  end=8 ;;
+  /rerun-review) start=9;  end=9 ;;
+  /rerun-fix)    start=10; end=10 ;;
+  /rerun-final)  start=11; end=11 ;;
   /rerun-from)
     start="$(printf '%s' "$first_line" | awk '{print $2}')"
     case "$start" in
       8|9|10|11) ;;
       *) echo "ERROR: /rerun-from needs a phase in {8,9,10,11}, got '$start'" >&2; exit 2 ;;
-    esac ;;
+    esac
+    end=12 ;;
   *)
     emit IS_COMMAND false
     exit 0 ;;
@@ -32,6 +35,7 @@ esac
 
 emit IS_COMMAND true
 emit START_PHASE "$start"
+emit END_PHASE "$end"
 
 resolve_token() { # echo resolved URL for one token (raw url | use=NAME)
   local tok="$1" name val
