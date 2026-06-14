@@ -51,4 +51,18 @@ done
 out="$(bash "$SCRIPT" "/rerun-from 10")"; check "rerun-from 10" "START_PHASE=10" "$out"
 bash "$SCRIPT" "/rerun-from 99" >/dev/null 2>&1; expect_exit "rerun-from 99 -> exit 2" 2 "$?"
 
+# 8. multi-line body (real PR comments have newlines) still parses
+out="$(ALLOWED_SECRETS="" bash "$SCRIPT" "$(printf '/rerun-probe mainnet=https://a\n\nplease use archive')")"
+check "multiline -> phase 8"   "START_PHASE=8"               "$out"
+check "multiline -> url"        "MAINNET_URLS=https://a"      "$out"
+check "multiline -> hints"      "HINTS=please use archive"    "$out"
+
+# 9. glob chars in a hint do not expand to filenames
+out="$(ALLOWED_SECRETS="" bash "$SCRIPT" "/rerun-review look at * and ?")"
+check "glob not expanded" "HINTS=look at * and ?" "$out"
+
+# 10. testnet use=SECRET resolves symmetrically to mainnet
+out="$(ALLOWED_SECRETS="PAID_RPC_2" PAID_RPC_2="https://paid-t/rpc" bash "$SCRIPT" "/rerun-probe testnet=use=PAID_RPC_2")"
+check "testnet secret resolved" "TESTNET_URLS=https://paid-t/rpc" "$out"
+
 exit $fail
