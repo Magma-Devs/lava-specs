@@ -11,9 +11,9 @@
 #          -f default_workflow_permissions=write -F can_approve_pull_request_reviews=true
 #   3. The create-spec skill must be present on `main`.
 #   4. Secret GHCR_PAT — a consolidated classic PAT with repo + workflow +
-#      read:packages scopes. Used to open the PR (a GITHUB_TOKEN-opened PR does
-#      NOT fire pull_request events, which spec_pipeline.yml needs). Also used
-#      by spec_pipeline.yml to pull the private smart-router from GHCR.
+#      read:packages scopes. THIS workflow uses GHCR_PAT only to open the PR
+#      (so pull_request events fire for spec_pipeline.yml). The read:packages
+#      scope is used by spec_pipeline.yml when it pulls the smart-router image.
 #
 # The PR is opened with GHCR_PAT so that pull_request events fire and
 # spec_pipeline.yml (boot/probe/review phases) triggers automatically.
@@ -52,10 +52,7 @@ permissions:
   pull-requests: write
 
 # Per-chain: serialize only runs for the SAME chain (they race on the same
-# branch/PR). Different chains run in parallel — each run gets its own VM, so the
-# smart-router container's published ports (3360+) don't collide across runs.
-# (Use a single static group instead only if you move to a self-hosted runner
-# shared by runs, where the host docker daemon and ports are shared.)
+# branch/PR). Different chains run in parallel.
 concurrency:
   group: create-spec-${{ github.event.inputs.chain_name }}
   cancel-in-progress: false
@@ -149,20 +146,14 @@ jobs:
               static validation → write <chain>.json → jq validation). STOP after
               Phase 7 produces a jq-valid <chain>.json. Do NOT run Phase 8 or later
               — the spec_pipeline.yml workflow runs the boot/probe/review phases
-              after the PR opens. Skip the Phase 9/11 reviewer tables in pr_body.md.
+              after the PR opens. The pr_body.md template below already reflects
+              only Phases 1-7 output — do not add review or probe sections.
             - There is NO human available. At EVERY STOP-and-ask gate (archive
               extension include/omit, block-time disagreement >20%, existing-file
               prompt, archive NEEDS_HUMAN_DECISION), DO NOT stop — auto-decide with
               the conservative default and continue.
             - Track every auto-decision you make and the sources you relied on
               (docs URLs, RPC node URLs probed, upstream parent spec, other refs).
-            - The Phase 11 final reviewer ends in one of two verdicts: APPROVED
-              (final TALLY CRITICAL=0 MEDIUM=0) or CHANGES REQUESTED (any CRITICAL
-              or MEDIUM remaining). Normally CHANGES REQUESTED halts before Phase
-              12 — but in THIS unattended run, do NOT halt: record the verdict and
-              the TALLY counts and continue so the PR still opens. Report the
-              verdict HONESTLY in pr_body.md — never upgrade CHANGES REQUESTED to
-              APPROVED.
             - Do NOT perform any git operations. The workflow handles commit/push/PR.
 
             When the pipeline is complete, write a file `pr_body.md` at the repo
@@ -170,28 +161,9 @@ jobs:
 
             ## New chain spec: ${{ github.event.inputs.chain_name }}
 
-            ### 🧪 Review verdict: <APPROVED | CHANGES REQUESTED>
-            <One line. From the Phase 11 final reviewer.>
-
-            #### Unresolved findings (review these first)
-            <One row per CRITICAL/MEDIUM gap the pipeline left unfixed (the
-            Phase 11 no-loop policy). Each row must be actionable on its own:
-            what is wrong, where in the spec, and the concrete change the
-            reviewer recommends. Write "None." when APPROVED with nothing
-            remaining. Also list here any disable-suggestions stripped by the
-            Phase 10 filter (probe-only evidence) as "watch-list: re-test on a
-            paid/dedicated node".>
-
-            | # | Severity | Finding | Spec location | Suggested fix |
-            |---|----------|---------|---------------|---------------|
-            | 1 | <CRITICAL/MEDIUM> | <what is wrong and why it was flagged> | <index / collection / api or field> | <the concrete recommended change> |
-
-            | Reviewer | CRITICAL | MEDIUM | MINOR |
-            |----------|---------:|-------:|------:|
-            | Phase 11 final | <X> | <Y> | <Z> |
-            | Phase 9 reviewer 1 | <X> | <Y> | <Z> |
-            | Phase 9 reviewer 2 | <X> | <Y> | <Z> |
-            | Phase 9 reviewer 3 | <X> | <Y> | <Z> |
+            > Phases 1-7 (research → spec draft) are complete. The smart-router
+            > boot/probe and the spec reviews run automatically after this PR opens
+            > (spec_pipeline.yml) and are posted as PR comments.
 
             | Field | Value |
             |-------|-------|
@@ -199,41 +171,6 @@ jobs:
             | Mainnet index | ${{ github.event.inputs.chain_mainnet_index }} |
             | Testnet index | ${{ github.event.inputs.chain_testnet_index }} |
             | Spec file | <chain>.json |
-
-            ### Runtime verification (smart-router)
-            <If the router could NOT boot in Phase 8 or Phase 10b, the FIRST
-            line of this section MUST say so in bold — name the cause and the
-            fallback evidence used (e.g. direct-upstream probing). Never let a
-            table below claim OK without that caveat leading the section.>
-
-            | Check | Phase 8 | Phase 10b |
-            |-------|---------|-----------|
-            | Parse directives (PARSE) | <OK/FAIL/PARTIAL/skipped> | <OK/FAIL/PARTIAL/n-a> |
-            | Verifications (VERIFY) | <OK/FAIL/PARTIAL/skipped> | <OK/FAIL/PARTIAL/n-a> |
-            | Testnet verifications (TESTNET_VERIFY) | <OK/FAIL/PARTIAL/SKIPPED + reason> | <n-a unless testnet entry was fixed> |
-            | Block time (empirical, Step 8) | mainnet <n> ms / testnet <n> ms or skipped | — |
-
-            <The PARSE/VERIFY verdicts come from the smart-router-tester (Phase 8
-            Step 3.5) and smart-router-smoke-tester (Phase 10b Step 1.5) returns:
-            PARSE = GET_BLOCKNUM/GET_BLOCK_BY_NUM executed by the live router
-            (metrics-gated), VERIFY = per-verification boot outcomes (chain-id,
-            pruning/GET_EARLIEST_BLOCK, ...). TESTNET_VERIFY = the Step 7 boot
-            of the TESTNET spec variant (chain-id expected_value live-executed).
-            If FAIL/PARTIAL, name the failing directive/verification and the
-            affected upstreams right below the table. Any BLOCK_TIME_MISMATCH
-            gets its own line below the table with spec-vs-empirical values.
-            If Phase 8 was skipped, write "skipped" for all rows.>
-
-            ### Addon & extension coverage
-            <From the Phase 8 "Addon & extension coverage" table (re-checked in
-            Phase 10b). One row per addon/extension the spec declares; if none,
-            write "None declared in this spec.". NOT_TESTABLE means no provided
-            node supports it — name what evidence the capability probe returned,
-            so a reviewer can re-run with a more capable node URL.>
-
-            | Name | Type | Result | Notes |
-            |------|------|--------|-------|
-            | <archive/debug/...> | <addon/extension> | <✅ tested-ok / ❌ failed / ⚪ not testable> | <upstreams supporting it, or probe evidence for not-testable> |
 
             ### Inputs provided
             ${{ github.event.inputs.additional_data }}
@@ -256,18 +193,8 @@ jobs:
 
             ### Supporting evidence (INLINE — do NOT reference file paths)
             Reviewers cannot open /tmp files or uncommitted docs, so paste the
-            ACTUAL CONTENT here, each inside a collapsible <details> block. Never
+            ACTUAL CONTENT here inside a collapsible <details> block. Never
             write "see /tmp/..." or "see docs/..."; inline the content itself.
-
-            <details><summary>Phase-8 method probe report</summary>
-
-            <paste the full body of the METHOD_PROBE_REPORT you generated>
-            </details>
-
-            <details><summary>API method list (&lt;N&gt; methods)</summary>
-
-            <paste the full method list, one per line>
-            </details>
 
             <details><summary>Parse directives</summary>
 
@@ -332,7 +259,8 @@ jobs:
         env:
           # PAT (not GITHUB_TOKEN): a GITHUB_TOKEN-opened PR does NOT fire
           # pull_request events, which spec_pipeline.yml needs. One consolidated
-          # classic PAT (repo + workflow + read:packages) is stored as GHCR_PAT.
+          # classic PAT is stored as GHCR_PAT (repo + workflow here; the
+          # read:packages scope is used by spec_pipeline.yml, not this step).
           GH_TOKEN: ${{ secrets.GHCR_PAT }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           CHAIN: ${{ github.event.inputs.chain_name }}
