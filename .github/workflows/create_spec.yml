@@ -68,6 +68,54 @@ jobs:
           ref: main
           fetch-depth: 0
 
+      # Fail fast (seconds) if BOT_PAT cannot open a PR — otherwise the misconfig
+      # only surfaces ~24 min later at `gh pr create` (the exact failure mode:
+      # "Resource not accessible by personal access token (createPullRequest)",
+      # caused by a token missing the classic `repo` scope / fine-grained PR write).
+      # There is no non-mutating "can I create a PR" probe, so we check the two
+      # cheap proxies: the token's OAuth scopes and its write access to this repo.
+      - name: Pre-flight — verify BOT_PAT can open PRs
+        env:
+          GH_TOKEN: ${{ secrets.BOT_PAT }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          if [ -z "${GH_TOKEN:-}" ]; then
+            echo "::error::BOT_PAT secret is empty/unset. Store a classic PAT with scopes: repo + workflow + read:packages."
+            exit 1
+          fi
+          # 1) Token authenticates at all.
+          if ! login="$(gh api user --jq .login 2>/dev/null)"; then
+            echo "::error::BOT_PAT failed to authenticate (gh api user) — token invalid or expired."
+            exit 1
+          fi
+          echo "BOT_PAT authenticates as: $login"
+          # 2) Classic-token scopes are reported in the X-OAuth-Scopes response header.
+          #    Fine-grained PATs and GITHUB_TOKEN return an empty header.
+          scopes="$(curl -sS -o /dev/null -D - -H "Authorization: token $GH_TOKEN" https://api.github.com/user \
+            | tr -d '\r' | awk -F': ' 'tolower($1)=="x-oauth-scopes"{print $2}')"
+          echo "Classic OAuth scopes: '${scopes:-<none — fine-grained PAT or GITHUB_TOKEN>}'"
+          # 3) Write (push) access to this repo — required for both branch push and PR create.
+          push="$(gh api "repos/$REPO" --jq '.permissions.push' 2>/dev/null || echo "unknown")"
+          echo "Repo push permission: $push"
+          if [ "$push" = "false" ]; then
+            echo "::error::BOT_PAT lacks write access to $REPO. Its owner ($login) must be a collaborator with write, and the token must grant Contents + Pull requests write (fine-grained) or the 'repo' scope (classic)."
+            exit 1
+          fi
+          # 4) Classic token: the 'repo' scope is what authorizes createPullRequest.
+          norm=",$(printf '%s' "$scopes" | tr -d ' '),"
+          if [ -n "$scopes" ]; then
+            case "$norm" in
+              *",repo,"*) echo "OK: classic 'repo' scope present — can create PRs." ;;
+              *) echo "::error::BOT_PAT (classic) is missing the 'repo' scope — gh pr create will fail with 'Resource not accessible by personal access token (createPullRequest)'. Regenerate with repo + workflow + read:packages."; exit 1 ;;
+            esac
+            case "$norm" in *",read:packages,"*) : ;; *) echo "::warning::BOT_PAT missing 'read:packages' — spec_pipeline.yml needs it to pull the smart-router image from GHCR." ;; esac
+            case "$norm" in *",workflow,"*) : ;; *) echo "::warning::BOT_PAT missing 'workflow' scope — only needed if it must push workflow-file changes." ;; esac
+          else
+            echo "::warning::BOT_PAT looks fine-grained (no OAuth scopes header). It has push access, but this preflight cannot confirm 'Pull requests: write' for fine-grained tokens without attempting a create — ensure that permission is granted for $REPO."
+          fi
+          echo "Pre-flight OK."
+
       - name: Compute branch name
         id: branch
         env:
