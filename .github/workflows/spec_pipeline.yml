@@ -9,7 +9,7 @@
 #
 # Required repo secrets:
 #   CLAUDE_CODE_OAUTH_TOKEN - subscription auth (same as create_spec.yml).
-#   GHCR_PAT - one classic PAT, scopes: repo + workflow + read:packages. Used to
+#   BOT_PAT - one classic PAT, scopes: repo + workflow + read:packages. Used to
 #     pull the smart-router image AND as the github_token for gh pr comment. It is
 #     also the identity that opens the PR in create_spec.yml, so pull_request
 #     events fire (a GITHUB_TOKEN-opened PR would not trigger this workflow).
@@ -47,7 +47,7 @@ jobs:
       - name: Resolve PR ref
         id: pr
         env:
-          GH_TOKEN: ${{ secrets.GHCR_PAT }}
+          GH_TOKEN: ${{ secrets.BOT_PAT }}
         run: |
           set -euo pipefail
           if [ "${{ github.event_name }}" = "pull_request" ]; then
@@ -101,7 +101,7 @@ jobs:
         id: endpoints
         if: steps.cmd.outputs.IS_COMMAND == 'true'
         env:
-          GH_TOKEN: ${{ secrets.GHCR_PAT }}
+          GH_TOKEN: ${{ secrets.BOT_PAT }}
           COMMENT_MAINNET: ${{ steps.cmd.outputs.MAINNET_URLS }}
           COMMENT_TESTNET: ${{ steps.cmd.outputs.TESTNET_URLS }}
         run: |
@@ -136,7 +136,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_PAT || secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.BOT_PAT || secrets.GITHUB_TOKEN }}
 
       - name: Run pipeline phases
         id: run
@@ -144,7 +144,7 @@ jobs:
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          github_token: ${{ secrets.GHCR_PAT }}
+          github_token: ${{ secrets.BOT_PAT }}
           show_full_output: false
           display_report: false
           claude_args: |
@@ -186,7 +186,7 @@ jobs:
       - name: Report failure to PR
         if: failure() && steps.cmd.outputs.IS_COMMAND == 'true'
         env:
-          GH_TOKEN: ${{ secrets.GHCR_PAT }}
+          GH_TOKEN: ${{ secrets.BOT_PAT }}
         run: |
           set -euo pipefail
           gh pr comment "${{ steps.pr.outputs.number }}" --repo "${{ github.repository }}" --body "$(cat <<'EOF'

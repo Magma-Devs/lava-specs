@@ -4,7 +4,7 @@
 
 **Goal:** Split the monolithic `create_spec.yml` so a Phase 8+ failure is resumable with amended input (node URLs, docs, hints) via a PR-comment command, instead of re-running the ~1.5h pipeline from Phase 1.
 
-**Architecture:** `create_spec.yml` runs Phases 1-7 and opens the PR with a consolidated PAT (`GHCR_PAT`). A new `spec_pipeline.yml` runs Phases 8→11→summary as one `claude-code-action` job, triggered by `pull_request: opened` (auto) and `issue_comment: created` (human `/rerun-*` command). The PR is the state store: the spec is on the branch, each phase posts its report as a PR comment, and a resumed phase reconstructs context by reading the committed spec + prior comments. Two small bash scripts (a comment-command parser and an endpoint resolver) carry the deterministic logic and are unit-tested in isolation.
+**Architecture:** `create_spec.yml` runs Phases 1-7 and opens the PR with a consolidated PAT (`BOT_PAT`). A new `spec_pipeline.yml` runs Phases 8→11→summary as one `claude-code-action` job, triggered by `pull_request: opened` (auto) and `issue_comment: created` (human `/rerun-*` command). The PR is the state store: the spec is on the branch, each phase posts its report as a PR comment, and a resumed phase reconstructs context by reading the committed spec + prior comments. Two small bash scripts (a comment-command parser and an endpoint resolver) carry the deterministic logic and are unit-tested in isolation.
 
 **Tech Stack:** GitHub Actions YAML, `anthropics/claude-code-action@v1`, Bash, `gh` CLI, the `create-spec` Claude skill (markdown), Docker + GHCR smart-router image.
 
@@ -22,7 +22,7 @@
 | `.github/scripts/tests/test_resolve_endpoints.sh` | **Create.** Plain-bash unit tests for the resolver. |
 | `.claude/skills/create-spec/references/phase-entrypoints.md` | **Create.** Re-entry contract per resumable phase (8/9/10/11): what to read from the branch + PR comments, http+ws probing, post-comment-per-phase. Ends with a sentinel. |
 | `.claude/skills/create-spec/SKILL.md` | **Modify.** Add a "Resumable entry points" section, relaxed sentinel-gating rule, note that CI's create run stops at Phase 7. |
-| `.github/workflows/create_spec.yml` | **Modify.** Open PR with `GHCR_PAT`; trim the agent prompt to Phases 1-7; emit a machine-parseable ENDPOINTS block in `pr_body.md`; drop the docker/GHCR/probe-tools steps (moved to the pipeline). |
+| `.github/workflows/create_spec.yml` | **Modify.** Open PR with `BOT_PAT`; trim the agent prompt to Phases 1-7; emit a machine-parseable ENDPOINTS block in `pr_body.md`; drop the docker/GHCR/probe-tools steps (moved to the pipeline). |
 | `.github/workflows/spec_pipeline.yml` | **Create.** The Phases 8→11→summary workflow: triggers, command parse, endpoint resolve, checkout PR branch, GHCR login, probe tools, `claude-code-action`, failure comment. |
 
 No test framework is assumed. Bash scripts are tested with plain-bash assertion files (run with `bash <file>`, exit non-zero on failure). YAML is validated with `python3 -c 'import yaml…'` + structural `grep`. Skill markdown is validated by sentinel + heading `grep` assertions.
@@ -493,8 +493,8 @@ with:
         env:
           # PAT (not GITHUB_TOKEN): a GITHUB_TOKEN-opened PR does NOT fire
           # pull_request events, which spec_pipeline.yml needs. One consolidated
-          # classic PAT (repo + workflow + read:packages) is stored as GHCR_PAT.
-          GH_TOKEN: ${{ secrets.GHCR_PAT }}
+          # classic PAT (repo + workflow + read:packages) is stored as BOT_PAT.
+          GH_TOKEN: ${{ secrets.BOT_PAT }}
 ```
 
 - [ ] **Step 2: Trim the agent prompt to Phases 1-7**
@@ -548,7 +548,7 @@ Run:
 ```bash
 python3 -c 'import yaml,sys; yaml.safe_load(open(".github/workflows/create_spec.yml")); print("yaml ok")'
 grep -c "smart-router image" .github/workflows/create_spec.yml   # expect 0
-grep -q "GH_TOKEN: \${{ secrets.GHCR_PAT }}" .github/workflows/create_spec.yml && echo "pat ok"
+grep -q "GH_TOKEN: \${{ secrets.BOT_PAT }}" .github/workflows/create_spec.yml && echo "pat ok"
 grep -q "ENDPOINTS" .github/workflows/create_spec.yml && echo "endpoints-block ok"
 ```
 Expected: `yaml ok`, the grep count is `0`, `pat ok`, `endpoints-block ok`.
@@ -582,7 +582,7 @@ Create `.github/workflows/spec_pipeline.yml`:
 # every phase posts its report as a PR comment; a resumed phase reconstructs
 # context from those comments (see references/phase-entrypoints.md).
 #
-# Setup: one consolidated classic PAT in secret GHCR_PAT
+# Setup: one consolidated classic PAT in secret BOT_PAT
 # (repo + workflow + read:packages) — opens nothing here but authenticates the
 # GHCR pull AND is the identity whose PR-open event triggers this workflow.
 # Optional paid-node secrets PAID_RPC_1..3 / PAID_WS_1 are referenced from a
@@ -618,7 +618,7 @@ jobs:
       - name: Resolve PR ref
         id: pr
         env:
-          GH_TOKEN: ${{ secrets.GHCR_PAT }}
+          GH_TOKEN: ${{ secrets.BOT_PAT }}
         run: |
           set -euo pipefail
           if [ "${{ github.event_name }}" = "pull_request" ]; then
@@ -703,7 +703,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_PAT || secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.BOT_PAT || secrets.GITHUB_TOKEN }}
 
       - name: Run pipeline phases
         id: run
@@ -711,7 +711,7 @@ jobs:
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          github_token: ${{ secrets.GHCR_PAT }}
+          github_token: ${{ secrets.BOT_PAT }}
           show_full_output: false
           display_report: false
           claude_args: |
@@ -753,7 +753,7 @@ jobs:
       - name: Report failure to PR
         if: failure() && steps.cmd.outputs.IS_COMMAND == 'true'
         env:
-          GH_TOKEN: ${{ secrets.GHCR_PAT }}
+          GH_TOKEN: ${{ secrets.BOT_PAT }}
         run: |
           set -euo pipefail
           gh pr comment "${{ steps.pr.outputs.number }}" --repo "${{ github.repository }}" --body "$(cat <<'EOF'
@@ -767,7 +767,7 @@ jobs:
 ```
 
 > **Note on the `Resolve endpoints` step:** the `gh pr view` call needs a token —
-> add `GH_TOKEN: ${{ secrets.GHCR_PAT }}` to that step's `env:` (it is shown
+> add `GH_TOKEN: ${{ secrets.BOT_PAT }}` to that step's `env:` (it is shown
 > separately here only for readability). Make sure it is present before validating.
 
 - [ ] **Step 2: Add the missing GH_TOKEN to the resolve step**
@@ -777,7 +777,7 @@ Edit the `Resolve endpoints` step's `env:` to include the token (the resolver's
 
 ```yaml
         env:
-          GH_TOKEN: ${{ secrets.GHCR_PAT }}
+          GH_TOKEN: ${{ secrets.BOT_PAT }}
           COMMENT_MAINNET: ${{ steps.cmd.outputs.MAINNET_URLS }}
           COMMENT_TESTNET: ${{ steps.cmd.outputs.TESTNET_URLS }}
 ```
@@ -848,7 +848,7 @@ Append to the top comment block of `.github/workflows/spec_pipeline.yml`:
 ```yaml
 # Required repo secrets:
 #   CLAUDE_CODE_OAUTH_TOKEN - subscription auth (same as create_spec.yml).
-#   GHCR_PAT - one classic PAT, scopes: repo + workflow + read:packages. Used to
+#   BOT_PAT - one classic PAT, scopes: repo + workflow + read:packages. Used to
 #     pull the smart-router image AND as the github_token for gh pr comment. It is
 #     also the identity that opens the PR in create_spec.yml, so pull_request
 #     events fire (a GITHUB_TOKEN-opened PR would not trigger this workflow).
@@ -868,7 +868,7 @@ git commit -m "docs(ci): document required secrets for spec_pipeline"
 
 ## Self-Review notes (for the implementer)
 
-- **Spec coverage:** two-workflow split (Tasks 5,6), PR-as-state + per-phase comments (Task 3,6), PAT consolidation into `GHCR_PAT` (Tasks 5,6,7), `rerun-*` grammar (Task 1), endpoint precedence comment>pr_body>research (Task 2), http+ws probing (Tasks 2,3), `opened`-only trigger / no `synchronize` (Task 6 `on:`), `use=SECRET` allow-list (Tasks 1,6), skill entry points + relaxed gating (Tasks 3,4). All spec sections map to a task.
+- **Spec coverage:** two-workflow split (Tasks 5,6), PR-as-state + per-phase comments (Task 3,6), PAT consolidation into `BOT_PAT` (Tasks 5,6,7), `rerun-*` grammar (Task 1), endpoint precedence comment>pr_body>research (Task 2), http+ws probing (Tasks 2,3), `opened`-only trigger / no `synchronize` (Task 6 `on:`), `use=SECRET` allow-list (Tasks 1,6), skill entry points + relaxed gating (Tasks 3,4). All spec sections map to a task.
 - **The three spec "open questions" are now resolved:** single-job + agent-posts-comments (Task 6); fixed secret allow-list `PAID_RPC_1..3`,`PAID_WS_1` (Tasks 1,6); endpoints passed into the prompt as resolved env (Task 6).
 - **Manual verification (no CI dry-run here):** the GitHub-side behavior (event firing, comment triggers, claude-code-action) can only be fully exercised by opening a real PR. After merge, smoke-test by dispatching `create_spec.yml` for a simple EVM chain and watching `spec_pipeline.yml` auto-start, then post `/rerun-probe mainnet=<url>` to confirm the resume path.
 ```
