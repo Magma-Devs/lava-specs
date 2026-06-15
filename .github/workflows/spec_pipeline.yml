@@ -269,11 +269,46 @@ jobs:
             - At every STOP-and-ask gate, auto-decide with the conservative default
               and record it. Report the Phase 11 verdict HONESTLY (never upgrade
               CHANGES REQUESTED to APPROVED).
-            - Do NOT perform any git commit/push for the spec content other than what
-              the phases already do; the branch is already checked out.
+            - Do NOT run git yourself. The Phase-10 fix pass edits the spec in the
+              working tree and LEAVES it there (uncommitted) — a workflow step after
+              this run commits and pushes that edit to the PR branch. The branch is
+              already checked out; do not switch branches or commit/push anything.
             - Only when the run span reaches Phase 11, after the verdict comment also
               post the closing Phase-12 summary checklist as a final PR comment. If
               the span ends before Phase 11, do NOT post a summary.
+
+      # Persist the Phase-10 fix pass. The skill never runs git itself (SKILL.md:
+      # "User handles all git manually") and the prompt forbids the agent from
+      # committing — so the fix lives only in the runner's working tree. Without
+      # this step the branch keeps the pre-fix draft while Phases 10b/11 verify a
+      # file that was never pushed (exactly what happened on PR #10). Commit any
+      # root-level spec edit and push it to the PR branch. No-op if nothing changed
+      # (e.g. /rerun-review, or a fix pass that found nothing to fix).
+      - name: Commit spec fixes to PR branch
+        if: steps.cmd.outputs.IS_COMMAND == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.BOT_PAT }}
+          REPO: ${{ github.repository }}
+          HEAD: ${{ steps.pr.outputs.head }}
+          PR: ${{ steps.pr.outputs.number }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          git config user.name  "lava-spec-bot"
+          git config user.email "lava-spec-bot@users.noreply.github.com"
+          # ':(glob)*.json' matches only root-level spec files (* does not cross /),
+          # so skill/docs JSON under .claude/ is never swept in.
+          if git diff --quiet -- ':(glob)*.json'; then
+            echo "No spec changes to commit."
+            exit 0
+          fi
+          git add -- ':(glob)*.json'
+          changed="$(git diff --cached --name-only | tr '\n' ' ')"
+          git commit -m "fix(spec): persist pipeline fix pass for ${changed}" \
+            -m "Auto-committed by spec_pipeline.yml after the Phase-10 fix pass. Run: ${RUN_URL}"
+          git push "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git" "HEAD:${HEAD}"
+          sha="$(git rev-parse --short HEAD)"
+          gh pr comment "$PR" --repo "$REPO" --body "📦 Committed pipeline fixes to \`${HEAD}\` (\`${sha}\`): \`${changed}\`— the branch now matches the spec that Phase 10b/11 verified."
 
       - name: Report failure to PR
         if: failure() && steps.cmd.outputs.IS_COMMAND == 'true'
