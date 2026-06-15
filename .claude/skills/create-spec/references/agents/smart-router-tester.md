@@ -191,20 +191,26 @@ Deliberately NOT a fail-fast trigger: per-provider lines like `failed verificati
 
 Once booted, the router's chain tracker continuously *executes* the spec's parse directives against the real upstreams: `GET_BLOCKNUM` via `FetchLatestBlockNum` and `GET_BLOCK_BY_NUM` via `FetchBlockHashByNum`. This is the authoritative test of the directives — stronger than Phase 6's offline curl+jq approximation. Run it BEFORE the first probe so the log window is purely tracker traffic.
 
-**a. Let the tracker complete a few fetch cycles, then read the metrics:**
+**a. Let the tracker complete a few fetch cycles, then read BOTH sources — the metrics AND the tracker's own log signal.** The tracker runs `GET_BLOCKNUM` and `GET_BLOCK_BY_NUM` every poll; classify each directive from whichever source has evidence, **with a failure from either source winning over a positive from the other** (a positive must never mask a real parse defect):
 
 ```bash
 sleep 30
+# Source 1 — metrics
 curl -s http://localhost:7779/metrics | grep -E '^lava_(rpc_endpoint_(latest_block|fetch_latest_(fails|success)|fetch_block_(fails|success))|rpcsmartrouter_latest_block)'
+# Source 2 — the tracker's hash-read log lines: this is where GET_BLOCK_BY_NUM is actually executed.
+# (The fetch_block_* metric is currently never emitted by the router — RecordBlockFetch is only ever
+#  called with isLatest=true — so for GET_BLOCK_BY_NUM the LOG is the primary positive signal.)
+$DOCKER logs sr_<chain> 2>&1 | grep -cE 'Chain Tracker Updated block hashes|Chain Tracker read a block Hash'
 ```
 
-Classify:
-- `lava_rpcsmartrouter_latest_block` > 0 → **PARSE_BLOCKNUM: OK** (the router learned the chain height through this spec's `GET_BLOCKNUM` directive — a positive signal, not just absence of errors).
-- `lava_rpcsmartrouter_latest_block` == 0 (or the metric is absent) after the sleep → **PARSE_BLOCKNUM: FAIL**. The `GET_BLOCKNUM` directive (template, `parser_func`, `parser_arg`, or `encoding`) is likely wrong. Attach the log-signature excerpt from (b).
-- `lava_rpc_endpoint_fetch_block_success` > 0 → **PARSE_BLOCK_BY_NUM: OK**.
-- `lava_rpc_endpoint_fetch_block_fails` > 0 AND `..._success` == 0 → **PARSE_BLOCK_BY_NUM: FAIL** (hash extraction broken — check `parser_arg` path and `encoding`).
-- Both block counters 0 → **PARSE_BLOCK_BY_NUM: NOT_EXERCISED** (tracker didn't fetch hashes yet; not a failure).
-- A few `fetch_latest_fails` alongside a healthy `latest_block` is transient endpoint noise, not a directive defect — the metrics rule above decides, the logs explain.
+Classify each directive with **fail-precedence** — check the FAIL condition first; a positive applies only when neither source shows failure:
+
+| Directive | FAIL if … | else OK if … | else |
+|---|---|---|---|
+| **PARSE_BLOCKNUM** | `lava_rpcsmartrouter_latest_block` is `0`/absent, **or** a `PARSE_SIG` line (step b) names the `GET_BLOCKNUM` path | `lava_rpcsmartrouter_latest_block` > 0 (metric) **or** a `Chain Tracker Updated block hashes` line (log) | **NOT_EXERCISED** — tracker never ran; usually a boot problem, investigate |
+| **PARSE_BLOCK_BY_NUM** | `fetch_block_fails` > 0 with `..._success` == 0 (metric), **or** a `PARSE_SIG` line (step b) names `ParseBlockHashFromReplyAndDecode` / `expected parsed hashes length` (log) | `fetch_block_success` > 0 (metric) **or** ≥1 `Chain Tracker Updated block hashes` / `read a block Hash …` line (log — tracker read & stored by-number hashes) | **NOT_EXERCISED** |
+
+The metric-OR-log design is deliberate and self-healing: the `fetch_block_*` metric is dead in the current router, so `PARSE_BLOCK_BY_NUM: OK` comes from the **log**; if the router later wires the metric it simply becomes a second positive source, no doc change. A few `fetch_latest_fails` alongside a healthy `latest_block` is transient endpoint noise, not a directive defect — the rules above decide, the logs explain.
 
 **b. Grep the boot-window log for parse-failure signatures.** These come from `endpoint_chain_fetcher.go` and `parser.go` and most are **DEBUG level**, so the Step 4.5 warn/error scan never sees them (this is why the router runs with `--log-level debug`):
 
@@ -343,7 +349,7 @@ Upstreams probed: <URL_1>, <URL_2>, <URL_3>
 | Check | Verdict | Evidence |
 |---|---|---|
 | GET_BLOCKNUM (router latest_block) | <OK/FAIL> | lava_rpcsmartrouter_latest_block=<value> |
-| GET_BLOCK_BY_NUM (fetch_block counters) | <OK/FAIL/NOT_EXERCISED> | success=<n> fails=<n> |
+| GET_BLOCK_BY_NUM (log hash-reads ∥ fetch_block counters) | <OK/FAIL/NOT_EXERCISED> | hash_read_lines=<n>; metric success=<n> fails=<n> |
 | Parse-signature log lines | <none / excerpt> | <up to 5 lines> |
 
 | Verification | Verdict | Providers OK/failed | Notes |

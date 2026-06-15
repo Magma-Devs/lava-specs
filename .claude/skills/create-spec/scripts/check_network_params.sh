@@ -18,20 +18,27 @@ while IFS=$'\t' read -r idx abt bdff bifp ablqs rt dre msp shares; do
 
   # Compute expected values (guard against abt<=0 to avoid div-by-zero)
   if [[ $abt -le 0 ]]; then
-    EXP_BIFP=3
+    BIFP_FALLBACK=3
     EXP_ABLQS=1
   else
-    EXP_BIFP=$(( (1000 + abt - 1) / abt ))
-    [[ $EXP_BIFP -lt 3 ]] && EXP_BIFP=3
+    BIFP_FALLBACK=$(( (1000 + abt - 1) / abt ))
+    [[ $BIFP_FALLBACK -lt 3 ]] && BIFP_FALLBACK=3
     EXP_ABLQS=$(( (10000 + abt - 1) / abt ))
     [[ $EXP_ABLQS -lt 1 ]] && EXP_ABLQS=1
   fi
 
-  # Compare each field
-  if [[ "$bifp" == "$EXP_BIFP" ]]; then
+  # blocks_in_finalization_proof is FINALITY-TYPED, not a single formula (SKILL.md):
+  #   1                      -> fast/instant finality (BFT/Tendermint/Cosmos/Solana/instant-L2)
+  #   3                      -> probabilistic finality (PoW/slow PoS)
+  #   max(ceil(1000/abt),3)  -> fallback only when the finality model is unclassifiable
+  # The gate can't know the finality class (it isn't stored in the spec), so it accepts
+  # any formula-legal value {1, 3, fallback} and only rejects off-formula numbers (0,2,5,…).
+  # Pinning the fallback as the sole expected value wrongly forced instant-finality chains
+  # (Akash, Algorand) to 3 and overrode synthesis's correct 1 (see Lumia PR #10).
+  if [[ "$bifp" == "1" || "$bifp" == "3" || "$bifp" == "$BIFP_FALLBACK" ]]; then
     PASS+=("blocks_in_finalization_proof|$idx|$bifp")
   else
-    FAIL+=("blocks_in_finalization_proof|$idx|expected=$EXP_BIFP declared=$bifp")
+    FAIL+=("blocks_in_finalization_proof|$idx|declared=$bifp not in legal set {1,3,$BIFP_FALLBACK}")
   fi
 
   if [[ "$ablqs" == "$EXP_ABLQS" ]]; then

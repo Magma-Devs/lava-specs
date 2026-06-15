@@ -22,10 +22,11 @@
    - Fast finality (BFT): 1-3 blocks (e.g., Polygon=1)
    - Instant finality: 1 block
 
-3. **`blocks_in_finalization_proof`**
-   - Formula: `1000ms / average_block_time`
-   - Minimum: 1
-   - Examples: Ethereum=3 (1000/13000≈0.08→3), Polygon=3, StarkNet=3
+3. **`blocks_in_finalization_proof`** — finality-typed (NOT a single formula; see SKILL.md)
+   - `1` — fast/instant finality: BFT, Tendermint/Cosmos, Solana, instant-settlement L2s (e.g. Akash=1, Algorand=1)
+   - `3` — probabilistic finality: PoW / slow PoS (e.g. Ethereum=3, Polygon=3, StarkNet=3)
+   - Fallback (only when the finality model can't be confidently classified): `max(ceil(1000 / average_block_time), 3)` — floors at 3, never falls back to 1
+   - The gate (`check_network_params.sh`) accepts any of `{1, 3, fallback}`; it cannot infer the finality class, so it does not pin one value.
 
 4. **`allowed_block_lag_for_qos_sync`**
    - Formula: `10000ms / average_block_time` AND >= 1

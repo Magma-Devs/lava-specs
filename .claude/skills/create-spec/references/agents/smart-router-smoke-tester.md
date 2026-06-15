@@ -60,13 +60,21 @@ The booted router's chain tracker executes the spec's `GET_BLOCKNUM`/`GET_BLOCK_
 
 ```bash
 sleep 30
+# Source 1 — metrics
 curl -s http://localhost:7779/metrics | grep -E '^lava_(rpc_endpoint_(latest_block|fetch_latest_(fails|success)|fetch_block_(fails|success))|rpcsmartrouter_latest_block)'
+# Source 2 — tracker hash-read log lines (where GET_BLOCK_BY_NUM is actually executed; the fetch_block_*
+# metric is currently never emitted by the router, so this log is GET_BLOCK_BY_NUM's primary positive signal)
+$DOCKER logs sr_<chain> 2>&1 | grep -cE 'Chain Tracker Updated block hashes|Chain Tracker read a block Hash'
 
 PARSE_SIG='failed to parse response|failed formatResponseForParsing|failed ParseBlockHashFromReplyAndDecode|failed CraftChainMessage|Failed parsing default value|blockParsing - |expected parsed hashes length|tried decoding a hex response|failed to parse generic parser path|failed to unmarshal result'
 $DOCKER logs sr_<chain> 2>&1 | grep -E "$PARSE_SIG" | head -20
 ```
 
-Verdict (same rules as Phase 8 Step 3.5): `lava_rpcsmartrouter_latest_block` > 0 → PARSE_BLOCKNUM OK, == 0 or absent → FAIL; `fetch_block_fails` > 0 with `..._success` == 0 → PARSE_BLOCK_BY_NUM FAIL; both block counters 0 → NOT_EXERCISED. Parse-signature lines are the diagnosis, the metrics are the gate (`blockParsing - rpcInput is error` = upstream issue, not directive defect).
+Verdict (same rules as Phase 8 Step 3.5) — **fail-precedence, metric OR log** per directive (a failure from either source beats a positive):
+- **PARSE_BLOCKNUM:** FAIL if `lava_rpcsmartrouter_latest_block` is 0/absent OR a `GET_BLOCKNUM` `PARSE_SIG` line; else OK if that metric > 0 OR a `Chain Tracker Updated block hashes` log line; else NOT_EXERCISED.
+- **PARSE_BLOCK_BY_NUM:** FAIL if (`fetch_block_fails` > 0 with `..._success` == 0) OR a `ParseBlockHashFromReplyAndDecode`/`expected parsed hashes length` line; else OK if `fetch_block_success` > 0 OR a `Chain Tracker Updated block hashes`/`read a block Hash` line (the `fetch_block_*` metric is dead in the current router, so the log is the primary signal); else NOT_EXERCISED.
+
+Parse-signature lines are the diagnosis (`blockParsing - rpcInput is error` = upstream issue, not directive defect); a failure from either source wins over a positive.
 
 Then scan the boot window for verification outcomes (same rules as Phase 8 Step 3.5 (c) — this is where `GET_EARLIEST_BLOCK`/`pruning` and `chain-id` defects surface, including partial provider exclusions that do not fail the boot):
 
