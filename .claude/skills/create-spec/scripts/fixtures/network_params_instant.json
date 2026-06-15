@@ -1,0 +1,17 @@
+{
+  "proposal": {
+    "specs": [
+      {
+        "index": "INSTANTCHAIN",
+        "average_block_time": 6000,
+        "block_distance_for_finalized_data": 1,
+        "blocks_in_finalization_proof": 1,
+        "allowed_block_lag_for_qos_sync": 2,
+        "reliability_threshold": 268435455,
+        "data_reliability_enabled": true,
+        "min_stake_provider": {"denom": "ulava", "amount": "1000000"},
+        "shares": 1
+      }
+    ]
+  }
+}
