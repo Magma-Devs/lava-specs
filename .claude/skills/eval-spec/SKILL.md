@@ -149,6 +149,23 @@ Create the iteration output directory:
 mkdir -p /tmp/eval-spec/$iteration
 ```
 
+**Step 2.0 — Hide the batch golds from the generation working tree (MANDATORY — prevents circular eval).**
+
+`PUBLIC_REPO` is the same checkout the generation agents run in (`git rev-parse --show-toplevel`), so each batch chain's ground-truth `<chain>.json` sits in the working tree. `/create-spec`'s `upstream-spec-scout` does `ls {repo}/<chain>.json` and reads working-tree siblings as templates, and `spec-builder` UNIONs scout-found methods into the spec — so if the target gold is present, the generator reads the answer key and the score is **circular and inflated**. The skill's git-history prohibition only covers golds that are *absent* from the tree; you must make that true here.
+
+For every chain in this batch, MOVE its gold out of the tree into a per-iteration stash (this both hides it from generation AND snapshots it for scoring):
+
+```bash
+GOLD_STASH="/tmp/eval-spec/$iteration/_gold"
+mkdir -p "$GOLD_STASH"
+for ch in <the 7 batch chain filenames, e.g. ethereum osmosis btc ...>; do
+  [ -f "$PUBLIC_REPO/$ch.json" ] && mv "$PUBLIC_REPO/$ch.json" "$GOLD_STASH/$ch.json"
+done
+ls "$GOLD_STASH"   # confirm the golds are stashed (out of the working tree)
+```
+
+This hides ONLY the target chains' own golds — sibling/family templates (e.g. `osmosis.json` for a new Cosmos chain) stay in the tree, so legitimate inheritance templating is preserved. Step 3 scores against `$GOLD_STASH/<chain>.json`; Step 3's restore sub-step moves them back. **If the loop aborts mid-iteration, restore manually: `mv /tmp/eval-spec/$iteration/_gold/*.json "$PUBLIC_REPO"/`.**
+
 Dispatch **7 agents simultaneously**:
 - **Model:** sonnet
 - **subagent_type:** general-purpose
@@ -237,14 +254,14 @@ Dispatch **7 evaluator agents simultaneously**:
 - **subagent_type:** general-purpose
 - **run_in_background:** true
 
-Prompt template (fill `{chain_name}`, `{iteration}`, `{PUBLIC_REPO}`, `{deep_probe}` per agent; inline rubric and instructions):
+Prompt template (fill `{chain_name}`, `{iteration}`, `{deep_probe}` per agent; inline rubric and instructions):
 
 ```
 You are evaluating a generated Lava spec against ground truth.
 
 Chain: {chain_name}
 Generated spec: /tmp/eval-spec/{iteration}/{chain_name}.json
-Upstream spec: {PUBLIC_REPO}/{chain_name}.json
+Upstream spec: /tmp/eval-spec/{iteration}/_gold/{chain_name}.json   # the gold stashed in Step 2.0 (NOT the working-tree copy, which was moved out for unbiased generation)
 deep_probe: {deep_probe}   # true → run Step 2.5 live probe (discover your own free RPCs); false/absent → fast tier
 
 ## Rubric
@@ -257,6 +274,16 @@ Return ONLY a JSON object with the score report. No other text.
 ```
 
 Collect all 7 results and parse each as JSON. A result that fails JSON parsing is treated as a gate failure (score = 0).
+
+**Step 3.9 — Restore the stashed golds to the working tree (MANDATORY).** Now that scoring has read them from the stash, move the golds back so the repo is left intact for the next iteration and for the tuner (which may legitimately read sibling specs):
+
+```bash
+GOLD_STASH="/tmp/eval-spec/$iteration/_gold"
+[ -d "$GOLD_STASH" ] && mv "$GOLD_STASH"/*.json "$PUBLIC_REPO"/ 2>/dev/null
+git -C "$PUBLIC_REPO" status --short | grep -E '\.json$' || true   # should show no deleted/missing spec files
+```
+
+Do NOT skip this — leaving golds in the stash deletes them from the working tree. The next iteration's Step 2.0 re-stashes its own batch.
 
 ---
 

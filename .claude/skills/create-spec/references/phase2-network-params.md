@@ -29,8 +29,9 @@
    - The gate (`check_network_params.sh`) accepts any of `{1, 3, fallback}`; it cannot infer the finality class, so it does not pin one value.
 
 4. **`allowed_block_lag_for_qos_sync`**
-   - Formula: `10000ms / average_block_time` AND >= 1
-   - Examples: Ethereum=2 (10000/13000≈0.77→2), Polygon=5 (10000/2000=5)
+   - Formula: `max(ceil(10000 / average_block_time), 1)` — i.e. tolerate ~10 seconds of block-lag
+   - Examples: Polygon=5 (`ceil(10000/2000)=5`), Cosmos Hub=2 (`ceil(10000/6500)=2`), Ethereum=1 (`ceil(10000/13000)=ceil(0.77)=1`)
+   - This is the verified convention (~64% of existing specs match it exactly, clustering at ~10s tolerance). A few slow-chain specs carry a hand-bumped value (e.g. ETH1's committed spec uses `2`); the formula value is the default — only deviate with a stated reason.
 
 5. **`reliability_threshold`**
    - Default: `268435455` (results in 1/16 VRF ratio)

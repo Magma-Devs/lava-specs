@@ -279,12 +279,16 @@ curl -s -m 10 -X POST http://localhost:3360 \
 
   PASS = valid `result`; "no chain proxy supporting requested extensions" or no-provider error despite a supporting upstream = `TESTED_FAIL`.
 
+**Live-input resolution (do this BEFORE probing parameterized methods).** A probe failure caused by a stale/placeholder argument is a *probe-setup* artifact, not a missing method — e.g. an Algorand stateproof call against `round 1` fails, but against a valid recent round it passes. Before the loop, resolve a handful of live values from the node and substitute them into any param that needs one: latest block number + hash (`GET_BLOCKNUM`/`GET_BLOCK_BY_NUM` already give these), current round/height, a recent tx hash/id if one is cheaply available, a well-known address. **Never probe a method that takes a block/round/height/hash/address with a hardcoded placeholder like `1`, `0x1`, or a zero hash.**
+
+**Re-probe-once gate.** A method whose first probe yields `FAIL`/`WARN`/`TIMEOUT` **and** takes any input argument (block/round/height/hash/address/range) MUST be re-probed ONCE with freshly-resolved live inputs before its result is recorded. Only a failure that *survives* the re-probe is recorded as `FAIL`/`WARN`/`TIMEOUT`; if the re-probe passes, record the pass. `error.code == -32601` (method-not-found) is input-independent — no re-probe needed, record `FAIL` directly. This stops bad-input false-fails from ever reaching the Phase 10 fix list.
+
 Response classification:
 - Response with `result` field (any value, including empty) → **PASS** (method exists and responded).
 - Response with `error.code == -32601` → **FAIL** (method does not exist on chain / not routed).
 - Response with `error.code == -32602` (invalid params) → **PASS-existence** (method exists; full functional probe would need correct args).
-- Response with any other `error.code` → **WARN** (record code + message).
-- Timeout (no response in 10s) → **TIMEOUT**.
+- Response with any other `error.code` → **WARN** (record code + message) — subject to the re-probe-once gate above.
+- Timeout (no response in 10s) → **TIMEOUT** — subject to the re-probe-once gate above.
 - Node disagreement (different upstreams return materially different shapes for the same method) → **WARN-DISAGREEMENT** (record which upstream; the router rotates across them, so repeat the call a few times to surface disagreement).
 
 ## Step 4.5 — Scan the probe window for router errors
