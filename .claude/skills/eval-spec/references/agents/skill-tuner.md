@@ -14,7 +14,8 @@ All paths are relative to the repo root (`git rev-parse --show-toplevel`).
 
 | File | Purpose | May Edit? |
 |------|---------|-----------|
-| `.claude/skills/create-spec/SKILL.md` | Orchestrator — phase boundaries, synthesis rules (Phase 4), CU table, pre-write gate, completeness checklist | YES |
+| `.claude/skills/create-spec/SKILL.md` | Orchestrator — phase boundaries, dispatch wiring, completeness checklist (synthesis rules now live in `spec-builder.md`, not here) | YES |
+| `.claude/skills/create-spec/references/agents/spec-builder.md` | **Synthesis — method-union rules (A–H), CU table, `block_parsing` inference, pre-write/refuse-to-write gate, inheritance audit + disable rule.** This is now the primary tuning target for `method_coverage`, `parse_directives`, and CU/`block_parsing` failures | YES |
 | `.claude/skills/create-spec/references/agents/api-docs-researcher.md` | Research instructions, search queries, output format | YES |
 | `.claude/skills/create-spec/references/agents/chain-metadata-researcher.md` | Search strategies, source priorities, chain ID lookup logic, block-time empirical measurement | YES |
 | `.claude/skills/create-spec/references/agents/upstream-spec-scout.md` | Ecosystem classification, import logic, version detection, template-spec resolution | YES |
@@ -43,7 +44,7 @@ Examine both current iteration results AND `score_history` to identify patterns:
 - **Per-family patterns**: Do specific chain families (EVM, UTXO, Cosmos, standalone) show systematic underperformance?
 - **Regression detection**: Did scores worsen after a previous change? Which categories regressed?
 - **Gate failure patterns**: Are gates failing on the same structural issue repeatedly?
-- **Pre-write gate (rule G) bypasses**: Are generated specs missing methods that the union of researcher + scout discovered? That points at SKILL.md Phase 4's refuse-to-write gate or the synthesis rules being unclear.
+- **Pre-write gate (rule G) bypasses**: Are generated specs missing methods that the union of researcher + scout discovered? That points at spec-builder.md's refuse-to-write gate or the synthesis rules being unclear.
 
 Document what you observe. Look for the ONE most impactful problem to address.
 
@@ -53,14 +54,14 @@ Build a diagnostic table mapping symptoms to likely causes:
 
 | Symptom | Likely Root Cause | Where to Fix |
 |---------|-------------------|--------------|
-| Low `parse_directives` | api-docs-researcher missing critical methods OR SKILL.md Phase 4 rule D/F drift (subscribe/unsubscribe parse-directive completeness; copy-from-template rule) | api-docs-researcher (search strategy) OR SKILL.md Phase 4 rules D, F |
-| Low `method_coverage` (recall) | api-docs-researcher queries too narrow OR upstream-spec-scout not consulted OR Phase 4 rule A (union enforcement) failing | api-docs-researcher (search patterns), upstream-spec-scout (template resolution), OR SKILL.md Phase 4 rule A + refuse-to-write gate (G) |
-| Low `method_coverage` (precision) | Methods being added that don't exist on chain — Phase 5 inheritance ghost-probe skipped | SKILL.md Phase 5 (inheritance audit), api-docs-researcher (verify-not-hallucinate guidance) |
+| Low `parse_directives` | api-docs-researcher missing critical methods OR spec-builder.md rule D/F drift (subscribe/unsubscribe parse-directive completeness; copy-from-template rule) | api-docs-researcher (search strategy) OR spec-builder.md rules D, F |
+| Low `method_coverage` (recall) | api-docs-researcher queries too narrow OR upstream-spec-scout not consulted OR spec-builder.md rule A (union enforcement) failing | api-docs-researcher (search patterns), upstream-spec-scout (template resolution), OR spec-builder.md rule A + refuse-to-write gate (G) |
+| Low `method_coverage` (precision) | Methods being added that don't exist on chain — spec-builder inheritance ghost-probe skipped | spec-builder.md (inheritance audit), api-docs-researcher (verify-not-hallucinate guidance) |
 | Low `chain_metadata` | chain-metadata-researcher source priorities wrong OR empirical block-time fallback skipped OR block-time tie-breaker rule (Phase 4, rule C) violated | chain-metadata-researcher (source order, empirical measurement) OR SKILL.md Phase 4 rule C |
 | Low `verifications` | chain-id curl skipped OR Phase 6 checklist not enforced | SKILL.md Phase 6 (completeness checklist) OR chain-metadata-researcher (chain-id verification step) |
-| Low `plugins_extensions` | plugin-researcher detection signals too weak OR SKILL.md Phase 4 misclassifies subscription methods as add-on (rule B violated) | plugin-researcher (detection signals) OR SKILL.md Phase 4 rule B |
-| Gate failures (jq invalid, missing required fields) | Phase 7 write gate skipped OR template drift in SKILL.md Phase 7 | SKILL.md Phase 7 |
-| One family consistently underperforms | Generic instructions miss that family's quirks | Relevant agent prompt (add family-specific instructions) OR SKILL.md (family-keyed branches in synthesis) |
+| Low `plugins_extensions` | plugin-researcher detection signals too weak OR spec-builder.md misclassifies subscription methods as add-on (rule B violated) | plugin-researcher (detection signals) OR spec-builder.md rule B |
+| Gate failures (jq invalid, missing required fields) | spec-builder write/jq gate skipped OR template drift in spec-builder.md (Step 4) | spec-builder.md |
+| One family consistently underperforms | Generic instructions miss that family's quirks | Relevant agent prompt (add family-specific instructions) OR spec-builder.md (family-keyed branches in synthesis) |
 
 Do NOT assume multiple causes. Identify the single most likely root.
 
@@ -70,8 +71,8 @@ CRITICAL: Only ONE logical change per iteration.
 
 A "logical change" is a single coherent improvement:
 - Adding or refining instructions to one agent
-- Fixing one synthesis rule (A–G) in SKILL.md Phase 4
-- Tightening Phase 6 completeness checklist or Phase 7 write gate
+- Fixing one synthesis rule (A–H) in spec-builder.md
+- Tightening the Phase 6 completeness checklist or spec-builder's write/jq gate
 - Adding family-specific handling to one agent
 - Reverting a previous change if regression detected
 
@@ -106,7 +107,7 @@ Return a JSON object documenting the iteration:
   "root_cause": "<what's causing the failure, based on diagnostic table>",
   "change": {
     "file": "<relative path to edited file>",
-    "section": "<section name or rule letter (e.g. 'Phase 4 rule A')>",
+    "section": "<section name or rule letter (e.g. 'spec-builder rule A')>",
     "description": "<what was changed and why it should improve results>",
     "reverted_previous": true/false
   },

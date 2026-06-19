@@ -19,7 +19,25 @@ You are a subagent dispatched by the create-spec orchestrator to perform Phase 6
 
 Compare the candidate's parse_directives against the canonical matrix below for the given `(api_interface, chain_family)`.
 
-If `(api_interface, chain_family)` is NOT in the matrix → record `LAYER_1: SKIPPED (family unknown: <api_interface>, <chain_family>)` and proceed to Layer 2.
+**Boot-critical presence check — runs for EVERY family, whether or not it is in the matrix, BEFORE anything else.** The smart-router chain tracker cannot initialize without both `GET_BLOCKNUM` and `GET_BLOCK_BY_NUM` parse_directives. But these are frequently **inherited** — EVM L2s import them from ETH1, Cosmos chains from COSMOSSDK/TENDERMINT — so an inheritance-based candidate's own `parse_directives` arrays are empty *by design* (see the matrix notes below). A literal check of the candidate file alone therefore false-FAILs every such spec. Use the inheritance-aware checker, which resolves the candidate's `imports` graph across the sibling specs in the working tree and checks the UNION of the candidate plus all transitive parents:
+
+```bash
+bash .claude/skills/create-spec/scripts/check_directive_presence.sh <spec_path>
+```
+
+Output `OK` → pass. `FAIL missing: <tags> (checked indexes: …)` → Layer 1 FAIL; record the missing tag(s). The script hard-FAILs ONLY when `GET_BLOCKNUM`/`GET_BLOCK_BY_NUM` are absent across the candidate AND every spec it transitively imports — so it passes correct inheritance-based specs while still catching a standalone spec that genuinely lacks them. Do NOT downgrade a real FAIL to SKIPPED. This is authoritative even when the family is unknown.
+
+The `GET_BLOCK_BY_NUM` directive's `function_template` must also carry a numeric placeholder (`%d`, `%x`, or `0x%x`) — without one the router cannot drive it by block number:
+
+```bash
+jq -r '.proposal.specs[].api_collections[].parse_directives[]?
+  | select(.function_tag=="GET_BLOCK_BY_NUM")
+  | if ((.function_template | tostring) | test("%d|%x")) then "OK" else "FAIL no numeric placeholder: \(.api_name)" end' <spec_path>
+```
+
+Any non-`OK` row → Layer 1 FAIL.
+
+If `(api_interface, chain_family)` is NOT in the matrix → the presence check above still applies; record `LAYER_1: SKIPPED (family unknown: <api_interface>, <chain_family>)` only for the template/parser-matching portion, then proceed to Layer 2.
 
 If it IS in the matrix:
 1. Every required `function_tag` for that family MUST exist in the candidate, with the canonical `api_name`.
@@ -129,22 +147,28 @@ Classify:
 
 ## Layer 3 — Live validation (runtime confirmation, when RPC URL provided)
 
-Note: this layer approximates the router's parser with curl+jq (it does not model generic-parser fallback, `encoding` post-processing, or `DefaultValue` degradation). The authoritative runtime check happens later, in Phase 8 Step 3.5, where the dockerized router executes the directives itself and its metrics/log signatures are inspected. Layer 3's job is to catch obvious directive defects cheaply, before a docker boot is paid for.
+Note: Layer 3 models the two router-parser constraints that historically only surfaced at the Phase-8 boot — top-level-array rejection and `GET_BLOCKNUM`→`GET_BLOCK_BY_NUM` counter chaining (steps 4–5 below). It still does not model generic-parser fallback, `encoding` post-processing, or `DefaultValue` degradation; the authoritative runtime check remains Phase 8 Step 3.5. Layer 3's job is to catch the obvious, boot-blocking directive defects cheaply, before a docker boot is paid for.
 
 If `<mainnet_rpc_url>` is empty → record `LAYER_3: SKIPPED (no RPC URL provided)` and skip to the report.
 
 Otherwise, for every `parse_directive` in the candidate (extract with `jq`):
 
-1. Issue the `function_template` as written. Substitute `%d` / `%s` / `%x` / `0x%x` placeholders with reasonable values: the latest block number / its hex form for `GET_BLOCK_BY_NUM`, the literal string `"sub"` for `UNSUBSCRIBE`. Use `curl -s -X POST -H "Content-Type: application/json" --data <template> <mainnet_rpc_url>` with a 10-second timeout.
-2. Walk through `result_parsing.parser_arg` using `result_parsing.parser_func` semantics on the response body.
-3. Verify the extracted value's type matches the directive's `function_tag`:
+1. Issue the `function_template`, interface-appropriately:
+   - `jsonrpc` / `tendermintrpc`: `curl -s -X POST -H "Content-Type: application/json" --data <template> <mainnet_rpc_url>`.
+   - `rest`: `curl -s "<mainnet_rpc_url><template>"` (GET; the template is a URL path/query, e.g. `/blocks-from-bluescore?blueScoreLt=%d`).
+   Substitute `%d` / `%s` / `%x` / `0x%x` with reasonable values (latest block number / its hex form; the literal `"sub"` for `UNSUBSCRIBE`) — EXCEPT for `GET_BLOCK_BY_NUM`, whose placeholder is supplied by step 4. 10-second timeout.
+2. Walk `result_parsing.parser_arg` using `result_parsing.parser_func` semantics on the response body.
+3. Verify the extracted value's type matches the `function_tag`:
    - `GET_BLOCKNUM` → positive integer or hex-int
    - `GET_BLOCK_BY_NUM` → string-typed identifier (block hash / digest)
    - `GET_EARLIEST_BLOCK` → positive integer ≤ the `GET_BLOCKNUM` result
    - `VERIFICATION` (chain-id) → matches the verification's `expected_value`
    - `SUBSCRIBE` / `UNSUBSCRIBE` → cannot fully validate without WebSocket; record as `STRUCTURAL_ONLY` (not a FAIL).
+4. **Counter-chaining (`GET_BLOCK_BY_NUM` only).** Do NOT use an arbitrary "reasonable" number. Take the integer `GET_BLOCKNUM` *actually returned in this same run*, substitute it into the `GET_BLOCK_BY_NUM` template, and issue that request. The response MUST parse (per step 2) to a non-empty block identifier. An empty array / `null` / "not found" here means `GET_BLOCKNUM` and `GET_BLOCK_BY_NUM` sit on different counters (e.g. daaScore vs blueScore) — the chain tracker spins forever at boot → **FAIL**. (If `GET_BLOCKNUM` itself FAILed, record `GET_BLOCK_BY_NUM` as `BLOCKED` — chaining is impossible.)
+   - **Blind spot — range endpoints.** This catches the *empty/error* mismatch of exact-match by-number endpoints (`eth_getBlockByNumber`, cosmos `blocks/{height}`, etc.). A *non-sparse* endpoint (`blueScoreLt=%d`, `…Gte=%d`, "nearest below/above") returns a wrong-but-non-empty block even on a counter mismatch, so it passes this step. When the by-number endpoint is range-typed, additionally assert the returned block's own height/score field is *within a small window* of the requested N (chain-specific field); if it can't be asserted cheaply, record `PARTIAL` and rely on the Phase-8 boot to confirm the counter.
+5. **Top-level-array rejection (`rest` + `PARSE_CANONICAL` only).** The router's `rest` parser cannot index a top-level JSON array — `parser_arg ["0", …]` indexes the response *object*, not an array element. After curling a `rest` directive, assert the body is an object: `jq -e 'type=="object"'`. A top-level array → **FAIL** even though jq alone could walk it, because the live router throws `blockContainer is not map[string]interface{}`. Repoint the directive at an object-returning endpoint.
 
-For each directive, record one row: `(function_tag, api_name, request_size, response_size, extracted_value_or_error, classification)`. Classifications: `PASS`, `FAIL`, `STRUCTURAL_ONLY`.
+For each directive, record one row: `(function_tag, api_name, request_size, response_size, extracted_value_or_error, classification)`. Classifications: `PASS`, `FAIL`, `BLOCKED`, `STRUCTURAL_ONLY`.
 
 Any `FAIL` row → Layer 3 FAIL.
 

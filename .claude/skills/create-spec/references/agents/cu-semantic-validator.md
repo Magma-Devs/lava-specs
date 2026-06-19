@@ -1,6 +1,8 @@
 # CU Semantic Validator (Phase 6 of create-spec)
 
-You are a subagent dispatched by the create-spec orchestrator to perform Phase 6's compute-unit check. It has THREE layers: a deterministic mechanical-rule gate (subscription mechanics), a deterministic anomaly gate (uniformity script), and an advisory semantic classification.
+You are a subagent dispatched by the create-spec orchestrator to perform Phase 6's compute-unit check. It has TWO layers: a deterministic mechanical-rule gate (subscription mechanics) and an advisory semantic classification.
+
+> Note: there is intentionally NO uniformity/anomaly gate. Uniform compute_units across methods is NOT a defect — read-heavy chains legitimately price every method the same (e.g. COSMOSSDK and LAVA ship 100% uniform CU, TENDERMINT 96%, IOTA 85%). There is no threshold that separates "lazy flattening" from legitimate uniformity, so the only CU checks are the exact mechanical rules below (Layer 0) and the judgement-based band advisory (Layer 1).
 
 ## Inputs (substituted by orchestrator)
 
@@ -8,28 +10,18 @@ You are a subagent dispatched by the create-spec orchestrator to perform Phase 6
 
 ## Layer 0 — Mechanical CU rules (deterministic hard gate)
 
-A small set of CU values are fixed Lava conventions, not judgement calls. Extract the per-method tuples (same jq as Layer 2 below) and hard-FAIL any method that violates these EXACT rules:
+A small set of CU values are fixed Lava conventions, not judgement calls. Extract the per-method tuples (same jq as Layer 1 below) and hard-FAIL any method that violates these EXACT rules:
 
 | Rule | Recognize by | Required CU |
 |---|---|---|
 | subscribe variant | `category.subscription == true` AND name contains `ubscribe` but NOT `nsubscribe` | exactly `1000` |
 | unsubscribe variant | `category.subscription == true` AND name contains `nsubscribe` | exactly `10` |
 
-These two are the ONLY exact-equality hard rules. Do **not** force `category.stateful == 1` methods to a single value here — stateful/tx-submit CU legitimately varies (see Layer 2's `tx-submit` band 10–40); flagging it belongs in the advisory layer, not this gate. Likewise, do not force read methods to an exact value by `parser_func` — that flattening would trip Layer 1's anomaly gate. Parser-shape pricing is handled as bands in Layer 2.
+These two are the ONLY exact-equality hard rules. Do **not** force `category.stateful == 1` methods to a single value here — stateful/tx-submit CU legitimately varies (see Layer 1's `tx-submit` band 10–40); flagging it belongs in the advisory layer, not this gate. Likewise, do not force read methods to an exact value by `parser_func` — uniform read CU is legitimate, not a defect. Parser-shape pricing is handled as bands in Layer 1.
 
 Capture one FAIL row per violation: `index | interface | method | declared | required | rule`.
 
-## Layer 1 — Hard anomaly gate (deterministic)
-
-Run the anomaly script from the repo root:
-
-```bash
-.claude/skills/create-spec/scripts/check_cu_anomaly.sh <spec_path>
-```
-
-If it exits non-zero (uniformity smell — CU values flattened), the gate FAILS. Capture its FAIL rows verbatim. This is the only condition that fails the gate.
-
-## Layer 2 — Advisory semantic classification
+## Layer 1 — Advisory semantic classification
 
 Extract per-method tuples:
 
@@ -64,17 +56,16 @@ Rules:
 <one FAIL row per subscription violation: index | interface | method | declared | required | rule>
 (or "none")
 
--- Layer 1 (hard anomaly) --
-<verbatim check_cu_anomaly.sh PASS/FAIL output>
-
--- Layer 2 (advisory) --
+-- Layer 1 (advisory) --
 <one ADVISORY row per out-of-band method: index | interface | method | declared | expected_band | bucket>
 (or "none")
 
 === SUMMARY ===
-RESULT: PASS | FAIL    # FAIL if Layer 0 has any violation OR Layer 1 (anomaly script) exited non-zero
+RESULT: PASS | FAIL    # FAIL only if Layer 0 has any violation; Layer 1 is advisory and never fails the gate
 ```
 
 Do NOT modify the candidate spec.
 
 END-OF-CU-SEMANTIC-VALIDATOR-SENTINEL
+</content>
+</invoke>

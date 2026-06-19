@@ -1,6 +1,6 @@
 ---
 name: create-spec
-description: "Generate a single Lava chain spec JSON file at <chain>.json containing both mainnet and testnet entries under one proposal.specs[] array. Use when the user asks to add support for a new blockchain, create or build a chain spec, or onboard a chain to Lava. Runs a 12-phase pipeline with parallel research agents, formula-gated synthesis, autonomous jq validation, a dockerized smart-router boot + multi-node method probing, and parallel /review-spec reviewers."
+description: "Use when the user asks to add support for a new blockchain, create or build a Lava chain spec, or onboard a chain to Lava. Produces a single <chain>.json with both mainnet and testnet entries under one proposal.specs[] array."
 ---
 
 # Create Spec — Lava Chain Specification
@@ -13,11 +13,12 @@ The skill orchestrates a 12-phase pipeline. It does NOT generate documentation, 
 
 ## Model assignment (per-role)
 
-This skill is cost-optimized as a **hybrid**: the orchestrator (you) inherits whatever model the session runs, while dispatched subagents carry an explicit `model:` per role. Every `Agent(...)` template below already includes the `model:` value to copy. Rationale and override paths:
+This skill is cost-optimized as a **hybrid**: the orchestrator (you) is now a thin conductor — it gathers inputs, dispatches subagents, and routes their verdicts, but does NOT synthesize or hold the spec body — so it can run on a cheap tier. The correctness-critical work lives in the `spec-builder` subagent. Every `Agent(...)` template below already includes the `model:` value to copy. Rationale and override paths:
 
 | Role | Phase | `model:` | Why |
 |---|---|---|---|
-| Orchestrator (synthesis, gate judgment) | 4, 5, 10 | *(inherits session)* | Correctness-critical — run the session on **opus** (or **sonnet** if cost-bound) |
+| Orchestrator (routing, gate judgment) | all | *(inherits session)* | Thin conductor — holds pointers + verdicts, not artifacts. Can run on **sonnet** (or **haiku** for cheap runs); the expensive correctness work is isolated in spec-builder |
+| **Spec-builder (synthesis + inheritance + write)** | 4–5 | `opus` | The one correctness-critical role — derives params, applies the method-union/CU/parse rules, writes the spec. Run it at the top tier; bump to **opus** even when the session is cheaper |
 | Research agents | 3 | `sonnet` | Web search + extraction; token-heavy, so the cheaper tier matters most here |
 | Static validators | 6 | `haiku` | Deterministic-leaning, several jq-backed. **Bump `cu-semantic` / `parse-directive` / `methods-coverage` to `sonnet`** if they emit false PASSes on complex chains |
 | Reviewers (`/review-spec`) | 9, 11 | `sonnet` | Judgment-heavy safety net; **bump to `opus`** if reviews miss issues on hard chains |
@@ -25,6 +26,16 @@ This skill is cost-optimized as a **hybrid**: the orchestrator (you) inherits wh
 | Smart-router boot + probe | 8, 10b | `sonnet` | Mostly docker/curl execution |
 
 To run the whole skill on one tier, ignore the per-role values and set every dispatch's `model:` the same (or drop it to inherit). The `run_stats` report at Phase 12 prints which model(s) actually ran.
+
+## Context discipline (orchestrator) — read first, applies to every phase
+
+Your (the orchestrator's) context is the single most expensive resource in this skill: it persists across all 12 phases and is re-sent every turn, so anything you pull into it is paid for dozens of times over. A subagent's context, by contrast, dies when it returns. So **keep large/transient artifacts OUT of your context — push the work into subagents and hold only pointers + short verdicts.** Rules:
+
+- **Return contract.** Every subagent you dispatch returns at most a short verdict block + a file path — never pasted file contents or long logs. When you need detail, read the file from disk on demand with a *targeted* read (`jq`, `sed -n 'A,Bp'`, `grep`), never a whole-file slurp. Tell each subagent this explicitly if its prompt doesn't already.
+- **The spec body stays on disk.** After Phase 7 writes `<chain>.json`, hold its **path**, not its body. Do NOT `cat`/`Read` the whole file or print line-numbered dumps of it into your context. Inspect specific fields with `jq`; route any step that needs to read/edit the full spec (validation, probe, fix) through a subagent that reads from disk and returns a short result.
+- **Never read smart-router source.** Debugging a boot/probe failure by reading the router's routing/parser/validation code is a permanent context leak. That troubleshooting belongs entirely inside the Phase 8 subagent (which reads that source in its disposable context and returns a one-line diagnosis). If a boot fails and you need more, re-dispatch a subagent — do not read router source yourself.
+- **Subagents read their own reference guides.** Where a subagent needs a `references/*.md` guide, pass it the guide **path** and let it read it, rather than full-reading the guide into your context to brief it. In particular the `spec-builder` subagent reads all the synthesis guides (`phase2`, `phase3.1–3.4`, `appendix`, `pitfalls`) itself — you no longer read them. Read into your own context only what your own routing decisions genuinely need.
+- **Terse, not silent.** Emit one concise status line per phase plus every decision/auto-decision (those feed the PR body and are the user's audit surface) — but skip prose recaps, re-explanations, and "Now I'll… / Let me check…" narration. The full transcript remains for audit; you're cutting output tokens, not transparency.
 
 ## Output target
 
@@ -94,7 +105,7 @@ If the user is vague ("add Polygon"), ask. Don't proceed until you have at minim
 
 Before dispatching, read `references/phase1-research.md` end-to-end (full-read, observe `END-OF-PHASE1-SENTINEL`). It contains the blockchain-analysis framework, third-party-API decision tree, index-naming conventions, and API-discovery patterns that inform how to brief the research agents. Subagents will not read this file themselves — you (the orchestrator) extract the relevant context from it and weave it into each agent prompt's `{chain_name}`, `{docs_url}`, etc. substitutions.
 
-Dispatch five research agents in parallel via a SINGLE message with five Agent tool calls. Each agent runs in the background (`run_in_background: true`) and uses `subagent_type: general-purpose`.
+Dispatch five research agents in parallel via a SINGLE message with five Agent tool calls. Each uses `subagent_type: general-purpose`. Dispatch them in the **foreground** (do NOT set `run_in_background`) — the five calls still run concurrently, but the tool-use keeps your turn open until all five return. This matters in the unattended CI runner: it has no interactive event loop, so the moment you end a turn with work still pending it terminates and reports success with no spec produced. **Never call `ScheduleWakeup`, and never end your turn while subagents are still running — when you have nothing to do but wait, you are waiting, not done.**
 
 Read the five agent prompt files first (full-read with sentinel verification, where applicable):
 
@@ -109,14 +120,14 @@ Substitute placeholders (`{chain_name}`, `{chain_index_lower}`, `{docs_url}`, `{
 Dispatch all five in a single message:
 
 ```
-Agent(description: "Research api-docs for {chain}", subagent_type: "general-purpose", model: "sonnet", run_in_background: true, prompt: <api-docs-researcher.md with placeholders substituted>)
-Agent(description: "Research chain metadata for {chain}", subagent_type: "general-purpose", model: "sonnet", run_in_background: true, prompt: <chain-metadata-researcher.md with placeholders substituted>)
-Agent(description: "Find upstream parent spec for {chain}", subagent_type: "general-purpose", model: "sonnet", run_in_background: true, prompt: <upstream-spec-scout.md with placeholders substituted>)
-Agent(description: "Detect plugins/extensions for {chain}", subagent_type: "general-purpose", model: "sonnet", run_in_background: true, prompt: <plugin-researcher.md with placeholders substituted>)
-Agent(description: "Research archive/prune for {chain}", subagent_type: "general-purpose", model: "sonnet", run_in_background: true, prompt: <archive-researcher.md with placeholders substituted>)
+Agent(description: "Research api-docs for {chain}", subagent_type: "general-purpose", model: "sonnet", prompt: <api-docs-researcher.md with placeholders substituted>)
+Agent(description: "Research chain metadata for {chain}", subagent_type: "general-purpose", model: "sonnet", prompt: <chain-metadata-researcher.md with placeholders substituted>)
+Agent(description: "Find upstream parent spec for {chain}", subagent_type: "general-purpose", model: "sonnet", prompt: <upstream-spec-scout.md with placeholders substituted>)
+Agent(description: "Detect plugins/extensions for {chain}", subagent_type: "general-purpose", model: "sonnet", prompt: <plugin-researcher.md with placeholders substituted>)
+Agent(description: "Research archive/prune for {chain}", subagent_type: "general-purpose", model: "sonnet", prompt: <archive-researcher.md with placeholders substituted>)
 ```
 
-When all five agents complete (you will receive notifications), collect their reports.
+When all five agents return (the foreground dispatch blocks your turn until they do), collect their reports and **write a consolidated research brief to `/tmp/<chain_index_lower>_research_brief.md`** — this is the file the Phase 4 `spec-builder` subagent reads, so it must be self-contained. From the four non-archive reports, distill what synthesis needs: the method union with per-method source tags (researcher / scout / both), network params (including the resolved `average_block_time`), inheritance/template hints, and the plugin/addon list. Do NOT retain all five full reports in your own context — the brief on disk plus the `/tmp/<chain_index_lower>_methods.txt` and `_directives.txt` files are the handoff. (The archive report is the one exception — it must still be printed verbatim per the requirement immediately below, and its resolved decisions are passed to spec-builder as explicit inputs.)
 
 **Before proceeding to Phase 4, print the archive-researcher's full report to the user verbatim — copy the entire block between `=== ARCHIVE RESEARCHER ===` and `END-OF-ARCHIVE-RESEARCHER-SENTINEL` into your response. Do NOT paraphrase, summarize, or condense any section.**
 
@@ -124,7 +135,7 @@ When all five agents complete (you will receive notifications), collect their re
 
 **On `status: NEEDS_HUMAN_DECISION`**: STOP. Quote the `## Conflicts` section and any Recommendation rows marked `chain-discretion` from the report you just printed, and ask the user to make a call on each — specifically: (a) include or omit the `archive` extension on mainnet, (b) include or omit on testnet, (c) the `rule.block` value if mainnet uses archive, (d) the `pruning` verification `expected_value` if it isn't `*`. Record their decisions and use them as Phase-3 inputs when proceeding to Phase 4.
 
-**On `status: OK`**: keep the `## Recommendation` block in working memory and consult it when constructing the spec in Phase 4 — specifically, it determines (a) whether the spec's mainnet entry includes an `archive` extension on the primary api_collection, (b) whether the testnet entry does, (c) the `rule.block` integer value on any archive extension, and (d) the `pruning` verification's `values[0].expected_value` (almost always `"*"`).
+**On `status: OK`**: keep the `## Recommendation` block in working memory and consult it when constructing the spec in Phase 4 — specifically, it determines (a) whether the spec's mainnet entry includes an `archive` extension on the primary api_collection, (b) whether the testnet entry does, (c) the `rule.block` integer value on any archive extension, and (d) the `pruning` verification's archive-tier `expected_value` — the value on the `extension: "archive"` entry (e.g. `values[1]`, NOT `values[0]`, which holds `latest_distance`); commonly `"*"` (wildcard) for non-EVM, or a concrete response like `"0x0"` for the EVM gold (see ETH1).
 
 Then proceed to Phase 4.
 
@@ -138,154 +149,34 @@ wc -l /tmp/<chain_index_lower>_methods.txt
 
 The line count must match the unique-method count in the researcher's structured report. If the file is missing, partial, or has only a few lines despite the report claiming dozens of methods, re-dispatch the api-docs-researcher with explicit instructions to write the file before returning.
 
-## Phase 4 — Synthesis (gated by phase-file reads)
+## Phase 4 — Synthesis (delegated to spec-builder subagent)
 
-Before constructing any spec JSON, you must observe sentinels for these reference files in this order:
+Synthesis — deriving network params, applying the method-union + CU + `block_parsing` rules, the refuse-to-write gate, the inheritance audit, and writing `<chain>.json` — is delegated to the `spec-builder` subagent so the reference guides and the spec body never enter your context. You do three things: resolve the block-time tie-breaker, dispatch spec-builder, and surface what it returns.
 
-1. `references/phase2-network-params.md` → observe `END-OF-PHASE2-SENTINEL`
-2. `references/phase3.1-inheritance.md` → observe `END-OF-PHASE3.1-SENTINEL`
-3. `references/phase3.2-api-methods-configuration.md` → observe `END-OF-PHASE3.2-SENTINEL`
-4. `references/phase3.3-api-collections.md` → observe `END-OF-PHASE3.3-SENTINEL`
-5. `references/phase3.4-parse-directives-and-extensions.md` → observe `END-OF-PHASE3.4-SENTINEL`
-6. `references/appendix-reference-tables.md` → observe `END-OF-APPENDIX-SENTINEL`
-7. `references/common-pitfalls.md` → observe `END-OF-PITFALLS-SENTINEL`
+**Block-time tie-breaker (resolve BEFORE dispatch).** Determine `average_block_time` by this priority and pass the single resolved value to spec-builder:
 
-Then before writing any JSON, emit a **calculations table** to the user showing every derived network parameter and the math behind it:
+1. **Single canonical docs value** → USE IT unless empirical disagrees by >20% (drift ≤20% is RPC jitter; e.g. empirical 3800ms vs docs 4000ms → lock 4000).
+2. **Docs range** → lower bound OR empirical, whichever is lower. Never round up — it cascades into `blocks_in_finalization_proof` and `allowed_block_lag_for_qos_sync`.
+3. **Docs silent** → empirical median.
+4. **>20% disagreement** → ask the user which to trust; in unattended/CI runs, default to the docs value and record the conflict.
 
-| Parameter | Source | Formula | Computed value |
-|---|---|---|---|
-| `average_block_time` | (docs / empirical measurement — cite which) | — | (ms) |
-| `block_distance_for_finalized_data` | (consensus type — PoW=6–12, BFT=1–3, instant=1) | — | (int) |
-| `blocks_in_finalization_proof` | finality-typed | `3` if probabilistic finality (PoW / slow PoS, e.g. Ethereum, Arbitrum); `1` if fast/instant finality (BFT, Tendermint/Cosmos, Solana, BTC-style longest-chain-with-checkpoints, L2s that inherit instant settlement). **Fallback when finality model can't be confidently classified:** `max(ceil(1000 / average_block_time), 3)` (floors at 3 → conservative; never falls back to 1) | (int) |
-| `allowed_block_lag_for_qos_sync` | derived | `max(ceil(10000 / average_block_time), 1)` | (int) |
-| `reliability_threshold` | standard | `268435455` | `268435455` |
-| `data_reliability_enabled` | standard | `true` | `true` |
+**Read the subagent prompt fully** before dispatch:
+- `.claude/skills/create-spec/references/agents/spec-builder.md` (observe `END-OF-SPEC-BUILDER-SENTINEL`)
 
-**Block-time tie-breaker rule (C):** Determine `average_block_time` by this exact priority:
-
-1. **If docs publish a single canonical value** (one number, not a range): **USE THE DOCS VALUE** unless empirical measurement disagrees by MORE than 20%. Drift up to 20% is normal RPC jitter and is NOT a reason to deviate. (For example, if empirical = 3800ms and docs = 4000ms, lock **4000** — the 5% drift is jitter.)
-2. **If docs publish a range** (e.g., "X–Y ms"): use the **lower bound of the range** OR the empirical value, **whichever is lower**. Never round UP "for safety" or "conservatively" — `average_block_time` directly multiplies into `blocks_in_finalization_proof` and `allowed_block_lag_for_qos_sync` via the formulas above, and rounding up cascades into wrong downstream values. (For example, if empirical = 219ms and docs say 200–250ms, lock **200**, not 250.)
-3. **If docs are silent**: use the empirical median directly.
-4. **If empirical and a single docs value disagree by >20%**: ask the user which to trust — do not silently pick one.
-
-After the user has had a chance to challenge the table, construct draft JSON applying these strict synthesis rules:
-
-- **NEVER extract spec content from git history.** You (the orchestrator) MUST NOT run `git show <commit>:specs/...`, `git log -p -- specs/...`, `git restore --source=<commit> specs/...`, or any similar command to retrieve the contents of a spec that previously existed in this repo but is no longer in the working tree. The `upstream-spec-scout` agent is bound by the same rule (see `references/agents/upstream-spec-scout.md`). Two reasons: (1) **Evaluation bias** — when this skill is being evaluated, the "gold" spec being scored against is frequently the recently-deleted file one or two commits back; recovering it via git makes the candidate-vs-gold comparison circular and invalidates the score. (2) **Staleness** — a deleted spec was deleted for a reason, usually because it was wrong; recovering it bakes the defects back in. If the scout's report mentions "X previously existed in git history", treat that as a name-level note only — do NOT go retrieve the file yourself. Build from the chain's current docs + sibling-spec templates in the working tree (e.g., `sui.json` for IOTA).
-- **REJECT all agent "trim", "scope", "exclude", or "narrow" recommendations.** Research agents (api-docs-researcher in particular) may suggest reducing the method set with framing like "scoping suggestions trim to ~50" or "consider excluding the foo_* family". You MUST ignore these suggestions. The full discovered method list is the input to synthesis. Apply only the explicit-omission rule below — never the agent's opinion.
-- **Method-set input = UNION of api-docs-researcher AND upstream-spec-scout (A).** The synthesis input is the union of: (1) every method `api-docs-researcher` discovered from chain docs/WebSearch, AND (2) every method `upstream-spec-scout` found in any existing spec (deleted-from-branch, sister-ecosystem template like `sui.json` for IOTA, an older sibling spec in the working tree, or any matching upstream). If the scout found a method that the researcher didn't, **INCLUDE IT** — existing-spec evidence is higher quality than fresh web search. The only valid reason to omit a scout-found method is an empirical curl proving the method no longer exists on the chain (`-32601 method not found` against the public RPC). "Researcher didn't find it" is NOT a valid omission reason.
-- **All methods from chain docs MUST appear in the spec.** Take the COMPLETE method list (union of researcher + scout) and include every method. The only acceptable reasons to omit are documented in the chain's API reference itself: explicitly marked deprecated, explicitly internal/admin-only, or explicitly platform-specific (e.g., GraphQL-only on a JSON-RPC spec). "The agent suggested trimming" is NOT a valid reason.
-- **Subscription methods belong in MAIN, not in an add-on (B).** Methods with `category.subscription: true` (subscribe/unsubscribe pairs) live in the **same collection as the chain's core read API**, NOT in a separate `add_on: "indexer"` collection. The `indexer` add-on is for methods that require an external indexer service running (e.g., metrics aggregations like `iotax_getNetworkMetrics`, `iotax_getMoveCallMetrics`, address rollups, epoch rollups). Methods served by every regular full node — including dynamic-fields queries, owned-objects, query-events, query-transactions, and ALL subscriptions — belong in MAIN. Cross-check the scout's findings: if the scout's template spec has a method in MAIN, KEEP IT IN MAIN.
-- **Parse-directive completeness for subscriptions (D).** For every API with `category.subscription: true`:
-  - Subscribe variants (method name contains `ubscribe` but NOT `nsubscribe`) → MUST have a matching `parse_directive` entry with `function_tag: "SUBSCRIBE"` and `api_name: "<that method's name>"` in the same collection.
-  - Unsubscribe variants (method name contains `nsubscribe`) → MUST have a matching `parse_directive` entry with `function_tag: "UNSUBSCRIBE"`, an explicit `function_template` (e.g., `"{\"jsonrpc\":\"2.0\",\"method\":\"<name>\",\"params\":[\"%s\"],\"id\":1}"`), and `api_name: "<that method's name>"`.
-  - Without these parse_directives, the methods are listed but the relay layer cannot route them — they are effectively broken.
-- **Parse-directives, extensions, and verifications follow the references — not the template (F).** The canonical structures (function tags, function_template shapes, result_parsing patterns, archive/pruning encoding) live in `references/phase3.4-parse-directives-and-extensions.md` and `references/appendix-reference-tables.md`. You already observed their sentinels in Phase 4 — use that content as the source of truth. A template spec (when `upstream-spec-scout` found one) is a **concrete syntax example** for chains in the same ecosystem — useful for copying the exact `function_template` arg shape for non-obvious cases (e.g., `params: [null, 1, false]` for `GET_EARLIEST_BLOCK` in Sui/IOTA). The reference dictates WHICH elements must exist; the template (if any) shows what they look like. Completeness is enforced by the Phase 6 gates, not by template diff.
-- **Multi-collection splits.** Many chains DO have a legitimate add-on collection (e.g., IOTA's `iotax_*` address-metrics methods, EVM's `debug_*`/`trace_*` add-ons). Add an `add_on` collection ONLY when the methods require external infrastructure (indexer service, archive node, trace database). Default everything else to MAIN.
-- **Every addon and extension has a matching `verifications` block.** An archive extension requires a `pruning` verification with `GET_EARLIEST_BLOCK`. An `add_on` collection requires its own verification (e.g., the indexer collection verifies via `iotax_getTotalTransactions` returning `*`).
-- **SUBSCRIBE and UNSUBSCRIBE methods share the same `local` and `stateful` flags as each other** (typically both `local: false, stateful: 0, subscription: true`).
-- If `imports` is set AND the child's `average_block_time` is materially faster than the parent's: **explicitly override** the inherited `archive.rule.block` and `pruning.latest_distance` in the child's main collection. The parent's values are calibrated for the parent's block rate — silently inheriting them produces a wrong pruning window for the child. (For example, a chain with 1s blocks importing `ETH1` would silently inherit ETH1's archive/pruning sizing that was calibrated for 12s blocks — the resulting archive window is ~12× too short.)
-- `stateful: 1` ONLY for state-modifying broadcasts. Read-only helpers like `eth_call`, `eth_estimateGas`, `eth_fillTransaction`, `debug_traceCall` are `stateful: 0` even when they take tx-shaped args.
-- Every API with `category.hanging_api: true` has an explicit `timeout_ms` set. The `hanging_api` flag alone only adds `2 * average_block_time` to the relay timeout — insufficient on fast chains.
-
-### Per-method `block_parsing` inference (H)
-
-For every method, infer `block_parsing` from the method's argument signature — do NOT default every method to `DEFAULT` / `["latest"]`. Wrong `block_parsing` produces wrong CU values via rule E below, AND breaks block-aware routing at relay time. Map each method through this table:
-
-| Argument shape | `parser_func` | `parser_arg` |
-|---|---|---|
-| Method takes a positional state-selecting identifier (block number, ledger index, checkpoint sequence, object ID, tx hash) — i.e., the arg's value selects WHICH historical state is queried | `PARSE_BY_ARG` | `["<position-index>"]` (e.g., `["0"]` for the first param) |
-| Method takes a request object with a nested state-selecting field | `PARSE_CANONICAL` | dotted path to that field (e.g., `["params", "ledger_index"]`) |
-| Method takes NO state-selecting arg AND returns current-state data (latest balance, current fee, latest block) | `DEFAULT` | `["latest"]` |
-| Method takes a tag like `"latest" \| "earliest" \| "pending"` or a block-or-hash union | `PARSE_DICTIONARY_OR_ORDERED` | the position index or path |
-| Method takes NO args and returns static / computational data (genesis info, network constants, node identity, chain ID) | `EMPTY` | `[""]` |
-
-Cross-check against `references/phase3.2-api-methods-configuration.md` (you already observed `END-OF-PHASE3.2-SENTINEL` in this phase) for the canonical mapping per parser_func.
-
-### CU value rules (E) — mechanical from block_parsing + category
-
-Use this table to assign `compute_units`. The table is exhaustive — do NOT apply "generic CU bands" from memory; map every method through these rules:
-
-| Method shape | CU |
-|---|---|
-| `block_parsing.parser_func == "EMPTY"` (static, no chain state) | 10 |
-| `block_parsing.parser_func == "DEFAULT"` with `parser_arg == ["latest"]` (simple read of current state) | 10 |
-| `block_parsing.parser_func == "PARSE_BY_ARG"` OR `"PARSE_CANONICAL"` (state-by-id query — fetch object/tx/checkpoint by hash or sequence number) | 20 |
-| `block_parsing.parser_func == "PARSE_DICTIONARY_OR_ORDERED"` (block-or-tag query, e.g., EVM `eth_getBlockByNumber`) | 20 |
-| `category.subscription: true` AND method name is a **subscribe** variant (name contains `ubscribe` but NOT `nsubscribe`) | 1000 |
-| `category.subscription: true` AND method name is an **unsubscribe** variant (name contains `nsubscribe`) | 10 |
-| `category.stateful: 1` (broadcast/state-modifying) | 10 |
-| Heavy compute (full-scan, `getLogs`-style) when explicitly classified as such by api-docs-researcher | 60–100 |
-| Traces / debug_* | 100–200 |
-
-If a method falls outside this table, default to 10 and flag to the user. **`unsubscribe` is not a subscribe — never give it CU=1000.** **State-by-id reads are not simple reads — never give them CU=10.**
-
-### Before writing JSON (G): mandatory pre-write summary, refuse-to-write gate
-
-Print to the user this exact summary BEFORE calling Write on the spec file:
+**Dispatch ONE Agent subagent** with `subagent_type: general-purpose`, `model: "opus"` (the one correctness-critical role), no `isolation`. Pass: chain name + mainnet/testnet indices; the research-brief path (`/tmp/<chain_index_lower>_research_brief.md` from Phase 3); the `/tmp/<chain_index_lower>_methods.txt` + `_directives.txt` paths; the resolved `average_block_time` ms value; the archive decisions resolved in Phase 3 (include/omit mainnet, include/omit testnet, `rule.block`, pruning `expected_value`); the mainnet/testnet RPC URLs; and `chain_family` + `api_interface`.
 
 ```
-Methods discovered by api-docs-researcher: <N_researcher>
-Methods found by upstream-spec-scout:      <N_scout>
-Union (deduplicated):                       <N_union>
-Methods included in spec:                   <M> (split: main=<X>, <addon1>=<Y>, ...)
+Agent(description: "Synthesize + write spec for <chain>",
+      subagent_type: "general-purpose",
+      model: "opus",
+      prompt: <spec-builder.md with placeholders substituted>)
 ```
 
-**Refuse-to-write gate.** If `M < N_union`, you MUST list every omitted method with an explicit reason from the allowed set: `deprecated` / `admin-only` / `platform-specific (e.g., GraphQL-only)` / `empirically absent (curl returned -32601 against <node_url>)`. If any omission lacks a documented reason from this set, ADD THE METHOD BACK and re-print the summary before proceeding. Do NOT call the Write tool until either `M == N_union` OR every gap is justified with one of the four allowed reasons.
+When it returns, it gives a compact summary: the calc table, the pre-write counts, the omission ledger, the watch-list, the inheritance-disable ledger, the path, and `jq: valid`. **Print the calc table and the pre-write summary + omission ledger to the user** (audit surface). Read `<chain>.json` only with targeted `jq` if you need to verify a specific field — never slurp the whole file. If it returns `SPEC: BLOCKED`, surface the reason and STOP.
 
-After the summary prints and any gaps are reconciled, validate one more shape detail before Write:
+## Phase 5 — Inheritance audit (folded into spec-builder)
 
-- For every method with `category.subscription: true`, confirm a matching `parse_directive` exists in the same collection (rule D). If any subscription method lacks its parse_directive, ADD IT before writing.
-
-Then call Write.
-
-## Phase 5 — Inheritance audit (CONDITIONAL)
-
-Skip this phase entirely if the mainnet draft's `imports` array is empty.
-
-If `imports != []`, perform the two-step audit from `references/phase3.1-inheritance.md` (you should have already observed its sentinel in Phase 4):
-
-**Step 1 — Parent's APIs vs chain's documented APIs.** Use `jq` to extract parent method names and `comm -23` to diff:
-
-```bash
-PARENT="ETH1"  # or whatever the import is
-# All specs live flat at the repo root; the parent file is the lowercased index.
-PARENT_FILE="${PARENT,,}.json"
-jq -r '.proposal.specs[] | select(.index == "'$PARENT'") | .api_collections[].apis[].name' "$PARENT_FILE" | sort -u > /tmp/parent_methods.txt
-# Compare against chain-docs methods (from api-docs-researcher report); write its method list to /tmp/chain_methods.txt
-comm -23 /tmp/parent_methods.txt /tmp/chain_methods.txt > /tmp/ghosts.txt
-```
-
-For each "ghost" method (in parent but not chain docs), run an empirical curl probe against the chain's public RPC (corroborating evidence only — never decisive on its own):
-
-```bash
-curl -s -X POST -H "Content-Type: application/json" \
-  --data '{"jsonrpc":"2.0","method":"<ghost>","params":[],"id":1}' \
-  <chain_rpc_url>
-```
-
-**Disable rule — positive evidence required.** A probe error (`-32601` or anything else) NEVER justifies disabling by itself: the provided nodes are free-tier/public and a paid or dedicated node may serve the method. Disable or remove a ghost in the child spec ONLY when you ALSO have positive evidence of absence, one of:
-1. The chain's official docs EXPLICITLY state the method is unsupported, removed, or deprecated (cite the URL), or
-2. The chain's node-client implementation does not implement it — check the client's GitHub repo / RPC reference (e.g. op-geth, reth, zebra). A method the client never implements cannot work on any node tier (cite the source URL).
-
-Probe error but no positive-evidence source → retain inheritance and put the method on the watch-list instead. Probe returns anything other than an error → method exists; retain inheritance.
-
-**Justification ledger (enforced).** For EVERY method/addon/collection set to `enabled: false` — in this phase or any later one — append a row to `docs/<chain>/DISABLED_JUSTIFICATIONS.md`:
-
-```
-| <name> | docs-explicit | client-source | <URL> | <one-line quote> |
-```
-
-The Phase 11 final reviewer cross-checks the spec's `enabled: false` entries against this file; any disabled entry without a positive-evidence row is a CRITICAL finding.
-
-**Step 2 — Chain-specific additions.** Diff chain docs against parent:
-
-```bash
-comm -13 /tmp/parent_methods.txt /tmp/chain_methods.txt > /tmp/additions.txt
-```
-
-Every method in `/tmp/additions.txt` MUST appear in the child spec. Commonly missed categories: `admin_*`, `txpool_*`, `*_Sync` variants.
-
-Output the diff results and probe results verbatim to the user before proceeding.
+The inheritance audit — parent-vs-chain ghost diff, the positive-evidence disable rule, the justification ledger, and chain-specific additions — is performed by the `spec-builder` subagent as Step 5 of Phase 4. There is nothing to run here separately: confirm the returned `inheritance:` line (`no imports` / `disabled: …` / `all retained`) is consistent with the chain's `imports` array, and carry any watch-list methods into Phase 8 and the Phase 10 fix list.
 
 ## Phase 6 — Static validation gates (parallel dispatch + single-pass fixer)
 
@@ -356,18 +247,18 @@ Gather inputs:
 - `<retention_blocks>` — integer block count from archive-researcher's `retention_blocks` output, or the literal `unknown`. Passed to `pruning-validator`.
 - `<research_unsupported>` — distilled list of methods research explicitly flagged unsupported/deprecated/`-32601` (from api-docs-researcher / plugin-researcher reports). May be empty. Passed to `enabled-validator`.
 
-**Dispatch all 9 in a single message, each with `subagent_type: general-purpose`, `run_in_background: true`, NO `isolation`.** Validators run on `haiku` by default (deterministic-leaning, several jq-backed); the three semantic gates — `cu-semantic`, `parse-directive`, `methods-coverage` — are marked `sonnet` because they involve judgment. Downgrade those three to `haiku` for max savings, or upgrade the rest to `sonnet` if Phase 6 lets defects through:
+**Dispatch all 9 in a single message, each with `subagent_type: general-purpose`, in the foreground (do NOT set `run_in_background`), NO `isolation`.** Validators run on `haiku` by default (deterministic-leaning, several jq-backed); the three semantic gates — `cu-semantic`, `parse-directive`, `methods-coverage` — are marked `sonnet` because they involve judgment. Downgrade those three to `haiku` for max savings, or upgrade the rest to `sonnet` if Phase 6 lets defects through:
 
 ```
-Agent(description: "Gate: methods coverage", subagent_type: "general-purpose", model: "sonnet", run_in_background: true, prompt: <methods-coverage-validator.md with placeholders substituted>)
-Agent(description: "Gate: parse directives", subagent_type: "general-purpose", model: "sonnet", run_in_background: true, prompt: <parse-directive-validator.md with placeholders substituted>)
-Agent(description: "Gate: chain metadata", subagent_type: "general-purpose", model: "haiku", run_in_background: true, prompt: <chain-metadata-validator.md with placeholders substituted>)
-Agent(description: "Gate: verifications", subagent_type: "general-purpose", model: "haiku", run_in_background: true, prompt: <verifications-validator.md with placeholders substituted>)
-Agent(description: "Gate: extensions", subagent_type: "general-purpose", model: "haiku", run_in_background: true, prompt: <extensions-validator.md with placeholders substituted>)
-Agent(description: "Gate: cu semantic", subagent_type: "general-purpose", model: "sonnet", run_in_background: true, prompt: <cu-semantic-validator.md with placeholders substituted>)
-Agent(description: "Gate: pruning", subagent_type: "general-purpose", model: "haiku", run_in_background: true, prompt: <pruning-validator.md with placeholders substituted>)
-Agent(description: "Gate: enabled", subagent_type: "general-purpose", model: "haiku", run_in_background: true, prompt: <enabled-validator.md with placeholders substituted>)
-Agent(description: "Gate: method schema", subagent_type: "general-purpose", model: "haiku", run_in_background: true, prompt: <method-schema-validator.md with placeholders substituted>)
+Agent(description: "Gate: methods coverage", subagent_type: "general-purpose", model: "sonnet", prompt: <methods-coverage-validator.md with placeholders substituted>)
+Agent(description: "Gate: parse directives", subagent_type: "general-purpose", model: "sonnet", prompt: <parse-directive-validator.md with placeholders substituted>)
+Agent(description: "Gate: chain metadata", subagent_type: "general-purpose", model: "haiku", prompt: <chain-metadata-validator.md with placeholders substituted>)
+Agent(description: "Gate: verifications", subagent_type: "general-purpose", model: "haiku", prompt: <verifications-validator.md with placeholders substituted>)
+Agent(description: "Gate: extensions", subagent_type: "general-purpose", model: "haiku", prompt: <extensions-validator.md with placeholders substituted>)
+Agent(description: "Gate: cu semantic", subagent_type: "general-purpose", model: "sonnet", prompt: <cu-semantic-validator.md with placeholders substituted>)
+Agent(description: "Gate: pruning", subagent_type: "general-purpose", model: "haiku", prompt: <pruning-validator.md with placeholders substituted>)
+Agent(description: "Gate: enabled", subagent_type: "general-purpose", model: "haiku", prompt: <enabled-validator.md with placeholders substituted>)
+Agent(description: "Gate: method schema", subagent_type: "general-purpose", model: "haiku", prompt: <method-schema-validator.md with placeholders substituted>)
 ```
 
 ### Aggregate + single-pass fixer
@@ -375,11 +266,11 @@ Agent(description: "Gate: method schema", subagent_type: "general-purpose", mode
 Wait for all 9 subagents to return. Parse each one's last `RESULT: PASS | FAIL` line.
 
 **Severity routing.** Three of the nine gates emit ADVISORY findings in addition to their `RESULT` line:
-- `cu-semantic` — its Layer-2 ADVISORY rows (out-of-band CU). These DO feed the fixer as suggested CU adjustments.
+- `cu-semantic` — its Layer-1 ADVISORY rows (out-of-band CU). These DO feed the fixer as suggested CU adjustments.
 - `enabled` — its WATCH-LIST rows. These do NOT feed the fixer (never auto-disable — free-tier caveat). Print them to the user and carry them into Phase 8 as a probe watch-list.
 - `pruning` — when it prints `INFO: retention unknown`, treat as PASS (no fix); print the INFO to the user.
 
-A gate's `RESULT: FAIL` (cu-semantic Layer-0 subscription-CU violation or Layer-1 anomaly, pruning >3× off, or any existing hard gate) routes to the fixer as a must-fix. The `enabled` gate's `RESULT` is always PASS.
+A gate's `RESULT: FAIL` (cu-semantic Layer-0 subscription-CU violation, pruning >3× off, or any existing hard gate) routes to the fixer as a must-fix. The `enabled` gate's `RESULT` is always PASS.
 
 **If all 9 RESULTS are PASS**: print a single-line summary to the user (`Phase 6: all 9 gates PASS`) and proceed to Phase 7 (still printing any advisory cu-semantic / enabled-watch-list rows).
 
@@ -393,7 +284,7 @@ A gate's `RESULT: FAIL` (cu-semantic Layer-0 subscription-CU violation or Layer-
    > [paste deduplicated FAIL list with the per-gate sections from the parallel-gate reports]
    >
    > In addition to the FAIL list, the following are ADVISORY CU suggestions from the cu-semantic gate — apply them ONLY if they are clearly correct (a method's CU obviously outside its semantic band); skip any you are unsure about:
-   > [paste cu-semantic Layer-2 ADVISORY rows, or "none"]
+   > [paste cu-semantic Layer-1 ADVISORY rows, or "none"]
    >
    > Return a markdown summary of every change in the format:
    > `- <gate>:<row> — <one-sentence description of fix>`
@@ -409,40 +300,22 @@ A gate's `RESULT: FAIL` (cu-semantic Layer-0 subscription-CU violation or Layer-
 
 4. Do NOT re-run the validators — Phase 9's parallel reviewers and Phase 11's final reviewer catch any residual issues. Proceed to Phase 7.
 
-## Phase 7 — Write & autonomous jq validation
+## Phase 7 — Final jq gate
 
-Write the single file `<chain>.json` using the Write tool. The file structure must match `iota.json`:
-
-```json
-{
-  "proposal": {
-    "title": "Add Specs: <CHAIN>",
-    "description": "<one-sentence description>",
-    "specs": [
-      { "index": "<CHAIN>", "name": "<chain> mainnet", "imports": [], ... },
-      { "index": "<CHAIN_T>", "name": "<chain> testnet",
-        "imports": ["<CHAIN>"],
-        "api_collections": [{ ..., "apis": [], "verifications": [{ "name": "chain-id", "values": [{ "expected_value": "<testnet_hex>" }] }] }] }
-    ]
-  },
-  "deposit": "10000000ulava"
-}
-```
-
-Then run `jq` autonomously and report the result:
+`<chain>.json` was written and jq-validated by the `spec-builder` subagent (Phase 4), and re-validated by the Phase 6 fixer after any edits. This phase is a final gate before the probe — confirm the file on disk is still valid jq **without reading its body into your context**:
 
 ```bash
 jq . <chain>.json > /dev/null
 echo "jq exit: $?"
 ```
 
-If exit is non-zero, capture the error excerpt:
+If exit is non-zero (a fixer edit broke it), capture the excerpt and dispatch the Phase 6 fixer subagent again with the `jq` error to repair it — do NOT open and edit the spec body yourself:
 
 ```bash
 jq . <chain>.json 2>&1 | head -n 20
 ```
 
-Fix the JSON and re-run until exit 0. Do not proceed to Phase 8 until `jq` exits 0.
+Do not proceed to Phase 8 until `jq` exits 0. The canonical file structure (matching `iota.json` — `proposal.title` + `description` + `specs[]` mainnet/testnet + `deposit: "10000000ulava"`) is produced and enforced inside spec-builder, not here.
 
 ## Phase 8 — Smart-router boot + multi-node method probe (delegated subagent)
 
@@ -476,6 +349,8 @@ Agent(description: "Boot smart-router + probe methods for <chain>",
 ```
 
 When the subagent returns, it reports a short summary (`PARSE:` and `VERIFY:` verdicts from the Step 3.5 runtime check, counts including `LOG_WARN`, FAIL/TIMEOUT method names, any methods downgraded to WARN by the probe-window log scan, teardown status) and the path to `docs/<chain>/METHOD_PROBE_REPORT.md`. Read the report from disk if you need detail — do not ask the subagent to echo it back. Carry the log-scan WARNs into the Phase 9 reviewers and the Phase 10 fix list, the same as FAIL methods.
+
+**On `SMOKE: BOOT_FAILED` or an ambiguous probe failure, do NOT debug it yourself by reading smart-router routing/parser/validation source**. The subagent owns that troubleshooting in its disposable context. If its diagnosis is insufficient, re-dispatch the smart-router-tester subagent with the specific failing config/symptom and ask it to localize the cause and return a one-line diagnosis + the relevant log path — then act on that. Reading router source into your own context is a permanent leak and is the single most expensive mistake in this phase.
 
 **Record the `PARSE:` and `VERIFY:` verdicts** — they go into the PR body (CI) and the Phase 12 checklist. A `PARSE: FAIL` or `VERIFY: FAIL` is a spec defect: carry the failing directive/verification (with the agent's diagnosis excerpt) into the Phase 9 reviewers and the Phase 10 fix list as a CRITICAL item — Phase 10b re-runs the same check and reports the post-fix verdict. `PARTIAL` verdicts are upstream-capability findings: record which upstream was excluded, but do not treat them as spec defects.
 
@@ -523,11 +398,11 @@ Dispatch THREE Agent subagents in parallel via a SINGLE message, each with `suba
 >
 > If the rename failed (destination already existed OR source didn't exist because another reviewer's parallel write clobbered yours), retry your `/review-spec` invocation once. Then attempt the rename again.
 >
-> Return:
-> 1. The FULL contents of `docs/<chain>/SPEC_REVIEW_GAPS_parallel_N.md` as the body of your response.
+> Return ONLY (do NOT paste the report body — it is on disk at the path below, and pasting it into your response defeats the Phase 10 consolidation by loading all three reports into the orchestrator's context):
+> 1. The single line `REPORT: docs/<chain>/SPEC_REVIEW_GAPS_parallel_N.md`.
 > 2. On the LAST line of your response, print exactly: `TALLY: CRITICAL=<X> MEDIUM=<Y> MINOR=<Z>` with integer counts.
 >
-> Do not print anything after the TALLY line.
+> Do not paste findings, do not summarize them, and do not print anything after the TALLY line. The Phase 10 consolidation subagent reads the file from disk.
 
 After all three subagents return, in the primary working tree:
 
@@ -547,9 +422,11 @@ wc -l <chain>.json
 
 ## Phase 10 — Synthesize gaps + single fix pass
 
-Read all three parallel-reviewer reports. Build a deduplicated list of CRITICAL + MEDIUM gaps, keyed by `(gap_title, evidence_line_number)`. Drop MINOR gaps (they are out of scope for the automated fix pass).
+**Consolidate the reviews in a subagent — do not read the three full reports into your own context.** Dispatch one `general-purpose` subagent (`model: "sonnet"`) with the three numbered review-report paths + the Phase 8 probe-report path. Its job: read all of them from disk, build a **deduplicated** list of CRITICAL + MEDIUM gaps keyed by `(gap_title, evidence_line_number)`, drop MINOR gaps, apply the disable-suggestion filter below, and **write the result to `docs/<chain>/FIX_LIST.md`** — returning only a one-line count (`N critical, M medium; K disable-suggestions stripped`) + that path. You then read `FIX_LIST.md` (a short file), never the three raw reports. This keeps the probe→review→fix loop state small even across re-runs.
 
-**Disable-suggestion filter (enforced).** Before dispatching the fixer, STRIP from the gap list every suggestion to set `enabled: false` on (or remove) a method, addon, or collection whose only justification is probe results (`-32601`, errors, timeouts on the provided nodes) — free-tier probe failures are never sufficient evidence (Phase 5 disable rule). Keep such a suggestion ONLY if it cites positive evidence of absence (official docs explicitly say unsupported/removed, or the chain's node client does not implement it — with a URL); when keeping one, the fixer must also append the evidence row to `docs/<chain>/DISABLED_JUSTIFICATIONS.md`. Stripped suggestions go to the PR-body watch-list instead, with a note that they need a paid/dedicated node to re-test.
+The consolidation subagent applies this rule when building the list:
+
+**Disable-suggestion filter (enforced).** Before dispatching the fixer, STRIP from the gap list every suggestion to set `enabled: false` on (or remove) a method, addon, or collection whose only justification is probe results (JSON-RPC `-32601`/`-32600`, HTTP `501`/`404`/`405`/`429`/`5xx`, connection errors, or timeouts on the provided nodes) — these are free-tier/gateway artifacts, never sufficient evidence (Phase 5 disable rule). An HTTP `501` from a public upstream is NOT proof the node lacks the method. Keep such a suggestion ONLY if it cites positive evidence of absence (official docs explicitly say unsupported/removed, or the chain's node client does not implement it — with a URL); when keeping one, the fixer must also append the evidence row to `docs/<chain>/DISABLED_JUSTIFICATIONS.md`. Stripped suggestions go to the PR-body watch-list instead, with a note that they need a paid/dedicated node to re-test.
 
 Snapshot the spec before fixing:
 
@@ -559,11 +436,9 @@ cp <chain>.json /tmp/spec_<chain>_pre_fix.json
 
 Dispatch one `general-purpose` Agent subagent (`model: "sonnet"`, no worktree needed — main filesystem) with this prompt:
 
-> You are fixing a Lava blockchain spec. Read `<chain>.json` and the deduplicated gap list below. Apply EVERY listed CRITICAL and MEDIUM fix in one pass. Do not touch any field not mentioned in the gap list. Do not refactor, reformat, or improve adjacent fields.
+> You are fixing a Lava blockchain spec. Read `<chain>.json` and the deduplicated gap list at `docs/<chain>/FIX_LIST.md`. Apply EVERY listed CRITICAL and MEDIUM fix in one pass. Do not touch any field not mentioned in the gap list. Do not refactor, reformat, or improve adjacent fields.
 >
-> You MUST NOT set `enabled: false` on any method, addon, or collection unless the gap entry cites positive documentation/client-source evidence with a URL — probe errors alone never justify disabling. When you do disable one, append its evidence row to `docs/<chain>/DISABLED_JUSTIFICATIONS.md`.
->
-> [paste deduplicated gap list with file:line citations and recommended values]
+> You MUST NOT set `enabled: false` on any method, addon, or collection unless the gap entry cites positive documentation/client-source evidence with a URL — probe errors alone (`-32601`, HTTP `501`/`4xx`/`5xx`, timeouts) never justify disabling. When you do disable one, append its evidence row to `docs/<chain>/DISABLED_JUSTIFICATIONS.md`.
 >
 > Return a markdown summary of every change in the format:
 > `- <file>:<line> — <one-sentence description> (gap: <severity>, "<gap title>")`
