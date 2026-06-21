@@ -302,3 +302,5 @@ Recommendation:
 - Start with ETH1 (ethereum.json)
 - Base Ethereum spec includes all core eth_* methods
 - Add any chain-specific methods if Base exposes additional APIs
+
+END-OF-UPSTREAM-SPEC-SCOUT-SENTINEL

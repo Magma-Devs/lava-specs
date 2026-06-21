@@ -1,6 +1,6 @@
 ---
 name: create-spec
-description: "Use when the user asks to add support for a new blockchain, create or build a Lava chain spec, or onboard a chain to Lava. Produces a single <chain>.json with both mainnet and testnet entries under one proposal.specs[] array."
+description: "Use when the user asks to add support for a new blockchain, create or build a Lava chain spec, or onboard a chain to Lava."
 ---
 
 # Create Spec — Lava Chain Specification
@@ -101,11 +101,15 @@ Ask the user only for what they alone can decide. Do not guess defaults:
 
 If the user is vague ("add Polygon"), ask. Don't proceed until you have at minimum the chain name, mainnet index, and testnet index.
 
-## Phase 3 — Parallel research (5 background agents)
+## Phase 3 — Parallel research (5 foreground Agent calls)
 
 Before dispatching, read `references/phase1-research.md` end-to-end (full-read, observe `END-OF-PHASE1-SENTINEL`). It contains the blockchain-analysis framework, third-party-API decision tree, index-naming conventions, and API-discovery patterns that inform how to brief the research agents. Subagents will not read this file themselves — you (the orchestrator) extract the relevant context from it and weave it into each agent prompt's `{chain_name}`, `{docs_url}`, etc. substitutions.
 
-Dispatch five research agents in parallel via a SINGLE message with five Agent tool calls. Each uses `subagent_type: general-purpose`. Dispatch them in the **foreground** (do NOT set `run_in_background`) — the five calls still run concurrently, but the tool-use keeps your turn open until all five return. This matters in the unattended CI runner: it has no interactive event loop, so the moment you end a turn with work still pending it terminates and reports success with no spec produced. **Never call `ScheduleWakeup`, and never end your turn while subagents are still running — when you have nothing to do but wait, you are waiting, not done.**
+Dispatch five research agents in parallel via a SINGLE message with five Agent tool calls. Each uses `subagent_type: general-purpose`. Dispatch them in the **foreground** (do NOT set `run_in_background`) — the five calls still run concurrently, but the tool-use keeps your turn open until all five return.
+
+**CI foreground rule (mandatory).** In the unattended CI runner there is no interactive event loop: ending a turn with background agents still pending terminates the job and can report success with no spec produced. **Never set `run_in_background`, never call `ScheduleWakeup`, and never end your turn while subagents are still running.** When you have nothing to do but wait, you are waiting, not done.
+
+**Red flag:** "Background agents plus `ScheduleWakeup` saves budget" is wrong for this skill. It loses the unattended run. Use foreground Agent calls and wait for their returns.
 
 Read the five agent prompt files first (full-read with sentinel verification, where applicable):
 

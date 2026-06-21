@@ -195,7 +195,7 @@ LAYERS_RUN: <count>
 FAILED_LAYERS: <list>
 ```
 
-If `RESULT: PASS`, the orchestrator proceeds to Phase 7 (Write). If `RESULT: FAIL`, the orchestrator surfaces your report and stops before Write.
+If `RESULT: PASS`, the orchestrator proceeds to Phase 7 (final jq gate). If `RESULT: FAIL`, the orchestrator surfaces your report and routes the finding through the fix flow before proceeding.
 
 Do NOT modify the candidate spec yourself — your role is gate-only. The orchestrator (or its fix loop) handles edits.
 

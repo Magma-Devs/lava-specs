@@ -205,3 +205,5 @@ Use the Write tool to create the file. After writing, run `wc -l /tmp/<chain_ind
 - Flag uncertainty explicitly ("According to docs, method X appears to..." vs "Method X is...")
 - Distinguish between stable/experimental APIs if documentation indicates
 - Note any deprecated methods encountered
+
+END-OF-API-DOCS-RESEARCHER-SENTINEL
