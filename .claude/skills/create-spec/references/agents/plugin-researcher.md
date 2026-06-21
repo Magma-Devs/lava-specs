@@ -361,3 +361,5 @@ If docs are unclear or conflicting:
 
 **Skip:**
 - Trace API (requires specific client implementation, not standard)
+
+END-OF-PLUGIN-RESEARCHER-SENTINEL

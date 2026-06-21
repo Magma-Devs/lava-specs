@@ -27,7 +27,7 @@ Print to stdout:
 RESULT: PASS | FAIL
 ```
 
-Where `RESULT: PASS` corresponds to `status: OK` and `RESULT: FAIL` corresponds to `status: FAIL`. The orchestrator aggregates this across all 7 gates.
+Where `RESULT: PASS` corresponds to `status: OK` and `RESULT: FAIL` corresponds to `status: FAIL`. The orchestrator aggregates this across all 9 gates.
 
 Do NOT modify the candidate spec — gate-only.
 
