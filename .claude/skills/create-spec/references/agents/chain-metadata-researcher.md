@@ -179,14 +179,10 @@ No conflicts detected. All sources agree on core values.
 When the user has NOT provided a docs URL or RPC URLs, you must:
 
 - Select the docs URL yourself and report which URL you picked plus a one-sentence reason (e.g., "official chain documentation," "chain's GitHub `docs/` folder").
-- Select **2-3** public RPC URLs (mainnet) and **2-3** testnet URLs (if a testnet variant is being created). Report each URL plus its source. Sources to consult, in order:
-  1. Official chain documentation (RPC endpoints section)
-  2. https://www.comparenodes.com/ — public RPC node aggregator
-  3. https://chainlist.org/ — wallet-oriented RPC list (last resort)
 
-### 2. Why 2-3 nodes
+### 2. Endpoint selection is not your job
 
-Downstream Phase 8 will probe every API across all of the URLs you return. Picking 2-3 independent nodes lets the probe step detect when one node disagrees with the others (a chain-id mismatch, schema drift, or stale node) and flag it as WARN rather than masking it as FAIL.
+Per-interface RPC / ws / gRPC endpoint discovery is handled by the `endpoint-discovery` agent at Phase 7.5 against the resolved spec, not here. You only need **one** reachable node to measure block-time (§3) — pick any documented public RPC for that and report it; do not assemble the multi-interface endpoint set.
 
 ### 3. Empirical block-time fallback
 

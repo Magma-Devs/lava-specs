@@ -209,8 +209,8 @@ Combine Layers 1 + 2 into concrete spec values:
 
 - **pruning verification expected_value** — the value the archive verification expects when it queries a historical (pre-pruning) block on an archive node:
   - **EVM (jsonrpc) chains**: emit `0x0`. The archive verification reads a historical balance (`eth_getBalance` at an early block), which returns `0x0` — this is the established convention in the EVM golds (ETH1, Avalanche-C, Fantom) and what spec-builder expects.
-  - **Non-EVM chains**: emit `*` (wildcard) — no stable queryable pruning marker exists, so any non-error response passes.
-  Never invent a chain-specific marker (a stray block number where a marker belongs is a bug). If you believe a chain needs something other than `0x0`/`*`, do NOT emit a concrete value — set `status: NEEDS_HUMAN_DECISION` and document your finding in the Conflicts section so the orchestrator + user can decide.
+  - **Non-EVM chains**: emit `"1"` (archive retains from block 1). The router parses the archive-tier pruning `expected_value` as a base-10 integer on the `GET_BLOCK_BY_NUM` path, so a wildcard `*` is invalid and excludes the archive provider at boot. If a distance-based check is preferred, set `latest_distance` on the archive entry and omit `expected_value`.
+  Never emit `*` for the archive-tier pruning `expected_value`, and never invent a chain-specific marker (a stray block number where a marker belongs is a bug). If you believe a chain needs something other than `0x0` (EVM) / `"1"` (non-EVM), do NOT emit a concrete value — set `status: NEEDS_HUMAN_DECISION` and document your finding in the Conflicts section so the orchestrator + user can decide.
 
 ### Layer 4 — Conflicts
 
@@ -250,7 +250,7 @@ Return EXACTLY this structure, with `<placeholders>` filled in. No leading or tr
 - retention_blocks: <int> — <derivation level: documented-blocks | documented-time | client-default | 1h-fallback>
 - rule.block: <int> — = retention_blocks
 - pruning.latest_distance: <int> — = retention_blocks
-- pruning expected_value: <value or "*"> — <reason>
+- pruning expected_value: <base-10 integer, e.g. "1"; or "0x0" for EVM; never "*"> — <reason>
 
 ## Conflicts
 <one bullet per disagreement between docs and probe, or "none">
