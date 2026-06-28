@@ -137,9 +137,9 @@ When all five agents return (the foreground dispatch blocks your turn until they
 
 **If the archive-researcher's report is missing the `=== ARCHIVE RESEARCHER ===` start marker, missing the `END-OF-ARCHIVE-RESEARCHER-SENTINEL` end marker, or has no `SUMMARY: status:` line**, re-dispatch the archive-researcher with explicit instructions to emit the full output template (Sources, Doc-mined defaults, Live probe results, Recommendation, Conflicts, and SUMMARY) before returning. Do not proceed to Phase 4 with a malformed report.
 
-**On `status: NEEDS_HUMAN_DECISION`**: STOP. Quote the `## Conflicts` section and any Recommendation rows marked `chain-discretion` from the report you just printed, and ask the user to make a call on each — specifically: (a) include or omit the `archive` extension on mainnet, (b) include or omit on testnet, (c) the `rule.block` value if mainnet uses archive, (d) the `pruning` verification `expected_value` if it isn't `*`. Record their decisions and use them as Phase-3 inputs when proceeding to Phase 4.
+**On `status: NEEDS_HUMAN_DECISION`**: STOP. Quote the `## Conflicts` section and any Recommendation rows marked `chain-discretion` from the report you just printed, and ask the user to make a call on each — specifically: (a) include or omit the `archive` extension on mainnet, (b) include or omit on testnet, (c) the `rule.block` value if mainnet uses archive, (d) the `pruning` verification `expected_value` (a base-10 integer such as `"1"`, or omit it with `latest_distance` set; never `*`). Record their decisions and use them as Phase-3 inputs when proceeding to Phase 4.
 
-**On `status: OK`**: keep the `## Recommendation` block in working memory and consult it when constructing the spec in Phase 4 — specifically, it determines (a) whether the spec's mainnet entry includes an `archive` extension on the primary api_collection, (b) whether the testnet entry does, (c) the `rule.block` integer value on any archive extension, and (d) the `pruning` verification's archive-tier `expected_value` — the value on the `extension: "archive"` entry (e.g. `values[1]`, NOT `values[0]`, which holds `latest_distance`); commonly `"*"` (wildcard) for non-EVM, or a concrete response like `"0x0"` for the EVM gold (see ETH1).
+**On `status: OK`**: keep the `## Recommendation` block in working memory and consult it when constructing the spec in Phase 4 — specifically, it determines (a) whether the spec's mainnet entry includes an `archive` extension on the primary api_collection, (b) whether the testnet entry does, (c) the `rule.block` integer value on any archive extension, and (d) the `pruning` verification's archive-tier `expected_value` — the value on the `extension: "archive"` entry (e.g. `values[1]`, NOT `values[0]`, which holds `latest_distance`); a base-10 integer for non-EVM (commonly `"1"`, archive from block 1; never `"*"` — the router parses it as an integer and would exclude the archive provider at boot), or `"0x0"` for the EVM gold (see ETH1); alternatively omit `expected_value` and rely on `latest_distance`.
 
 Then proceed to Phase 4.
 
@@ -319,19 +319,28 @@ If exit is non-zero (a fixer edit broke it), capture the excerpt and dispatch th
 jq . <chain>.json 2>&1 | head -n 20
 ```
 
-Do not proceed to Phase 8 until `jq` exits 0. The canonical file structure (matching `iota.json` — `proposal.title` + `description` + `specs[]` mainnet/testnet + `deposit: "10000000ulava"`) is produced and enforced inside spec-builder, not here.
+Do not proceed to Phase 7.5 until `jq` exits 0. The canonical file structure (matching `iota.json` — `proposal.title` + `description` + `specs[]` mainnet/testnet + `deposit: "10000000ulava"`) is produced and enforced inside spec-builder, not here.
+
+## Phase 7.5 — Endpoint discovery (delegated subagent)
+
+Now that the spec is resolved, discover and validate an upstream endpoint for **every** interface, subscription, and addon it declares — including ones inherited from imports (gRPC, ws subscriptions, addons) that were invisible at Phase 2/3. This is why discovery runs here, not in the Phase 3 research fan-out.
+
+**Dispatch ONE Agent subagent** with `subagent_type: general-purpose`, no `isolation`. Pass: `<spec_path>`, `<chain_name>`, `<chain_family>`, `<mainnet_index>`, `<testnet_index>`. Before dispatching, read `.claude/skills/create-spec/references/agents/endpoint-discovery.md` end-to-end (observe `END-OF-AGENT-ENDPOINT-DISCOVERY-SENTINEL`) and pass the agent its file path.
+
+When it returns, collect (a) the **keyed candidate list** — `{network, interface, kind, addon_name, url, transport, source_url, validation}` — which becomes the Phase 8 input, and (b) the **coverage matrix**. Write the coverage matrix into the PR body and the Phase 12 checklist. Carry every `NOT_TESTABLE` row forward verbatim (with its searched-sources evidence) — a requirement with no endpoint is a transparent gap, not a spec defect and not a STOP.
 
 ## Phase 8 — Smart-router boot + multi-node method probe (delegated subagent)
 
 This phase boots the candidate spec inside a dockerized **smart-router** (`ghcr.io/magma-devs/smart-router:main`) and probes every method through it. There is NO local lava node, NO gov proposal, and NO provider/consumer `screen` sessions — the smart-router loads the spec graph statically (`--use-static-spec`) and relays to the chain's public RPC upstreams, so a boot is seconds-to-a-minute. It is delegated to a single `general-purpose` subagent so the orchestrator's context stays free of boot/probe output. You (the orchestrator) do NOT run docker, write the router config, or run probes yourself — you only dispatch and collect the result.
 
-**Inputs to gather before dispatch** (from earlier phases — do NOT re-research):
+**Inputs to gather before dispatch** (from earlier phases — do NOT re-research). The per-interface endpoints come from the **Phase 7.5 keyed candidate list** (validated-OK entries), NOT from a flat URL list:
 - `<chain>` — lowercased chain name (filename stem, e.g., `iota`)
 - `<INDEX>` — spec index UPPERCASE (e.g., `IOTA`) — must match the spec's `proposal.specs[].index`
 - `<INTERFACE>` — `jsonrpc` | `rest` | `grpc` | `tendermintrpc` (the spec's `api_collections[].collection_data.api_interface`)
-- `<NODE_URL_1>` (required), `<NODE_URL_2>`, `<NODE_URL_3>` (optional) — 1–3 public node URLs (https://… or wss://…) — from Phase 2 or chain-metadata-researcher. At least one is required to boot.
-- `<WS_URL>` (optional in general, **REQUIRED for any spec with subscription methods** — e.g. an EVM chain inheriting `eth_subscribe` from ETH1) — a `ws://`/`wss://` URL. The smart-router excludes any provider that lacks a ws upstream for a subscription-enabled chain, and refuses to boot once all providers are excluded (`all static providers failed verification — cannot serve endpoint`). If the chain has subscriptions and no ws URL is available, gather one before Phase 8 or the boot fails.
-- `<EXTRA_INTERFACES>` (optional) — additional `(INTERFACE, urls)` blocks for multi-interface chains (Cosmos)
+- The validated endpoints for each interface from Phase 7.5, **with their transport** preserved (e.g. gRPC `grpcs://` vs `grpc://`+insecure). At least one usable upstream is required to boot.
+- The validated **subscription (ws)** endpoint for any interface whose Phase-7.5 row is a subscription requirement. The smart-router excludes any provider that lacks a ws upstream for a subscription-enabled chain, and refuses to boot once all providers are excluded (`all static providers failed verification — cannot serve endpoint`).
+- For multi-interface chains (Cosmos), pass one `(INTERFACE, validated-urls, transport)` block per interface from the candidate list.
+- Any requirement Phase 7.5 marked `NOT_TESTABLE` is expected to come back `NOT_TESTABLE` from the probe too — carry its evidence into the report rather than treating the absence as a defect.
 - `<TESTNET_INDEX>` + `<TESTNET_NODE_URL_1..2>` + `<TESTNET_WS_URL>` — testnet spec index and node URLs from Phase 2/3 research. Pass them whenever ANY testnet RPC URL is known, so the subagent runs its Step 7 testnet verification pass (boot + verifications against the TESTNET variant — the only place the testnet chain-id `expected_value` is ever live-executed) and its Step 8 testnet block-time measurement. If no testnet URL is known, the testnet pass comes back SKIPPED — note that in the PR body and Phase 12 checklist.
 
 **Boot is mandatory whenever at least one node URL is available.** Boot and probe with however many URLs you have (1, 2, or 3) — the router's startup spec resolution + upstream verification catches spec-level defects (e.g. a result_parsing bug or a wrong chain-id `expected_value` that blocks startup) that the static gates cannot see, so a single URL is worth booting. The orchestrator must not invent URLs.

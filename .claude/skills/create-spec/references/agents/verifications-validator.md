@@ -14,7 +14,7 @@ bash .claude/skills/create-spec/scripts/check_verifications.sh <spec_path>
 
 The script emits three sections: `=== PASS ===`, `=== FAIL ===`, `=== INFO ===`. Exit 0 if no FAIL rows, 1 otherwise.
 
-`INFO` rows (e.g., `expected_value is wildcard '*'`) are not failures — they indicate the verification uses a wildcard placeholder which is legitimate for verification types like `pruning` where the field's content doesn't need to match a specific value. Include them in your report for transparency, but they do NOT cause `RESULT: FAIL`.
+`INFO` rows are not failures. EXCEPTION — archive-tier `pruning`: an `expected_value` of `"*"` (or any non-base-10-integer) on a verification whose `function_tag` is `GET_BLOCK_BY_NUM` with no `latest_distance` is a **RESULT: FAIL** — the router parses it as an integer and excludes the archive provider at boot. A wildcard remains legitimate INFO for other verification fields and other `function_tag` paths. Include all INFO rows in your report for transparency.
 
 ## Return to orchestrator
 

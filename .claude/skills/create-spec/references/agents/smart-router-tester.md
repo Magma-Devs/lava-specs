@@ -11,9 +11,20 @@ Unlike the old local-provider flow, there is **no lava node, no gov proposal, no
 - `<chain>` — the lowercased chain name (e.g., `iota`, `polygon`) — used for filenames/container name
 - `<INDEX>` — the spec index UPPERCASE (e.g., `IOTA`, `IOTAT`) — must equal the `chain-id` in both the spec and the router config
 - `<INTERFACE>` — one of `jsonrpc`, `rest`, `grpc`, `tendermintrpc`
-- `<NODE_URL_1>`, `<NODE_URL_2>`, `<NODE_URL_3>` — 1–3 public node URLs (https://... ; ws/wss for subscriptions)
+- `<NODE_URL_1>`, `<NODE_URL_2>`, `<NODE_URL_3>` — 1–3 public node URLs (https://... ; ws/wss for subscriptions). These come from the **Phase 7.5 keyed candidate list** (validated-OK entries), each with a known transport — use the transport as given; do not re-derive it.
 - `<WS_URL>` (optional) — a separate WebSocket URL for chains with subscriptions; if provided, add it to every `direct-rpc` block's `node-urls` list
-- `<EXTRA_INTERFACES>` (optional) — for multi-interface chains (e.g., Cosmos: rest + tendermintrpc + grpc), a list of additional `(INTERFACE, urls)` blocks; each gets its own listener port (3361, 3362, …) and its own `direct-rpc` upstreams
+- `<EXTRA_INTERFACES>` (optional) — for multi-interface chains (e.g., Cosmos: rest + tendermintrpc + grpc), a list of additional `(INTERFACE, urls, transport)` blocks from the candidate list; each gets its own listener port (3361, 3362, …) and its own `direct-rpc` upstreams
+
+**gRPC node-url config shape (do not improvise):** TLS gRPC uses `grpcs://host:port`. Plaintext gRPC uses `grpc://host:port` AND requires both `grpc-config.allow-insecure: true` on the node-url entry **and** the `--allow-insecure-provider-dialing` CLI flag on the router (neither alone is sufficient; `disable-tls` / top-level `allow-insecure` are ineffective). A bare `host:port` is rejected with `invalid gRPC URL scheme`. Example plaintext entry:
+```yaml
+- url: "grpc://host:port"
+  grpc-config:
+    allow-insecure: true
+```
+
+**gRPC per-method probing is direct-to-upstream.** The smart-router gRPC listener exposes no server reflection, so `grpcurl`-through-the-router is impossible. Boot, verifications, and chain-tracking go *through* the router (and prove routing works); per-method probes hit the upstream `node-url` directly. Label these rows in the report as direct-upstream — do not imply through-router method coverage for gRPC.
+
+**Carry forward `NOT_TESTABLE` from Phase 7.5.** For any interface/subscription/addon the candidate list marked `NOT_TESTABLE` (no endpoint found), report it `NOT_TESTABLE` with the discovery agent's "searched [sources] → none" reason — not as a probe failure or spec defect.
 - `<TESTNET_INDEX>` (optional) — the testnet spec index UPPERCASE (e.g., `IOTAT`); empty → skip the Step 7 testnet pass
 - `<TESTNET_NODE_URL_1>`, `<TESTNET_NODE_URL_2>` (optional) — testnet node URLs for the Step 7 testnet verification pass and the Step 8 testnet block-time measurement
 - `<TESTNET_WS_URL>` (optional) — testnet `ws://`/`wss://` URL; required for the testnet pass when the spec has subscription methods (same hard requirement as Step 1b)
