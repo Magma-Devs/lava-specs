@@ -22,8 +22,8 @@ Three skills build and maintain chain specs. Each is a slash command in Claude C
 
 - Trigger: "add support for <chain>", "create a Lava spec for <chain>", or positional args:
   ```
-  /create-spec Iota IOTA IOTAT
-  #            name mainnet testnet  [+ free-text: docs/RPC URLs, inheritance hints]
+  /create-spec Iota   IOTA      IOTAT
+  #            name   mainnet   testnet  [+ free-text: docs/RPC URLs, inheritance hints]
   ```
 - Asks you for: chain name, mainnet index, testnet index (required); docs URL, RPC URLs, inheritance hint (optional — it researches these if omitted).
 - If `<chain>.json` exists it asks: use as base / adapt / scratch.
@@ -57,6 +57,11 @@ Two workflows automate the same pipeline headless:
 
 - **Create Spec** (`create_spec.yml`) — Actions tab → "Create Spec" → Run workflow. Inputs: `chain_name`, `chain_mainnet_index`, `chain_testnet_index`, `additional_data` (docs/node URLs, hints). Runs phases 1–7 and opens a PR.
 - **Spec Pipeline** (`spec_pipeline.yml`) — fires automatically when that PR opens (boot/probe → review → fix → final, phases 8–11).
+
+**Create Spec** example:
+<kbd>
+  <img width="1300" height="917" alt="image" src="https://github.com/user-attachments/assets/c98cc2ae-5ed5-47b9-8984-e88979b76ddd" />
+</kbd>
 
 **Rerun phases via PR comment** (on the spec PR):
 ```
