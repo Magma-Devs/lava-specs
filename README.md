@@ -1,4 +1,10 @@
-# Lava Specs — skill workflow
+# Lava Specs
+
+Chain specifications for the [Lava Network](https://www.lavanet.xyz/). Each `<chain>.json` at the repo root defines the APIs a provider commits to serving for one blockchain (mainnet + testnet entries), used to onboard that chain to Lava.
+
+## Skill-assisted workflow
+
+The repo ships Claude Code skills (slash commands) to build, audit, and tune these specs.
 
 Three skills build and maintain chain specs. Each is a slash command in Claude Code.
 
@@ -48,6 +54,7 @@ Three skills build and maintain chain specs. Each is a slash command in Claude C
 - Needs a local clone of `Magma-Devs/lava-specs` (ground truth). Set `LAVA_SPECS_REPO=<path>` if not auto-found.
 - Backs up `create-spec/` before editing; loops 8–30 iterations (or 2h), converges at 3 consecutive batch averages > 85.
 - Fast tier = deterministic (`scripts/compare_spec.sh`); deep tier adds LLM judgment + live RPC probes.
+- ⚠️ Token-heavy: each iteration generates ~7 specs and runs evaluator/tuner agents — expect large token spend over a full run. Use sparingly.
 
 **Rerun:** just re-invoke. To revert a bad tuning run, restore from the `create-spec.backup-<timestamp>` dir it created.
 
