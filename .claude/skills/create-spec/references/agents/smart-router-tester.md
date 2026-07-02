@@ -206,8 +206,14 @@ Once booted, the router's chain tracker continuously *executes* the spec's parse
 
 ```bash
 sleep 30
-# Source 1 — metrics
-curl -s http://localhost:7779/metrics | grep -E '^lava_(rpc_endpoint_(latest_block|fetch_latest_(fails|success)|fetch_block_(fails|success))|rpcsmartrouter_latest_block)'
+# Source 1 — metrics. The metric names are PREFIX-AGNOSTIC on purpose: smart-router
+# v1.0.4 (PR #138, "drop the lava prefix") renamed every Prometheus metric —
+# `lava_rpcsmartrouter_latest_block` → `smartrouter_latest_block`, and
+# `lava_rpc_endpoint_*` → `rpc_endpoint_*`. The `:main` image now emits the NEW
+# names; older pinned images emit the old `lava_`-prefixed ones. The `(lava_)?`
+# and `(rpcsmartrouter|smartrouter)` alternations below match BOTH so this check
+# never silently falls through to the log-only path just because of the rename.
+curl -s http://localhost:7779/metrics | grep -E '^(lava_)?(rpc_endpoint_(latest_block|fetch_latest_(fails|success)|fetch_block_(fails|success))|(rpcsmartrouter|smartrouter)_latest_block)'
 # Source 2 — the tracker's hash-read log lines: this is where GET_BLOCK_BY_NUM is actually executed.
 # (The fetch_block_* metric is currently never emitted by the router — RecordBlockFetch is only ever
 #  called with isLatest=true — so for GET_BLOCK_BY_NUM the LOG is the primary positive signal.)
@@ -218,10 +224,12 @@ Classify each directive with **fail-precedence** — check the FAIL condition fi
 
 | Directive | FAIL if … | else OK if … | else |
 |---|---|---|---|
-| **PARSE_BLOCKNUM** | `lava_rpcsmartrouter_latest_block` is `0`/absent, **or** a `PARSE_SIG` line (step b) names the `GET_BLOCKNUM` path | `lava_rpcsmartrouter_latest_block` > 0 (metric) **or** a `Chain Tracker Updated block hashes` line (log) | **NOT_EXERCISED** — tracker never ran; usually a boot problem, investigate |
+| **PARSE_BLOCKNUM** | the `*_latest_block` gauge (`smartrouter_latest_block`, or legacy `lava_rpcsmartrouter_latest_block`) is `0`/absent, **or** a `PARSE_SIG` line (step b) names the `GET_BLOCKNUM` path | that `*_latest_block` gauge > 0 (metric) **or** a `Chain Tracker Updated block hashes` line (log) | **NOT_EXERCISED** — tracker never ran; usually a boot problem, investigate |
 | **PARSE_BLOCK_BY_NUM** | `fetch_block_fails` > 0 with `..._success` == 0 (metric), **or** a `PARSE_SIG` line (step b) names `ParseBlockHashFromReplyAndDecode` / `expected parsed hashes length` (log) | `fetch_block_success` > 0 (metric) **or** ≥1 `Chain Tracker Updated block hashes` / `read a block Hash …` line (log — tracker read & stored by-number hashes) | **NOT_EXERCISED** |
 
 The metric-OR-log design is deliberate and self-healing: the `fetch_block_*` metric is dead in the current router, so `PARSE_BLOCK_BY_NUM: OK` comes from the **log**; if the router later wires the metric it simply becomes a second positive source, no doc change. A few `fetch_latest_fails` alongside a healthy `latest_block` is transient endpoint noise, not a directive defect — the rules above decide, the logs explain.
+
+**Slot-based chains (Solana, Ethereum Beacon) — missed-slot 404s are NOT a directive defect.** On chains whose block-number is a slot with gaps, `GET_BLOCK_BY_NUM` (`getBlock(%d)` / `/eth/v1/beacon/headers/%d`) returns 404/"not found" whenever the tracker walks onto an EMPTY slot (~1% of slots). With a SINGLE upstream, the tracker's retries on that empty slot can drive the one provider's availability below the routing threshold and yield "No pairings available" — a deployment/upstream-count artifact, NOT a `PARSE_BLOCK_BY_NUM` defect. Classify PARSE from the rules above: if the tracker read ANY by-number hash before the empty slot (a `Chain Tracker Updated block hashes` / `read a block Hash` line with the `parser_arg` pointing at the block hash/root, not the echoed slot), PARSE_BLOCK_BY_NUM is **OK** — report the availability degradation as a `SINGLE_UPSTREAM` note, not a spec FAIL. A genuine PARSE_BLOCK_BY_NUM FAIL is a `ParseBlockHashFromReplyAndDecode` / `expected parsed hashes length` signature that fires on NON-empty slots too. If you were given ≥2 upstreams, degradation should not occur; if only 1 was available, say so. Do NOT recommend rewriting the `%d` template to `finalized`/`latest` — that breaks the per-slot walk (see spec-builder "slot-based chains").
 
 **b. Grep the boot-window log for parse-failure signatures.** These come from `endpoint_chain_fetcher.go` and `parser.go` and most are **DEBUG level**, so the Step 4.5 warn/error scan never sees them (this is why the router runs with `--log-level debug`):
 
@@ -363,7 +371,7 @@ Upstreams probed: <URL_1>, <URL_2>, <URL_3>
 
 | Check | Verdict | Evidence |
 |---|---|---|
-| GET_BLOCKNUM (router latest_block) | <OK/FAIL> | lava_rpcsmartrouter_latest_block=<value> |
+| GET_BLOCKNUM (router latest_block) | <OK/FAIL> | smartrouter_latest_block=<value> (or legacy lava_rpcsmartrouter_latest_block) |
 | GET_BLOCK_BY_NUM (log hash-reads ∥ fetch_block counters) | <OK/FAIL/NOT_EXERCISED> | hash_read_lines=<n>; metric success=<n> fails=<n> |
 | Parse-signature log lines | <none / excerpt> | <up to 5 lines> |
 
