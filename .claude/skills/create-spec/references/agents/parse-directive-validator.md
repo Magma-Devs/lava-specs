@@ -37,7 +37,26 @@ jq -r '.proposal.specs[].api_collections[].parse_directives[]?
 
 Any non-`OK` row → Layer 1 FAIL.
 
-If `(api_interface, chain_family)` is NOT in the matrix → the presence check above still applies; record `LAYER_1: SKIPPED (family unknown: <api_interface>, <chain_family>)` only for the template/parser-matching portion, then proceed to Layer 2.
+**Echoed-slot check (slot/height chains — Solana, Beacon, and any chain whose block-number is a slot/height with gaps).** `GET_BLOCK_BY_NUM` must resolve to a genuine block IDENTIFIER (hash / root / digest), NOT the block number it was called with. A `parser_arg` whose FINAL element is a bare state-index field (`slot`, `height`, `number`, `blocknumber`, `block_number`) means the directive extracts the echoed `%d` input — every provider then "agrees" trivially and data-reliability is defeated. This is `GET_BLOCK_BY_NUM`-only: `GET_BLOCKNUM` legitimately returns the slot/height itself. Runs for EVERY family (matrix or not), since it is exactly the slot-chain families that fall outside the matrix.
+
+```bash
+# Null-safe: testnet entries commonly have `api_collections: null` (import-only
+# stubs) and directives may lack result_parsing — guard every level with // [].
+jq -r '.proposal.specs[]
+  | (.api_collections // [])[]
+  | (.parse_directives // [])[]
+  | select(.function_tag=="GET_BLOCK_BY_NUM")
+  | select((.result_parsing.parser_arg // []) | (type=="array" and length>0))
+  | .result_parsing.parser_arg as $pa
+  | ($pa[-1] | ascii_downcase) as $last
+  | if ($last | test("^(slot|height|number|blocknumber|block_number)$"))
+    then "FAIL echoed-slot: GET_BLOCK_BY_NUM parser_arg ends in \"\($pa[-1])\" (echoes the %d input); must extract the block hash/root — e.g. Solana [\"0\",\"blockhash\"], Beacon [\"0\",\"data\",\"root\"], EVM [\"0\",\"hash\"]: \(.api_name // "?")"
+    else "OK" end' <spec_path>
+```
+
+Any `FAIL echoed-slot` row → Layer 1 FAIL. (Rare legitimate exception: a chain that genuinely has no block hash and whose only identifier IS the height — none is currently known. If you hit one, downgrade to a WARN in the report with the chain-doc evidence rather than a silent pass.)
+
+If `(api_interface, chain_family)` is NOT in the matrix → the presence check above still applies (including the numeric-placeholder and echoed-slot checks); record `LAYER_1: SKIPPED (family unknown: <api_interface>, <chain_family>)` only for the template/parser-matching portion, then proceed to Layer 2.
 
 If it IS in the matrix:
 1. Every required `function_tag` for that family MUST exist in the candidate, with the canonical `api_name`.

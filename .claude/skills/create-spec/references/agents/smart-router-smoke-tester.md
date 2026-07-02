@@ -23,7 +23,7 @@ Identical to Phase 8 Step 0. The image is already pulled and cached on this host
 
 ```bash
 DOCKER="docker"; $DOCKER info >/dev/null 2>&1 || DOCKER="sudo docker"
-IMAGE="ghcr.io/magma-devs/smart-router:main"
+IMAGE="ghcr.io/magma-devs/smart-router:latest"
 $DOCKER image inspect "$IMAGE" >/dev/null 2>&1 || $DOCKER pull "$IMAGE"
 ```
 
@@ -63,7 +63,9 @@ sleep 30
 # Source 1 — metrics. Prefix-agnostic: smart-router v1.0.4 (PR #138) dropped the
 # `lava_` prefix — `lava_rpcsmartrouter_latest_block` → `smartrouter_latest_block`,
 # `lava_rpc_endpoint_*` → `rpc_endpoint_*`. The `(lava_)?` / `(rpcsmartrouter|smartrouter)`
-# alternations match both the new (`:main`) and old (legacy pinned) names.
+# alternations match both the new and the legacy names. (This smoke pass runs the
+# `:latest` image; Phase 8's smart-router-tester runs `:main`, so the prefix-agnostic
+# grep is what keeps both phases' metric reads working regardless of which tag emits which.)
 curl -s http://localhost:7779/metrics | grep -E '^(lava_)?(rpc_endpoint_(latest_block|fetch_latest_(fails|success)|fetch_block_(fails|success))|(rpcsmartrouter|smartrouter)_latest_block)'
 # Source 2 — tracker hash-read log lines (where GET_BLOCK_BY_NUM is actually executed; the fetch_block_*
 # metric is currently never emitted by the router, so this log is GET_BLOCK_BY_NUM's primary positive signal)
