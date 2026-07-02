@@ -60,8 +60,11 @@ The booted router's chain tracker executes the spec's `GET_BLOCKNUM`/`GET_BLOCK_
 
 ```bash
 sleep 30
-# Source 1 — metrics
-curl -s http://localhost:7779/metrics | grep -E '^lava_(rpc_endpoint_(latest_block|fetch_latest_(fails|success)|fetch_block_(fails|success))|rpcsmartrouter_latest_block)'
+# Source 1 — metrics. Prefix-agnostic: smart-router v1.0.4 (PR #138) dropped the
+# `lava_` prefix — `lava_rpcsmartrouter_latest_block` → `smartrouter_latest_block`,
+# `lava_rpc_endpoint_*` → `rpc_endpoint_*`. The `(lava_)?` / `(rpcsmartrouter|smartrouter)`
+# alternations match both the new (`:main`) and old (legacy pinned) names.
+curl -s http://localhost:7779/metrics | grep -E '^(lava_)?(rpc_endpoint_(latest_block|fetch_latest_(fails|success)|fetch_block_(fails|success))|(rpcsmartrouter|smartrouter)_latest_block)'
 # Source 2 — tracker hash-read log lines (where GET_BLOCK_BY_NUM is actually executed; the fetch_block_*
 # metric is currently never emitted by the router, so this log is GET_BLOCK_BY_NUM's primary positive signal)
 $DOCKER logs sr_<chain> 2>&1 | grep -cE 'Chain Tracker Updated block hashes|Chain Tracker read a block Hash'
@@ -71,7 +74,7 @@ $DOCKER logs sr_<chain> 2>&1 | grep -E "$PARSE_SIG" | head -20
 ```
 
 Verdict (same rules as Phase 8 Step 3.5) — **fail-precedence, metric OR log** per directive (a failure from either source beats a positive):
-- **PARSE_BLOCKNUM:** FAIL if `lava_rpcsmartrouter_latest_block` is 0/absent OR a `GET_BLOCKNUM` `PARSE_SIG` line; else OK if that metric > 0 OR a `Chain Tracker Updated block hashes` log line; else NOT_EXERCISED.
+- **PARSE_BLOCKNUM:** FAIL if the `*_latest_block` gauge (`smartrouter_latest_block`, or legacy `lava_rpcsmartrouter_latest_block`) is 0/absent OR a `GET_BLOCKNUM` `PARSE_SIG` line; else OK if that gauge > 0 OR a `Chain Tracker Updated block hashes` log line; else NOT_EXERCISED.
 - **PARSE_BLOCK_BY_NUM:** FAIL if (`fetch_block_fails` > 0 with `..._success` == 0) OR a `ParseBlockHashFromReplyAndDecode`/`expected parsed hashes length` line; else OK if `fetch_block_success` > 0 OR a `Chain Tracker Updated block hashes`/`read a block Hash` line (the `fetch_block_*` metric is dead in the current router, so the log is the primary signal); else NOT_EXERCISED.
 
 Parse-signature lines are the diagnosis (`blockParsing - rpcInput is error` = upstream issue, not directive defect); a failure from either source wins over a positive.
