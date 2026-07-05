@@ -13,7 +13,7 @@
                 "reliability_threshold": 268435455,
                 "data_reliability_enabled": true,
                 "block_distance_for_finalized_data": 10,
-                "blocks_in_finalization_proof": 1,
+                "blocks_in_finalization_proof": 3,
                 "average_block_time": 75000,
                 "allowed_block_lag_for_qos_sync": 1,
                 "shares": 1,
@@ -50,60 +50,6 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "addnode",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
-                                    "stateful": 0
-                                },
-                                "extra_compute_units": 0
-                            },
-                            {
-                                "name": "backupwallet",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
-                                    "stateful": 0
-                                },
-                                "extra_compute_units": 0
-                            },
-                            {
-                                "name": "clearbanned",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
-                                    "stateful": 0
-                                },
-                                "extra_compute_units": 0
-                            },
-                            {
                                 "name": "createmultisig",
                                 "block_parsing": {
                                     "parser_arg": [
@@ -122,7 +68,7 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "disconnectnode",
+                                "name": "estimatesmartfee",
                                 "block_parsing": {
                                     "parser_arg": [
                                         "latest"
@@ -130,46 +76,10 @@
                                     "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 10,
-                                "enabled": true,
+                                "enabled": false,
                                 "category": {
-                                    "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
-                                    "stateful": 0
-                                },
-                                "extra_compute_units": 0
-                            },
-                            {
-                                "name": "dumpprivkey",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
-                                    "stateful": 0
-                                },
-                                "extra_compute_units": 0
-                            },
-                            {
-                                "name": "encryptwallet",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": false,
-                                    "local": true,
+                                    "deterministic": true,
+                                    "local": false,
                                     "subscription": false,
                                     "stateful": 0
                                 },
@@ -195,24 +105,6 @@
                             },
                             {
                                 "name": "generate",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
-                                    "stateful": 0
-                                },
-                                "extra_compute_units": 0
-                            },
-                            {
-                                "name": "getaddednodeinfo",
                                 "block_parsing": {
                                     "parser_arg": [
                                         "latest"
@@ -276,8 +168,8 @@
                                 "compute_units": 10,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
-                                    "local": false,
+                                    "deterministic": false,
+                                    "local": true,
                                     "subscription": false,
                                     "stateful": 0
                                 },
@@ -356,6 +248,30 @@
                                 "extra_compute_units": 0
                             },
                             {
+                                "name": "getblockfilter",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "0"
+                                    ],
+                                    "parser_func": "PARSE_BY_ARG"
+                                },
+                                "compute_units": 20,
+                                "enabled": false,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0,
+                                "parsers": [
+                                    {
+                                        "parse_path": ".params.[0]",
+                                        "parse_type": "BLOCK_HASH"
+                                    }
+                                ]
+                            },
+                            {
                                 "name": "getblockhashes",
                                 "block_parsing": {
                                     "parser_arg": [
@@ -372,6 +288,34 @@
                                     "stateful": 0
                                 },
                                 "extra_compute_units": 0
+                            },
+                            {
+                                "name": "getblockstats",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "0"
+                                    ],
+                                    "parser_func": "PARSE_BY_ARG"
+                                },
+                                "compute_units": 20,
+                                "enabled": false,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0,
+                                "parsers": [
+                                    {
+                                        "parse_path": ".params.[0]",
+                                        "parse_type": "BLOCK_HASH"
+                                    },
+                                    {
+                                        "parse_path": ".params.[0]",
+                                        "parse_type": "BLOCK_LATEST"
+                                    }
+                                ]
                             },
                             {
                                 "name": "getblocksubsidy",
@@ -404,6 +348,24 @@
                                 "category": {
                                     "deterministic": false,
                                     "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "getchaintxstats",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "1"
+                                    ],
+                                    "parser_func": "PARSE_BY_ARG"
+                                },
+                                "compute_units": 10,
+                                "enabled": false,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
                                     "subscription": false,
                                     "stateful": 0
                                 },
@@ -464,6 +426,24 @@
                                 "extra_compute_units": 0
                             },
                             {
+                                "name": "getindexinfo",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": false,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
                                 "name": "getinfo",
                                 "block_parsing": {
                                     "parser_arg": [
@@ -491,6 +471,60 @@
                                 },
                                 "compute_units": 10,
                                 "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "getmempoolancestors",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 20,
+                                "enabled": false,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "getmempooldescendants",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 20,
+                                "enabled": false,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "getmempoolentry",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": false,
                                 "category": {
                                     "deterministic": false,
                                     "local": true,
@@ -647,10 +681,9 @@
                                 "name": "getspentinfo",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0",
-                                        "txid"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_CANONICAL"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -789,24 +822,6 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "importwallet",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
-                                    "stateful": 0
-                                },
-                                "extra_compute_units": 0
-                            },
-                            {
                                 "name": "keypoolrefill",
                                 "block_parsing": {
                                     "parser_arg": [
@@ -844,24 +859,6 @@
                             },
                             {
                                 "name": "listaddressgroupings",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
-                                    "stateful": 0
-                                },
-                                "extra_compute_units": 0
-                            },
-                            {
-                                "name": "listbanned",
                                 "block_parsing": {
                                     "parser_arg": [
                                         "latest"
@@ -1023,60 +1020,6 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "sendmany",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": false,
-                                    "local": false,
-                                    "subscription": false,
-                                    "stateful": 1
-                                },
-                                "extra_compute_units": 0
-                            },
-                            {
-                                "name": "sendtoaddress",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": false,
-                                    "local": false,
-                                    "subscription": false,
-                                    "stateful": 1
-                                },
-                                "extra_compute_units": 0
-                            },
-                            {
-                                "name": "setban",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
-                                    "stateful": 0
-                                },
-                                "extra_compute_units": 0
-                            },
-                            {
                                 "name": "setgenerate",
                                 "block_parsing": {
                                     "parser_arg": [
@@ -1167,24 +1110,6 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "stop",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
-                                    "stateful": 0
-                                },
-                                "extra_compute_units": 0
-                            },
-                            {
                                 "name": "submitblock",
                                 "block_parsing": {
                                     "parser_arg": [
@@ -1199,6 +1124,43 @@
                                     "local": false,
                                     "subscription": false,
                                     "stateful": 1
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "submitpackage",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": false,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 1,
+                                    "hanging_api": true
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "testmempoolaccept",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": false,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
                                 },
                                 "extra_compute_units": 0
                             },
@@ -1245,42 +1207,6 @@
                                         ""
                                     ],
                                     "parser_func": "EMPTY"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
-                                    "stateful": 0
-                                },
-                                "extra_compute_units": 0
-                            },
-                            {
-                                "name": "z_exportkey",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
-                                    "stateful": 0
-                                },
-                                "extra_compute_units": 0
-                            },
-                            {
-                                "name": "z_exportviewingkey",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 10,
                                 "enabled": true,
@@ -1512,9 +1438,9 @@
                                 "name": "z_getsubtreesbyindex",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "1"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -1725,42 +1651,6 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "z_mergetoaddress",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": false,
-                                    "local": false,
-                                    "subscription": false,
-                                    "stateful": 1
-                                },
-                                "extra_compute_units": 0
-                            },
-                            {
-                                "name": "z_sendmany",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": false,
-                                    "local": false,
-                                    "subscription": false,
-                                    "stateful": 1
-                                },
-                                "extra_compute_units": 0
-                            },
-                            {
                                 "name": "z_setmigration",
                                 "block_parsing": {
                                     "parser_arg": [
@@ -1775,24 +1665,6 @@
                                     "local": true,
                                     "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
-                            },
-                            {
-                                "name": "z_shieldcoinbase",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": false,
-                                    "local": false,
-                                    "subscription": false,
-                                    "stateful": 1
                                 },
                                 "extra_compute_units": 0
                             },
@@ -1899,15 +1771,6 @@
                                     }
                                 ]
                             }
-                        ],
-                        "extensions": [
-                            {
-                                "name": "archive",
-                                "cu_multiplier": 5,
-                                "rule": {
-                                    "block": 42600
-                                }
-                            }
                         ]
                     }
                 ]
@@ -1922,8 +1785,8 @@
                 "reliability_threshold": 268435455,
                 "data_reliability_enabled": true,
                 "block_distance_for_finalized_data": 10,
-                "blocks_in_finalization_proof": 1,
-                "average_block_time": 75000,
+                "blocks_in_finalization_proof": 3,
+                "average_block_time": 265000,
                 "allowed_block_lag_for_qos_sync": 1,
                 "shares": 1,
                 "min_stake_provider": {
