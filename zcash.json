@@ -1,0 +1,1962 @@
+{
+    "proposal": {
+        "title": "Add Specs: Zcash",
+        "description": "Adding new specification support for relaying Zcash data on Lava",
+        "specs": [
+            {
+                "index": "ZCASH",
+                "name": "zcash mainnet",
+                "enabled": true,
+                "imports": [
+                    "BTC"
+                ],
+                "reliability_threshold": 268435455,
+                "data_reliability_enabled": true,
+                "block_distance_for_finalized_data": 10,
+                "blocks_in_finalization_proof": 1,
+                "average_block_time": 75000,
+                "allowed_block_lag_for_qos_sync": 1,
+                "shares": 1,
+                "min_stake_provider": {
+                    "denom": "ulava",
+                    "amount": "5000000000"
+                },
+                "api_collections": [
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "jsonrpc",
+                            "internal_path": "",
+                            "type": "POST",
+                            "add_on": ""
+                        },
+                        "apis": [
+                            {
+                                "name": "addmultisigaddress",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "addnode",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "backupwallet",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "clearbanned",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "createmultisig",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        ""
+                                    ],
+                                    "parser_func": "EMPTY"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "disconnectnode",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "dumpprivkey",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "encryptwallet",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "fundrawtransaction",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "generate",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "getaddednodeinfo",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "getaddressbalance",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "getaddressdeltas",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "getaddressmempool",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "getaddresstxids",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "getaddressutxos",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "getbalance",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "getblockdeltas",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "0"
+                                    ],
+                                    "parser_func": "PARSE_BY_ARG"
+                                },
+                                "compute_units": 20,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "getblockhashes",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "getblocksubsidy",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "0"
+                                    ],
+                                    "parser_func": "PARSE_BY_ARG"
+                                },
+                                "compute_units": 20,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "getblocktemplate",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "getdeprecationinfo",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        ""
+                                    ],
+                                    "parser_func": "EMPTY"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "getexperimentalfeatures",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        ""
+                                    ],
+                                    "parser_func": "EMPTY"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "getgenerate",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "getinfo",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "getlocalsolps",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "getmininginfo",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "getnettotals",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "getnetworkinfo",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "getnetworksolps",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "getnewaddress",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "getpeerinfo",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "getrawchangeaddress",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "getreceivedbyaddress",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "getspentinfo",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "0",
+                                        "txid"
+                                    ],
+                                    "parser_func": "PARSE_CANONICAL"
+                                },
+                                "compute_units": 20,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "gettransaction",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "0"
+                                    ],
+                                    "parser_func": "PARSE_BY_ARG"
+                                },
+                                "compute_units": 20,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "getunconfirmedbalance",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "getwalletinfo",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "help",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        ""
+                                    ],
+                                    "parser_func": "EMPTY"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "importaddress",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "importprivkey",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "importpubkey",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "importwallet",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "keypoolrefill",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "listaddresses",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "listaddressgroupings",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "listbanned",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "listlockunspent",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "listreceivedbyaddress",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "listsinceblock",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "0"
+                                    ],
+                                    "parser_func": "PARSE_BY_ARG"
+                                },
+                                "compute_units": 20,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "listtransactions",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "listunspent",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "lockunspent",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "ping",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "prioritisetransaction",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "sendmany",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 1
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "sendtoaddress",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 1
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "setban",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "setgenerate",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "setlogfilter",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "settxfee",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "signmessage",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "signrawtransaction",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "stop",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "submitblock",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 1
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "verifychain",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "walletconfirmbackup",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "z_converttex",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        ""
+                                    ],
+                                    "parser_func": "EMPTY"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "z_exportkey",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "z_exportviewingkey",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "z_exportwallet",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "z_getaddressforaccount",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "z_getbalance",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "z_getbalanceforaccount",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "z_getbalanceforviewingkey",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "z_getmigrationstatus",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "z_getnewaccount",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "z_getnewaddress",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "z_getnotescount",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "z_getoperationresult",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "z_getoperationstatus",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "z_getpaymentdisclosure",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "z_getsubtreesbyindex",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "1"
+                                    ],
+                                    "parser_func": "PARSE_BY_ARG"
+                                },
+                                "compute_units": 20,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "z_gettotalbalance",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "z_gettreestate",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "0"
+                                    ],
+                                    "parser_func": "PARSE_BY_ARG"
+                                },
+                                "compute_units": 20,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "z_importkey",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "z_importviewingkey",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "z_importwallet",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "z_listaccounts",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "z_listaddresses",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "z_listoperationids",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "z_listreceivedbyaddress",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "z_listunifiedreceivers",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        ""
+                                    ],
+                                    "parser_func": "EMPTY"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "z_listunspent",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "z_mergetoaddress",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 1
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "z_sendmany",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 1
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "z_setmigration",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "z_shieldcoinbase",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 1
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "z_validateaddress",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        ""
+                                    ],
+                                    "parser_func": "EMPTY"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "z_validatepaymentdisclosure",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        ""
+                                    ],
+                                    "parser_func": "EMPTY"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "z_viewtransaction",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "0"
+                                    ],
+                                    "parser_func": "PARSE_BY_ARG"
+                                },
+                                "compute_units": 20,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "zcbenchmark",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        ""
+                                    ],
+                                    "parser_func": "EMPTY"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "zcsamplejoinsplit",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        ""
+                                    ],
+                                    "parser_func": "EMPTY"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            }
+                        ],
+                        "headers": [],
+                        "inheritance_apis": [],
+                        "parse_directives": [],
+                        "verifications": [
+                            {
+                                "name": "chain-id",
+                                "values": [
+                                    {
+                                        "expected_value": "main"
+                                    }
+                                ]
+                            }
+                        ],
+                        "extensions": [
+                            {
+                                "name": "archive",
+                                "cu_multiplier": 5,
+                                "rule": {
+                                    "block": 42600
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "index": "ZCASHT",
+                "name": "zcash testnet",
+                "enabled": true,
+                "imports": [
+                    "ZCASH"
+                ],
+                "reliability_threshold": 268435455,
+                "data_reliability_enabled": true,
+                "block_distance_for_finalized_data": 10,
+                "blocks_in_finalization_proof": 1,
+                "average_block_time": 75000,
+                "allowed_block_lag_for_qos_sync": 1,
+                "shares": 1,
+                "min_stake_provider": {
+                    "denom": "ulava",
+                    "amount": "5000000000"
+                },
+                "api_collections": [
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "jsonrpc",
+                            "internal_path": "",
+                            "type": "POST",
+                            "add_on": ""
+                        },
+                        "apis": [],
+                        "headers": [],
+                        "inheritance_apis": [],
+                        "parse_directives": [],
+                        "verifications": [
+                            {
+                                "name": "chain-id",
+                                "values": [
+                                    {
+                                        "expected_value": "test"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "deposit": "10000000ulava"
+}
