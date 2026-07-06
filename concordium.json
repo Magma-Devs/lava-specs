@@ -43,9 +43,11 @@
                                     "deterministic": false,
                                     "local": false,
                                     "subscription": false,
-                                    "stateful": 0
+                                    "stateful": 0,
+                                    "hanging_api": true
                                 },
-                                "extra_compute_units": 0
+                                "extra_compute_units": 0,
+                                "timeout_ms": 20000
                             },
                             {
                                 "name": "concordium.v2.Queries/GetFinalizedBlocks",
@@ -61,9 +63,11 @@
                                     "deterministic": false,
                                     "local": false,
                                     "subscription": false,
-                                    "stateful": 0
+                                    "stateful": 0,
+                                    "hanging_api": true
                                 },
-                                "extra_compute_units": 0
+                                "extra_compute_units": 0,
+                                "timeout_ms": 20000
                             },
                             {
                                 "name": "concordium.v2.Queries/GetAccountInfo",
@@ -109,7 +113,7 @@
                                     ],
                                     "parser_func": "PARSE_BY_ARG"
                                 },
-                                "compute_units": 20,
+                                "compute_units": 500,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
@@ -145,7 +149,7 @@
                                     ],
                                     "parser_func": "PARSE_BY_ARG"
                                 },
-                                "compute_units": 20,
+                                "compute_units": 500,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
@@ -199,7 +203,7 @@
                                     ],
                                     "parser_func": "PARSE_BY_ARG"
                                 },
-                                "compute_units": 20,
+                                "compute_units": 500,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
@@ -303,9 +307,9 @@
                                 "name": "concordium.v2.Queries/GetBlockItemStatus",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        ""
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "EMPTY"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -361,7 +365,7 @@
                                     ],
                                     "parser_func": "PARSE_BY_ARG"
                                 },
-                                "compute_units": 20,
+                                "compute_units": 500,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
@@ -997,9 +1001,11 @@
                                     "deterministic": false,
                                     "local": false,
                                     "subscription": false,
-                                    "stateful": 0
+                                    "stateful": 0,
+                                    "hanging_api": true
                                 },
-                                "extra_compute_units": 0
+                                "extra_compute_units": 0,
+                                "timeout_ms": 20000
                             }
                         ],
                         "headers": [],
@@ -1011,33 +1017,36 @@
                                 "result_parsing": {
                                     "parser_arg": [
                                         "0",
-                                        "bestBlockHeight"
+                                        "bestBlockHeight",
+                                        "value"
                                     ],
                                     "parser_func": "PARSE_CANONICAL"
                                 },
                                 "api_name": "concordium.v2.Queries/GetConsensusInfo"
                             },
                             {
-                                "function_template": "{\"absolute\":{\"height\":\"%d\"}}",
+                                "function_template": "{\"absolute\":{\"height\":{\"value\":\"%d\"}}}",
                                 "function_tag": "GET_BLOCK_BY_NUM",
                                 "result_parsing": {
                                     "parser_arg": [
                                         "0",
                                         "blocks",
-                                        "0"
+                                        "0",
+                                        "value"
                                     ],
                                     "parser_func": "PARSE_CANONICAL"
                                 },
                                 "api_name": "concordium.v2.Queries/GetBlocksAtHeight"
                             },
                             {
-                                "function_template": "{\"absolute\":{\"height\":\"0\"}}",
+                                "function_template": "{\"absolute\":{\"height\":{\"value\":\"0\"}}}",
                                 "function_tag": "GET_EARLIEST_BLOCK",
                                 "result_parsing": {
                                     "parser_arg": [
                                         "0",
                                         "blocks",
-                                        "0"
+                                        "0",
+                                        "value"
                                     ],
                                     "parser_func": "PARSE_CANONICAL"
                                 },
@@ -1053,7 +1062,8 @@
                                     "result_parsing": {
                                         "parser_arg": [
                                             "0",
-                                            "genesisBlock"
+                                            "genesisBlock",
+                                            "value"
                                         ],
                                         "parser_func": "PARSE_CANONICAL"
                                     },
@@ -1073,10 +1083,6 @@
                                 "values": [
                                     {
                                         "latest_distance": 1800
-                                    },
-                                    {
-                                        "extension": "archive",
-                                        "expected_value": "1"
                                     }
                                 ]
                             }
@@ -1698,11 +1704,9 @@
                                 "name": "/v0/blockInfo/{blockHash}",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "blockHash",
-                                        "=",
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_DICTIONARY_OR_ORDERED"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -1738,11 +1742,9 @@
                                 "name": "/v0/blockTransactionEvents/{blockHash}",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "blockHash",
-                                        "=",
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_DICTIONARY_OR_ORDERED"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
