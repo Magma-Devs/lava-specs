@@ -289,14 +289,14 @@
                                 "name": "concordium.v2.Queries/GetConsensusInfo",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        ""
+                                        "latest"
                                     ],
-                                    "parser_func": "EMPTY"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 10,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
+                                    "deterministic": false,
                                     "local": false,
                                     "subscription": false,
                                     "stateful": 0
@@ -325,9 +325,9 @@
                                 "name": "concordium.v2.Queries/GetCryptographicParameters",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        ""
+                                        "0"
                                     ],
-                                    "parser_func": "EMPTY"
+                                    "parser_func": "PARSE_BY_ARG"
                                 },
                                 "compute_units": 10,
                                 "enabled": true,
@@ -548,7 +548,7 @@
                                 "compute_units": 10,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
+                                    "deterministic": false,
                                     "local": false,
                                     "subscription": false,
                                     "stateful": 0
@@ -980,7 +980,7 @@
                                 "compute_units": 10,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
+                                    "deterministic": false,
                                     "local": false,
                                     "subscription": false,
                                     "stateful": 0
@@ -1686,14 +1686,14 @@
                                 "name": "/v0/consensusInfo",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        ""
+                                        "latest"
                                     ],
-                                    "parser_func": "EMPTY"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 10,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
+                                    "deterministic": false,
                                     "local": false,
                                     "subscription": false,
                                     "stateful": 0
