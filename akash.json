@@ -1,0 +1,2110 @@
+{
+  "proposal": {
+    "title": "Add Specs: Akash",
+    "description": "Adding new specification support for relaying Akash Network data on Lava. Akash mainnet (akashnet-2) inherits full Cosmos SDK v0.50 REST/gRPC/Tendermint RPC coverage via COSMOSSDK50 and adds Akash-specific deployment/market/provider/cert/audit/escrow/bme/oracle/discovery query modules; the archive extension is defined on mainnet (inherited by the testnet), though today only testnet sandbox-2 has a public archive-from-genesis provider.",
+    "specs": [
+      {
+        "index": "AKASH",
+        "name": "akash mainnet",
+        "enabled": true,
+        "imports": [
+          "COSMOSSDK50"
+        ],
+        "reliability_threshold": 268435455,
+        "data_reliability_enabled": true,
+        "block_distance_for_finalized_data": 0,
+        "blocks_in_finalization_proof": 1,
+        "average_block_time": 6000,
+        "allowed_block_lag_for_qos_sync": 2,
+        "shares": 1,
+        "min_stake_provider": {
+          "denom": "ulava",
+          "amount": "5000000000"
+        },
+        "api_collections": [
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "rest",
+              "internal_path": "",
+              "type": "GET",
+              "add_on": ""
+            },
+            "apis": [
+              {
+                "enabled": true,
+                "name": "/akash/audit/v1/audit/attributes/list",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/akash/audit/v1/audit/attributes/{owner}/list",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/akash/audit/v1/audit/attributes/{auditor}/{owner}",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/akash/provider/v1/auditor/{auditor}/list",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/akash/cert/v1/certificates/list",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/akash/deployment/v1beta4/deployments/list",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/akash/deployment/v1beta4/deployments/info",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/akash/deployment/v1beta4/groups/info",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/akash/deployment/v1beta4/params",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/akash/escrow/v1/types/accounts",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/akash/escrow/v1/types/payments",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/akash/market/v1beta5/orders/list",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/akash/market/v1beta5/orders/info",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/akash/market/v1beta5/bids/list",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/akash/market/v1beta5/bids/info",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/akash/market/v1beta5/leases/list",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/akash/market/v1beta5/leases/info",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/akash/market/v1beta5/params",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/akash/provider/v1beta4/providers",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/akash/provider/v1beta4/providers/{owner}",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/akash/bme/v1/params",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/akash/bme/v1/vault",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/akash/bme/v1/status",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/akash/bme/v1/ledger",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/akash/oracle/v2/prices",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/akash/oracle/v2/params",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/akash/oracle/v2/aggregated_price/{denom}",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/akash/wasm/v1/params",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/akash/discovery/v1/info",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/cosmos/epochs/v1beta1/current_epoch",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/cosmos/epochs/v1beta1/epochs",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/ibc/apps/transfer/v1/denoms",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/ibc/apps/transfer/v1/denoms/{denom}/total_escrow",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/ibc/apps/transfer/v1/denoms/{hash}",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/ibc/core/channel/v2/clients/{client_id}/next_sequence_send",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/ibc/core/channel/v2/clients/{client_id}/packet_acknowledgements",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/ibc/core/channel/v2/clients/{client_id}/packet_acks/{sequence}",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/ibc/core/channel/v2/clients/{client_id}/packet_commitments",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/ibc/core/channel/v2/clients/{client_id}/packet_commitments/{packet_ack_sequences}/unreceived_acks",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/ibc/core/channel/v2/clients/{client_id}/packet_commitments/{sequences}/unreceived_packets",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/ibc/core/channel/v2/clients/{client_id}/packet_commitments/{sequence}",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/ibc/core/channel/v2/clients/{client_id}/packet_receipts/{sequence}",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/ibc/core/client/v1/client_creator/{client_id}",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/ibc/core/client/v1/verify_membership",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              }
+            ],
+            "headers": [],
+            "inheritance_apis": [],
+            "parse_directives": [],
+            "verifications": [
+              {
+                "name": "chain-id",
+                "values": [
+                  {
+                    "expected_value": "akashnet-2"
+                  }
+                ]
+              },
+              {
+                "name": "pruning",
+                "values": [
+                  {
+                    "latest_distance": 362880
+                  }
+                ]
+              }
+            ],
+            "extensions": [
+              {
+                "name": "archive",
+                "cu_multiplier": 5,
+                "rule": {
+                  "block": 362880
+                }
+              }
+            ]
+          },
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "grpc",
+              "internal_path": "",
+              "type": "",
+              "add_on": ""
+            },
+            "apis": [
+              {
+                "enabled": true,
+                "name": "akash.audit.v1.Query/AllProvidersAttributes",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "akash.audit.v1.Query/ProviderAttributes",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "akash.audit.v1.Query/ProviderAuditorAttributes",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "akash.audit.v1.Query/AuditorAttributes",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "akash.cert.v1.Query/Certificates",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "akash.deployment.v1beta4.Query/Deployments",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "akash.deployment.v1beta4.Query/Deployment",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "akash.deployment.v1beta4.Query/Group",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "akash.deployment.v1beta4.Query/Params",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "akash.escrow.v1.Query/Accounts",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "akash.escrow.v1.Query/Payments",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "akash.market.v1beta5.Query/Orders",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "akash.market.v1beta5.Query/Order",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "akash.market.v1beta5.Query/Bids",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "akash.market.v1beta5.Query/Bid",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "akash.market.v1beta5.Query/Leases",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "akash.market.v1beta5.Query/Lease",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "akash.market.v1beta5.Query/Params",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "akash.provider.v1beta4.Query/Providers",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "akash.provider.v1beta4.Query/Provider",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "akash.bme.v1.Query/Params",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "akash.bme.v1.Query/VaultState",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "akash.bme.v1.Query/Status",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "akash.bme.v1.Query/LedgerRecords",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "akash.oracle.v2.Query/Prices",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "akash.oracle.v2.Query/Params",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "akash.oracle.v2.Query/AggregatedPrice",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "akash.wasm.v1.Query/Params",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "akash.epochs.v1beta1.Query/EpochInfos",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "akash.epochs.v1beta1.Query/CurrentEpoch",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "akash.discovery.v1.Discovery/GetInfo",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "ibc.applications.transfer.v1.Query/Denom",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "ibc.applications.transfer.v1.Query/Denoms",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "ibc.core.channel.v2.Query/NextSequenceSend",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "ibc.core.channel.v2.Query/PacketAcknowledgement",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "ibc.core.channel.v2.Query/PacketAcknowledgements",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "ibc.core.channel.v2.Query/PacketCommitment",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "ibc.core.channel.v2.Query/PacketCommitments",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "ibc.core.channel.v2.Query/PacketReceipt",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "ibc.core.channel.v2.Query/UnreceivedAcks",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "ibc.core.channel.v2.Query/UnreceivedPackets",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "ibc.core.client.v1.Query/ClientCreator",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              }
+            ],
+            "headers": [],
+            "inheritance_apis": [],
+            "parse_directives": [
+              {
+                "function_template": "{}",
+                "function_tag": "GET_BLOCKNUM",
+                "result_parsing": {
+                  "parser_arg": [
+                    "0",
+                    "block",
+                    "header",
+                    "height"
+                  ],
+                  "parser_func": "PARSE_CANONICAL"
+                },
+                "api_name": "cosmos.base.tendermint.v1beta1.Service/GetLatestBlock"
+              }
+            ],
+            "verifications": [
+              {
+                "name": "chain-id",
+                "values": [
+                  {
+                    "expected_value": "akashnet-2"
+                  }
+                ]
+              }
+            ],
+            "extensions": [
+              {
+                "name": "archive",
+                "cu_multiplier": 5,
+                "rule": {
+                  "block": 362880
+                }
+              }
+            ]
+          },
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "tendermintrpc",
+              "internal_path": "",
+              "type": "",
+              "add_on": ""
+            },
+            "apis": [],
+            "headers": [],
+            "inheritance_apis": [],
+            "parse_directives": [
+              {
+                "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"status\",\"params\":[],\"id\":1}",
+                "function_tag": "GET_EARLIEST_BLOCK",
+                "result_parsing": {
+                  "parser_arg": [
+                    "0",
+                    "sync_info",
+                    "earliest_block_height"
+                  ],
+                  "parser_func": "PARSE_CANONICAL",
+                  "encoding": "base64"
+                },
+                "api_name": "earliest_block"
+              }
+            ],
+            "verifications": [
+              {
+                "name": "chain-id",
+                "values": [
+                  {
+                    "expected_value": "akashnet-2"
+                  }
+                ]
+              },
+              {
+                "name": "pruning",
+                "values": [
+                  {
+                    "latest_distance": 362880
+                  },
+                  {
+                    "extension": "archive",
+                    "expected_value": "1"
+                  }
+                ]
+              }
+            ],
+            "extensions": [
+              {
+                "name": "archive",
+                "cu_multiplier": 5,
+                "rule": {
+                  "block": 362880
+                }
+              }
+            ]
+          },
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "rest",
+              "internal_path": "",
+              "type": "POST",
+              "add_on": ""
+            },
+            "apis": [
+              {
+                "enabled": true,
+                "name": "/cosmos/tx/v1beta1/decode/amino",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    ""
+                  ],
+                  "parser_func": "EMPTY",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              }
+            ],
+            "headers": [],
+            "inheritance_apis": [],
+            "parse_directives": [],
+            "verifications": []
+          }
+        ]
+      },
+      {
+        "index": "AKASHT",
+        "name": "akash testnet",
+        "enabled": true,
+        "imports": [
+          "AKASH"
+        ],
+        "reliability_threshold": 268435455,
+        "data_reliability_enabled": true,
+        "block_distance_for_finalized_data": 0,
+        "blocks_in_finalization_proof": 1,
+        "average_block_time": 5859,
+        "allowed_block_lag_for_qos_sync": 2,
+        "shares": 1,
+        "min_stake_provider": {
+          "denom": "ulava",
+          "amount": "5000000000"
+        },
+        "api_collections": [
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "rest",
+              "internal_path": "",
+              "type": "GET",
+              "add_on": ""
+            },
+            "apis": [],
+            "headers": [],
+            "inheritance_apis": [],
+            "parse_directives": [],
+            "verifications": [
+              {
+                "name": "chain-id",
+                "values": [
+                  {
+                    "expected_value": "sandbox-2"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "grpc",
+              "internal_path": "",
+              "type": "",
+              "add_on": ""
+            },
+            "apis": [],
+            "headers": [],
+            "inheritance_apis": [],
+            "parse_directives": [],
+            "verifications": [
+              {
+                "name": "chain-id",
+                "values": [
+                  {
+                    "expected_value": "sandbox-2"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "tendermintrpc",
+              "internal_path": "",
+              "type": "",
+              "add_on": ""
+            },
+            "apis": [],
+            "headers": [],
+            "inheritance_apis": [],
+            "parse_directives": [],
+            "verifications": [
+              {
+                "name": "chain-id",
+                "values": [
+                  {
+                    "expected_value": "sandbox-2"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deposit": "10000000ulava"
+}
