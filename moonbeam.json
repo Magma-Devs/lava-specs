@@ -179,9 +179,9 @@
                                 "name": "moon_isTxFinalized",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -441,7 +441,8 @@
                                     "deterministic": false,
                                     "local": false,
                                     "subscription": false,
-                                    "stateful": 1
+                                    "stateful": 1,
+                                    "hanging_api": true
                                 },
                                 "extra_compute_units": 0
                             },
@@ -507,12 +508,12 @@
                                     ],
                                     "parser_func": "DEFAULT"
                                 },
-                                "compute_units": 10,
+                                "compute_units": 1000,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
+                                    "local": false,
+                                    "subscription": true,
                                     "stateful": 0
                                 },
                                 "extra_compute_units": 0
@@ -584,7 +585,7 @@
                                 "category": {
                                     "deterministic": false,
                                     "local": true,
-                                    "subscription": false,
+                                    "subscription": true,
                                     "stateful": 0
                                 },
                                 "extra_compute_units": 0
@@ -1030,6 +1031,7 @@
                                     "parser_func": "PARSE_BY_ARG"
                                 },
                                 "compute_units": 20,
+                                "timeout_ms": 20000,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
@@ -1228,6 +1230,7 @@
                                     "parser_func": "PARSE_BY_ARG"
                                 },
                                 "compute_units": 20,
+                                "timeout_ms": 20000,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
@@ -1246,6 +1249,7 @@
                                     "parser_func": "PARSE_BY_ARG"
                                 },
                                 "compute_units": 20,
+                                "timeout_ms": 20000,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
@@ -1467,7 +1471,8 @@
                                     "deterministic": false,
                                     "local": false,
                                     "subscription": false,
-                                    "stateful": 1
+                                    "stateful": 1,
+                                    "hanging_api": true
                                 },
                                 "extra_compute_units": 0
                             },
@@ -1665,7 +1670,7 @@
                                     "deterministic": false,
                                     "local": false,
                                     "subscription": true,
-                                    "stateful": 0
+                                    "stateful": 1
                                 },
                                 "extra_compute_units": 0
                             },
@@ -1683,7 +1688,7 @@
                                     "deterministic": false,
                                     "local": false,
                                     "subscription": true,
-                                    "stateful": 0
+                                    "stateful": 1
                                 },
                                 "extra_compute_units": 0
                             },
@@ -1937,6 +1942,10 @@
                             },
                             {
                                 "function_tag": "SUBSCRIBE",
+                                "api_name": "chainHead_v1_follow"
+                            },
+                            {
+                                "function_tag": "SUBSCRIBE",
                                 "api_name": "chain_subscribeAllHeads"
                             },
                             {
@@ -1978,6 +1987,11 @@
                             {
                                 "function_tag": "SUBSCRIBE",
                                 "api_name": "transactionWatch_v1_submitAndWatch"
+                            },
+                            {
+                                "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"chainHead_v1_unfollow\",\"params\":[\"%s\"],\"id\":1}",
+                                "function_tag": "UNSUBSCRIBE",
+                                "api_name": "chainHead_v1_unfollow"
                             },
                             {
                                 "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"chain_unsubscribeAllHeads\",\"params\":[\"%s\"],\"id\":1}",
@@ -2117,7 +2131,7 @@
                                     ],
                                     "parser_func": "DEFAULT"
                                 },
-                                "compute_units": 5000,
+                                "compute_units": 10,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
@@ -2185,7 +2199,7 @@
                 "data_reliability_enabled": true,
                 "block_distance_for_finalized_data": 6,
                 "blocks_in_finalization_proof": 1,
-                "average_block_time": 6000,
+                "average_block_time": 7644,
                 "allowed_block_lag_for_qos_sync": 2,
                 "shares": 1,
                 "min_stake_provider": {
