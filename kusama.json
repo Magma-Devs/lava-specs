@@ -313,7 +313,7 @@
                   "deterministic": false,
                   "local": true,
                   "subscription": false,
-                  "stateful": 0
+                  "stateful": 1
                 },
                 "extra_compute_units": 0
               },
@@ -365,7 +365,7 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
+                  "local": true,
                   "subscription": true,
                   "stateful": 0
                 },
@@ -402,7 +402,7 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
+                  "local": true,
                   "subscription": true,
                   "stateful": 0
                 },
@@ -474,7 +474,7 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
+                  "local": true,
                   "subscription": true,
                   "stateful": 0
                 },
@@ -762,7 +762,7 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
+                  "local": true,
                   "subscription": true,
                   "stateful": 0
                 },
@@ -780,7 +780,7 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
+                  "local": true,
                   "subscription": true,
                   "stateful": 0
                 },
@@ -798,7 +798,7 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
+                  "local": true,
                   "subscription": true,
                   "stateful": 0
                 },
@@ -816,7 +816,7 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
+                  "local": true,
                   "subscription": true,
                   "stateful": 0
                 },
@@ -834,7 +834,7 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
+                  "local": true,
                   "subscription": true,
                   "stateful": 0
                 },
@@ -852,7 +852,7 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
+                  "local": true,
                   "subscription": true,
                   "stateful": 0
                 },
@@ -870,7 +870,7 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
+                  "local": true,
                   "subscription": true,
                   "stateful": 0
                 },
@@ -888,7 +888,7 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
+                  "local": true,
                   "subscription": true,
                   "stateful": 0
                 },
@@ -906,7 +906,7 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
+                  "local": true,
                   "subscription": true,
                   "stateful": 0
                 },
@@ -924,7 +924,7 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
+                  "local": true,
                   "subscription": true,
                   "stateful": 0
                 },
@@ -942,7 +942,7 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
+                  "local": true,
                   "subscription": true,
                   "stateful": 0
                 },
@@ -960,7 +960,7 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
+                  "local": true,
                   "subscription": true,
                   "stateful": 0
                 },
@@ -1554,7 +1554,7 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
+                  "local": true,
                   "subscription": true,
                   "stateful": 0
                 },
@@ -1572,7 +1572,7 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
+                  "local": true,
                   "subscription": true,
                   "stateful": 0
                 },
@@ -1626,7 +1626,7 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
+                  "local": true,
                   "subscription": true,
                   "stateful": 0
                 },
@@ -1644,7 +1644,7 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
+                  "local": true,
                   "subscription": true,
                   "stateful": 0
                 },
@@ -1662,7 +1662,7 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
+                  "local": true,
                   "subscription": true,
                   "stateful": 0
                 },
@@ -2040,7 +2040,7 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
+                  "local": true,
                   "subscription": true,
                   "stateful": 0
                 },
@@ -2058,7 +2058,7 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
+                  "local": true,
                   "subscription": true,
                   "stateful": 0
                 },
@@ -2113,7 +2113,7 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
+                  "local": true,
                   "subscription": true,
                   "stateful": 0
                 },
@@ -2167,7 +2167,7 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
+                  "local": true,
                   "subscription": true,
                   "stateful": 0
                 },
@@ -2185,7 +2185,7 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
+                  "local": true,
                   "subscription": true,
                   "stateful": 0
                 },
@@ -2195,15 +2195,15 @@
                 "name": "bitswap_v1_get",
                 "block_parsing": {
                   "parser_arg": [
-                    "latest"
+                    ""
                   ],
-                  "parser_func": "DEFAULT"
+                  "parser_func": "EMPTY"
                 },
                 "compute_units": 10,
                 "enabled": true,
                 "category": {
-                  "deterministic": true,
-                  "local": false,
+                  "deterministic": false,
+                  "local": true,
                   "subscription": false,
                   "stateful": 0
                 },
@@ -2225,7 +2225,8 @@
                   "subscription": false,
                   "stateful": 0
                 },
-                "extra_compute_units": 0
+                "extra_compute_units": 0,
+                "timeout_ms": 30000
               },
               {
                 "name": "grandpa_roundState",
@@ -2257,7 +2258,7 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
+                  "local": true,
                   "subscription": true,
                   "stateful": 0
                 },
@@ -2275,7 +2276,7 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
+                  "local": true,
                   "subscription": true,
                   "stateful": 0
                 },
@@ -2365,7 +2366,7 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": true,
+                  "local": false,
                   "subscription": false,
                   "stateful": 0
                 },
@@ -2579,15 +2580,21 @@
               {
                 "name": "pruning",
                 "parse_directive": {
-                  "function_tag": "GET_EARLIEST_BLOCK"
+                  "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"state_getRuntimeVersion\",\"params\":[\"0xb267ffd706bbb93779eab04f47c7038031657b0a863794dbdd73170e3976c3e7\"],\"id\":1}",
+                  "function_tag": "VERIFICATION",
+                  "result_parsing": {
+                    "parser_arg": [
+                      "0",
+                      "specVersion"
+                    ],
+                    "parser_func": "PARSE_CANONICAL"
+                  },
+                  "api_name": "state_getRuntimeVersion"
                 },
                 "values": [
                   {
-                    "latest_distance": 1
-                  },
-                  {
                     "extension": "archive",
-                    "expected_value": "1"
+                    "expected_value": "1045"
                   }
                 ]
               }
@@ -2597,7 +2604,7 @@
                 "name": "archive",
                 "cu_multiplier": 5,
                 "rule": {
-                  "block": 1
+                  "block": 127
                 }
               }
             ]
@@ -2638,6 +2645,27 @@
                 "values": [
                   {
                     "expected_value": "0xe143f23803ac50e8f6f8e62695d1ce9e4e1d68aa36c1cd2cfd15340213f3423e"
+                  }
+                ]
+              },
+              {
+                "name": "pruning",
+                "parse_directive": {
+                  "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"state_getRuntimeVersion\",\"params\":[\"0xff4a5c87bb3b725c8a0ee2e8581f5e2c618cf8555ec275f7af5759c46073e2b2\"],\"id\":1}",
+                  "function_tag": "VERIFICATION",
+                  "result_parsing": {
+                    "parser_arg": [
+                      "0",
+                      "specVersion"
+                    ],
+                    "parser_func": "PARSE_CANONICAL"
+                  },
+                  "api_name": "state_getRuntimeVersion"
+                },
+                "values": [
+                  {
+                    "extension": "archive",
+                    "expected_value": "29"
                   }
                 ]
               }
