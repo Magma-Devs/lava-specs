@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "ETH1",
-                "name": "ethereum mainnet",
+                "name": "Ethereum Mainnet",
                 "enabled": true,
                 "reliability_threshold": 268435455,
                 "data_reliability_enabled": true,
@@ -1734,7 +1734,7 @@
             },
             {
                 "index": "SEP1",
-                "name": "ethereum testnet sepolia",
+                "name": "Ethereum Testnet Sepolia",
                 "enabled": true,
                 "imports": [
                     "ETH1"
@@ -1778,7 +1778,7 @@
             },
             {
                 "index": "HOL1",
-                "name": "ethereum testnet holesky",
+                "name": "Ethereum Testnet Holesky",
                 "enabled": true,
                 "imports": [
                     "ETH1"

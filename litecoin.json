@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "LTC",
-                "name": "litecoin mainnet",
+                "name": "Litecoin Mainnet",
                 "enabled": true,
                 "imports": [
                     "BTC"
@@ -58,7 +58,7 @@
             },
             {
                 "index": "LTCT",
-                "name": "litecoin testnet",
+                "name": "Litecoin Testnet",
                 "enabled": true,
                 "imports": [
                     "LTC"

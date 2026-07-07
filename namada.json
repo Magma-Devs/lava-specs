@@ -6,7 +6,7 @@
     "specs": [
       {
         "index": "NAMTSE",
-        "name": "namada se testnet",
+        "name": "Namada SE Testnet",
         "enabled": true,
         "imports": [
           "TENDERMINT"

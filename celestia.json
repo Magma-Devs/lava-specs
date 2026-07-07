@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "CELESTIA",
-                "name": "celestia mainnet",
+                "name": "Celestia Mainnet",
                 "enabled": true,
                 "imports": [
                     "COSMOSSDKFULL"
@@ -1467,7 +1467,7 @@
             },
             {
                 "index": "CELESTIATM",
-                "name": "celestia mocha testnet",
+                "name": "Celestia Mocha Testnet",
                 "enabled": true,
                 "imports": [
                     "CELESTIA"
@@ -1599,7 +1599,7 @@
             },
             {
                 "index": "CELESTIATA",
-                "name": "celestia arabica testnet",
+                "name": "Celestia Arabica Testnet",
                 "enabled": true,
                 "imports": [
                     "CELESTIA"

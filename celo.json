@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "CELO",
-                "name": "celo mainnet",
+                "name": "Celo Mainnet",
                 "enabled": true,
                 "imports": [
                     "ETH1"
@@ -74,7 +74,7 @@
             },
             {
                 "index": "ALFAJORES",
-                "name": "celo alfajores testnet",
+                "name": "Celo Alfajores Testnet",
                 "enabled": true,
                 "imports": [
                     "CELO"

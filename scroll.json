@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "SCROLL",
-                "name": "scroll mainnet",
+                "name": "Scroll Mainnet",
                 "enabled": true,
                 "imports": [
                     "ETH1"
@@ -50,7 +50,7 @@
             },
             {
                 "index": "SCROLLS",
-                "name": "scroll sepolia testnet",
+                "name": "Scroll Sepolia Testnet",
                 "enabled": true,
                 "imports": [
                     "SCROLL"

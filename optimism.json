@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "OPTM",
-                "name": "optimism mainnet",
+                "name": "Optimism Mainnet",
                 "enabled": true,
                 "imports": [
                     "ETH1"
@@ -141,7 +141,7 @@
             },
             {
                 "index": "OPTMS",
-                "name": "optimism sepolia testnet",
+                "name": "Optimism Sepolia Testnet",
                 "enabled": true,
                 "imports": [
                     "OPTM"

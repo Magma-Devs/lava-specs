@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "JUN1",
-                "name": "juno mainnet",
+                "name": "Juno Mainnet",
                 "enabled": true,
                 "imports": [
                     "COSMOSSDKFULL"
@@ -205,7 +205,7 @@
             },
             {
                 "index": "JUNT1",
-                "name": "juno testnet",
+                "name": "Juno Testnet",
                 "enabled": true,
                 "imports": [
                     "JUN1"

@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "DOGE",
-                "name": "dogecoin mainnet",
+                "name": "Dogecoin Mainnet",
                 "enabled": true,
                 "imports": [
                     "BTC"
@@ -58,7 +58,7 @@
             },
             {
                 "index": "DOGET",
-                "name": "dogecoin testnet",
+                "name": "Dogecoin Testnet",
                 "enabled": true,
                 "imports": [
                     "DOGE"

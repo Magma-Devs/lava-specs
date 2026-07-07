@@ -5,7 +5,7 @@
     "specs": [
       {
         "index": "STRGZ",
-        "name": "stargaze mainnet",
+        "name": "Stargaze Mainnet",
         "enabled": true,
         "imports": [
           "COSMOSSDK50",
@@ -688,7 +688,7 @@
       },
       {
         "index": "STRGZT",
-        "name": "stargaze testnet",
+        "name": "Stargaze Testnet",
         "enabled": true,
         "imports": [
           "STRGZ"

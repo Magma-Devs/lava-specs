@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "NEAR",
-                "name": "near mainnet",
+                "name": "Near Mainnet",
                 "enabled": true,
                 "reliability_threshold": 268435455,
                 "data_reliability_enabled": true,
@@ -744,7 +744,7 @@
             },
             {
                 "index": "NEART",
-                "name": "near testnet",
+                "name": "Near Testnet",
                 "enabled": true,
                 "imports": [
                     "NEAR"

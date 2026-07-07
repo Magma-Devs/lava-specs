@@ -5,7 +5,7 @@
     "specs": [
       {
         "index": "BLAST",
-        "name": "blast mainnet",
+        "name": "Blast Mainnet",
         "enabled": true,
         "imports": ["ETH1"],
         "reliability_threshold": 268435455,
@@ -48,7 +48,7 @@
       },
       {
         "index": "BLASTSP",
-        "name": "blast sepolia testnet",
+        "name": "Blast Sepolia Testnet",
         "enabled": true,
         "imports": ["BLAST"],
         "reliability_threshold": 268435455,

@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "AXELAR",
-                "name": "axelar mainnet",
+                "name": "Axelar Mainnet",
                 "enabled": true,
                 "imports": [
                     "COSMOSSDK",
@@ -2548,7 +2548,7 @@
             },
             {
                 "index": "AXELART",
-                "name": "axelar testnet",
+                "name": "Axelar Testnet",
                 "enabled": true,
                 "imports": [
                     "AXELAR"

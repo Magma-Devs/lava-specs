@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "WORLDCHAIN",
-                "name": "worldchain mainnet",
+                "name": "Worldchain Mainnet",
                 "enabled": true,
                 "imports": [
                     "ETH1"
@@ -50,7 +50,7 @@
             },
             {
                 "index": "WORLDCHAINS",
-                "name": "worldchain sepolia testnet",
+                "name": "Worldchain Sepolia Testnet",
                 "enabled": true,
                 "imports": [
                     "WORLDCHAIN"

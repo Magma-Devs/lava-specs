@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "INJECTIVE",
-                "name": "injective mainnet",
+                "name": "Injective Mainnet",
                 "enabled": true,
                 "imports": [
                     "COSMOSSDKFULL"
@@ -4436,7 +4436,7 @@
             },
             {
                 "index": "INJECTIVET",
-                "name": "injective testnet",
+                "name": "Injective Testnet",
                 "enabled": true,
                 "imports": [
                     "INJECTIVE"

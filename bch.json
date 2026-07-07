@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "BCH",
-                "name": "bitcoin cash mainnet",
+                "name": "Bitcoin Cash Mainnet",
                 "enabled": true,
                 "imports": [
                     "BTC"
@@ -563,7 +563,7 @@
             },
             {
                 "index": "BCHT",
-                "name": "bitcoin cash testnet",
+                "name": "Bitcoin Cash Testnet",
                 "enabled": true,
                 "imports": [
                     "BCH"

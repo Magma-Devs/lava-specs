@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "TRX",
-                "name": "tron mainnet",
+                "name": "Tron Mainnet",
                 "enabled": true,
                 "reliability_threshold": 268435455,
                 "data_reliability_enabled": true,
@@ -3091,7 +3091,7 @@
             },
             {
                 "index": "TRXT",
-                "name": "tron shasta testnet",
+                "name": "Tron Shasta Testnet",
                 "enabled": true,
                 "reliability_threshold": 268435455,
                 "data_reliability_enabled": true,

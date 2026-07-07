@@ -5,7 +5,7 @@
     "specs": [
       {
         "index": "ETHBEACON",
-        "name": "ethereum beacon mainnet",
+        "name": "Ethereum Beacon Mainnet",
         "enabled": true,
         "reliability_threshold": 268435455,
         "data_reliability_enabled": true,
@@ -1911,7 +1911,7 @@
       },
       {
         "index": "ETHBEACONSEP",
-        "name": "ethereum beacon testnet sepolia",
+        "name": "Ethereum Beacon Testnet Sepolia",
         "enabled": true,
         "imports": [
           "ETHBEACON"
@@ -1955,7 +1955,7 @@
       },
       {
         "index": "ETHBEACONHOODI",
-        "name": "ethereum beacon testnet hoodi",
+        "name": "Ethereum Beacon Testnet Hoodi",
         "enabled": true,
         "imports": [
           "ETHBEACON"
@@ -1999,7 +1999,7 @@
       },
       {
         "index": "ETHBEACONHOL",
-        "name": "ethereum beacon testnet holesky",
+        "name": "Ethereum Beacon Testnet Holesky",
         "enabled": true,
         "imports": [
           "ETHBEACON"

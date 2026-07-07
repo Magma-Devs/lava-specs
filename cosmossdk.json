@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "COSMOSSDK",
-                "name": "cosmos sdk",
+                "name": "Cosmos SDK",
                 "enabled": false,
                 "imports": [
                     "IBC",
