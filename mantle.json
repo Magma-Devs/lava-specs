@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "MANTLE",
-                "name": "mantle testnet",
+                "name": "Mantle Testnet",
                 "enabled": true,
                 "imports": [
                     "ETH1"

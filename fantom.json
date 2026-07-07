@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "FTM250",
-                "name": "fantom mainnet",
+                "name": "Fantom Mainnet",
                 "enabled": true,
                 "imports": [
                     "ETH1"
@@ -310,7 +310,7 @@
             },
             {
                 "index": "FTM4002",
-                "name": "fantom testnet",
+                "name": "Fantom Testnet",
                 "enabled": true,
                 "imports": [
                     "FTM250"

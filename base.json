@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "BASE",
-                "name": "base mainnet",
+                "name": "Base Mainnet",
                 "enabled": true,
                 "imports": [
                     "ETH1"
@@ -49,7 +49,7 @@
             },
             {
                 "index": "BASES",
-                "name": "base sepolia testnet",
+                "name": "Base Sepolia Testnet",
                 "enabled": true,
                 "imports": [
                     "BASE"

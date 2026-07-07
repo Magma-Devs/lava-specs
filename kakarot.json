@@ -5,7 +5,7 @@
       "specs": [
         {
           "index": "KAKAROTT",
-          "name": "kakarot sepolia testnet",
+          "name": "Kakarot Sepolia Testnet",
           "enabled": true,
           "imports": ["ETH1"],
           "reliability_threshold": 268435455,

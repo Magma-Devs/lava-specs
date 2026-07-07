@@ -5,7 +5,7 @@
     "specs": [
       {
         "index": "COSMOSSDK50",
-        "name": "cosmos sdk version fifty",
+        "name": "Cosmos SDK v50",
         "enabled": false,
         "reliability_threshold": 268435455,
         "data_reliability_enabled": true,

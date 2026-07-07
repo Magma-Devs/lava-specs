@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "AVAX",
-                "name": "avalanche mainnet",
+                "name": "Avalanche Mainnet",
                 "enabled": true,
                 "reliability_threshold": 268435455,
                 "data_reliability_enabled": true,
@@ -843,7 +843,7 @@
             },
             {
                 "index": "AVAXT",
-                "name": "avalanche testnet",
+                "name": "Avalanche Testnet",
                 "enabled": true,
                 "imports": [
                     "AVAX"

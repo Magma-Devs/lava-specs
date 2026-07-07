@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "KOII",
-                "name": "koii main net",
+                "name": "Koii Mainnet",
                 "enabled": true,
                 "imports": [
                     "SOLANA"
@@ -24,7 +24,7 @@
             },
             {
                 "index": "KOIIT",
-                "name": "koii test net",
+                "name": "Koii Testnet",
                 "enabled": true,
                 "imports": [
                     "KOII"

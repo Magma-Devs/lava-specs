@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "CANTO",
-                "name": "canto mainnet",
+                "name": "Canto Mainnet",
                 "enabled": true,
                 "imports": [
                     "ETH1",

@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "MANTAPACIFIC",
-                "name": "manta pacific mainnet",
+                "name": "Manta Pacific Mainnet",
                 "enabled": true,
                 "imports": [
                     "ETH1"
@@ -50,7 +50,7 @@
             },
             {
                 "index": "MANTAPACIFICT",
-                "name": "manta pacific testnet",
+                "name": "Manta Pacific Testnet",
                 "enabled": true,
                 "imports": [
                     "MANTAPACIFIC"

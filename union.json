@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "UNIONT",
-                "name": "union testnet",
+                "name": "Union Testnet",
                 "enabled": true,
                 "imports": [
                     "COSMOSSDK"

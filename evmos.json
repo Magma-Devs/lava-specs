@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "EVMOS",
-                "name": "evmos mainnet",
+                "name": "Evmos Mainnet",
                 "enabled": true,
                 "imports": [
                     "COSMOSSDK50",
@@ -1001,7 +1001,7 @@
             },
             {
                 "index": "EVMOST",
-                "name": "evmos testnet",
+                "name": "Evmos Testnet",
                 "enabled": true,
                 "imports": [
                     "EVMOS"

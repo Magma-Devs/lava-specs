@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "ELYS",
-                "name": "elys testnet",
+                "name": "Elys Testnet",
                 "enabled": true,
                 "imports": [
                     "COSMOSSDKFULL"

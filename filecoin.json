@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "FVM",
-                "name": "filecoin mainnet",
+                "name": "Filecoin Mainnet",
                 "enabled": true,
                 "imports": ["ETH1"],
                 "reliability_threshold": 268435455,
@@ -2878,7 +2878,7 @@
             },
             {
                 "index": "FVMT",
-                "name": "filecoin testnet",
+                "name": "Filecoin Testnet",
                 "enabled": true,
                 "imports": [
                     "FVM"

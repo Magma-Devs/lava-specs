@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "XLM",
-                "name": "stellar mainnet",
+                "name": "Stellar Mainnet",
                 "enabled": true,
                 "reliability_threshold": 268435455,
                 "data_reliability_enabled": true,
@@ -1262,7 +1262,7 @@
             },
             {
                 "index": "XLMT",
-                "name": "stellar testnet",
+                "name": "Stellar Testnet",
                 "enabled": true,
                 "reliability_threshold": 268435455,
                 "data_reliability_enabled": true,
