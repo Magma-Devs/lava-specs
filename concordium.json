@@ -1012,7 +1012,7 @@
                         "inheritance_apis": [],
                         "parse_directives": [
                             {
-                                "function_template": "",
+                                "function_template": "{}",
                                 "function_tag": "GET_BLOCKNUM",
                                 "result_parsing": {
                                     "parser_arg": [
@@ -1039,18 +1039,17 @@
                                 "api_name": "concordium.v2.Queries/GetBlocksAtHeight"
                             },
                             {
-                                "function_template": "{\"absolute\":{\"height\":{\"value\":\"0\"}}}",
+                                "function_template": "{\"absoluteHeight\":{\"value\":\"1\"}}",
                                 "function_tag": "GET_EARLIEST_BLOCK",
                                 "result_parsing": {
                                     "parser_arg": [
                                         "0",
-                                        "blocks",
-                                        "0",
+                                        "height",
                                         "value"
                                     ],
                                     "parser_func": "PARSE_CANONICAL"
                                 },
-                                "api_name": "concordium.v2.Queries/GetBlocksAtHeight"
+                                "api_name": "concordium.v2.Queries/GetBlockInfo"
                             }
                         ],
                         "verifications": [
@@ -1071,7 +1070,7 @@
                                 },
                                 "values": [
                                     {
-                                        "expected_value": "9dd9ca4d19e9393877d2c44b70f89acbfc0883c2243e5eeaecc0d1cd0503f478"
+                                        "expected_value": "ndnKTRnpOTh30sRLcPiay/wIg8IkPl7q7MDRzQUD9Hg="
                                     }
                                 ]
                             },
@@ -1759,7 +1758,31 @@
                         ],
                         "headers": [],
                         "inheritance_apis": [],
-                        "parse_directives": [],
+                        "parse_directives": [
+                            {
+                                "function_template": "/v0/consensusInfo",
+                                "function_tag": "GET_BLOCKNUM",
+                                "result_parsing": {
+                                    "parser_arg": [
+                                        "0",
+                                        "bestBlockHeight"
+                                    ],
+                                    "parser_func": "PARSE_CANONICAL"
+                                },
+                                "api_name": "/v0/consensusInfo"
+                            },
+                            {
+                                "function_template": "/v0/blocksAtHeight/%d",
+                                "function_tag": "GET_BLOCK_BY_NUM",
+                                "result_parsing": {
+                                    "parser_arg": [
+                                        "0"
+                                    ],
+                                    "parser_func": "PARSE_BY_ARG"
+                                },
+                                "api_name": "/v0/blocksAtHeight/{blockHeight}"
+                            }
+                        ],
                         "verifications": [],
                         "extensions": []
                     },
@@ -1938,7 +1961,7 @@
                                 "name": "chain-id",
                                 "values": [
                                     {
-                                        "expected_value": "4221332d34e1694168c2a0c0b3fd0f273809612cb13d000d5c2e00e85f50f796"
+                                        "expected_value": "QiEzLTThaUFowqDAs/0PJzgJYSyxPQANXC4A6F9Q95Y="
                                     }
                                 ]
                             }
