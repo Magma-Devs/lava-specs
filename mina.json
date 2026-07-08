@@ -41,7 +41,7 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
+                                    "local": false,
                                     "subscription": false,
                                     "stateful": 0
                                 },
@@ -51,15 +51,15 @@
                                 "name": "daemonStatus",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        ""
+                                        "latest"
                                     ],
-                                    "parser_func": "EMPTY"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 10,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
+                                    "local": false,
                                     "subscription": false,
                                     "stateful": 0
                                 },
@@ -77,7 +77,7 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
+                                    "local": false,
                                     "subscription": false,
                                     "stateful": 0
                                 },
@@ -235,7 +235,7 @@
                                     ],
                                     "parser_func": "DEFAULT"
                                 },
-                                "compute_units": 20,
+                                "compute_units": 1000,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
@@ -243,7 +243,8 @@
                                     "subscription": false,
                                     "stateful": 0
                                 },
-                                "extra_compute_units": 0
+                                "extra_compute_units": 0,
+                                "timeout_ms": 20000
                             },
                             {
                                 "name": "currentSnarkWorker",
@@ -329,7 +330,7 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
+                                    "local": false,
                                     "subscription": false,
                                     "stateful": 0
                                 },
@@ -347,7 +348,7 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
+                                    "local": false,
                                     "subscription": false,
                                     "stateful": 0
                                 },
@@ -598,8 +599,8 @@
                                 "compute_units": 20,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": false,
-                                    "local": true,
+                                    "deterministic": true,
+                                    "local": false,
                                     "subscription": false,
                                     "stateful": 0
                                 },
@@ -616,8 +617,8 @@
                                 "compute_units": 20,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": false,
-                                    "local": true,
+                                    "deterministic": true,
+                                    "local": false,
                                     "subscription": false,
                                     "stateful": 0
                                 },
@@ -645,11 +646,11 @@
                                 "name": "fork_config",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        ""
+                                        "latest"
                                     ],
-                                    "parser_func": "EMPTY"
+                                    "parser_func": "DEFAULT"
                                 },
-                                "compute_units": 10,
+                                "compute_units": 20,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
