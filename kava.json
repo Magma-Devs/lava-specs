@@ -2924,7 +2924,22 @@
             ],
             "headers": [],
             "inheritance_apis": [],
-            "parse_directives": [],
+            "parse_directives": [
+              {
+                "function_template": "{}",
+                "function_tag": "GET_BLOCKNUM",
+                "result_parsing": {
+                  "parser_arg": [
+                    "0",
+                    "block",
+                    "header",
+                    "height"
+                  ],
+                  "parser_func": "PARSE_CANONICAL"
+                },
+                "api_name": "cosmos.base.tendermint.v1beta1.Service/GetLatestBlock"
+              }
+            ],
             "verifications": [
               {
                 "name": "chain-id",
