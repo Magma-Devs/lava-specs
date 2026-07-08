@@ -30,7 +30,7 @@
                         },
                         "apis": [
                             {
-                                "name": "syncStatus",
+                                "name": "/syncStatus",
                                 "block_parsing": {
                                     "parser_arg": [
                                         ""
@@ -48,7 +48,7 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "daemonStatus",
+                                "name": "/daemonStatus",
                                 "block_parsing": {
                                     "parser_arg": [
                                         "latest"
@@ -66,7 +66,7 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "version",
+                                "name": "/version",
                                 "block_parsing": {
                                     "parser_arg": [
                                         ""
@@ -84,7 +84,7 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "getFilteredLogEntries",
+                                "name": "/getFilteredLogEntries",
                                 "block_parsing": {
                                     "parser_arg": [
                                         ""
@@ -102,7 +102,7 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "ownedWallets",
+                                "name": "/ownedWallets",
                                 "block_parsing": {
                                     "parser_arg": [
                                         ""
@@ -120,7 +120,7 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "trackedAccounts",
+                                "name": "/trackedAccounts",
                                 "block_parsing": {
                                     "parser_arg": [
                                         ""
@@ -138,7 +138,7 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "wallet",
+                                "name": "/wallet",
                                 "block_parsing": {
                                     "parser_arg": [
                                         ""
@@ -156,7 +156,7 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "connectionGatingConfig",
+                                "name": "/connectionGatingConfig",
                                 "block_parsing": {
                                     "parser_arg": [
                                         ""
@@ -174,25 +174,7 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "account",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 20,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
-                                    "stateful": 0
-                                },
-                                "extra_compute_units": 0
-                            },
-                            {
-                                "name": "accounts",
+                                "name": "/account",
                                 "block_parsing": {
                                     "parser_arg": [
                                         "latest"
@@ -210,7 +192,7 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "tokenOwner",
+                                "name": "/accounts",
                                 "block_parsing": {
                                     "parser_arg": [
                                         "latest"
@@ -228,7 +210,25 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "tokenAccounts",
+                                "name": "/tokenOwner",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 20,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "/tokenAccounts",
                                 "block_parsing": {
                                     "parser_arg": [
                                         "latest"
@@ -247,7 +247,7 @@
                                 "timeout_ms": 20000
                             },
                             {
-                                "name": "currentSnarkWorker",
+                                "name": "/currentSnarkWorker",
                                 "block_parsing": {
                                     "parser_arg": [
                                         ""
@@ -265,7 +265,7 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "bestChain",
+                                "name": "/bestChain",
                                 "block_parsing": {
                                     "parser_arg": [
                                         "latest"
@@ -283,7 +283,7 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "block",
+                                "name": "/block",
                                 "block_parsing": {
                                     "parser_arg": [
                                         "latest"
@@ -301,7 +301,7 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "genesisBlock",
+                                "name": "/genesisBlock",
                                 "block_parsing": {
                                     "parser_arg": [
                                         ""
@@ -319,7 +319,7 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "initialPeers",
+                                "name": "/initialPeers",
                                 "block_parsing": {
                                     "parser_arg": [
                                         ""
@@ -337,7 +337,7 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "getPeers",
+                                "name": "/getPeers",
                                 "block_parsing": {
                                     "parser_arg": [
                                         ""
@@ -355,7 +355,7 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "pooledUserCommands",
+                                "name": "/pooledUserCommands",
                                 "block_parsing": {
                                     "parser_arg": [
                                         "latest"
@@ -373,7 +373,7 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "pooledZkappCommands",
+                                "name": "/pooledZkappCommands",
                                 "block_parsing": {
                                     "parser_arg": [
                                         "latest"
@@ -391,7 +391,7 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "transactionStatus",
+                                "name": "/transactionStatus",
                                 "block_parsing": {
                                     "parser_arg": [
                                         "latest"
@@ -409,25 +409,7 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "trustStatus",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        ""
-                                    ],
-                                    "parser_func": "EMPTY"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
-                                    "stateful": 0
-                                },
-                                "extra_compute_units": 0
-                            },
-                            {
-                                "name": "trustStatusAll",
+                                "name": "/trustStatus",
                                 "block_parsing": {
                                     "parser_arg": [
                                         ""
@@ -445,115 +427,7 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "snarkPool",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 20,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": false,
-                                    "local": false,
-                                    "subscription": false,
-                                    "stateful": 0
-                                },
-                                "extra_compute_units": 0
-                            },
-                            {
-                                "name": "pendingSnarkWork",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 20,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": false,
-                                    "local": false,
-                                    "subscription": false,
-                                    "stateful": 0
-                                },
-                                "extra_compute_units": 0
-                            },
-                            {
-                                "name": "snarkWorkRange",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 20,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": false,
-                                    "local": false,
-                                    "subscription": false,
-                                    "stateful": 0
-                                },
-                                "extra_compute_units": 0
-                            },
-                            {
-                                "name": "snarkedLedgerAccountMembership",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 20,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
-                                    "stateful": 0
-                                },
-                                "extra_compute_units": 0
-                            },
-                            {
-                                "name": "encodedSnarkedLedgerAccountMembership",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 20,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
-                                    "stateful": 0
-                                },
-                                "extra_compute_units": 0
-                            },
-                            {
-                                "name": "genesisConstants",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        ""
-                                    ],
-                                    "parser_func": "EMPTY"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
-                                    "stateful": 0
-                                },
-                                "extra_compute_units": 0
-                            },
-                            {
-                                "name": "timeOffset",
+                                "name": "/trustStatusAll",
                                 "block_parsing": {
                                     "parser_arg": [
                                         ""
@@ -571,7 +445,7 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "validatePayment",
+                                "name": "/snarkPool",
                                 "block_parsing": {
                                     "parser_arg": [
                                         "latest"
@@ -589,17 +463,17 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "evaluateVrf",
+                                "name": "/pendingSnarkWork",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        ""
+                                        "latest"
                                     ],
-                                    "parser_func": "EMPTY"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
+                                    "deterministic": false,
                                     "local": false,
                                     "subscription": false,
                                     "stateful": 0
@@ -607,17 +481,17 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "checkVrf",
+                                "name": "/snarkWorkRange",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        ""
+                                        "latest"
                                     ],
-                                    "parser_func": "EMPTY"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
+                                    "deterministic": false,
                                     "local": false,
                                     "subscription": false,
                                     "stateful": 0
@@ -625,25 +499,7 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "runtimeConfig",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        ""
-                                    ],
-                                    "parser_func": "EMPTY"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
-                                    "stateful": 0
-                                },
-                                "extra_compute_units": 0
-                            },
-                            {
-                                "name": "fork_config",
+                                "name": "/snarkedLedgerAccountMembership",
                                 "block_parsing": {
                                     "parser_arg": [
                                         "latest"
@@ -661,7 +517,43 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "threadGraph",
+                                "name": "/encodedSnarkedLedgerAccountMembership",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 20,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "/genesisConstants",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        ""
+                                    ],
+                                    "parser_func": "EMPTY"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "/timeOffset",
                                 "block_parsing": {
                                     "parser_arg": [
                                         ""
@@ -679,7 +571,61 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "blockchainVerificationKey",
+                                "name": "/validatePayment",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 20,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "/evaluateVrf",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        ""
+                                    ],
+                                    "parser_func": "EMPTY"
+                                },
+                                "compute_units": 20,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "/checkVrf",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        ""
+                                    ],
+                                    "parser_func": "EMPTY"
+                                },
+                                "compute_units": 20,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "/runtimeConfig",
                                 "block_parsing": {
                                     "parser_arg": [
                                         ""
@@ -697,43 +643,7 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "networkID",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        ""
-                                    ],
-                                    "parser_func": "EMPTY"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
-                                    "stateful": 0
-                                },
-                                "extra_compute_units": 0
-                            },
-                            {
-                                "name": "signatureKind",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        ""
-                                    ],
-                                    "parser_func": "EMPTY"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
-                                    "stateful": 0
-                                },
-                                "extra_compute_units": 0
-                            },
-                            {
-                                "name": "protocolState",
+                                "name": "/fork_config",
                                 "block_parsing": {
                                     "parser_arg": [
                                         "latest"
@@ -751,7 +661,79 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "accountActions",
+                                "name": "/threadGraph",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        ""
+                                    ],
+                                    "parser_func": "EMPTY"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": true,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "/blockchainVerificationKey",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        ""
+                                    ],
+                                    "parser_func": "EMPTY"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "/networkID",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        ""
+                                    ],
+                                    "parser_func": "EMPTY"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "/signatureKind",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        ""
+                                    ],
+                                    "parser_func": "EMPTY"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "/protocolState",
                                 "block_parsing": {
                                     "parser_arg": [
                                         "latest"
@@ -769,7 +751,25 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "sendPayment",
+                                "name": "/accountActions",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 20,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "/sendPayment",
                                 "block_parsing": {
                                     "parser_arg": [
                                         "latest"
@@ -788,7 +788,7 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "sendTestPayments",
+                                "name": "/sendTestPayments",
                                 "block_parsing": {
                                     "parser_arg": [
                                         "latest"
@@ -807,7 +807,7 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "sendDelegation",
+                                "name": "/sendDelegation",
                                 "block_parsing": {
                                     "parser_arg": [
                                         "latest"
@@ -826,7 +826,7 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "sendZkapp",
+                                "name": "/sendZkapp",
                                 "block_parsing": {
                                     "parser_arg": [
                                         "latest"
@@ -845,7 +845,7 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "mockZkapp",
+                                "name": "/mockZkapp",
                                 "block_parsing": {
                                     "parser_arg": [
                                         "latest"
@@ -864,7 +864,7 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "internalSendZkapp",
+                                "name": "/internalSendZkapp",
                                 "block_parsing": {
                                     "parser_arg": [
                                         "latest"
@@ -883,7 +883,7 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "sendRosettaTransaction",
+                                "name": "/sendRosettaTransaction",
                                 "block_parsing": {
                                     "parser_arg": [
                                         "latest"
@@ -902,7 +902,7 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "sendProofBundle",
+                                "name": "/sendProofBundle",
                                 "block_parsing": {
                                     "parser_arg": [
                                         "latest"
@@ -921,7 +921,7 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "addPeers",
+                                "name": "/addPeers",
                                 "block_parsing": {
                                     "parser_arg": [
                                         ""
@@ -961,7 +961,7 @@
                                     ],
                                     "parser_func": "PARSE_CANONICAL"
                                 },
-                                "api_name": "daemonStatus"
+                                "api_name": "/daemonStatus"
                             },
                             {
                                 "function_tag": "GET_BLOCK_BY_NUM",
@@ -975,7 +975,7 @@
                                     ],
                                     "parser_func": "PARSE_CANONICAL"
                                 },
-                                "api_name": "block"
+                                "api_name": "/block"
                             }
                         ],
                         "verifications": [
@@ -992,7 +992,7 @@
                                         ],
                                         "parser_func": "PARSE_CANONICAL"
                                     },
-                                    "api_name": "networkID"
+                                    "api_name": "/networkID"
                                 },
                                 "values": [
                                     {
