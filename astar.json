@@ -14,8 +14,8 @@
         "data_reliability_enabled": true,
         "block_distance_for_finalized_data": 2,
         "blocks_in_finalization_proof": 1,
-        "average_block_time": 6000,
-        "allowed_block_lag_for_qos_sync": 2,
+        "average_block_time": 10500,
+        "allowed_block_lag_for_qos_sync": 1,
         "shares": 1,
         "min_stake_provider": {
           "denom": "ulava",
@@ -1380,7 +1380,8 @@
                   "subscription": false,
                   "stateful": 0
                 },
-                "extra_compute_units": 0
+                "extra_compute_units": 0,
+                "timeout_ms": 25000
               },
               {
                 "name": "state_getStorageSizeAt",
@@ -1398,7 +1399,8 @@
                   "subscription": false,
                   "stateful": 0
                 },
-                "extra_compute_units": 0
+                "extra_compute_units": 0,
+                "timeout_ms": 25000
               },
               {
                 "name": "state_queryStorage",
@@ -2005,8 +2007,8 @@
         "data_reliability_enabled": true,
         "block_distance_for_finalized_data": 2,
         "blocks_in_finalization_proof": 1,
-        "average_block_time": 6000,
-        "allowed_block_lag_for_qos_sync": 2,
+        "average_block_time": 10500,
+        "allowed_block_lag_for_qos_sync": 1,
         "shares": 1,
         "min_stake_provider": {
           "denom": "ulava",
