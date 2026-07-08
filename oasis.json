@@ -75,7 +75,7 @@
                   ],
                   "parser_func": "DEFAULT"
                 },
-                "compute_units": 20,
+                "compute_units": 5000,
                 "enabled": true,
                 "category": {
                   "deterministic": false,
@@ -578,7 +578,7 @@
                 },
                 "values": [
                   {
-                    "latest_distance": 606
+                    "latest_distance": 14400
                   },
                   {
                     "extension": "archive",
@@ -592,7 +592,7 @@
                 "name": "archive",
                 "cu_multiplier": 5,
                 "rule": {
-                  "block": 606
+                  "block": 14200
                 }
               }
             ]
