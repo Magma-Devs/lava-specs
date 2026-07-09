@@ -2179,9 +2179,9 @@
                 "name": "mmr_generateProof",
                 "block_parsing": {
                   "parser_arg": [
-                    "0"
+                    "latest"
                   ],
-                  "parser_func": "PARSE_BY_ARG"
+                  "parser_func": "DEFAULT"
                 },
                 "compute_units": 20,
                 "enabled": true,
@@ -2797,15 +2797,21 @@
               {
                 "name": "pruning",
                 "parse_directive": {
-                  "function_tag": "GET_EARLIEST_BLOCK"
+                  "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"state_getRuntimeVersion\",\"params\":[\"0x3200eac979296d39fe99c96711eafd2d6eecdaf87e5d8f09162e50c66325cee9\"],\"id\":1}",
+                  "function_tag": "VERIFICATION",
+                  "result_parsing": {
+                    "parser_arg": [
+                      "0",
+                      "specVersion"
+                    ],
+                    "parser_func": "PARSE_CANONICAL"
+                  },
+                  "api_name": "state_getRuntimeVersion"
                 },
                 "values": [
                   {
-                    "latest_distance": 14400
-                  },
-                  {
                     "extension": "archive",
-                    "expected_value": "1"
+                    "expected_value": "3001"
                   }
                 ]
               }
@@ -2856,6 +2862,27 @@
                 "values": [
                   {
                     "expected_value": "0x2ace05e703aa50b48c0ccccfc8b424f7aab9a1e2c424ed12e45d20b1e8ffd0d6"
+                  }
+                ]
+              },
+              {
+                "name": "pruning",
+                "parse_directive": {
+                  "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"state_getRuntimeVersion\",\"params\":[\"0xffc47f2e7c0f474db24df32ff0fb3cbb21d81a9d0c66b59d976c29f8b5244eb3\"],\"id\":1}",
+                  "function_tag": "VERIFICATION",
+                  "result_parsing": {
+                    "parser_arg": [
+                      "0",
+                      "specVersion"
+                    ],
+                    "parser_func": "PARSE_CANONICAL"
+                  },
+                  "api_name": "state_getRuntimeVersion"
+                },
+                "values": [
+                  {
+                    "extension": "archive",
+                    "expected_value": "3001"
                   }
                 ]
               }
