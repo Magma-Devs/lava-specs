@@ -236,6 +236,18 @@
                     "expected_value": "dorado-1"
                   }
                 ]
+              },
+              {
+                "name": "pruning",
+                "values": [
+                  {
+                    "latest_distance": 15157
+                  },
+                  {
+                    "extension": "archive",
+                    "expected_value": "827201"
+                  }
+                ]
               }
             ],
             "apis": []
