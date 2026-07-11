@@ -2474,7 +2474,7 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": true,
+                  "local": false,
                   "subscription": false,
                   "stateful": 0
                 },
@@ -2492,7 +2492,7 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": true,
+                  "local": false,
                   "subscription": false,
                   "stateful": 0
                 },
@@ -2510,7 +2510,7 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": true,
+                  "local": false,
                   "subscription": false,
                   "stateful": 0
                 },
@@ -2527,8 +2527,8 @@
                 "compute_units": 100,
                 "enabled": true,
                 "category": {
-                  "deterministic": false,
-                  "local": true,
+                  "deterministic": true,
+                  "local": false,
                   "subscription": false,
                   "stateful": 0
                 },
@@ -2586,7 +2586,17 @@
                   "subscription": false,
                   "stateful": 0
                 },
-                "extra_compute_units": 0
+                "extra_compute_units": 0,
+                "parsers": [
+                  {
+                    "parse_path": ".params.[0].fromBlock",
+                    "parse_type": "BLOCK_EARLIEST"
+                  },
+                  {
+                    "parse_path": ".params.[0].toBlock",
+                    "parse_type": "BLOCK_LATEST"
+                  }
+                ]
               }
             ],
             "headers": [],
@@ -2632,7 +2642,7 @@
                   ],
                   "parser_func": "DEFAULT"
                 },
-                "compute_units": 10,
+                "compute_units": 5000,
                 "enabled": true,
                 "category": {
                   "deterministic": false,
