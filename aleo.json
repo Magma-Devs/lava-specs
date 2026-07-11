@@ -105,9 +105,9 @@
                                 "name": "/block/{height_or_hash}",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -123,9 +123,9 @@
                                 "name": "/block/{height_or_hash}/header",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -141,9 +141,9 @@
                                 "name": "/block/{height_or_hash}/transactions",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -177,9 +177,9 @@
                                 "name": "/transaction/{id}",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -195,9 +195,9 @@
                                 "name": "/transaction/confirmed/{id}",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -213,9 +213,9 @@
                                 "name": "/transaction/unconfirmed/{id}",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -231,9 +231,9 @@
                                 "name": "/transaction/rejected/{id}/reason",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -249,9 +249,9 @@
                                 "name": "/find/blockHash/{tx_id}",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -267,9 +267,9 @@
                                 "name": "/find/blockHeight/{state_root}",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -285,9 +285,9 @@
                                 "name": "/find/transactionID/deployment/{program_id}",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -303,9 +303,9 @@
                                 "name": "/find/transactionID/deployment/{program_id}/{edition}",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -321,9 +321,9 @@
                                 "name": "/find/transactionID/deployment/{program_id}/{edition}/original",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -339,9 +339,9 @@
                                 "name": "/find/transactionID/deployment/{program_id}/{edition}/{amendment}",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -357,9 +357,9 @@
                                 "name": "/find/transactionID/{transition_id}",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -375,9 +375,9 @@
                                 "name": "/find/transitionID/{input_or_output_id}",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -393,9 +393,9 @@
                                 "name": "/solution/limits/{prover_address}",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -519,14 +519,14 @@
                                 "name": "/program/{id}",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
+                                    "deterministic": false,
                                     "local": false,
                                     "subscription": false,
                                     "stateful": 0
@@ -537,9 +537,9 @@
                                 "name": "/program/{id}/latest_edition",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -555,9 +555,9 @@
                                 "name": "/program/{id}/{edition}",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -573,9 +573,9 @@
                                 "name": "/program/{id}/mappings",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -591,9 +591,9 @@
                                 "name": "/program/{id}/mapping/{name}/{key}",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -609,14 +609,14 @@
                                 "name": "/program/{id}/amendment_count",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
+                                    "deterministic": false,
                                     "local": false,
                                     "subscription": false,
                                     "stateful": 0
@@ -627,9 +627,9 @@
                                 "name": "/program/{id}/{edition}/amendment_count",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -753,9 +753,9 @@
                                 "name": "/height/{hash}",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -825,9 +825,9 @@
                                 "name": "/statePath/{commitment}",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -879,9 +879,9 @@
                                 "name": "/stateRoot/{height}",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -915,9 +915,9 @@
                                 "name": "/committee/{height}",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -933,9 +933,9 @@
                                 "name": "/delegators/{validator}",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -1023,9 +1023,9 @@
                                 "name": "/program/{id}/mapping/{name}",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -1177,9 +1177,9 @@
                                 "name": "/program/{id}/view/{function}",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -1215,9 +1215,9 @@
                                 "name": "/program/{id}/mapping/{name}/{key}/history/{height}",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "3"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -1233,9 +1233,9 @@
                                 "name": "/program/{id}/mapping/{name}/history/{height}",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "2"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -1286,9 +1286,9 @@
                                 "name": "/program/{id}/view/{function}/{height}",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "2"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -1345,9 +1345,9 @@
                                 "name": "/staking/rewards/{address}/{height}",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "1"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -1398,8 +1398,8 @@
                 "data_reliability_enabled": true,
                 "block_distance_for_finalized_data": 1,
                 "blocks_in_finalization_proof": 1,
-                "average_block_time": 2900,
-                "allowed_block_lag_for_qos_sync": 4,
+                "average_block_time": 3550,
+                "allowed_block_lag_for_qos_sync": 3,
                 "shares": 1,
                 "min_stake_provider": {
                     "denom": "ulava",
