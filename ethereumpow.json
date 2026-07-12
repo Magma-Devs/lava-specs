@@ -15,7 +15,7 @@
                 "block_distance_for_finalized_data": 8,
                 "blocks_in_finalization_proof": 3,
                 "average_block_time": 13000,
-                "allowed_block_lag_for_qos_sync": 1,
+                "allowed_block_lag_for_qos_sync": 2,
                 "shares": 1,
                 "min_stake_provider": {
                     "denom": "ulava",
@@ -138,6 +138,16 @@
                                     "stateful": 0
                                 },
                                 "extra_compute_units": 0
+                            },
+                            {
+                                "name": "eth_getBlockReceipts",
+                                "compute_units": 1,
+                                "enabled": false
+                            },
+                            {
+                                "name": "eth_protocolVersion",
+                                "compute_units": 1,
+                                "enabled": false
                             }
                         ],
                         "headers": [],
@@ -176,7 +186,7 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
-                                    "local": true,
+                                    "local": false,
                                     "subscription": false,
                                     "stateful": 0
                                 },
@@ -190,18 +200,18 @@
                                     ],
                                     "parser_func": "PARSE_BY_ARG"
                                 },
-                                "compute_units": 200,
+                                "compute_units": 500,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
-                                    "local": true,
+                                    "local": false,
                                     "subscription": false,
                                     "stateful": 0
                                 },
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "debug_getAccessibleState",
+                                "name": "debug_getHeaderRlp",
                                 "block_parsing": {
                                     "parser_arg": [
                                         "0"
@@ -212,7 +222,7 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
-                                    "local": true,
+                                    "local": false,
                                     "subscription": false,
                                     "stateful": 0
                                 },
@@ -222,9 +232,9 @@
                                 "name": "debug_getModifiedAccountsByHash",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 100,
                                 "enabled": true,
@@ -258,9 +268,9 @@
                                 "name": "debug_intermediateRoots",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 100,
                                 "enabled": true,
@@ -291,42 +301,6 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "debug_standardTraceBadBlockToFile",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 200,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
-                                    "stateful": 0
-                                },
-                                "extra_compute_units": 0
-                            },
-                            {
-                                "name": "debug_standardTraceBlockToFile",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 200,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
-                                    "stateful": 0
-                                },
-                                "extra_compute_units": 0
-                            },
-                            {
                                 "name": "debug_traceBadBlock",
                                 "block_parsing": {
                                     "parser_arg": [
@@ -345,40 +319,19 @@
                                 "extra_compute_units": 0
                             },
                             {
-                                "name": "debug_traceBlockFromFile",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 100,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
-                                    "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                "name": "debug_getRawBlock",
+                                "compute_units": 1,
+                                "enabled": false
                             },
                             {
-                                "name": "debug_traceChain",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "0"
-                                    ],
-                                    "parser_func": "PARSE_BY_ARG"
-                                },
-                                "compute_units": 200,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
-                                    "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                "name": "debug_getRawHeader",
+                                "compute_units": 1,
+                                "enabled": false
+                            },
+                            {
+                                "name": "debug_getRawTransaction",
+                                "compute_units": 1,
+                                "enabled": false
                             }
                         ],
                         "headers": [],
@@ -388,7 +341,7 @@
                             {
                                 "name": "enabled",
                                 "parse_directive": {
-                                    "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"debug_getRawHeader\",\"params\":[\"latest\"],\"id\":1}",
+                                    "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"debug_getHeaderRlp\",\"params\":[0],\"id\":1}",
                                     "function_tag": "VERIFICATION",
                                     "result_parsing": {
                                         "parser_arg": [
@@ -397,7 +350,7 @@
                                         "parser_func": "PARSE_BY_ARG",
                                         "encoding": "hex"
                                     },
-                                    "api_name": "debug_getRawHeader"
+                                    "api_name": "debug_getHeaderRlp"
                                 },
                                 "values": [
                                     {
@@ -406,6 +359,30 @@
                                 ]
                             }
                         ],
+                        "extensions": []
+                    },
+                    {
+                        "enabled": false,
+                        "collection_data": {
+                            "api_interface": "jsonrpc",
+                            "internal_path": "",
+                            "type": "POST",
+                            "add_on": "trace"
+                        },
+                        "apis": [],
+                        "verifications": [],
+                        "extensions": []
+                    },
+                    {
+                        "enabled": false,
+                        "collection_data": {
+                            "api_interface": "jsonrpc",
+                            "internal_path": "",
+                            "type": "POST",
+                            "add_on": "bundler"
+                        },
+                        "apis": [],
+                        "verifications": [],
                         "extensions": []
                     }
                 ]
@@ -422,7 +399,7 @@
                 "block_distance_for_finalized_data": 8,
                 "blocks_in_finalization_proof": 3,
                 "average_block_time": 13000,
-                "allowed_block_lag_for_qos_sync": 1,
+                "allowed_block_lag_for_qos_sync": 2,
                 "shares": 1,
                 "min_stake_provider": {
                     "denom": "ulava",
