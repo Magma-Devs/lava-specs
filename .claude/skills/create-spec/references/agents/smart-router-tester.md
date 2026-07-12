@@ -108,7 +108,7 @@ Rules — apply exactly:
   all static providers failed verification — cannot serve endpoint
   ```
   So: add `<WS_URL>` (or any `wss://` node URL) to every block. If the spec has subscriptions and you were given NO ws/wss URL, do not boot a doomed config — STOP and return `SMOKE: BOOT_FAILED` noting that a ws/wss upstream is required for this chain, so the orchestrator can ask the user for one. (Check with: `jq -e '[.proposal.specs[].api_collections[].apis[]?.category.subscription] | any' <chain>.json` → `true` means subscriptions are present.)
-- **Multi-interface chains** (`<EXTRA_INTERFACES>` non-empty): add one more `endpoints[]` entry per extra interface on the next free port (`3361`, `3362`, …, same `chain-id`, the extra `api-interface`) AND a matching set of `direct-rpc[]` blocks for that interface's upstreams. See `config/smartrouter_examples/smartrouter_lava.yml` (rest + grpc + tendermintrpc) for the multi-interface shape.
+- **Multi-interface chains** (`<EXTRA_INTERFACES>` non-empty): add one more `endpoints[]` entry per extra interface on the next free port (`3361`, `3362`, …, same `chain-id`, the extra `api-interface`) AND a matching set of `direct-rpc[]` blocks for that interface's upstreams. See `config/smartrouter_examples/smartrouter_cosmos.yml` (rest + grpc + tendermintrpc) for the multi-interface shape.
 - `addons:` on a `node-urls` entry tells the router that upstream serves an addon/extension (`archive`, `debug`, `trace`, …) and arms the matching startup verifications. Do NOT guess them here — leave them out of the initial config; Step 1c probes each upstream and adds only the addons it actually supports. (The spec-side `add_on` field still lives in `collection_data`, not in this config.)
 
 After writing, confirm it parses as YAML and dump it:
@@ -165,7 +165,7 @@ $DOCKER run -d --name sr_<chain> \
   -v "$SPECS_DIR":/smart-router/specs:ro \
   -v /tmp/sr_<chain>.yml:/smart-router/sr.yml:ro \
   "$IMAGE" \
-  sr.yml --geolocation 1 --use-static-spec specs/ --log-level debug --log-format json
+  sr.yml --use-static-spec specs/ --log-level debug --log-format json
 ```
 
 ## Step 3 — Wait for the router to be ready
@@ -181,7 +181,7 @@ timeout 120 bash -c '
          -d "{\"jsonrpc\":\"2.0\",\"method\":\"\",\"params\":[],\"id\":1}"; then
       echo READY; break
     fi
-    if '"$DOCKER"' logs sr_<chain> 2>&1 | grep -qiE "panic|fatal|failed to (load|expand|resolve) spec|all static providers failed verification|cannot serve endpoint|no matching spec"; then
+    if '"$DOCKER"' logs sr_<chain> 2>&1 | grep -qiE "panic|fatal|failed to load any specs|spec not found for chainId|all static providers failed verification|cannot serve endpoint"; then
       echo FATAL; break
     fi
     sleep 2
@@ -194,7 +194,7 @@ $DOCKER logs --tail 60 sr_<chain> 2>&1
 
 For non-jsonrpc interfaces (`rest`/`grpc`/`tendermintrpc`) the readiness probe differs — for `rest`/`tendermintrpc` a `GET http://localhost:3360/<a known path>` returning any HTTP status means the listener is up; for `grpc` a TCP connect (`bash -c '</dev/tcp/localhost/3360'`) is sufficient. Use whichever matches `<INTERFACE>`.
 
-If the logs show `panic`, `fatal`, `failed to load/expand/resolve spec`, `all static providers failed verification`, `cannot serve endpoint`, or `no matching spec` before the listener answers, STOP. Capture the full log (`$DOCKER logs sr_<chain>`), go to Step 6 (teardown), and return `SMOKE: BOOT_FAILED` with the excerpt (and, if it is the missing-ws case, say so explicitly). Do NOT skip to Step 4.
+If the logs show `panic`, `fatal`, `failed to load any specs`, `spec not found for chainId`, `all static providers failed verification`, or `cannot serve endpoint` before the listener answers, STOP. Capture the full log (`$DOCKER logs sr_<chain>`), go to Step 6 (teardown), and return `SMOKE: BOOT_FAILED` with the excerpt (and, if it is the missing-ws case, say so explicitly). Do NOT skip to Step 4.
 
 Deliberately NOT a fail-fast trigger: per-provider lines like `failed verification on provider startup` or `ATTENTION: some static providers failed verification and were excluded`. The router still boots and serves when at least one provider passes — those partial failures are classified in Step 3.5 (c) instead of aborting the run here.
 
