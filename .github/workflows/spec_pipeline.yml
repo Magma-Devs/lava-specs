@@ -21,6 +21,12 @@ name: "Spec Pipeline (Phases 8-11)"
 on:
   pull_request:
     types: [opened]
+    # Specs live flat at the repo root as <chain>.json — only PRs touching one
+    # are spec PRs. Skill/CI/docs PRs must not auto-start the pipeline; they
+    # can still be run manually via a /rerun-* comment (path filters don't
+    # apply to issue_comment).
+    paths:
+      - "*.json"
   issue_comment:
     types: [created]
 
