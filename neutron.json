@@ -56,27 +56,6 @@
               },
               {
                 "enabled": true,
-                "name": "/cosmos/tx/v1beta1/decode/amino",
-                "compute_units": 10,
-                "extra_compute_units": 0,
-                "category": {
-                  "deterministic": true,
-                  "local": false,
-                  "subscription": false,
-                  "stateful": 0,
-                  "hanging_api": false
-                },
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT",
-                  "default_value": "",
-                  "encoding": ""
-                }
-              },
-              {
-                "enabled": true,
                 "name": "/cosmwasm/wasm/v1/build_address",
                 "compute_units": 10,
                 "extra_compute_units": 0,
@@ -393,6 +372,27 @@
               {
                 "enabled": true,
                 "name": "/ibc/core/channel/v2/clients/{client_id}/packet_commitments/{packet_ack_sequences}/unreceived_acks",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/ibc/core/channel/v2/clients/{client_id}/packet_commitments/{sequences}/unreceived_packets",
                 "compute_units": 10,
                 "extra_compute_units": 0,
                 "category": {
@@ -748,7 +748,7 @@
                 }
               },
               {
-                "enabled": true,
+                "enabled": false,
                 "name": "/neutron/dex/estimate_multi_hop_swap",
                 "compute_units": 10,
                 "extra_compute_units": 0,
@@ -769,7 +769,7 @@
                 }
               },
               {
-                "enabled": true,
+                "enabled": false,
                 "name": "/neutron/dex/estimate_place_limit_order",
                 "compute_units": 10,
                 "extra_compute_units": 0,
@@ -790,7 +790,7 @@
                 }
               },
               {
-                "enabled": true,
+                "enabled": false,
                 "name": "/neutron/dex/filled_limit_order_tranche",
                 "compute_units": 10,
                 "extra_compute_units": 0,
@@ -811,7 +811,7 @@
                 }
               },
               {
-                "enabled": true,
+                "enabled": false,
                 "name": "/neutron/dex/filled_limit_order_tranche/{pair_id}/{token_in}/{tick_index}/{tranche_key}",
                 "compute_units": 10,
                 "extra_compute_units": 0,
@@ -1023,8 +1023,9 @@
               {
                 "enabled": true,
                 "name": "/neutron/dex/pool_metadata",
-                "compute_units": 10,
+                "compute_units": 1000,
                 "extra_compute_units": 0,
+                "timeout_ms": 20000,
                 "category": {
                   "deterministic": true,
                   "local": false,
@@ -1904,6 +1905,42 @@
           {
             "enabled": true,
             "collection_data": {
+              "api_interface": "rest",
+              "internal_path": "",
+              "type": "POST",
+              "add_on": ""
+            },
+            "apis": [
+              {
+                "enabled": true,
+                "name": "/cosmos/tx/v1beta1/decode/amino",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              }
+            ],
+            "headers": [],
+            "inheritance_apis": [],
+            "parse_directives": [],
+            "verifications": []
+          },
+          {
+            "enabled": true,
+            "collection_data": {
               "api_interface": "grpc",
               "internal_path": "",
               "type": "",
@@ -2583,7 +2620,7 @@
                 }
               },
               {
-                "enabled": true,
+                "enabled": false,
                 "name": "neutron.dex.Query/EstimateMultiHopSwap",
                 "compute_units": 10,
                 "extra_compute_units": 0,
@@ -2604,7 +2641,7 @@
                 }
               },
               {
-                "enabled": true,
+                "enabled": false,
                 "name": "neutron.dex.Query/EstimatePlaceLimitOrder",
                 "compute_units": 10,
                 "extra_compute_units": 0,
@@ -2858,8 +2895,9 @@
               {
                 "enabled": true,
                 "name": "neutron.dex.Query/PoolMetadataAll",
-                "compute_units": 10,
+                "compute_units": 1000,
                 "extra_compute_units": 0,
+                "timeout_ms": 20000,
                 "category": {
                   "deterministic": true,
                   "local": false,
