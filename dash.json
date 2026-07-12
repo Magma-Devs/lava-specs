@@ -639,6 +639,48 @@
                     "expected_value": "true"
                   }
                 ]
+              },
+              {
+                "name": "spentindex-enabled",
+                "parse_directive": {
+                  "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"getindexinfo\",\"params\":[],\"id\":1}",
+                  "function_tag": "VERIFICATION",
+                  "result_parsing": {
+                    "parser_arg": [
+                      "0",
+                      "spentindex",
+                      "synced"
+                    ],
+                    "parser_func": "PARSE_CANONICAL"
+                  },
+                  "api_name": "getindexinfo"
+                },
+                "values": [
+                  {
+                    "expected_value": "true"
+                  }
+                ]
+              },
+              {
+                "name": "timestampindex-enabled",
+                "parse_directive": {
+                  "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"getindexinfo\",\"params\":[],\"id\":1}",
+                  "function_tag": "VERIFICATION",
+                  "result_parsing": {
+                    "parser_arg": [
+                      "0",
+                      "timestampindex",
+                      "synced"
+                    ],
+                    "parser_func": "PARSE_CANONICAL"
+                  },
+                  "api_name": "getindexinfo"
+                },
+                "values": [
+                  {
+                    "expected_value": "true"
+                  }
+                ]
               }
             ],
             "extensions": []
