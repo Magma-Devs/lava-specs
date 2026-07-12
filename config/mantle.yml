@@ -1,0 +1,33 @@
+# Smart Router — Mantle. ONE config, BOTH networks.
+#   MANTLE  (0x1388 mainnet) listener :3360  ->  https://rpc.mantle.xyz  +  wss://mantle-rpc.publicnode.com
+#   MANTLET (0x138b Sepolia) listener :3361  ->  https://rpc.sepolia.mantle.xyz  +  wss://mantle-sepolia.gateway.tenderly.co
+# http = base + archive tier (rpc.*.mantle.xyz are archive nodes; the `pruning` verification
+#        checks the archive tier: earliest block == 0x0). ws = ETH1-inherited subscriptions.
+# NOTE: a dedicated `lava-extension: archive` route can't be armed here because this
+#       subscription-capable chain makes the router require archive+websocket on ONE node,
+#       and no public Mantle endpoint serves both (archive node is http-only). Infra limit, not a spec issue.
+metrics-listen-address: "0.0.0.0:7779"
+
+endpoints:
+  - listen-address: "0.0.0.0:3360"
+    network-address: "0.0.0.0:3360"
+    chain-id: "MANTLE"
+    api-interface: "jsonrpc"
+  - listen-address: "0.0.0.0:3361"
+    network-address: "0.0.0.0:3361"
+    chain-id: "MANTLET"
+    api-interface: "jsonrpc"
+
+direct-rpc:
+  - name: "mantle-mainnet"
+    chain-id: "MANTLE"
+    api-interface: "jsonrpc"
+    node-urls:
+      - url: "https://rpc.mantle.xyz"
+      - url: "wss://mantle-rpc.publicnode.com"
+  - name: "mantle-sepolia-testnet"
+    chain-id: "MANTLET"
+    api-interface: "jsonrpc"
+    node-urls:
+      - url: "https://rpc.sepolia.mantle.xyz"
+      - url: "wss://mantle-sepolia.gateway.tenderly.co"
