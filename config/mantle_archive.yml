@@ -1,0 +1,33 @@
+# Smart Router — Mantle, PR-style run: archive extension ARMED, HTTP-only.
+# Boot/health MUST pass --skip-websocket-verification (the spec is subscription-capable via
+# ETH1, and these public gateways serve no ws; skipping ws removes the archive+websocket combo
+# so the dedicated `lava-extension: archive` route can be armed and tested).
+# Trade-off: subscriptions (eth_subscribe/unsubscribe) are NOT tested in this mode.
+# Each provider lists its http URL twice: plain (base ||) + addons:[archive] (archive tier).
+metrics-listen-address: "0.0.0.0:7779"
+
+endpoints:
+  - listen-address: "0.0.0.0:3360"
+    network-address: "0.0.0.0:3360"
+    chain-id: "MANTLE"
+    api-interface: "jsonrpc"
+  - listen-address: "0.0.0.0:3361"
+    network-address: "0.0.0.0:3361"
+    chain-id: "MANTLET"
+    api-interface: "jsonrpc"
+
+direct-rpc:
+  - name: "mantle-mainnet"
+    chain-id: "MANTLE"
+    api-interface: "jsonrpc"
+    node-urls:
+      - url: "https://rpc.mantle.xyz"
+      - url: "https://rpc.mantle.xyz"
+        addons: ["archive"]
+  - name: "mantle-sepolia-testnet"
+    chain-id: "MANTLET"
+    api-interface: "jsonrpc"
+    node-urls:
+      - url: "https://rpc.sepolia.mantle.xyz"
+      - url: "https://rpc.sepolia.mantle.xyz"
+        addons: ["archive"]
