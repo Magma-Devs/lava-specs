@@ -287,6 +287,24 @@
                                 "extra_compute_units": 0
                             },
                             {
+                                "name": "/v1/chain/get_kv_table_rows",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 20,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
                                 "name": "/v1/chain/get_table_by_scope",
                                 "block_parsing": {
                                     "parser_arg": [
@@ -438,7 +456,7 @@
                                     ],
                                     "parser_func": "DEFAULT"
                                 },
-                                "compute_units": 20,
+                                "compute_units": 60,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
@@ -572,7 +590,7 @@
                                     ],
                                     "parser_func": "DEFAULT"
                                 },
-                                "compute_units": 20,
+                                "compute_units": 60,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
@@ -643,7 +661,7 @@
                         "inheritance_apis": [],
                         "parse_directives": [
                             {
-                                "function_template": "",
+                                "function_template": "{}",
                                 "function_tag": "GET_BLOCKNUM",
                                 "result_parsing": {
                                     "parser_arg": [
@@ -671,7 +689,7 @@
                             {
                                 "name": "chain-id",
                                 "parse_directive": {
-                                    "function_template": "",
+                                    "function_template": "{}",
                                     "function_tag": "VERIFICATION",
                                     "result_parsing": {
                                         "parser_arg": [
@@ -768,7 +786,7 @@
                             {
                                 "name": "chain-id",
                                 "parse_directive": {
-                                    "function_template": "",
+                                    "function_template": "{}",
                                     "function_tag": "VERIFICATION",
                                     "result_parsing": {
                                         "parser_arg": [
@@ -877,7 +895,7 @@
                             {
                                 "name": "chain-id",
                                 "parse_directive": {
-                                    "function_template": "",
+                                    "function_template": "{}",
                                     "function_tag": "VERIFICATION",
                                     "result_parsing": {
                                         "parser_arg": [
@@ -1088,6 +1106,102 @@
                                 "values": [
                                     {
                                         "expected_value": "73e4385a2708e6d7048834fbc1079f2fabb17b3c125b146af438971e90716c4d"
+                                    }
+                                ]
+                            }
+                        ],
+                        "extensions": []
+                    },
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "rest",
+                            "internal_path": "",
+                            "type": "POST",
+                            "add_on": "trace"
+                        },
+                        "apis": [],
+                        "headers": [],
+                        "inheritance_apis": [],
+                        "parse_directives": [],
+                        "verifications": [
+                            {
+                                "name": "chain-id",
+                                "values": [
+                                    {
+                                        "expected_value": "73e4385a2708e6d7048834fbc1079f2fabb17b3c125b146af438971e90716c4d"
+                                    }
+                                ]
+                            }
+                        ],
+                        "extensions": []
+                    },
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "rest",
+                            "internal_path": "",
+                            "type": "POST",
+                            "add_on": "hyperion"
+                        },
+                        "apis": [],
+                        "headers": [],
+                        "inheritance_apis": [],
+                        "parse_directives": [],
+                        "verifications": [
+                            {
+                                "name": "chain-id",
+                                "values": [
+                                    {
+                                        "expected_value": "73e4385a2708e6d7048834fbc1079f2fabb17b3c125b146af438971e90716c4d"
+                                    }
+                                ]
+                            }
+                        ],
+                        "extensions": []
+                    },
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "jsonrpc",
+                            "internal_path": "",
+                            "type": "POST",
+                            "add_on": ""
+                        },
+                        "apis": [],
+                        "headers": [],
+                        "inheritance_apis": [],
+                        "parse_directives": [],
+                        "verifications": [
+                            {
+                                "name": "chain-id",
+                                "values": [
+                                    {
+                                        "expected_value": "0x3cc5"
+                                    }
+                                ]
+                            }
+                        ],
+                        "extensions": []
+                    },
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "jsonrpc",
+                            "internal_path": "",
+                            "type": "POST",
+                            "add_on": "trace"
+                        },
+                        "apis": [],
+                        "headers": [],
+                        "inheritance_apis": [],
+                        "parse_directives": [],
+                        "verifications": [
+                            {
+                                "name": "chain-id",
+                                "values": [
+                                    {
+                                        "expected_value": "0x3cc5"
                                     }
                                 ]
                             }
