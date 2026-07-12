@@ -365,7 +365,7 @@
                                     ],
                                     "parser_func": "DEFAULT"
                                 },
-                                "compute_units": 200,
+                                "compute_units": 5000,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
@@ -620,6 +620,54 @@
                                         "expected_value": "*"
                                     }
                                 ]
+                            }
+                        ],
+                        "extensions": [
+                            {
+                                "name": "archive",
+                                "cu_multiplier": 5,
+                                "rule": {
+                                    "block": 86400
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "jsonrpc",
+                            "internal_path": "",
+                            "type": "POST",
+                            "add_on": "trace"
+                        },
+                        "apis": [],
+                        "headers": [],
+                        "inheritance_apis": [],
+                        "parse_directives": [],
+                        "verifications": [
+                            {
+                                "name": "pruning",
+                                "parse_directive": {
+                                    "function_tag": "GET_EARLIEST_BLOCK"
+                                },
+                                "values": [
+                                    {
+                                        "latest_distance": 86400
+                                    },
+                                    {
+                                        "extension": "archive",
+                                        "expected_value": "0x0"
+                                    }
+                                ]
+                            }
+                        ],
+                        "extensions": [
+                            {
+                                "name": "archive",
+                                "cu_multiplier": 5,
+                                "rule": {
+                                    "block": 86400
+                                }
                             }
                         ]
                     }
