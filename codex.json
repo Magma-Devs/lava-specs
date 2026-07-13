@@ -590,8 +590,8 @@
                 "compute_units": 100,
                 "enabled": true,
                 "category": {
-                  "deterministic": true,
-                  "local": false,
+                  "deterministic": false,
+                  "local": true,
                   "subscription": false,
                   "stateful": 0
                 },
@@ -655,9 +655,9 @@
                 "name": "debug_intermediateRoots",
                 "block_parsing": {
                   "parser_arg": [
-                    "0"
+                    "latest"
                   ],
-                  "parser_func": "PARSE_BY_ARG"
+                  "parser_func": "DEFAULT"
                 },
                 "compute_units": 100,
                 "enabled": true,
@@ -716,8 +716,8 @@
                 "compute_units": 100,
                 "enabled": true,
                 "category": {
-                  "deterministic": true,
-                  "local": false,
+                  "deterministic": false,
+                  "local": true,
                   "subscription": false,
                   "stateful": 0
                 },
@@ -968,8 +968,8 @@
                 "compute_units": 200,
                 "enabled": true,
                 "category": {
-                  "deterministic": true,
-                  "local": false,
+                  "deterministic": false,
+                  "local": true,
                   "subscription": false,
                   "stateful": 0
                 },
