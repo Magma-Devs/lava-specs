@@ -56,9 +56,9 @@
                             {
                                 "name": "txpool_content",
                                 "block_parsing": {"parser_arg": ["latest"], "parser_func": "DEFAULT"},
-                                "compute_units": 20,
+                                "compute_units": 5000,
                                 "enabled": true,
-                                "category": {"deterministic": false, "local": false, "subscription": false, "stateful": 0},
+                                "category": {"deterministic": false, "local": true, "subscription": false, "stateful": 0},
                                 "extra_compute_units": 0
                             },
                             {
@@ -66,7 +66,7 @@
                                 "block_parsing": {"parser_arg": ["latest"], "parser_func": "DEFAULT"},
                                 "compute_units": 20,
                                 "enabled": true,
-                                "category": {"deterministic": false, "local": false, "subscription": false, "stateful": 0},
+                                "category": {"deterministic": false, "local": true, "subscription": false, "stateful": 0},
                                 "extra_compute_units": 0
                             },
                             {
@@ -74,7 +74,7 @@
                                 "block_parsing": {"parser_arg": ["latest"], "parser_func": "DEFAULT"},
                                 "compute_units": 10,
                                 "enabled": true,
-                                "category": {"deterministic": false, "local": false, "subscription": false, "stateful": 0},
+                                "category": {"deterministic": false, "local": true, "subscription": false, "stateful": 0},
                                 "extra_compute_units": 0
                             }
                         ],
@@ -106,7 +106,7 @@
                             {
                                 "name": "eth_sendRawTransactionSync",
                                 "block_parsing": {"parser_arg": ["latest"], "parser_func": "DEFAULT"},
-                                "compute_units": 10,
+                                "compute_units": 100,
                                 "enabled": true,
                                 "timeout_ms": 10000,
                                 "category": {"deterministic": false, "local": false, "subscription": false, "stateful": 1, "hanging_api": true},
@@ -131,7 +131,7 @@
                             {
                                 "name": "eth_simulateV1",
                                 "block_parsing": {"parser_arg": ["1"], "parser_func": "PARSE_BY_ARG"},
-                                "compute_units": 40,
+                                "compute_units": 100,
                                 "enabled": true,
                                 "category": {"deterministic": true, "local": false, "subscription": false, "stateful": 0},
                                 "extra_compute_units": 0
