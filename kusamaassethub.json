@@ -11,7 +11,7 @@
         "data_reliability_enabled": true,
         "block_distance_for_finalized_data": 2,
         "blocks_in_finalization_proof": 1,
-        "average_block_time": 2000,
+        "average_block_time": 2448,
         "allowed_block_lag_for_qos_sync": 5,
         "imports": [],
         "shares": 1,
@@ -1006,9 +1006,9 @@
                 "name": "childstate_getKeysPagedAt",
                 "block_parsing": {
                   "parser_arg": [
-                    "latest"
+                    "3"
                   ],
-                  "parser_func": "DEFAULT"
+                  "parser_func": "PARSE_BY_ARG"
                 },
                 "compute_units": 20,
                 "enabled": true,
@@ -1240,9 +1240,9 @@
                 "name": "state_callAt",
                 "block_parsing": {
                   "parser_arg": [
-                    "latest"
+                    "2"
                   ],
-                  "parser_func": "DEFAULT"
+                  "parser_func": "PARSE_BY_ARG"
                 },
                 "compute_units": 20,
                 "enabled": true,
@@ -1312,9 +1312,9 @@
                 "name": "state_getKeysPagedAt",
                 "block_parsing": {
                   "parser_arg": [
-                    "latest"
+                    "3"
                   ],
-                  "parser_func": "DEFAULT"
+                  "parser_func": "PARSE_BY_ARG"
                 },
                 "compute_units": 20,
                 "enabled": true,
@@ -1420,9 +1420,9 @@
                 "name": "state_getStorageAt",
                 "block_parsing": {
                   "parser_arg": [
-                    "latest"
+                    "1"
                   ],
-                  "parser_func": "DEFAULT"
+                  "parser_func": "PARSE_BY_ARG"
                 },
                 "compute_units": 20,
                 "enabled": true,
@@ -1456,9 +1456,9 @@
                 "name": "state_getStorageHashAt",
                 "block_parsing": {
                   "parser_arg": [
-                    "latest"
+                    "1"
                   ],
-                  "parser_func": "DEFAULT"
+                  "parser_func": "PARSE_BY_ARG"
                 },
                 "compute_units": 20,
                 "enabled": true,
@@ -1492,9 +1492,9 @@
                 "name": "state_getStorageSizeAt",
                 "block_parsing": {
                   "parser_arg": [
-                    "latest"
+                    "1"
                   ],
-                  "parser_func": "DEFAULT"
+                  "parser_func": "PARSE_BY_ARG"
                 },
                 "compute_units": 20,
                 "enabled": true,
@@ -1528,9 +1528,9 @@
                 "name": "state_queryStorageAt",
                 "block_parsing": {
                   "parser_arg": [
-                    "latest"
+                    "1"
                   ],
-                  "parser_func": "DEFAULT"
+                  "parser_func": "PARSE_BY_ARG"
                 },
                 "compute_units": 40,
                 "enabled": true,
@@ -1780,9 +1780,9 @@
                 "name": "system_dryRunAt",
                 "block_parsing": {
                   "parser_arg": [
-                    "latest"
+                    "1"
                   ],
-                  "parser_func": "DEFAULT"
+                  "parser_func": "PARSE_BY_ARG"
                 },
                 "compute_units": 40,
                 "enabled": true,
@@ -2333,7 +2333,7 @@
                 "name": "archive",
                 "cu_multiplier": 5,
                 "rule": {
-                  "block": 43200
+                  "block": 127
                 }
               }
             ]
@@ -2347,42 +2347,6 @@
               "add_on": ""
             },
             "apis": [
-              {
-                "name": "/version",
-                "block_parsing": {
-                  "parser_arg": [
-                    ""
-                  ],
-                  "parser_func": "EMPTY"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": false,
-                  "local": true,
-                  "subscription": false,
-                  "stateful": 0
-                },
-                "extra_compute_units": 0
-              },
-              {
-                "name": "/capabilities",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "local": false,
-                  "subscription": false,
-                  "stateful": 0
-                },
-                "extra_compute_units": 0
-              },
               {
                 "name": "/ahm-info",
                 "block_parsing": {
@@ -2511,24 +2475,6 @@
               },
               {
                 "name": "/blocks/{blockId}/extrinsics/{extrinsicIndex}",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "local": false,
-                  "subscription": false,
-                  "stateful": 0
-                },
-                "extra_compute_units": 0
-              },
-              {
-                "name": "/blocks/{blockId}/para-inclusions",
                 "block_parsing": {
                   "parser_arg": [
                     "latest"
@@ -2745,24 +2691,6 @@
               },
               {
                 "name": "/accounts/{accountId}/validate",
-                "block_parsing": {
-                  "parser_arg": [
-                    ""
-                  ],
-                  "parser_func": "EMPTY"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "local": false,
-                  "subscription": false,
-                  "stateful": 0
-                },
-                "extra_compute_units": 0
-              },
-              {
-                "name": "/accounts/{accountId}/convert",
                 "block_parsing": {
                   "parser_arg": [
                     ""
@@ -3986,186 +3914,6 @@
                 "extra_compute_units": 0
               },
               {
-                "name": "/coretime/info",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "local": false,
-                  "subscription": false,
-                  "stateful": 0
-                },
-                "extra_compute_units": 0
-              },
-              {
-                "name": "/coretime/leases",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "local": false,
-                  "subscription": false,
-                  "stateful": 0
-                },
-                "extra_compute_units": 0
-              },
-              {
-                "name": "/coretime/overview",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "local": false,
-                  "subscription": false,
-                  "stateful": 0
-                },
-                "extra_compute_units": 0
-              },
-              {
-                "name": "/coretime/regions",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "local": false,
-                  "subscription": false,
-                  "stateful": 0
-                },
-                "extra_compute_units": 0
-              },
-              {
-                "name": "/coretime/renewals",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "local": false,
-                  "subscription": false,
-                  "stateful": 0
-                },
-                "extra_compute_units": 0
-              },
-              {
-                "name": "/coretime/reservations",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "local": false,
-                  "subscription": false,
-                  "stateful": 0
-                },
-                "extra_compute_units": 0
-              },
-              {
-                "name": "/experimental/blocks/head/traces",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "local": false,
-                  "subscription": false,
-                  "stateful": 0
-                },
-                "extra_compute_units": 0
-              },
-              {
-                "name": "/experimental/blocks/head/traces/operations",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "local": false,
-                  "subscription": false,
-                  "stateful": 0
-                },
-                "extra_compute_units": 0
-              },
-              {
-                "name": "/experimental/blocks/{blockId}/traces",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "local": false,
-                  "subscription": false,
-                  "stateful": 0
-                },
-                "extra_compute_units": 0
-              },
-              {
-                "name": "/experimental/blocks/{blockId}/traces/operations",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "local": false,
-                  "subscription": false,
-                  "stateful": 0
-                },
-                "extra_compute_units": 0
-              },
-              {
                 "name": "/experimental/rc/blocks/head/traces",
                 "block_parsing": {
                   "parser_arg": [
@@ -4221,150 +3969,6 @@
               },
               {
                 "name": "/experimental/rc/blocks/{blockId}/traces/operations",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "local": false,
-                  "subscription": false,
-                  "stateful": 0
-                },
-                "extra_compute_units": 0
-              },
-              {
-                "name": "/paras",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "local": false,
-                  "subscription": false,
-                  "stateful": 0
-                },
-                "extra_compute_units": 0
-              },
-              {
-                "name": "/paras/auctions/current",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "local": false,
-                  "subscription": false,
-                  "stateful": 0
-                },
-                "extra_compute_units": 0
-              },
-              {
-                "name": "/paras/crowdloans",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "local": false,
-                  "subscription": false,
-                  "stateful": 0
-                },
-                "extra_compute_units": 0
-              },
-              {
-                "name": "/paras/head/backed-candidates",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "local": false,
-                  "subscription": false,
-                  "stateful": 0
-                },
-                "extra_compute_units": 0
-              },
-              {
-                "name": "/paras/head/included-candidates",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "local": false,
-                  "subscription": false,
-                  "stateful": 0
-                },
-                "extra_compute_units": 0
-              },
-              {
-                "name": "/paras/leases/current",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "local": false,
-                  "subscription": false,
-                  "stateful": 0
-                },
-                "extra_compute_units": 0
-              },
-              {
-                "name": "/paras/{paraId}/crowdloan-info",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "local": false,
-                  "subscription": false,
-                  "stateful": 0
-                },
-                "extra_compute_units": 0
-              },
-              {
-                "name": "/paras/{paraId}/lease-info",
                 "block_parsing": {
                   "parser_arg": [
                     "latest"
@@ -4516,24 +4120,6 @@
                 "extra_compute_units": 0
               },
               {
-                "name": "/transaction/parse",
-                "block_parsing": {
-                  "parser_arg": [
-                    ""
-                  ],
-                  "parser_func": "EMPTY"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "local": false,
-                  "subscription": false,
-                  "stateful": 0
-                },
-                "extra_compute_units": 0
-              },
-              {
                 "name": "/rc/transaction",
                 "block_parsing": {
                   "parser_arg": [
@@ -4578,60 +4164,6 @@
                   "parser_func": "DEFAULT"
                 },
                 "compute_units": 20,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "local": false,
-                  "subscription": false,
-                  "stateful": 0
-                },
-                "extra_compute_units": 0
-              },
-              {
-                "name": "/rc/transaction/metadata-blob",
-                "block_parsing": {
-                  "parser_arg": [
-                    ""
-                  ],
-                  "parser_func": "EMPTY"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "local": false,
-                  "subscription": false,
-                  "stateful": 0
-                },
-                "extra_compute_units": 0
-              },
-              {
-                "name": "/rc/transaction/parse",
-                "block_parsing": {
-                  "parser_arg": [
-                    ""
-                  ],
-                  "parser_func": "EMPTY"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "local": false,
-                  "subscription": false,
-                  "stateful": 0
-                },
-                "extra_compute_units": 0
-              },
-              {
-                "name": "/contracts/ink/{address}/query",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 10,
                 "enabled": true,
                 "category": {
                   "deterministic": true,
