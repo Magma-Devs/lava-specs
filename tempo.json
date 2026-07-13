@@ -114,7 +114,7 @@
                             },
                             {
                                 "name": "eth_getStorageValues",
-                                "block_parsing": {"parser_arg": ["2"], "parser_func": "PARSE_BY_ARG"},
+                                "block_parsing": {"parser_arg": ["1"], "parser_func": "PARSE_BY_ARG"},
                                 "compute_units": 20,
                                 "enabled": true,
                                 "category": {"deterministic": true, "local": false, "subscription": false, "stateful": 0},
