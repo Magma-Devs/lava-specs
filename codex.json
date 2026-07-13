@@ -961,9 +961,9 @@
                 "name": "debug_traceBadBlock",
                 "block_parsing": {
                   "parser_arg": [
-                    ""
+                    "latest"
                   ],
-                  "parser_func": "EMPTY"
+                  "parser_func": "DEFAULT"
                 },
                 "compute_units": 200,
                 "enabled": true,
@@ -986,8 +986,8 @@
                 "compute_units": 200,
                 "enabled": true,
                 "category": {
-                  "deterministic": true,
-                  "local": false,
+                  "deterministic": false,
+                  "local": true,
                   "subscription": false,
                   "stateful": 0
                 },
