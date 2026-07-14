@@ -3972,7 +3972,7 @@
             "inheritance_apis": [],
             "parse_directives": [
               {
-                "function_template": "/blocks/head",
+                "function_template": "/blocks/head?finalized=false",
                 "function_tag": "GET_BLOCKNUM",
                 "result_parsing": {
                   "parser_arg": [
