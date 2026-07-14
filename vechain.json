@@ -344,7 +344,7 @@
                   "parser_func": "EMPTY"
                 },
                 "compute_units": 1000,
-                "enabled": true,
+                "enabled": false,
                 "category": {
                   "deterministic": false,
                   "local": false,
@@ -471,9 +471,11 @@
                   "deterministic": false,
                   "local": false,
                   "subscription": false,
-                  "stateful": 1
+                  "stateful": 1,
+                  "hanging_api": true
                 },
-                "extra_compute_units": 0
+                "extra_compute_units": 0,
+                "timeout_ms": 5000
               },
               {
                 "name": "/logs/event",
@@ -486,7 +488,7 @@
                 "compute_units": 80,
                 "enabled": true,
                 "category": {
-                  "deterministic": true,
+                  "deterministic": false,
                   "local": false,
                   "subscription": false,
                   "stateful": 0
@@ -504,7 +506,7 @@
                 "compute_units": 80,
                 "enabled": true,
                 "category": {
-                  "deterministic": true,
+                  "deterministic": false,
                   "local": false,
                   "subscription": false,
                   "stateful": 0
@@ -589,7 +591,7 @@
               {
                 "name": "enabled",
                 "parse_directive": {
-                  "function_template": "{\"name\":\"call\",\"value\":\"0x0\",\"data\":\"0x\",\"to\":\"0x0000000000000000000000000000456E65726779\",\"revision\":\"best\"}",
+                  "function_template": "{\"name\":\"call\",\"value\":\"0x0\",\"data\":\"0x\",\"to\":\"0x0000000000000000000000000000456E65726779\"}",
                   "function_tag": "VERIFICATION",
                   "result_parsing": {
                     "parser_arg": [
@@ -597,7 +599,7 @@
                     ],
                     "parser_func": "PARSE_BY_ARG"
                   },
-                  "api_name": "/debug/tracers/call"
+                  "api_name": "/debug/tracers/call?revision=best"
                 },
                 "values": [
                   {
@@ -1082,9 +1084,11 @@
                   "deterministic": false,
                   "local": false,
                   "subscription": false,
-                  "stateful": 1
+                  "stateful": 1,
+                  "hanging_api": true
                 },
-                "extra_compute_units": 0
+                "extra_compute_units": 0,
+                "timeout_ms": 5000
               },
               {
                 "name": "eth_sendTransaction",
@@ -1095,7 +1099,7 @@
                   "parser_func": "DEFAULT"
                 },
                 "compute_units": 10,
-                "enabled": true,
+                "enabled": false,
                 "category": {
                   "deterministic": false,
                   "local": false,
@@ -1113,7 +1117,7 @@
                   "parser_func": "EMPTY"
                 },
                 "compute_units": 10,
-                "enabled": true,
+                "enabled": false,
                 "category": {
                   "deterministic": false,
                   "local": true,
@@ -1280,9 +1284,11 @@
                   "deterministic": false,
                   "local": true,
                   "subscription": false,
-                  "stateful": 0
+                  "stateful": 0,
+                  "hanging_api": true
                 },
-                "extra_compute_units": 0
+                "extra_compute_units": 0,
+                "timeout_ms": 5000
               }
             ],
             "headers": [],
