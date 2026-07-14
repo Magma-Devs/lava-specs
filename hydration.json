@@ -210,7 +210,7 @@
                 "extra_compute_units": 0
               },
               {
-                "name": "archive_v1_storageDiff_stopStorageDiff",
+                "name": "archive_v1_stopStorageDiff",
                 "block_parsing": {
                   "parser_arg": [
                     ""
@@ -2142,17 +2142,6 @@
             "inheritance_apis": [],
             "parse_directives": [
               {
-                "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"chain_getBlockHash\",\"params\":[0],\"id\":1}",
-                "function_tag": "GET_EARLIEST_BLOCK",
-                "result_parsing": {
-                  "parser_arg": [
-                    "0"
-                  ],
-                  "parser_func": "PARSE_CANONICAL"
-                },
-                "api_name": "chain_getBlockHash"
-              },
-              {
                 "function_tag": "GET_BLOCK_BY_NUM",
                 "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"chain_getBlockHash\",\"params\":[%d],\"id\":1}",
                 "result_parsing": {
@@ -2309,15 +2298,21 @@
               {
                 "name": "pruning",
                 "parse_directive": {
-                  "function_tag": "GET_EARLIEST_BLOCK"
+                  "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"state_getRuntimeVersion\",\"params\":[\"0x28a3780a9b7b9b7d57edd5a526f0cd839ee215a7a5894db69a177d60a1ea2569\"],\"id\":1}",
+                  "function_tag": "VERIFICATION",
+                  "result_parsing": {
+                    "parser_arg": [
+                      "0",
+                      "specVersion"
+                    ],
+                    "parser_func": "PARSE_CANONICAL"
+                  },
+                  "api_name": "state_getRuntimeVersion"
                 },
                 "values": [
                   {
-                    "latest_distance": 14400
-                  },
-                  {
                     "extension": "archive",
-                    "expected_value": "1"
+                    "expected_value": "109"
                   }
                 ]
               }
@@ -3282,7 +3277,15 @@
                 ]
               }
             ],
-            "extensions": []
+            "extensions": [
+              {
+                "name": "archive",
+                "cu_multiplier": 5,
+                "rule": {
+                  "block": 14400
+                }
+              }
+            ]
           }
         ]
       },
@@ -3323,6 +3326,27 @@
                 "values": [
                   {
                     "expected_value": "0x5f52a76d9a13fcc0c9094ba62c284f4f2f5e5f031f7e60eecaa7339f7f77c23f"
+                  }
+                ]
+              },
+              {
+                "name": "pruning",
+                "parse_directive": {
+                  "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"state_getRuntimeVersion\",\"params\":[\"0x237c4a2bc014b9f5383fdd32615c1cd87e4b2ef0de31a52336d5ac0a6447e37d\"],\"id\":1}",
+                  "function_tag": "VERIFICATION",
+                  "result_parsing": {
+                    "parser_arg": [
+                      "0",
+                      "specVersion"
+                    ],
+                    "parser_func": "PARSE_CANONICAL"
+                  },
+                  "api_name": "state_getRuntimeVersion"
+                },
+                "values": [
+                  {
+                    "extension": "archive",
+                    "expected_value": "363"
                   }
                 ]
               }
