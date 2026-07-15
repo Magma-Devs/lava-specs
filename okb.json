@@ -285,6 +285,21 @@
                     "expected_value": "0x7a0"
                   }
                 ]
+              },
+              {
+                "name": "pruning",
+                "parse_directive": {
+                  "function_tag": "GET_EARLIEST_BLOCK"
+                },
+                "values": [
+                  {
+                    "latest_distance": 3601
+                  },
+                  {
+                    "extension": "archive",
+                    "expected_value": "0xbacb24"
+                  }
+                ]
               }
             ]
           }
