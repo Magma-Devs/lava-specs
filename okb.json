@@ -302,6 +302,30 @@
                 ]
               }
             ]
+          },
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "jsonrpc",
+              "internal_path": "",
+              "type": "POST",
+              "add_on": "trace"
+            },
+            "apis": [],
+            "verifications": [
+              {
+                "name": "pruning",
+                "values": [
+                  {
+                    "latest_distance": 3601
+                  },
+                  {
+                    "extension": "archive",
+                    "expected_value": "0xbacb24"
+                  }
+                ]
+              }
+            ]
           }
         ]
       }
