@@ -1,0 +1,335 @@
+{
+  "proposal": {
+    "title": "Add Specs: X Layer",
+    "description": "Adding new specification support for relaying X Layer data on Lava",
+    "specs": [
+      {
+        "index": "OKB",
+        "name": "x layer mainnet",
+        "enabled": true,
+        "reliability_threshold": 268435455,
+        "data_reliability_enabled": true,
+        "block_distance_for_finalized_data": 1,
+        "blocks_in_finalization_proof": 1,
+        "average_block_time": 1000,
+        "allowed_block_lag_for_qos_sync": 10,
+        "imports": [
+          "ETH1"
+        ],
+        "shares": 1,
+        "min_stake_provider": {
+          "denom": "ulava",
+          "amount": "5000000000"
+        },
+        "api_collections": [
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "jsonrpc",
+              "internal_path": "",
+              "type": "POST",
+              "add_on": ""
+            },
+            "apis": [
+              {
+                "name": "optimism_syncStatus",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": false,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              }
+            ],
+            "headers": [],
+            "inheritance_apis": [],
+            "parse_directives": [
+              {
+                "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"eth_getBlockByNumber\",\"params\":[\"earliest\", false],\"id\":1}",
+                "function_tag": "GET_EARLIEST_BLOCK",
+                "result_parsing": {
+                  "parser_arg": ["0", "number"],
+                  "parser_func": "PARSE_CANONICAL",
+                  "encoding": "hex"
+                },
+                "api_name": "eth_getBlockByNumber"
+              }
+            ],
+            "verifications": [
+              {
+                "name": "chain-id",
+                "values": [
+                  {
+                    "expected_value": "0xc4"
+                  }
+                ]
+              },
+              {
+                "name": "pruning",
+                "parse_directive": {
+                  "function_tag": "GET_EARLIEST_BLOCK"
+                },
+                "values": [
+                  {
+                    "latest_distance": 3601
+                  },
+                  {
+                    "extension": "archive",
+                    "expected_value": "0x0"
+                  }
+                ]
+              }
+            ],
+            "extensions": [
+              {
+                "name": "archive",
+                "cu_multiplier": 5,
+                "rule": {
+                  "block": 3600
+                }
+              }
+            ]
+          },
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "jsonrpc",
+              "internal_path": "",
+              "type": "POST",
+              "add_on": "trace"
+            },
+            "apis": [
+              {
+                "name": "trace_callMany",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 200,
+                "enabled": true,
+                "category": {
+                  "deterministic": false,
+                  "local": true,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              }
+            ],
+            "extensions": [
+              {
+                "name": "archive",
+                "cu_multiplier": 5,
+                "rule": { "block": 3600 }
+              }
+            ],
+            "verifications": [
+              {
+                "name": "trace",
+                "parse_directive": {
+                  "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"trace_block\",\"params\":[\"latest\"],\"id\":1}",
+                  "function_tag": "VERIFICATION",
+                  "result_parsing": {
+                    "parser_arg": ["0"],
+                    "parser_func": "PARSE_BY_ARG"
+                  },
+                  "api_name": "trace_block"
+                },
+                "values": [
+                  {
+                    "expected_value": "*"
+                  }
+                ]
+              },
+              {
+                "name": "pruning",
+                "parse_directive": {
+                  "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"eth_getBlockByNumber\",\"params\":[\"earliest\", false],\"id\":1}",
+                  "function_tag": "VERIFICATION",
+                  "result_parsing": {
+                    "parser_arg": ["0", "number"],
+                    "parser_func": "PARSE_CANONICAL",
+                    "encoding": "hex"
+                  },
+                  "api_name": "eth_getBlockByNumber"
+                },
+                "values": [
+                  { "latest_distance": 3601 },
+                  { "extension": "archive", "expected_value": "0x0" }
+                ]
+              }
+            ]
+          },
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "jsonrpc",
+              "internal_path": "",
+              "type": "POST",
+              "add_on": "txpool"
+            },
+            "apis": [
+              {
+                "name": "txpool_content",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 5000,
+                "enabled": true,
+                "category": {
+                  "deterministic": false,
+                  "local": true,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "txpool_inspect",
+                "block_parsing": { "parser_arg": ["latest"], "parser_func": "DEFAULT" },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": false,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "txpool_status",
+                "block_parsing": { "parser_arg": ["latest"], "parser_func": "DEFAULT" },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": false,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              }
+            ],
+            "verifications": [
+              {
+                "name": "enabled",
+                "parse_directive": {
+                  "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"txpool_content\",\"params\":[],\"id\":1}",
+                  "function_tag": "VERIFICATION",
+                  "result_parsing": {
+                    "parser_arg": [
+                      "0"
+                    ],
+                    "parser_func": "PARSE_BY_ARG"
+                  },
+                  "api_name": "txpool_content"
+                },
+                "values": [
+                  {
+                    "expected_value": "*"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "index": "OKBT",
+        "name": "x layer testnet",
+        "enabled": true,
+        "reliability_threshold": 268435455,
+        "data_reliability_enabled": true,
+        "block_distance_for_finalized_data": 1,
+        "blocks_in_finalization_proof": 1,
+        "average_block_time": 1000,
+        "allowed_block_lag_for_qos_sync": 10,
+        "imports": [
+          "OKB"
+        ],
+        "shares": 1,
+        "min_stake_provider": {
+          "denom": "ulava",
+          "amount": "5000000000"
+        },
+        "api_collections": [
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "jsonrpc",
+              "internal_path": "",
+              "type": "POST",
+              "add_on": ""
+            },
+            "apis": [],
+            "verifications": [
+              {
+                "name": "chain-id",
+                "values": [
+                  {
+                    "expected_value": "0x7a0"
+                  }
+                ]
+              },
+              {
+                "name": "pruning",
+                "parse_directive": {
+                  "function_tag": "GET_EARLIEST_BLOCK"
+                },
+                "values": [
+                  {
+                    "latest_distance": 3601
+                  },
+                  {
+                    "extension": "archive",
+                    "expected_value": "0xbacb24"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "jsonrpc",
+              "internal_path": "",
+              "type": "POST",
+              "add_on": "trace"
+            },
+            "apis": [],
+            "verifications": [
+              {
+                "name": "pruning",
+                "values": [
+                  {
+                    "latest_distance": 3601
+                  },
+                  {
+                    "extension": "archive",
+                    "expected_value": "0xbacb24"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deposit": "10000000ulava"
+}
