@@ -400,10 +400,6 @@
               {
                 "function_tag": "SUBSCRIBE",
                 "api_name": "/subscriptions/txpool"
-              },
-              {
-                "function_tag": "SUBSCRIBE",
-                "api_name": "/subscriptions/beat"
               }
             ],
             "verifications": [
@@ -1061,7 +1057,7 @@
                   "parser_func": "DEFAULT"
                 },
                 "compute_units": 10,
-                "enabled": true,
+                "enabled": false,
                 "category": {
                   "deterministic": false,
                   "local": true,
@@ -1279,7 +1275,7 @@
                   "parser_func": "DEFAULT"
                 },
                 "compute_units": 10,
-                "enabled": true,
+                "enabled": false,
                 "category": {
                   "deterministic": false,
                   "local": true,
