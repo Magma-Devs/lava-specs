@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "MONAD",
-                "name": "monad mainnet",
+                "name": "Monad Mainnet",
                 "enabled": true,
                 "imports": [
                     "ETH1"
@@ -362,7 +362,7 @@
             },
             {
                 "index": "MONADT",
-                "name": "monad testnet",
+                "name": "Monad Testnet",
                 "enabled": true,
                 "imports": [
                     "MONAD"

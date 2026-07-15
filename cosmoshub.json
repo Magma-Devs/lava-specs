@@ -5,7 +5,7 @@
     "specs": [
       {
         "index": "COSMOSHUB",
-        "name": "cosmos hub mainnet",
+        "name": "Cosmos Hub Mainnet",
         "enabled": true,
         "imports": [
           "COSMOSSDK50",
@@ -1250,7 +1250,7 @@
       },
       {
         "index": "COSMOSHUBT",
-        "name": "cosmos hub testnet",
+        "name": "Cosmos Hub Testnet",
         "enabled": true,
         "imports": [
           "COSMOSHUB"

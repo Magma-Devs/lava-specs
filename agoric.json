@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "AGR",
-                "name": "agoric mainnet",
+                "name": "Agoric Mainnet",
                 "enabled": true,
                 "imports": [
                     "COSMOSSDKFULL",
@@ -405,7 +405,7 @@
             },
             {
                 "index": "AGRT",
-                "name": "agoric testnet",
+                "name": "Agoric Testnet",
                 "enabled": true,
                 "imports": [
                     "AGR"

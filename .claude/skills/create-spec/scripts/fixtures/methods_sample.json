@@ -1,0 +1,30 @@
+{
+  "proposal": {
+    "title": "methods fixture",
+    "description": "fixture spec for test_compare_spec_methods.sh — self-contained, no imports",
+    "specs": [
+      {
+        "index": "TESTMETHODS",
+        "name": "test methods chain",
+        "enabled": true,
+        "imports": [],
+        "api_collections": [
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "jsonrpc",
+              "internal_path": "",
+              "type": "POST",
+              "add_on": ""
+            },
+            "apis": [
+              { "name": "eth_blockNumber", "enabled": true },
+              { "name": "eth_getBalance", "enabled": true }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deposit": "10000000ulava"
+}

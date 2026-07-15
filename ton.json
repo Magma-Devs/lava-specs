@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "TON",
-                "name": "ton mainnet",
+                "name": "TON Mainnet",
                 "enabled": true,
                 "reliability_threshold": 268435455,
                 "data_reliability_enabled": true,
@@ -1065,7 +1065,7 @@
             },
             {
                 "index": "TONT",
-                "name": "ton testnet",
+                "name": "TON Testnet",
                 "enabled": true,
                 "reliability_threshold": 268435455,
                 "data_reliability_enabled": true,

@@ -1,0 +1,30 @@
+{
+  "proposal": {
+    "specs": [
+      {
+        "index": "GOODCHAIN",
+        "api_collections": [
+          {
+            "collection_data": {"api_interface": "jsonrpc"},
+            "apis": [
+              {
+                "name": "eth_blockNumber",
+                "enabled": true,
+                "compute_units": 10,
+                "block_parsing": {"parser_func": "EMPTY", "parser_arg": [""]},
+                "category": {"deterministic": true}
+              },
+              {
+                "name": "eth_getBlockByNumber",
+                "enabled": true,
+                "compute_units": 20,
+                "block_parsing": {"parser_func": "PARSE_DICTIONARY_OR_ORDERED", "parser_arg": ["0"]},
+                "category": {"deterministic": true}
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

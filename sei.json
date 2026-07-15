@@ -1,0 +1,1289 @@
+{
+    "proposal": {
+        "title": "Add Specs: Sei",
+        "description": "Adding new specification support for relaying Sei data on Lava (Cosmos SDK v0.50 + Ethermint EVM)",
+        "specs": [
+            {
+                "index": "SEI",
+                "name": "sei mainnet",
+                "enabled": true,
+                "imports": [
+                    "COSMOSSDK50",
+                    "ETHERMINT",
+                    "ETH1",
+                    "COSMOSWASM"
+                ],
+                "reliability_threshold": 268435455,
+                "data_reliability_enabled": true,
+                "block_distance_for_finalized_data": 1,
+                "blocks_in_finalization_proof": 1,
+                "average_block_time": 400,
+                "allowed_block_lag_for_qos_sync": 25,
+                "shares": 1,
+                "min_stake_provider": {
+                    "denom": "ulava",
+                    "amount": "5000000000"
+                },
+                "api_collections": [
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "rest",
+                            "internal_path": "",
+                            "type": "GET",
+                            "add_on": ""
+                        },
+                        "apis": [
+                            {
+                                "name": "/sei-protocol/seichain/epoch",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "/sei-protocol/seichain/epoch/params",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "/cosmos/nft/v1beta1/balance/{owner}/{class_id}",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "/cosmos/nft/v1beta1/classes",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "/cosmos/nft/v1beta1/classes/{class_id}",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "/cosmos/nft/v1beta1/nfts",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "/cosmos/nft/v1beta1/nfts/{class_id}/{id}",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "/cosmos/nft/v1beta1/owner/{class_id}/{id}",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "/cosmos/nft/v1beta1/supply/{class_id}",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "/cosmos/circuit/v1/accounts",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "/cosmos/circuit/v1/accounts/{address}",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "/cosmos/circuit/v1/disable_list",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            }
+                        ],
+                        "headers": [],
+                        "inheritance_apis": [],
+                        "parse_directives": [],
+                        "verifications": [
+                            {
+                                "name": "chain-id",
+                                "values": [
+                                    {
+                                        "expected_value": "pacific-1"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "rest",
+                            "internal_path": "",
+                            "type": "POST",
+                            "add_on": ""
+                        },
+                        "apis": [
+                            {
+                                "name": "/cosmos/tx/v1beta1/decode/amino",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        ""
+                                    ],
+                                    "parser_func": "EMPTY"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 1
+                                },
+                                "extra_compute_units": 0
+                            }
+                        ],
+                        "headers": [],
+                        "inheritance_apis": [],
+                        "parse_directives": [],
+                        "verifications": []
+                    },
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "grpc",
+                            "internal_path": "",
+                            "type": "",
+                            "add_on": ""
+                        },
+                        "apis": [
+                            {
+                                "name": "seiprotocol.seichain.epoch.Query/Epoch",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "seiprotocol.seichain.epoch.Query/Params",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "seiprotocol.seichain.evm.Query/EVMAddressBySeiAddress",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "seiprotocol.seichain.evm.Query/Pointee",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "seiprotocol.seichain.evm.Query/Pointer",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "seiprotocol.seichain.evm.Query/PointerVersion",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "seiprotocol.seichain.evm.Query/SeiAddressByEVMAddress",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "seiprotocol.seichain.evm.Query/StaticCall",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 20,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "seiprotocol.seichain.mint.Query/Minter",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "seiprotocol.seichain.mint.Query/Params",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "seiprotocol.seichain.oracle.Query/Actives",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "seiprotocol.seichain.oracle.Query/ExchangeRate",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "seiprotocol.seichain.oracle.Query/ExchangeRates",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "seiprotocol.seichain.oracle.Query/FeederDelegation",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "seiprotocol.seichain.oracle.Query/Params",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "seiprotocol.seichain.oracle.Query/PriceSnapshotHistory",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "seiprotocol.seichain.oracle.Query/SlashWindow",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "seiprotocol.seichain.oracle.Query/Twaps",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "seiprotocol.seichain.oracle.Query/VotePenaltyCounter",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "seiprotocol.seichain.oracle.Query/VoteTargets",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "seiprotocol.seichain.tokenfactory.Query/DenomAllowList",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "seiprotocol.seichain.tokenfactory.Query/DenomAuthorityMetadata",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "seiprotocol.seichain.tokenfactory.Query/DenomMetadata",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "seiprotocol.seichain.tokenfactory.Query/DenomsFromCreator",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "seiprotocol.seichain.tokenfactory.Query/Params",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "cosmos.nft.v1beta1.Query/Balance",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "cosmos.nft.v1beta1.Query/Classes",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "cosmos.nft.v1beta1.Query/Class",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "cosmos.nft.v1beta1.Query/NFTs",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "cosmos.nft.v1beta1.Query/NFT",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "cosmos.nft.v1beta1.Query/Owner",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "cosmos.nft.v1beta1.Query/Supply",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "cosmos.circuit.v1.Query/Accounts",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "cosmos.circuit.v1.Query/Account",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "cosmos.circuit.v1.Query/DisabledList",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                },
+                                "extra_compute_units": 0
+                            }
+                        ],
+                        "headers": [],
+                        "inheritance_apis": [],
+                        "parse_directives": [
+                            {
+                                "function_template": "{}",
+                                "function_tag": "GET_BLOCKNUM",
+                                "result_parsing": {
+                                    "parser_arg": [
+                                        "0",
+                                        "block",
+                                        "header",
+                                        "height"
+                                    ],
+                                    "parser_func": "PARSE_CANONICAL"
+                                },
+                                "api_name": "cosmos.base.tendermint.v1beta1.Service/GetLatestBlock"
+                            }
+                        ],
+                        "verifications": [
+                            {
+                                "name": "chain-id",
+                                "values": [
+                                    {
+                                        "expected_value": "pacific-1"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "tendermintrpc",
+                            "internal_path": "",
+                            "type": "",
+                            "add_on": ""
+                        },
+                        "apis": [],
+                        "headers": [],
+                        "inheritance_apis": [],
+                        "parse_directives": [],
+                        "verifications": [
+                            {
+                                "name": "chain-id",
+                                "values": [
+                                    {
+                                        "expected_value": "pacific-1"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "jsonrpc",
+                            "internal_path": "",
+                            "type": "POST",
+                            "add_on": ""
+                        },
+                        "apis": [
+                            {
+                                "name": "eth_getUncleByBlockHashAndIndex",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "0"
+                                    ],
+                                    "parser_func": "PARSE_BY_ARG"
+                                },
+                                "compute_units": 15,
+                                "enabled": false,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                }
+                            },
+                            {
+                                "name": "eth_getUncleByBlockNumberAndIndex",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "0"
+                                    ],
+                                    "parser_func": "PARSE_BY_ARG"
+                                },
+                                "compute_units": 15,
+                                "enabled": false,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                }
+                            },
+                            {
+                                "name": "eth_getUncleCountByBlockHash",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "0"
+                                    ],
+                                    "parser_func": "PARSE_BY_ARG"
+                                },
+                                "compute_units": 20,
+                                "enabled": false,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                }
+                            },
+                            {
+                                "name": "eth_getUncleCountByBlockNumber",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "0"
+                                    ],
+                                    "parser_func": "PARSE_BY_ARG"
+                                },
+                                "compute_units": 10,
+                                "enabled": false,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                }
+                            },
+                            {
+                                "name": "eth_getWork",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        ""
+                                    ],
+                                    "parser_func": "EMPTY"
+                                },
+                                "compute_units": 10,
+                                "enabled": false,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                }
+                            },
+                            {
+                                "name": "eth_hashrate",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        ""
+                                    ],
+                                    "parser_func": "EMPTY"
+                                },
+                                "compute_units": 10,
+                                "enabled": false,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                }
+                            },
+                            {
+                                "name": "eth_mining",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        ""
+                                    ],
+                                    "parser_func": "EMPTY"
+                                },
+                                "compute_units": 10,
+                                "enabled": false,
+                                "category": {
+                                    "deterministic": false,
+                                    "local": false,
+                                    "subscription": false,
+                                    "stateful": 0
+                                }
+                            }
+                        ],
+                        "headers": [],
+                        "inheritance_apis": [],
+                        "parse_directives": [],
+                        "verifications": [
+                            {
+                                "name": "chain-id",
+                                "values": [
+                                    {
+                                        "expected_value": "0x531"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "jsonrpc",
+                            "internal_path": "",
+                            "type": "POST",
+                            "add_on": "debug"
+                        },
+                        "apis": [],
+                        "headers": [],
+                        "inheritance_apis": [],
+                        "parse_directives": [],
+                        "verifications": [
+                            {
+                                "name": "enabled",
+                                "parse_directive": {
+                                    "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"debug_traceBlockByNumber\",\"params\":[\"latest\", {\"tracer\": \"callTracer\"}],\"id\":1}",
+                                    "function_tag": "VERIFICATION",
+                                    "result_parsing": {
+                                        "parser_arg": [
+                                            "0"
+                                        ],
+                                        "parser_func": "PARSE_BY_ARG",
+                                        "encoding": "hex"
+                                    },
+                                    "api_name": "debug_traceBlockByNumber"
+                                },
+                                "values": [
+                                    {
+                                        "expected_value": "*"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "index": "SEIT",
+                "name": "sei testnet",
+                "enabled": true,
+                "imports": [
+                    "SEI"
+                ],
+                "reliability_threshold": 268435455,
+                "data_reliability_enabled": true,
+                "block_distance_for_finalized_data": 1,
+                "blocks_in_finalization_proof": 1,
+                "average_block_time": 400,
+                "allowed_block_lag_for_qos_sync": 25,
+                "shares": 1,
+                "min_stake_provider": {
+                    "denom": "ulava",
+                    "amount": "5000000000"
+                },
+                "api_collections": [
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "rest",
+                            "internal_path": "",
+                            "type": "GET",
+                            "add_on": ""
+                        },
+                        "apis": [],
+                        "headers": [],
+                        "inheritance_apis": [],
+                        "parse_directives": [],
+                        "verifications": [
+                            {
+                                "name": "chain-id",
+                                "values": [
+                                    {
+                                        "expected_value": "atlantic-2"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "grpc",
+                            "internal_path": "",
+                            "type": "",
+                            "add_on": ""
+                        },
+                        "apis": [],
+                        "headers": [],
+                        "inheritance_apis": [],
+                        "parse_directives": [],
+                        "verifications": [
+                            {
+                                "name": "chain-id",
+                                "values": [
+                                    {
+                                        "expected_value": "atlantic-2"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "tendermintrpc",
+                            "internal_path": "",
+                            "type": "",
+                            "add_on": ""
+                        },
+                        "apis": [],
+                        "headers": [],
+                        "inheritance_apis": [],
+                        "parse_directives": [],
+                        "verifications": [
+                            {
+                                "name": "chain-id",
+                                "values": [
+                                    {
+                                        "expected_value": "atlantic-2"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "jsonrpc",
+                            "internal_path": "",
+                            "type": "POST",
+                            "add_on": ""
+                        },
+                        "apis": [],
+                        "headers": [],
+                        "inheritance_apis": [],
+                        "parse_directives": [],
+                        "verifications": [
+                            {
+                                "name": "chain-id",
+                                "values": [
+                                    {
+                                        "expected_value": "0x530"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "deposit": "10000000ulava"
+}

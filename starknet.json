@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "STRK",
-                "name": "starknet mainnet",
+                "name": "StarkNet Mainnet",
                 "enabled": true,
                 "reliability_threshold": 268435455,
                 "data_reliability_enabled": true,
@@ -1011,7 +1011,7 @@
             },
             {
                 "index": "STRKS",
-                "name": "starknet sepolia testnet",
+                "name": "StarkNet Sepolia Testnet",
                 "enabled": true,
                 "reliability_threshold": 268435455,
                 "data_reliability_enabled": true,

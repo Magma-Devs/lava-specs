@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "TENDERMINT",
-                "name": "tendermint",
+                "name": "Tendermint",
                 "enabled": false,
                 "imports": [],
                 "reliability_threshold": 268435455,

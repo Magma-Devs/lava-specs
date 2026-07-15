@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "FUSE",
-                "name": "fuse mainnet",
+                "name": "Fuse Mainnet",
                 "enabled": true,
                 "imports": [
                     "ETH1"
@@ -54,7 +54,7 @@
             },
             {
                 "index": "SPARK",
-                "name": "fuse testnet",
+                "name": "Fuse Testnet",
                 "enabled": true,
                 "imports": [
                     "FUSE"

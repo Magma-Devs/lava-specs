@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "POLYGON",
-                "name": "polygon mainnet",
+                "name": "Polygon Mainnet",
                 "enabled": true,
                 "imports": [
                     "ETH1"
@@ -339,7 +339,7 @@
             },
             {
                 "index": "POLYGONA",
-                "name": "polygon amoy testnet",
+                "name": "Polygon Amoy Testnet",
                 "enabled": true,
                 "imports": [
                     "POLYGON"

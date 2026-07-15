@@ -1,0 +1,3974 @@
+{
+  "proposal": {
+    "title": "Add Specs: Neutron",
+    "description": "Adding new specification support for relaying Neutron data on Lava",
+    "specs": [
+      {
+        "index": "NEUTRON",
+        "name": "Neutron Mainnet",
+        "enabled": true,
+        "imports": [
+          "COSMOSSDK50",
+          "COSMOSWASM"
+        ],
+        "reliability_threshold": 268435455,
+        "data_reliability_enabled": true,
+        "block_distance_for_finalized_data": 0,
+        "blocks_in_finalization_proof": 1,
+        "average_block_time": 7400,
+        "allowed_block_lag_for_qos_sync": 2,
+        "shares": 1,
+        "providers_types": 0,
+        "min_stake_provider": {
+          "denom": "ulava",
+          "amount": "5000000000"
+        },
+        "api_collections": [
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "rest",
+              "internal_path": "",
+              "type": "GET",
+              "add_on": ""
+            },
+            "apis": [
+              {
+                "enabled": true,
+                "name": "/connect/oracle/v2/get_currency_pair_mapping_list",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/cosmwasm/wasm/v1/build_address",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/cosmwasm/wasm/v1/code-info/{code_id}",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/cosmwasm/wasm/v1/wasm-limits-config",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/feemarket/v1/gas_price/{denom}",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/feemarket/v1/gas_prices",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/feemarket/v1/params",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/feemarket/v1/state",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/gaia/globalfee/v1beta1/params",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/ibc/apps/transfer/v1/denoms",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/ibc/apps/transfer/v1/denoms/{denom}/total_escrow",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/ibc/apps/transfer/v1/denoms/{hash}",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/ibc/core/channel/v2/clients/{client_id}/next_sequence_send",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/ibc/core/channel/v2/clients/{client_id}/packet_acknowledgements",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/ibc/core/channel/v2/clients/{client_id}/packet_acks/{sequence}",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/ibc/core/channel/v2/clients/{client_id}/packet_commitments",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/ibc/core/channel/v2/clients/{client_id}/packet_commitments/{packet_ack_sequences}/unreceived_acks",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/ibc/core/channel/v2/clients/{client_id}/packet_commitments/{sequences}/unreceived_packets",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/ibc/core/channel/v2/clients/{client_id}/packet_commitments/{sequence}",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/ibc/core/channel/v2/clients/{client_id}/packet_receipts/{sequence}",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron-org/neutron/feerefunder/info",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron-org/neutron/feerefunder/params",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/coinfactory/v1beta1/denoms/factory/{creator}/{subdenom}/authority_metadata",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/coinfactory/v1beta1/denoms/factory/{creator}/{subdenom}/before_send_hook",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/coinfactory/v1beta1/denoms/factory/{creator}/{subdenom}/full_denom",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/coinfactory/v1beta1/denoms_from_creator/{creator}",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/coinfactory/v1beta1/params",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/contractmanager/failures",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/contractmanager/failures/{address}",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/contractmanager/failures/{address}/{failure_id}",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/contractmanager/params",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/cron/params",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/cron/schedule",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/cron/schedule/{name}",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": false,
+                "name": "/neutron/dex/estimate_multi_hop_swap",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": false,
+                "name": "/neutron/dex/estimate_place_limit_order",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": false,
+                "name": "/neutron/dex/filled_limit_order_tranche",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": false,
+                "name": "/neutron/dex/filled_limit_order_tranche/{pair_id}/{token_in}/{tick_index}/{tranche_key}",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/dex/inactive_limit_order_tranche",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/dex/inactive_limit_order_tranche/{pair_id}/{token_in}/{tick_index}/{tranche_key}",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/dex/limit_order_tranche/{pair_id}/{token_in}",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/dex/limit_order_tranche/{pair_id}/{token_in}/{tick_index}/{tranche_key}",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/dex/limit_order_tranche_user",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/dex/limit_order_tranche_user/{address}/{tranche_key}",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/dex/params",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/dex/pool/{pair_id}/{tick_index}/{fee}",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/dex/pool/{pool_id}",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/dex/pool_metadata",
+                "compute_units": 1000,
+                "extra_compute_units": 0,
+                "timeout_ms": 20000,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/dex/pool_metadata/{id}",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/dex/pool_reserves/{pair_id}/{token_in}",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/dex/pool_reserves/{pair_id}/{token_in}/{tick_index}/{fee}",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/dex/simulate_cancel_limit_order",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/dex/simulate_deposit",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/dex/simulate_multi_hop_swap",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/dex/simulate_place_limit_order",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/dex/simulate_withdraw_filled_limit_order",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/dex/simulate_withdrawal",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/dex/simulate_withdrawal_with_shares",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/dex/tick_liquidity/{pair_id}/{token_in}",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/dex/user/deposits/{address}",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/dex/user/limit_orders/{address}",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/dynamicfees/v1/params",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/ibc-rate-limit/v1beta1/params",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/interchainqueries/params",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/interchainqueries/query_result",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/interchainqueries/registered_queries",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/interchainqueries/registered_query",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/interchainqueries/remote_height",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/interchaintxs/params",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/interchaintxs/{owner_address}/{interchain_account_id}/{connection_id}/interchain_account_address",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/state-verifier/v1/query_consensus_state",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/neutron/state-verifier/v1/verify_state_values",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/osmosis/tokenfactory/v1beta1/denoms/factory/{creator}/{subdenom}/authority_metadata",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/osmosis/tokenfactory/v1beta1/denoms/factory/{creator}/{subdenom}/before_send_hook",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/osmosis/tokenfactory/v1beta1/denoms/factory/{creator}/{subdenom}/full_denom",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/osmosis/tokenfactory/v1beta1/denoms_from_creator/{creator}",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/osmosis/tokenfactory/v1beta1/params",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/slinky/marketmap/v1/last_updated",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/slinky/marketmap/v1/market",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/slinky/marketmap/v1/marketmap",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/slinky/marketmap/v1/markets",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/slinky/marketmap/v1/params",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/slinky/oracle/v1/get_all_tickers",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/slinky/oracle/v1/get_currency_pair_mapping",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/slinky/oracle/v1/get_price",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "/slinky/oracle/v1/get_prices",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "name": "/cosmos/group/v1/group_policies_by_admin/{admin}",
+                "compute_units": 10,
+                "enabled": false
+              },
+              {
+                "name": "/cosmos/group/v1/group_policies_by_group/{group_id}",
+                "compute_units": 10,
+                "enabled": false
+              },
+              {
+                "name": "/cosmos/group/v1/proposals/{proposal_id}/tally",
+                "compute_units": 10,
+                "enabled": false
+              },
+              {
+                "name": "/cosmos/group/v1/proposals_by_group_policy/{address}",
+                "compute_units": 10,
+                "enabled": false
+              },
+              {
+                "name": "/cosmos/group/v1/vote_by_proposal_voter/{proposal_id}/{voter}",
+                "compute_units": 10,
+                "enabled": false
+              },
+              {
+                "name": "/cosmos/group/v1/votes_by_proposal/{proposal_id}",
+                "compute_units": 10,
+                "enabled": false
+              }
+            ],
+            "headers": [],
+            "inheritance_apis": [],
+            "parse_directives": [],
+            "verifications": [
+              {
+                "name": "chain-id",
+                "values": [
+                  {
+                    "expected_value": "neutron-1"
+                  }
+                ]
+              },
+              {
+                "name": "pruning",
+                "values": [
+                  {
+                    "latest_distance": 100000
+                  }
+                ]
+              }
+            ],
+            "extensions": [
+              {
+                "name": "archive",
+                "cu_multiplier": 5,
+                "rule": {
+                  "block": 100000
+                }
+              }
+            ]
+          },
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "rest",
+              "internal_path": "",
+              "type": "POST",
+              "add_on": ""
+            },
+            "apis": [
+              {
+                "enabled": true,
+                "name": "/cosmos/tx/v1beta1/decode/amino",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              }
+            ],
+            "headers": [],
+            "inheritance_apis": [],
+            "parse_directives": [],
+            "verifications": []
+          },
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "grpc",
+              "internal_path": "",
+              "type": "",
+              "add_on": ""
+            },
+            "apis": [
+              {
+                "enabled": true,
+                "name": "cosmwasm.wasm.v1.Query/CodeInfo",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "cosmwasm.wasm.v1.Query/WasmLimitsConfig",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "feemarket.feemarket.v1.Query/GasPrice",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "feemarket.feemarket.v1.Query/GasPrices",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "feemarket.feemarket.v1.Query/Params",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "feemarket.feemarket.v1.Query/State",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "gaia.globalfee.v1beta1.Query/Params",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "ibc.applications.transfer.v1.Query/Denom",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "ibc.applications.transfer.v1.Query/Denoms",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "ibc.core.channel.v2.Query/NextSequenceSend",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "ibc.core.channel.v2.Query/PacketAcknowledgement",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "ibc.core.channel.v2.Query/PacketAcknowledgements",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "ibc.core.channel.v2.Query/PacketCommitment",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "ibc.core.channel.v2.Query/PacketCommitments",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "ibc.core.channel.v2.Query/PacketReceipt",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "ibc.core.channel.v2.Query/UnreceivedAcks",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "ibc.core.channel.v2.Query/UnreceivedPackets",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "ibc.core.client.v1.Query/ClientCreator",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "ibc.core.client.v2.Query/Config",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "ibc.core.client.v2.Query/CounterpartyInfo",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.coinfactory.v1beta1.Query/BeforeSendHookAddress",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.coinfactory.v1beta1.Query/DenomAuthorityMetadata",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.coinfactory.v1beta1.Query/DenomsFromCreator",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.coinfactory.v1beta1.Query/FullDenom",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.coinfactory.v1beta1.Query/Params",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.contractmanager.Query/AddressFailure",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.contractmanager.Query/AddressFailures",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.contractmanager.Query/Failures",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.contractmanager.Query/Params",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.cron.Query/Params",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.cron.Query/Schedule",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.cron.Query/Schedules",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": false,
+                "name": "neutron.dex.Query/EstimateMultiHopSwap",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": false,
+                "name": "neutron.dex.Query/EstimatePlaceLimitOrder",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.dex.Query/InactiveLimitOrderTranche",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.dex.Query/InactiveLimitOrderTrancheAll",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.dex.Query/LimitOrderTranche",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.dex.Query/LimitOrderTrancheAll",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.dex.Query/LimitOrderTrancheUser",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.dex.Query/LimitOrderTrancheUserAll",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.dex.Query/LimitOrderTrancheUserAllByAddress",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.dex.Query/Params",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.dex.Query/Pool",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.dex.Query/PoolByID",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.dex.Query/PoolMetadata",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.dex.Query/PoolMetadataAll",
+                "compute_units": 1000,
+                "extra_compute_units": 0,
+                "timeout_ms": 20000,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.dex.Query/PoolReserves",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.dex.Query/PoolReservesAll",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.dex.Query/SimulateCancelLimitOrder",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.dex.Query/SimulateDeposit",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.dex.Query/SimulateMultiHopSwap",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.dex.Query/SimulatePlaceLimitOrder",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.dex.Query/SimulateWithdrawFilledLimitOrder",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.dex.Query/SimulateWithdrawal",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.dex.Query/SimulateWithdrawalWithShares",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.dex.Query/TickLiquidityAll",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.dex.Query/UserDepositsAll",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.dynamicfees.v1.Query/Params",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.feerefunder.Query/FeeInfo",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.feerefunder.Query/Params",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.ibcratelimit.v1beta1.Query/Params",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.interchainqueries.Query/LastRemoteHeight",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.interchainqueries.Query/Params",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.interchainqueries.Query/QueryResult",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.interchainqueries.Query/RegisteredQueries",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.interchainqueries.Query/RegisteredQuery",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.interchaintxs.v1.Query/InterchainAccountAddress",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.interchaintxs.v1.Query/Params",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.state_verifier.v1.Query/QueryConsensusState",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "neutron.state_verifier.v1.Query/VerifyStateValues",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "osmosis.tokenfactory.v1beta1.Query/BeforeSendHookAddress",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "osmosis.tokenfactory.v1beta1.Query/DenomAuthorityMetadata",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "osmosis.tokenfactory.v1beta1.Query/DenomsFromCreator",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "osmosis.tokenfactory.v1beta1.Query/FullDenom",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "osmosis.tokenfactory.v1beta1.Query/Params",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "slinky.marketmap.v1.Query/LastUpdated",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "slinky.marketmap.v1.Query/Market",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "slinky.marketmap.v1.Query/MarketMap",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "slinky.marketmap.v1.Query/Markets",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "slinky.marketmap.v1.Query/Params",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "slinky.oracle.v1.Query/GetAllCurrencyPairs",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "slinky.oracle.v1.Query/GetCurrencyPairMapping",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "slinky.oracle.v1.Query/GetCurrencyPairMappingList",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "slinky.oracle.v1.Query/GetPrice",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "enabled": true,
+                "name": "slinky.oracle.v1.Query/GetPrices",
+                "compute_units": 10,
+                "extra_compute_units": 0,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0,
+                  "hanging_api": false
+                },
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT",
+                  "default_value": "",
+                  "encoding": ""
+                }
+              },
+              {
+                "name": "cosmos.group.v1.Query/GroupInfo",
+                "compute_units": 10,
+                "enabled": false
+              },
+              {
+                "name": "cosmos.group.v1.Query/GroupMembers",
+                "compute_units": 10,
+                "enabled": false
+              },
+              {
+                "name": "cosmos.group.v1.Query/GroupPoliciesByAdmin",
+                "compute_units": 10,
+                "enabled": false
+              },
+              {
+                "name": "cosmos.group.v1.Query/GroupPoliciesByGroup",
+                "compute_units": 10,
+                "enabled": false
+              },
+              {
+                "name": "cosmos.group.v1.Query/GroupPolicyInfo",
+                "compute_units": 10,
+                "enabled": false
+              },
+              {
+                "name": "cosmos.group.v1.Query/Groups",
+                "compute_units": 10,
+                "enabled": false
+              },
+              {
+                "name": "cosmos.group.v1.Query/GroupsByAdmin",
+                "compute_units": 10,
+                "enabled": false
+              },
+              {
+                "name": "cosmos.group.v1.Query/GroupsByMember",
+                "compute_units": 10,
+                "enabled": false
+              },
+              {
+                "name": "cosmos.group.v1.Query/Proposal",
+                "compute_units": 10,
+                "enabled": false
+              },
+              {
+                "name": "cosmos.group.v1.Query/ProposalsByGroupPolicy",
+                "compute_units": 10,
+                "enabled": false
+              },
+              {
+                "name": "cosmos.group.v1.Query/TallyResult",
+                "compute_units": 10,
+                "enabled": false
+              },
+              {
+                "name": "cosmos.group.v1.Query/VoteByProposalVoter",
+                "compute_units": 10,
+                "enabled": false
+              },
+              {
+                "name": "cosmos.group.v1.Query/VotesByProposal",
+                "compute_units": 10,
+                "enabled": false
+              },
+              {
+                "name": "cosmos.group.v1.Query/VotesByVoter",
+                "compute_units": 10,
+                "enabled": false
+              }
+            ],
+            "headers": [],
+            "inheritance_apis": [],
+            "parse_directives": [],
+            "verifications": [
+              {
+                "name": "chain-id",
+                "values": [
+                  {
+                    "expected_value": "neutron-1"
+                  }
+                ]
+              },
+              {
+                "name": "pruning",
+                "values": [
+                  {
+                    "latest_distance": 100000
+                  }
+                ]
+              }
+            ],
+            "extensions": [
+              {
+                "name": "archive",
+                "cu_multiplier": 5,
+                "rule": {
+                  "block": 100000
+                }
+              }
+            ]
+          },
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "tendermintrpc",
+              "internal_path": "",
+              "type": "",
+              "add_on": ""
+            },
+            "apis": [],
+            "headers": [],
+            "inheritance_apis": [],
+            "parse_directives": [],
+            "verifications": [
+              {
+                "name": "chain-id",
+                "values": [
+                  {
+                    "expected_value": "neutron-1"
+                  }
+                ]
+              },
+              {
+                "name": "pruning",
+                "values": [
+                  {
+                    "latest_distance": 100000
+                  },
+                  {
+                    "extension": "archive",
+                    "expected_value": "1"
+                  }
+                ]
+              }
+            ],
+            "extensions": [
+              {
+                "name": "archive",
+                "cu_multiplier": 5,
+                "rule": {
+                  "block": 100000
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "index": "NEUTRONT",
+        "name": "Neutron Testnet",
+        "enabled": true,
+        "imports": [
+          "NEUTRON"
+        ],
+        "reliability_threshold": 268435455,
+        "data_reliability_enabled": true,
+        "block_distance_for_finalized_data": 0,
+        "blocks_in_finalization_proof": 1,
+        "average_block_time": 7400,
+        "allowed_block_lag_for_qos_sync": 2,
+        "shares": 1,
+        "min_stake_provider": {
+          "denom": "ulava",
+          "amount": "5000000000"
+        },
+        "api_collections": [
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "rest",
+              "internal_path": "",
+              "type": "GET",
+              "add_on": ""
+            },
+            "headers": [],
+            "inheritance_apis": [],
+            "parse_directives": [],
+            "verifications": [
+              {
+                "name": "chain-id",
+                "values": [
+                  {
+                    "expected_value": "pion-1"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "grpc",
+              "internal_path": "",
+              "type": "",
+              "add_on": ""
+            },
+            "headers": [],
+            "inheritance_apis": [],
+            "parse_directives": [],
+            "verifications": [
+              {
+                "name": "chain-id",
+                "values": [
+                  {
+                    "expected_value": "pion-1"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "tendermintrpc",
+              "internal_path": "",
+              "type": "",
+              "add_on": ""
+            },
+            "headers": [],
+            "inheritance_apis": [],
+            "parse_directives": [],
+            "verifications": [
+              {
+                "name": "chain-id",
+                "values": [
+                  {
+                    "expected_value": "pion-1"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deposit": "10000000ulava"
+}

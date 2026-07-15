@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "ARBITRUM",
-                "name": "arbitrum mainnet",
+                "name": "Arbitrum Mainnet",
                 "enabled": true,
                 "imports": [
                     "ETH1"
@@ -218,7 +218,7 @@
             },
             {
                 "index": "ARBITRUMN",
-                "name": "arbitrum nova testnet",
+                "name": "Arbitrum Nova Testnet",
                 "enabled": true,
                 "imports": [
                     "ARBITRUM"
@@ -262,7 +262,7 @@
             },
             {
                 "index": "ARBITRUMS",
-                "name": "arbitrum sepolia testnet",
+                "name": "Arbitrum Sepolia Testnet",
                 "enabled": true,
                 "imports": [
                     "ARBITRUM"

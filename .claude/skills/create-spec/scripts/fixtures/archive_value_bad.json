@@ -1,0 +1,3 @@
+{"proposal":{"specs":[
+  {"index":"BAD","api_collections":[{"collection_data":{"api_interface":"grpc"},"verifications":[{"name":"pruning","parse_directive":{"function_tag":"GET_BLOCK_BY_NUM"},"values":[{"extension":"archive","expected_value":"*"}]}]}]}
+]}}

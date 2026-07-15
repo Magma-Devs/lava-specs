@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "HYPERLIQUID",
-                "name": "hyperliquid mainnet",
+                "name": "Hyperliquid Mainnet",
                 "enabled": true,
                 "imports": [],
                 "reliability_threshold": 268435455,
@@ -595,7 +595,7 @@
             },
             {
                 "index": "HYPERLIQUIDT",
-                "name": "hyperliquid testnet",
+                "name": "Hyperliquid Testnet",
                 "enabled": true,
                 "imports": [
                     "HYPERLIQUID"

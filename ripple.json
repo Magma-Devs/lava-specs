@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "XRP",
-                "name": "ripple mainnet",
+                "name": "Ripple Mainnet",
                 "enabled": true,
                 "reliability_threshold": 268435455,
                 "data_reliability_enabled": true,
@@ -935,7 +935,7 @@
             },
             {
                 "index": "XRPT",
-                "name": "ripple testnet",
+                "name": "Ripple Testnet",
                 "enabled": true,
                 "reliability_threshold": 268435455,
                 "data_reliability_enabled": true,

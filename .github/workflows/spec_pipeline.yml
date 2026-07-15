@@ -1,0 +1,331 @@
+# Runs create-spec Phases 8 -> 11 -> summary against an OPEN PR, as one
+# claude-code-action job. Two ways in:
+#   - pull_request: opened  -> auto-start the full 8->summary sequence
+#   - issue_comment: created with a body starting "/rerun-<phase>" -> re-run
+#     that phase to the end, optionally with amended endpoints / hints.
+# State lives in the PR: the spec is the committed <chain>.json on the branch;
+# every phase posts its report as a PR comment; a resumed phase reconstructs
+# context from those comments (see references/phase-entrypoints.md).
+#
+# Required repo secrets:
+#   CLAUDE_CODE_OAUTH_TOKEN - subscription auth (same as create_spec.yml).
+#   BOT_PAT - one classic PAT, scopes: repo + workflow + read:packages. Used to
+#     pull the smart-router image AND as the github_token for gh pr comment. It is
+#     also the identity that opens the PR in create_spec.yml, so pull_request
+#     events fire (a GITHUB_TOKEN-opened PR would not trigger this workflow).
+# Optional (referenced from a comment as use=NAME; only these names are honored):
+#   PAID_RPC_1, PAID_RPC_2, PAID_RPC_3, PAID_WS_1 - keyed paid/archive node URLs,
+#     auto-masked by Actions so the key never lands in a PR comment or log.
+name: "Spec Pipeline (Phases 8-11)"
+
+on:
+  pull_request:
+    types: [opened]
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: write
+  pull-requests: write
+  packages: read
+
+concurrency:
+  group: spec-pipeline-${{ github.event.pull_request.number || github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    # Run only for: a PR opened by our automation, OR a /rerun-* comment on a PR.
+    if: >
+      (github.event_name == 'pull_request') ||
+      (github.event_name == 'issue_comment' &&
+       github.event.issue.pull_request != null &&
+       startsWith(github.event.comment.body, '/rerun-'))
+    steps:
+      - name: Resolve PR ref
+        id: pr
+        env:
+          GH_TOKEN: ${{ secrets.BOT_PAT }}
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "number=${{ github.event.pull_request.number }}" >> "$GITHUB_OUTPUT"
+            echo "head=${{ github.event.pull_request.head.ref }}"   >> "$GITHUB_OUTPUT"
+          else
+            num="${{ github.event.issue.number }}"
+            head="$(gh pr view "$num" --repo "${{ github.repository }}" --json headRefName --jq .headRefName)"
+            echo "number=$num"  >> "$GITHUB_OUTPUT"
+            echo "head=$head"    >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.pr.outputs.head }}
+          fetch-depth: 0
+
+      - name: Parse rerun command
+        id: cmd
+        env:
+          # Allow-list of secret names a comment may reference via use=NAME.
+          ALLOWED_SECRETS: "PAID_RPC_1 PAID_RPC_2 PAID_RPC_3 PAID_WS_1"
+          PAID_RPC_1: ${{ secrets.PAID_RPC_1 }}
+          PAID_RPC_2: ${{ secrets.PAID_RPC_2 }}
+          PAID_RPC_3: ${{ secrets.PAID_RPC_3 }}
+          PAID_WS_1:  ${{ secrets.PAID_WS_1 }}
+          COMMENT_BODY: "${{ github.event.comment.body }}"
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            # Auto-start on PR open: run the WHOLE pipeline (Phase 8 -> 11), no
+            # endpoint override.
+            {
+              echo "IS_COMMAND=true"; echo "START_PHASE=8"; echo "END_PHASE=11"
+              echo "MAINNET_URLS="; echo "TESTNET_URLS="; echo "HINTS="
+            } > /tmp/cmd.env
+          else
+            # Export IS_COMMAND=true up-front so the "Report failure to PR" step
+            # still fires if the parser rejects a malformed command (it exits 2
+            # under set -e, before the export loop below could run). For a valid
+            # command the loop re-exports the same value; for a non-command body
+            # the loop overwrites it with false (last write wins).
+            echo "IS_COMMAND=true" >> "$GITHUB_OUTPUT"
+            bash .github/scripts/parse_rerun_command.sh "$COMMENT_BODY" > /tmp/cmd.env
+          fi
+          cat /tmp/cmd.env
+          # Export each parsed key as a step output.
+          while IFS='=' read -r k v; do echo "$k=$v" >> "$GITHUB_OUTPUT"; done < /tmp/cmd.env
+
+      # If a /rerun-* comment was NOT a recognised command (parser returned
+      # IS_COMMAND=false), tell the author instead of silently no-op'ing — the
+      # job otherwise just skips every downstream step with no in-PR signal.
+      - name: Notify unrecognised command
+        if: github.event_name == 'issue_comment' && steps.cmd.outputs.IS_COMMAND != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.BOT_PAT }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.issue.number }}
+        run: |
+          set -euo pipefail
+          gh pr comment "$PR" --repo "$REPO" --body "⚠️ Unrecognised command. Valid commands: \`/rerun-probe\` (Phase 8 — optional \`mainnet=URL testnet=URL\`), \`/rerun-review\` (9), \`/rerun-fix\` (10), \`/rerun-final\` (11), \`/rerun-from <8|9|10|11>\`."
+
+      # Fail fast (seconds) on a grossly-misconfigured BOT_PAT before the
+      # ~hour-long agent run. We can verify auth + write access cheaply; for a
+      # classic token we also hard-fail on a missing 'repo' scope. We do NOT use a
+      # POST-pulls probe: GitHub returns 404 on that endpoint even for fully
+      # authorized fine-grained tokens, so it false-negatives and would block a
+      # token that actually works (it already opened this PR + posted comments).
+      - name: Pre-flight — verify BOT_PAT
+        if: steps.cmd.outputs.IS_COMMAND == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.BOT_PAT }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          if [ -z "${GH_TOKEN:-}" ]; then
+            echo "::error::BOT_PAT secret is empty/unset."; exit 1
+          fi
+          if ! login="$(gh api user --jq .login 2>/dev/null)"; then
+            echo "::error::BOT_PAT failed to authenticate (gh api user) — token invalid or expired."; exit 1
+          fi
+          echo "BOT_PAT authenticates as: $login"
+          push="$(gh api "repos/$REPO" --jq '.permissions.push' 2>/dev/null || echo "unknown")"
+          echo "Repo push permission: $push"
+          if [ "$push" = "false" ]; then
+            echo "::error::BOT_PAT lacks write access to $REPO. Its owner ($login) must be a collaborator with write."; exit 1
+          fi
+          scopes="$(curl -sS -o /dev/null -D - -H "Authorization: token $GH_TOKEN" https://api.github.com/user \
+            | tr -d '\r' | awk -F': ' 'tolower($1)=="x-oauth-scopes"{print $2}')"
+          norm=",$(printf '%s' "$scopes" | tr -d ' '),"
+          if [ -n "$scopes" ]; then
+            case "$norm" in
+              *",repo,"*) echo "OK: classic 'repo' scope present — can comment on PRs." ;;
+              *) echo "::error::BOT_PAT (classic) is missing the 'repo' scope — it cannot post PR comments. Add repo + workflow + read:packages."; exit 1 ;;
+            esac
+            case "$norm" in *",read:packages,"*) : ;; *) echo "::warning::BOT_PAT (classic) missing 'read:packages' — the GHCR pull of the smart-router image (Phase 8) will fail." ;; esac
+          else
+            echo "::warning::BOT_PAT is a fine-grained PAT (no OAuth scopes header). Auth + write access confirmed; ensure it has 'Pull requests: Read and write' (post comments) and that its owner can pull the Magma-Devs/smart-router GHCR package (Phase 8)."
+          fi
+          echo "Pre-flight OK."
+
+      # Transparency: acknowledge in the PR thread that the run has started and is
+      # really going to do work (token verified). issue_comment runs never appear
+      # as PR checks, so this comment + the per-phase comments are the in-PR signal.
+      - name: Acknowledge in PR
+        if: steps.cmd.outputs.IS_COMMAND == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.BOT_PAT }}
+          REPO: ${{ github.repository }}
+          PR: ${{ steps.pr.outputs.number }}
+          START: ${{ steps.cmd.outputs.START_PHASE }}
+          END: ${{ steps.cmd.outputs.END_PHASE }}
+          EVENT: ${{ github.event_name }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          if [ "$START" = "$END" ]; then
+            scope="**Phase ${START}** only"
+          else
+            scope="**Phase ${START} → ${END}**"
+          fi
+          if [ "$EVENT" = "pull_request" ]; then
+            msg="🤖 **Spec pipeline started** on PR open — running ${scope}. Results post here as comments. [View run]($RUN_URL)"
+          else
+            msg="🤖 **Command acknowledged** — running ${scope}. Progress and results post here as comments. [View run]($RUN_URL)"
+          fi
+          gh pr comment "$PR" --repo "$REPO" --body "$msg"
+
+      - name: Resolve endpoints
+        id: endpoints
+        if: steps.cmd.outputs.IS_COMMAND == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.BOT_PAT }}
+          COMMENT_MAINNET: ${{ steps.cmd.outputs.MAINNET_URLS }}
+          COMMENT_TESTNET: ${{ steps.cmd.outputs.TESTNET_URLS }}
+        run: |
+          set -euo pipefail
+          # The PR body lives on GitHub, not the branch. Fetch it so the ENDPOINTS
+          # block (written by create_spec.yml) can be parsed as the fallback source.
+          gh pr view "${{ steps.pr.outputs.number }}" --repo "${{ github.repository }}" \
+            --json body --jq .body > /tmp/pr_body.md || true
+          PR_BODY_FILE=/tmp/pr_body.md bash .github/scripts/resolve_endpoints.sh > /tmp/ep.env
+          cat /tmp/ep.env
+          while IFS='=' read -r k v; do echo "$k=$v" >> "$GITHUB_OUTPUT"; done < /tmp/ep.env
+
+      - name: Setup Node
+        if: steps.cmd.outputs.IS_COMMAND == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install probe tools
+        if: steps.cmd.outputs.IS_COMMAND == 'true'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+          GRPCURL_VERSION=1.9.1
+          curl -fsSL "https://github.com/fullstorydev/grpcurl/releases/download/v${GRPCURL_VERSION}/grpcurl_${GRPCURL_VERSION}_linux_x86_64.tar.gz" \
+            | sudo tar -xz -C /usr/local/bin grpcurl
+          grpcurl --version || true
+
+      - name: Log into GHCR
+        if: steps.cmd.outputs.IS_COMMAND == 'true'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.BOT_PAT || secrets.GITHUB_TOKEN }}
+
+      - name: Run pipeline phases
+        id: run
+        if: steps.cmd.outputs.IS_COMMAND == 'true'
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ secrets.BOT_PAT }}
+          show_full_output: false
+          display_report: false
+          claude_args: |
+            --model opus
+            --dangerously-skip-permissions
+            --max-turns 1000
+          prompt: |
+            Run the /create-spec skill in RESUMABLE mode for an OPEN pull request.
+
+            Run Phases ${{ steps.cmd.outputs.START_PHASE }} through ${{ steps.cmd.outputs.END_PHASE }}
+            INCLUSIVE, then STOP. Do NOT run Phases 1-7, and do NOT run any phase
+            after Phase ${{ steps.cmd.outputs.END_PHASE }}. Reconstruct context from
+            the committed <chain>.json on this branch and the existing PR comments,
+            exactly as references/phase-entrypoints.md specifies (read it fully first).
+
+            Phase numbering for the run span (8 → 11): 8 = smart-router boot + probe,
+            9 = parallel reviewers, 10 = synthesize gaps + fix (+10b smoke re-probe),
+            11 = final reviewer verdict AND the closing Phase-12 summary checklist
+            (the summary is the tail of Phase 11 here — there is no separate Phase 12
+            in the run span). When START==END you run EXACTLY that one phase and post
+            only its comment(s).
+
+            Context:
+            - PR_NUMBER: ${{ steps.pr.outputs.number }}
+            - Repo: ${{ github.repository }}
+            - START_PHASE: ${{ steps.cmd.outputs.START_PHASE }}
+            - END_PHASE: ${{ steps.cmd.outputs.END_PHASE }}
+            - Endpoint source: ${{ steps.endpoints.outputs.ENDPOINT_SOURCE }}
+            - MAINNET_URLS: ${{ steps.endpoints.outputs.MAINNET_URLS }}
+            - TESTNET_URLS: ${{ steps.endpoints.outputs.TESTNET_URLS }}
+            - ADDITIONAL_DATA (hints/docs/corrections): ${{ steps.cmd.outputs.HINTS }}
+
+            Rules for this unattended run:
+            - Probe every provided URL over BOTH http and ws (subscription methods
+              need ws). If the spec has subscription methods and no URL answers ws,
+              STOP and post a PR comment asking for a ws-capable node.
+            - If MAINNET_URLS and TESTNET_URLS are both empty, research public nodes
+              yourself (the normal Phase 3/8 fallback).
+            - After EACH phase in the span, post its report as a PR comment via
+              `gh pr comment ${{ steps.pr.outputs.number }} --body-file <report>`,
+              with a bold one-line header naming the phase.
+            - At every STOP-and-ask gate, auto-decide with the conservative default
+              and record it. Report the Phase 11 verdict HONESTLY (never upgrade
+              CHANGES REQUESTED to APPROVED).
+            - Do NOT run git yourself. The Phase-10 fix pass edits the spec in the
+              working tree and LEAVES it there (uncommitted) — a workflow step after
+              this run commits and pushes that edit to the PR branch. The branch is
+              already checked out; do not switch branches or commit/push anything.
+            - Only when the run span reaches Phase 11, after the verdict comment also
+              post the closing Phase-12 summary checklist as a final PR comment. If
+              the span ends before Phase 11, do NOT post a summary.
+
+      # Persist the Phase-10 fix pass. The skill never runs git itself (SKILL.md:
+      # "User handles all git manually") and the prompt forbids the agent from
+      # committing — so the fix lives only in the runner's working tree. Without
+      # this step the branch keeps the pre-fix draft while Phases 10b/11 verify a
+      # file that was never pushed (exactly what happened on PR #10). Commit any
+      # root-level spec edit and push it to the PR branch. No-op if nothing changed
+      # (e.g. /rerun-review, or a fix pass that found nothing to fix).
+      - name: Commit spec fixes to PR branch
+        if: steps.cmd.outputs.IS_COMMAND == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.BOT_PAT }}
+          REPO: ${{ github.repository }}
+          HEAD: ${{ steps.pr.outputs.head }}
+          PR: ${{ steps.pr.outputs.number }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          git config user.name  "lava-spec-bot"
+          git config user.email "lava-spec-bot@users.noreply.github.com"
+          # ':(glob)*.json' matches only root-level spec files (* does not cross /),
+          # so skill/docs JSON under .claude/ is never swept in.
+          if git diff --quiet -- ':(glob)*.json'; then
+            echo "No spec changes to commit."
+            exit 0
+          fi
+          git add -- ':(glob)*.json'
+          changed="$(git diff --cached --name-only | tr '\n' ' ')"
+          git commit -m "fix(spec): persist pipeline fix pass for ${changed}" \
+            -m "Auto-committed by spec_pipeline.yml after the Phase-10 fix pass. Run: ${RUN_URL}"
+          git push "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git" "HEAD:${HEAD}"
+          sha="$(git rev-parse --short HEAD)"
+          gh pr comment "$PR" --repo "$REPO" --body "📦 Committed pipeline fixes to \`${HEAD}\` (\`${sha}\`): \`${changed}\`— the branch now matches the spec that Phase 10b/11 verified."
+
+      - name: Report failure to PR
+        if: failure() && steps.cmd.outputs.IS_COMMAND == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.BOT_PAT }}
+          REPO: ${{ github.repository }}
+          PR: ${{ steps.pr.outputs.number }}
+          START: ${{ steps.cmd.outputs.START_PHASE }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          # Suggest the command whose span matches the phase that was running.
+          case "$START" in
+            8)  cmd='/rerun-probe   (optionally `/rerun-probe mainnet=https://your-node/rpc`, or `mainnet=use=PAID_RPC_1` for a stored secret node)' ;;
+            9)  cmd='/rerun-review' ;;
+            10) cmd='/rerun-fix' ;;
+            11) cmd='/rerun-final' ;;
+            *)  cmd="/rerun-from $START" ;;
+          esac
+          gh pr comment "$PR" --repo "$REPO" --body "$(printf '**Spec pipeline failed** (started at Phase %s). See the [run log](%s).\n\nRetry by commenting:\n`%s`\n\nTo also re-run every later phase on top of the fix, use `/rerun-from %s` instead.' "$START" "$RUN_URL" "$cmd" "$START")"

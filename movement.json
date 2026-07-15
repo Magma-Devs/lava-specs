@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "MOVEMENT",
-                "name": "movement mainnet",
+                "name": "Movement Mainnet",
                 "enabled": true,
                 "imports": [
                     "APT1"
@@ -97,7 +97,7 @@
             },
             {
                 "index": "MOVEMENTT",
-                "name": "movement testnet bardock",
+                "name": "Movement Testnet Bardock",
                 "enabled": true,
                 "imports": [
                     "MOVEMENT"

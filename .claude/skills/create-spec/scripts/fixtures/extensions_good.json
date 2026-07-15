@@ -1,0 +1,30 @@
+{
+  "proposal": {
+    "specs": [
+      {
+        "index": "GOODCHAIN",
+        "api_collections": [
+          {
+            "collection_data": {"api_interface": "jsonrpc", "add_on": ""},
+            "extensions": [
+              {"name": "archive", "cu_multiplier": 5, "rule": {"block": 1000}}
+            ],
+            "verifications": []
+          },
+          {
+            "collection_data": {"api_interface": "jsonrpc", "add_on": "debug"},
+            "extensions": [],
+            "verifications": [
+              {
+                "name": "debug-marker",
+                "parse_directive": {"function_tag": "VERIFICATION", "api_name": "debug_traceCall"},
+                "values": [{"expected_value": "*"}],
+                "severity": "Fail"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "OSMOSIS",
-                "name": "osmosis mainnet",
+                "name": "Osmosis Mainnet",
                 "enabled": true,
                 "imports": [
                     "COSMOSSDKFULL"
@@ -2690,7 +2690,7 @@
             },
             {
                 "index": "OSMOSIST",
-                "name": "osmosis testnet",
+                "name": "Osmosis Testnet",
                 "enabled": true,
                 "imports": [
                     "OSMOSIS"

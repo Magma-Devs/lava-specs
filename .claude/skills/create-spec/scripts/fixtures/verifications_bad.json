@@ -1,0 +1,29 @@
+{
+  "proposal": {
+    "specs": [
+      {
+        "index": "BADCHAIN",
+        "api_collections": [
+          {
+            "collection_data": {"api_interface": "jsonrpc"},
+            "parse_directives": [],
+            "verifications": [
+              {
+                "name": "chain-id",
+                "values": [{"expected_value": "", "severity": "Whoops"}]
+              },
+              {
+                "name": "missing-ref",
+                "parse_directive": {"function_tag": "GET_BLOCKNUM"},
+                "values": [{"expected_value": "0x1", "severity": "Fail"}]
+              },
+              {
+                "name": "no-values"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,1513 @@
+{
+  "proposal": {
+    "title": "Add Specs: MULTIVERSX",
+    "description": "Adding new specification support for relaying MultiversX Gateway REST data on Lava.",
+    "specs": [
+      {
+        "index": "MULTIVERSX",
+        "name": "MultiversX Mainnet",
+        "enabled": true,
+        "reliability_threshold": 268435455,
+        "data_reliability_enabled": true,
+        "block_distance_for_finalized_data": 0,
+        "blocks_in_finalization_proof": 1,
+        "average_block_time": 6000,
+        "allowed_block_lag_for_qos_sync": 2,
+        "imports": [],
+        "shares": 1,
+        "min_stake_provider": {
+          "denom": "ulava",
+          "amount": "5000000000"
+        },
+        "api_collections": [
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "rest",
+              "internal_path": "",
+              "type": "GET",
+              "add_on": ""
+            },
+            "apis": [
+              {
+                "name": "/about",
+                "block_parsing": {
+                  "parser_arg": [
+                    ""
+                  ],
+                  "parser_func": "EMPTY"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": false,
+                  "local": true,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/about/nodes-versions",
+                "block_parsing": {
+                  "parser_arg": [
+                    ""
+                  ],
+                  "parser_func": "EMPTY"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": false,
+                  "local": true,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/address/{address}",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/address/{address}/balance",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/address/{address}/username",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/address/{address}/nonce",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/address/{address}/shard",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/address/{address}/code-hash",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/address/{address}/keys",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/address/{address}/key/{key}",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/address/{address}/esdt",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/address/{address}/esdt/{tokenIdentifier}",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/address/{address}/esdts-with-role/{role}",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/address/{address}/esdts/roles",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/address/{address}/registered-nfts",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/address/{address}/nft/{tokenIdentifier}/nonce/{nonce}",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/address/{address}/guardian-data",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/address/{address}/is-data-trie-migrated",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/block/{shard}/by-nonce/{nonce}",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/block/{shard}/by-hash/{hash}",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/block/{shard}/altered-accounts/by-nonce/{nonce}",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/block/{shard}/altered-accounts/by-hash/{hash}",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/blocks/by-round/{round}",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/hyperblock/by-hash/{hash}",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/hyperblock/by-nonce/{nonce}",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/internal/{shard}/raw/block/by-nonce/{nonce}",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/internal/{shard}/raw/block/by-hash/{hash}",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/internal/{shard}/json/block/by-nonce/{nonce}",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/internal/{shard}/json/block/by-hash/{hash}",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/internal/{shard}/json/miniblock/by-hash/{hash}/epoch/{epoch}",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/internal/{shard}/raw/miniblock/by-hash/{hash}/epoch/{epoch}",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/internal/raw/startofepoch/metablock/by-epoch/{epoch}",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/internal/json/startofepoch/metablock/by-epoch/{epoch}",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/internal/json/startofepoch/validators/by-epoch/{epoch}",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/network/status/{shard}",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": false,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/network/config",
+                "block_parsing": {
+                  "parser_arg": [
+                    ""
+                  ],
+                  "parser_func": "EMPTY"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/network/economics",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": false,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/network/esdts",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/network/esdt/fungible-tokens",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/network/esdt/semi-fungible-tokens",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/network/esdt/non-fungible-tokens",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/network/esdt/supply/{token}",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/network/enable-epochs",
+                "block_parsing": {
+                  "parser_arg": [
+                    ""
+                  ],
+                  "parser_func": "EMPTY"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/network/direct-staked-info",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/network/delegated-info",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/network/ratings",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/network/genesis-nodes",
+                "block_parsing": {
+                  "parser_arg": [
+                    ""
+                  ],
+                  "parser_func": "EMPTY"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/network/gas-configs",
+                "block_parsing": {
+                  "parser_arg": [
+                    ""
+                  ],
+                  "parser_func": "EMPTY"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/network/trie-statistics/{shard}",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/network/epoch-start/{shard}/by-epoch/{epoch}",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/node/heartbeatstatus",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": false,
+                  "local": true,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/node/old-storage-token/{token}/nonce/{nonce}",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/node/waiting-epochs-left/{key}",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/proof/root-hash/{roothash}/address/{address}",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/proof/root-hash/{roothash}/address/{address}/key/{key}",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/proof/address/{address}",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/transaction/{txHash}/status",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/transaction/{txHash}/process-status",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/transaction/{txHash}",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/transaction/pool",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": false,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/validator/statistics",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/validator/auction",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": false,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              }
+            ],
+            "headers": [],
+            "inheritance_apis": [],
+            "parse_directives": [
+              {
+                "function_tag": "GET_BLOCKNUM",
+                "function_template": "/network/status/4294967295",
+                "result_parsing": {
+                  "parser_arg": [
+                    "0",
+                    "data",
+                    "status",
+                    "erd_nonce"
+                  ],
+                  "parser_func": "PARSE_CANONICAL"
+                },
+                "api_name": "/network/status/{shard}"
+              },
+              {
+                "function_tag": "GET_BLOCK_BY_NUM",
+                "function_template": "/block/4294967295/by-nonce/%d",
+                "result_parsing": {
+                  "parser_arg": [
+                    "0",
+                    "data",
+                    "block",
+                    "hash"
+                  ],
+                  "parser_func": "PARSE_CANONICAL"
+                },
+                "api_name": "/block/{shard}/by-nonce/{nonce}"
+              }
+            ],
+            "verifications": [
+              {
+                "name": "chain-id",
+                "parse_directive": {
+                  "function_template": "/network/config",
+                  "function_tag": "VERIFICATION",
+                  "result_parsing": {
+                    "parser_arg": [
+                      "0",
+                      "data",
+                      "config",
+                      "erd_chain_id"
+                    ],
+                    "parser_func": "PARSE_CANONICAL"
+                  },
+                  "api_name": "/network/config"
+                },
+                "values": [
+                  {
+                    "expected_value": "1"
+                  }
+                ]
+              },
+              {
+                "name": "pruning",
+                "parse_directive": {
+                  "function_tag": "GET_BLOCK_BY_NUM"
+                },
+                "values": [
+                  {
+                    "latest_distance": 43200
+                  },
+                  {
+                    "extension": "archive",
+                    "expected_value": "1"
+                  }
+                ]
+              }
+            ],
+            "extensions": [
+              {
+                "name": "archive",
+                "cu_multiplier": 5,
+                "rule": {
+                  "block": 43200
+                }
+              }
+            ]
+          },
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "rest",
+              "internal_path": "",
+              "type": "POST",
+              "add_on": ""
+            },
+            "apis": [
+              {
+                "name": "/address/iterate-keys",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/address/bulk",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/proof/verify",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/transaction/send",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": false,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 1,
+                  "hanging_api": false
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/transaction/simulate",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": false,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/transaction/send-multiple",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": false,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 1,
+                  "hanging_api": false
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/transaction/send-user-funds",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": false,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 1,
+                  "hanging_api": false
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/transaction/cost",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/vm-values/hex",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/vm-values/string",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/vm-values/int",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/vm-values/query",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              }
+            ],
+            "headers": [],
+            "inheritance_apis": [],
+            "parse_directives": []
+          }
+        ]
+      },
+      {
+        "index": "MULTIVERSXT",
+        "name": "MultiversX Testnet",
+        "enabled": true,
+        "reliability_threshold": 268435455,
+        "data_reliability_enabled": true,
+        "block_distance_for_finalized_data": 0,
+        "blocks_in_finalization_proof": 1,
+        "average_block_time": 600,
+        "allowed_block_lag_for_qos_sync": 17,
+        "imports": [
+          "MULTIVERSX"
+        ],
+        "shares": 1,
+        "min_stake_provider": {
+          "denom": "ulava",
+          "amount": "5000000000"
+        },
+        "api_collections": [
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "rest",
+              "internal_path": "",
+              "type": "GET",
+              "add_on": ""
+            },
+            "apis": [],
+            "headers": [],
+            "inheritance_apis": [],
+            "parse_directives": [],
+            "verifications": [
+              {
+                "name": "chain-id",
+                "values": [
+                  {
+                    "expected_value": "T"
+                  }
+                ]
+              }
+            ],
+            "extensions": []
+          }
+        ]
+      }
+    ]
+  },
+  "deposit": "10000000ulava"
+}

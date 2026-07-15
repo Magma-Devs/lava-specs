@@ -1,0 +1,291 @@
+{
+    "proposal": {
+        "title": "Add Specs: TEMPO",
+        "description": "Adding new specification support for relaying Tempo data on Lava. Tempo is a Stripe/Paradigm payments-focused, Reth-based EVM Layer-1 with Simplex BFT consensus and sub-second (~0.5s) deterministic instant finality (no reorgs); the spec imports ETH1 and adds Tempo-specific JSON-RPC methods (eth_sendRawTransactionSync, eth_getStorageValues, eth_getBlockAccessList, eth_simulateV1, eth_fillTransaction, tempo_forkSchedule) plus a txpool add-on. Tempo has no native gas token (fees are paid in stablecoins/TIP-20 tokens, so eth_getBalance returns a placeholder constant). The inherited ERC-4337 bundler add-on is disabled because Tempo nodes do not serve bundler RPC (no in-protocol bundler/paymaster/EntryPoint). The separate authenticated hosted REST 'Tempo API' (api.tempo.xyz) is out of scope for this JSON-RPC spec.",
+        "specs": [
+            {
+                "index": "TEMPO",
+                "name": "Tempo Mainnet",
+                "enabled": true,
+                "reliability_threshold": 268435455,
+                "data_reliability_enabled": true,
+                "block_distance_for_finalized_data": 1,
+                "blocks_in_finalization_proof": 1,
+                "average_block_time": 500,
+                "allowed_block_lag_for_qos_sync": 20,
+                "imports": [
+                    "ETH1"
+                ],
+                "shares": 1,
+                "min_stake_provider": {
+                    "denom": "ulava",
+                    "amount": "5000000000"
+                },
+                "api_collections": [
+                    {
+                        "enabled": false,
+                        "collection_data": {
+                            "api_interface": "jsonrpc",
+                            "internal_path": "",
+                            "type": "POST",
+                            "add_on": "bundler"
+                        },
+                        "apis": [],
+                        "verifications": [
+                            {
+                                "name": "bundler",
+                                "parse_directive": {
+                                    "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"eth_supportedEntryPoints\",\"params\":[],\"id\":1}",
+                                    "function_tag": "VERIFICATION",
+                                    "result_parsing": {"parser_arg": ["0"], "parser_func": "PARSE_BY_ARG"},
+                                    "api_name": "eth_supportedEntryPoints"
+                                },
+                                "values": [{"expected_value": "*"}]
+                            }
+                        ]
+                    },
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "jsonrpc",
+                            "internal_path": "",
+                            "type": "POST",
+                            "add_on": "txpool"
+                        },
+                        "apis": [
+                            {
+                                "name": "txpool_content",
+                                "block_parsing": {"parser_arg": ["latest"], "parser_func": "DEFAULT"},
+                                "compute_units": 5000,
+                                "enabled": true,
+                                "category": {"deterministic": false, "local": true, "subscription": false, "stateful": 0},
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "txpool_inspect",
+                                "block_parsing": {"parser_arg": ["latest"], "parser_func": "DEFAULT"},
+                                "compute_units": 20,
+                                "enabled": true,
+                                "category": {"deterministic": false, "local": true, "subscription": false, "stateful": 0},
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "txpool_status",
+                                "block_parsing": {"parser_arg": ["latest"], "parser_func": "DEFAULT"},
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {"deterministic": false, "local": true, "subscription": false, "stateful": 0},
+                                "extra_compute_units": 0
+                            }
+                        ],
+                        "headers": [],
+                        "inheritance_apis": [],
+                        "parse_directives": [],
+                        "verifications": [
+                            {
+                                "name": "txpool",
+                                "parse_directive": {
+                                    "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"txpool_status\",\"params\":[],\"id\":1}",
+                                    "function_tag": "VERIFICATION",
+                                    "result_parsing": {"parser_arg": ["0"], "parser_func": "PARSE_BY_ARG"},
+                                    "api_name": "txpool_status"
+                                },
+                                "values": [{"expected_value": "*"}]
+                            }
+                        ]
+                    },
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "jsonrpc",
+                            "internal_path": "",
+                            "type": "POST",
+                            "add_on": ""
+                        },
+                        "apis": [
+                            {
+                                "name": "eth_sendRawTransactionSync",
+                                "block_parsing": {"parser_arg": ["latest"], "parser_func": "DEFAULT"},
+                                "compute_units": 100,
+                                "enabled": true,
+                                "timeout_ms": 10000,
+                                "category": {"deterministic": false, "local": false, "subscription": false, "stateful": 1, "hanging_api": true},
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "eth_getStorageValues",
+                                "block_parsing": {"parser_arg": ["1"], "parser_func": "PARSE_BY_ARG"},
+                                "compute_units": 20,
+                                "enabled": true,
+                                "category": {"deterministic": true, "local": false, "subscription": false, "stateful": 0},
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "eth_getBlockAccessList",
+                                "block_parsing": {"parser_arg": ["0"], "parser_func": "PARSE_BY_ARG"},
+                                "compute_units": 20,
+                                "enabled": true,
+                                "category": {"deterministic": true, "local": false, "subscription": false, "stateful": 0},
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "eth_simulateV1",
+                                "block_parsing": {"parser_arg": ["1"], "parser_func": "PARSE_BY_ARG"},
+                                "compute_units": 100,
+                                "enabled": true,
+                                "category": {"deterministic": true, "local": false, "subscription": false, "stateful": 0},
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "eth_fillTransaction",
+                                "block_parsing": {"parser_arg": ["latest"], "parser_func": "DEFAULT"},
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {"deterministic": false, "local": false, "subscription": false, "stateful": 0},
+                                "extra_compute_units": 0
+                            },
+                            {
+                                "name": "tempo_forkSchedule",
+                                "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"},
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {"deterministic": false, "local": false, "subscription": false, "stateful": 0},
+                                "extra_compute_units": 0
+                            }
+                        ],
+                        "headers": [],
+                        "inheritance_apis": [],
+                        "parse_directives": [
+                            {
+                                "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"eth_blockNumber\",\"params\":[],\"id\":1}",
+                                "function_tag": "GET_BLOCKNUM",
+                                "result_parsing": {
+                                    "parser_arg": [
+                                        "0"
+                                    ],
+                                    "parser_func": "PARSE_BY_ARG"
+                                },
+                                "api_name": "eth_blockNumber"
+                            },
+                            {
+                                "function_tag": "GET_BLOCK_BY_NUM",
+                                "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"eth_getBlockByNumber\",\"params\":[\"0x%x\", false],\"id\":1}",
+                                "result_parsing": {
+                                    "parser_arg": [
+                                        "0",
+                                        "hash"
+                                    ],
+                                    "parser_func": "PARSE_CANONICAL",
+                                    "encoding": "hex"
+                                },
+                                "api_name": "eth_getBlockByNumber"
+                            },
+                            {
+                                "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"eth_getBlockByNumber\",\"params\":[\"earliest\", false],\"id\":1}",
+                                "function_tag": "GET_EARLIEST_BLOCK",
+                                "result_parsing": {
+                                    "parser_arg": [
+                                        "0",
+                                        "number"
+                                    ],
+                                    "parser_func": "PARSE_CANONICAL",
+                                    "encoding": "hex"
+                                },
+                                "api_name": "eth_getBlockByNumber"
+                            },
+                            {
+                                "function_tag": "SUBSCRIBE",
+                                "api_name": "eth_subscribe"
+                            },
+                            {
+                                "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"eth_unsubscribe\",\"params\":[\"%s\"],\"id\":1}",
+                                "function_tag": "UNSUBSCRIBE",
+                                "api_name": "eth_unsubscribe"
+                            }
+                        ],
+                        "verifications": [
+                            {
+                                "name": "chain-id",
+                                "values": [
+                                    {
+                                        "expected_value": "0x1079"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "pruning",
+                                "parse_directive": {
+                                    "function_tag": "GET_EARLIEST_BLOCK"
+                                },
+                                "values": [
+                                    {
+                                        "latest_distance": 6594
+                                    },
+                                    {
+                                        "extension": "archive",
+                                        "expected_value": "0x0"
+                                    }
+                                ]
+                            }
+                        ],
+                        "extensions": [
+                            {
+                                "name": "archive",
+                                "cu_multiplier": 5,
+                                "rule": {
+                                    "block": 6594
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "index": "TEMPOT",
+                "name": "Tempo Testnet Moderato",
+                "enabled": true,
+                "imports": [
+                    "TEMPO"
+                ],
+                "reliability_threshold": 268435455,
+                "data_reliability_enabled": true,
+                "block_distance_for_finalized_data": 1,
+                "blocks_in_finalization_proof": 1,
+                "average_block_time": 500,
+                "allowed_block_lag_for_qos_sync": 20,
+                "shares": 1,
+                "min_stake_provider": {
+                    "denom": "ulava",
+                    "amount": "5000000000"
+                },
+                "api_collections": [
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "jsonrpc",
+                            "internal_path": "",
+                            "type": "POST",
+                            "add_on": ""
+                        },
+                        "apis": [],
+                        "headers": [],
+                        "inheritance_apis": [],
+                        "parse_directives": [],
+                        "verifications": [
+                            {
+                                "name": "chain-id",
+                                "values": [
+                                    {
+                                        "expected_value": "0xa5bf"
+                                    }
+                                ]
+                            }
+                        ],
+                        "extensions": []
+                    }
+                ]
+            }
+        ]
+    },
+    "deposit": "10000000ulava"
+}

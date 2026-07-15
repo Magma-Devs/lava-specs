@@ -1,0 +1,5 @@
+{"proposal":{"specs":[
+  {"index":"GOODGBN","api_collections":[{"collection_data":{"api_interface":"grpc"},"verifications":[{"name":"pruning","parse_directive":{"function_tag":"GET_BLOCK_BY_NUM"},"values":[{"extension":"archive","expected_value":"1"}]}]}]},
+  {"index":"GOODNONE","api_collections":[{"collection_data":{"api_interface":"jsonrpc"},"verifications":[{"name":"pruning","parse_directive":{"function_tag":"none"},"values":[{"extension":"archive","expected_value":""}]}]}]},
+  {"index":"GOODDIST","api_collections":[{"collection_data":{"api_interface":"rest"},"verifications":[{"name":"pruning","parse_directive":{"function_tag":"GET_BLOCK_BY_NUM"},"values":[{"extension":"archive","latest_distance":1000000}]}]}]}
+]}}

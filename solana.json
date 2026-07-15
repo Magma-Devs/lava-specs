@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "SOLANA",
-                "name": "solana mainnet",
+                "name": "Solana Mainnet",
                 "enabled": true,
                 "reliability_threshold": 268435455,
                 "data_reliability_enabled": true,
@@ -1471,7 +1471,7 @@
             },
             {
                 "index": "SOLANAT",
-                "name": "solana test net",
+                "name": "Solana Testnet",
                 "enabled": true,
                 "imports": [
                     "SOLANA"

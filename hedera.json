@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "HEDERA",
-                "name": "hedera mainnet",
+                "name": "Hedera Mainnet",
                 "enabled": true,
                 "imports": [
                     "ETH1"
@@ -48,7 +48,7 @@
             },
             {
                 "index": "HEDERAT",
-                "name": "hedera testnet",
+                "name": "Hedera Testnet",
                 "enabled": true,
                 "imports": [
                     "ETH1"

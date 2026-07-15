@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "BTC",
-                "name": "bitcoin",
+                "name": "Bitcoin Mainnet",
                 "enabled": true,
                 "reliability_threshold": 268435455,
                 "data_reliability_enabled": true,
@@ -912,7 +912,7 @@
             },
             {
                 "index": "BTCT",
-                "name": "bitcoin testnet",
+                "name": "Bitcoin Testnet",
                 "enabled": true,
                 "imports": [
                     "BTC"

@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "SONIC",
-                "name": "sonic mainnet",
+                "name": "Sonic Mainnet",
                 "enabled": true,
                 "imports": [
                     "ETH1"
@@ -117,7 +117,7 @@
             },
             {
                 "index": "SONICT",
-                "name": "sonic blaze testnet",
+                "name": "Sonic Blaze Testnet",
                 "enabled": true,
                 "imports": [
                     "SONIC"

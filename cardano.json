@@ -5,7 +5,7 @@
         "specs": [
             {
                 "index": "CARDANO",
-                "name": "cardano mainnet",
+                "name": "Cardano Mainnet",
                 "enabled": true,
                 "reliability_threshold": 268435455,
                 "data_reliability_enabled": true,
@@ -2146,7 +2146,7 @@
             },
             {
                 "index": "CARDANOT",
-                "name": "cardano preprod testnet",
+                "name": "Cardano Preprod Testnet",
                 "enabled": true,
                 "reliability_threshold": 268435455,
                 "data_reliability_enabled": true,
