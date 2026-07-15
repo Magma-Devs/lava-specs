@@ -182,6 +182,8 @@ When it returns, it gives a compact summary: the calc table, the pre-write count
 
 The inheritance audit — parent-vs-chain ghost diff, the positive-evidence disable rule, the justification ledger, and chain-specific additions — is performed by the `spec-builder` subagent as Step 5 of Phase 4. There is nothing to run here separately: confirm the returned `inheritance:` line (`no imports` / `disabled: …` / `all retained`) is consistent with the chain's `imports` array, and carry any watch-list methods into Phase 8 and the Phase 10 fix list.
 
+**Disabled-API Justifications ledger (durable audit trail — a PR comment, not a file).** `spec-builder` returns its inheritance-disable rows to you (the orchestrator) — one positive-evidence row per `enabled: false` entry: `| name | evidence-type (docs-explicit / client-source) | source URL | one-line quote |`. Record these as a **PR comment titled "Disabled-API Justifications"** (create it, or update it if one already exists this run). Do **NOT** write them to a file under `docs/`: `docs/` is gitignored ("transient run outputs, never committed"), so a file there never persists to the branch and a later fresh-runner review would spuriously re-flag every disable as a missing justification — recording the ledger as a PR comment is what makes it durable. In an interactive run (no PR yet), print the ledger to the user instead — it is an audit surface that feeds the PR body when the PR is opened. The Phase-10 fixer appends any new disables to the same ledger, and Phase 11 verifies every `enabled: false` API against it.
+
 ## Phase 6 — Static validation gates (parallel dispatch + single-pass fixer)
 
 This phase runs 9 deterministic static-check gates in parallel and, on any failure, dispatches a single fixer subagent to apply edits before proceeding to Phase 7. Phase 9's parallel reviewers + Phase 11's final reviewer catch any residual issues from the fixer.
@@ -439,7 +441,7 @@ wc -l <chain>.json
 
 The consolidation subagent applies this rule when building the list:
 
-**Disable-suggestion filter (enforced).** Before dispatching the fixer, STRIP from the gap list every suggestion to set `enabled: false` on (or remove) a method, addon, or collection whose only justification is probe results (JSON-RPC `-32601`/`-32600`, HTTP `501`/`404`/`405`/`429`/`5xx`, connection errors, or timeouts on the provided nodes) — these are free-tier/gateway artifacts, never sufficient evidence (Phase 5 disable rule). An HTTP `501` from a public upstream is NOT proof the node lacks the method. Keep such a suggestion ONLY if it cites positive evidence of absence (official docs explicitly say unsupported/removed, or the chain's node client does not implement it — with a URL); when keeping one, the fixer must also append the evidence row to `docs/<chain>/DISABLED_JUSTIFICATIONS.md`. Stripped suggestions go to the PR-body watch-list instead, with a note that they need a paid/dedicated node to re-test.
+**Disable-suggestion filter (enforced).** Before dispatching the fixer, STRIP from the gap list every suggestion to set `enabled: false` on (or remove) a method, addon, or collection whose only justification is probe results (JSON-RPC `-32601`/`-32600`, HTTP `501`/`404`/`405`/`429`/`5xx`, connection errors, or timeouts on the provided nodes) — these are free-tier/gateway artifacts, never sufficient evidence (Phase 5 disable rule). An HTTP `501` from a public upstream is NOT proof the node lacks the method. Keep such a suggestion ONLY if it cites positive evidence of absence (official docs explicitly say unsupported/removed, or the chain's node client does not implement it — with a URL); when keeping one, the fixer must also **return** the evidence row so you (the orchestrator) can add it to the **Disabled-API Justifications** PR comment (the durable ledger defined in Phase 5) — never a `docs/` file. Stripped suggestions go to the PR-body watch-list instead, with a note that they need a paid/dedicated node to re-test.
 
 Snapshot the spec before fixing:
 
@@ -451,7 +453,7 @@ Dispatch one `general-purpose` Agent subagent (`model: "sonnet"`, no worktree ne
 
 > You are fixing a Lava blockchain spec. Read `<chain>.json` and the deduplicated gap list at `docs/<chain>/FIX_LIST.md`. Apply EVERY listed CRITICAL and MEDIUM fix in one pass. Do not touch any field not mentioned in the gap list. Do not refactor, reformat, or improve adjacent fields.
 >
-> You MUST NOT set `enabled: false` on any method, addon, or collection unless the gap entry cites positive documentation/client-source evidence with a URL — probe errors alone (`-32601`, HTTP `501`/`4xx`/`5xx`, timeouts) never justify disabling. When you do disable one, append its evidence row to `docs/<chain>/DISABLED_JUSTIFICATIONS.md`.
+> You MUST NOT set `enabled: false` on any method, addon, or collection unless the gap entry cites positive documentation/client-source evidence with a URL — probe errors alone (`-32601`, HTTP `501`/`4xx`/`5xx`, timeouts) never justify disabling. When you do disable one, include its positive-evidence row — `| name | evidence-type | source URL | one-line quote |` — in your returned summary under a `DISABLED-API JUSTIFICATIONS:` heading so the orchestrator can post it to the PR's Disabled-API Justifications comment; do NOT write a file under `docs/` (it is gitignored and never persists).
 >
 > Return a markdown summary of every change in the format:
 > `- <file>:<line> — <one-sentence description> (gap: <severity>, "<gap title>")`
@@ -501,6 +503,8 @@ mv docs/<chain>/SPEC_REVIEW_FIXES_*.md docs/<chain>/_archive/ 2>/dev/null || tru
 rm -f docs/<chain>/SPEC_REVIEW_GAPS.md
 ```
 
+**Assemble the Disabled-API Justifications ledger** to hand the reviewer: in a CI run, read it from the PR's `Disabled-API Justifications` comment (`gh pr view "$PR_NUMBER" --json comments`), falling back to the disabled-API ledger carried in the PR body if that comment has not been posted yet (the original create_spec run emits the ledger into the PR body before any PR comment exists); in an interactive run, use the rows `spec-builder` (Phase 5) and the Phase-10 fixer produced this run. Substitute it for `[LEDGER]` in the prompt below (use `(none — no disabled APIs)` if nothing is disabled).
+
 Dispatch ONE Agent subagent with `subagent_type: general-purpose`, `model: "sonnet"` (bump to `opus` if the final pass misses issues), and no `isolation` parameter. The prompt:
 
 > You are reviewing a Lava blockchain spec — final pass after fixes were applied.
@@ -511,7 +515,11 @@ Dispatch ONE Agent subagent with `subagent_type: general-purpose`, `model: "sonn
 >
 > The following are settled, skill-mandated decisions — do NOT report them as findings: (a) `deposit` is `"10000000ulava"`; (b) `blocks_in_finalization_proof` is finality-typed — `3` probabilistic, `1` fast/instant finality, fallback `max(ceil(1000 / average_block_time), 3)` only when the finality model is unclear; (c) probe errors on the provided nodes never justify disabling a method/addon/collection.
 >
-> Additionally verify disable justifications: list every `enabled: false` api/collection in `<chain>.json` (`jq`) and check each has a positive-evidence row (docs-explicit or client-source, with URL) in `docs/<chain>/DISABLED_JUSTIFICATIONS.md`. Any disabled entry without one is a CRITICAL finding.
+> Additionally verify disable justifications: list every `enabled: false` api/collection in `<chain>.json` (`jq`) and check each has a positive-evidence row (docs-explicit or client-source, with URL) in the **Disabled-API Justifications ledger** reproduced below. Any disabled entry without one is a CRITICAL finding.
+>
+> Disabled-API Justifications ledger:
+>
+> [LEDGER]
 >
 > `/review-spec` writes its report to `docs/<chain>/SPEC_REVIEW_GAPS.md`. After it returns, rename to a final-pass-specific path:
 >
@@ -589,7 +597,7 @@ After printing, terminate the skill. The user takes it from here (manual git ope
 ## Out of scope
 
 - Writing anywhere other than the single `<chain>.json` at the repo root — do not create subdirectories for specs
-- Creating `docs/<chain>/` documentation files beyond the probe and review reports the skill emits during its own run
+- Creating `docs/<chain>/` documentation files beyond the probe and review reports the skill emits during its own run — in particular, disabled-API justifications go to the **Disabled-API Justifications** PR comment (Phase 5), never a `docs/` file (which is gitignored and never committed)
 - Creating governance proposal JSONs or `PROPOSAL_DESCRIPTION.md`
 - Any git operations: `git add`, `git commit`, `git push`, `git checkout`, `glab mr create`. User handles all git manually.
 

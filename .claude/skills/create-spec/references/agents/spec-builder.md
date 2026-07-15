@@ -157,13 +157,13 @@ curl -s -X POST -H "Content-Type: application/json" \
 
 Probe error but no positive-evidence source → retain inheritance, put the method on the watch-list. Probe returns anything other than an error → method exists; retain inheritance.
 
-**Justification ledger (enforced).** For EVERY method/addon/collection set to `enabled: false`, append a row to `docs/<chain>/DISABLED_JUSTIFICATIONS.md`:
+**Justification ledger (enforced).** For EVERY method/addon/collection set to `enabled: false`, emit a row in the **Disabled-API Justifications** ledger you RETURN to the orchestrator — do NOT write a file under `docs/` (it is gitignored and never persists to the branch, so the orchestrator records the ledger as a PR comment instead):
 
 ```
 | <name> | docs-explicit | client-source | <URL> | <one-line quote> |
 ```
 
-The Phase 11 final reviewer cross-checks `enabled: false` entries against this file; any disabled entry without a positive-evidence row is a CRITICAL finding.
+Return these rows under a `DISABLED-API JUSTIFICATIONS:` heading in your result. The orchestrator posts them as the PR's Disabled-API Justifications comment, and the Phase 11 final reviewer cross-checks `enabled: false` entries against that ledger; any disabled entry without a positive-evidence row is a CRITICAL finding.
 
 **Step 5b — Chain-specific additions.**
 
