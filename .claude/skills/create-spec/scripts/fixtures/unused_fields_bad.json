@@ -1,0 +1,47 @@
+{
+    "proposal": {
+        "title": "Add Specs: Legacy",
+        "description": "Legacy description that must be flagged as a removed field",
+        "specs": [
+            {
+                "index": "BAD1",
+                "name": "Legacy Chain 1",
+                "enabled": true,
+                "reliability_threshold": 268435455,
+                "data_reliability_enabled": true,
+                "block_distance_for_finalized_data": 8,
+                "average_block_time": 13000,
+                "block_last_updated": 100,
+                "shares": 1,
+                "identity": "legacy-id",
+                "min_stake_provider": { "denom": "ulava", "amount": "5000000000" },
+                "providers_types": 1,
+                "contributor": ["legacy-contributor"],
+                "contributor_percentage": "0.5",
+                "api_collections": [
+                    {
+                        "enabled": true,
+                        "collection_data": { "api_interface": "jsonrpc", "internal_path": "", "type": "POST", "add_on": "" },
+                        "apis": [
+                            {
+                                "name": "eth_blockNumber",
+                                "compute_units": 10,
+                                "extra_compute_units": 0,
+                                "enabled": true,
+                                "category": { "deterministic": true, "local": false, "subscription": false, "stateful": 0, "hanging_api": false }
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "index": "BAD2",
+                "name": "Legacy Chain 2",
+                "enabled": true,
+                "shares": 2,
+                "min_stake_provider": { "denom": "ulava", "amount": "1000000" }
+            }
+        ]
+    },
+    "deposit": "10000000ulava"
+}

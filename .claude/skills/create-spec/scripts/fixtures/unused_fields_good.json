@@ -1,0 +1,36 @@
+{
+    "proposal": {
+        "specs": [
+            {
+                "index": "GOOD1",
+                "name": "Good Chain 1",
+                "enabled": true,
+                "block_distance_for_finalized_data": 8,
+                "blocks_in_finalization_proof": 3,
+                "average_block_time": 13000,
+                "allowed_block_lag_for_qos_sync": 2,
+                "api_collections": [
+                    {
+                        "enabled": true,
+                        "collection_data": { "api_interface": "jsonrpc", "internal_path": "", "type": "POST", "add_on": "" },
+                        "apis": [
+                            {
+                                "name": "eth_blockNumber",
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": { "deterministic": true, "stateful": 0, "hanging_api": false },
+                                "block_parsing": { "parser_arg": ["latest"], "parser_func": "DEFAULT" }
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "index": "GOOD2",
+                "name": "Good Chain 2",
+                "enabled": true,
+                "imports": ["GOOD1"]
+            }
+        ]
+    }
+}
