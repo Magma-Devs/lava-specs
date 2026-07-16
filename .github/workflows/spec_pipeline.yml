@@ -269,6 +269,18 @@ jobs:
             - At every STOP-and-ask gate, auto-decide with the conservative default
               and record it. Report the Phase 11 verdict HONESTLY (never upgrade
               CHANGES REQUESTED to APPROVED).
+            - The Phase-10 fix pass must NEVER introduce any of the 15 fields
+              smart-router removed in #218 — spec-level governance
+              (min_stake_provider, providers_types, contributor,
+              contributor_percentage, shares, identity, block_last_updated,
+              reliability_threshold, data_reliability_enabled), proposal envelope
+              (proposal.title, proposal.description, top-level deposit), or api-level
+              (extra_compute_units, category.local, category.subscription). The fixed
+              spec stays the canonical envelope { "proposal": { "specs": [ ... ] } }.
+              compute_units is the ONLY compute-unit input; a method is a subscription
+              IFF it carries a FUNCTION_TAG_SUBSCRIBE parse directive, never
+              category.subscription. A CI guard fails this run if the fixed spec
+              carries any of these fields.
             - Do NOT run git yourself. The Phase-10 fix pass edits the spec in the
               working tree and LEAVES it there (uncommitted) — a workflow step after
               this run commits and pushes that edit to the PR branch. The branch is
@@ -276,6 +288,42 @@ jobs:
             - Only when the run span reaches Phase 11, after the verdict comment also
               post the closing Phase-12 summary checklist as a final PR comment. If
               the span ends before Phase 11, do NOT post a summary.
+
+      # Reintroduction guard for the smart-router#218 field cleanup. Runs AFTER the
+      # Phase-10 fix pass (which edits the spec in the working tree) and BEFORE the
+      # commit below, so the spec is rejected if its FINAL content still carries any
+      # of the 15 removed fields — whether they were already committed or the fix
+      # pass reintroduced one. Strict mode exits 1, which stops the job here (no fix
+      # commit) and lets "Report failure to PR" comment. Targeted: only the PR's own
+      # root-level spec file(s), read from the post-fix working tree. jq is installed
+      # by "Install probe tools" above; the script is tracked on `main`.
+      - name: Guard — reject removed spec fields
+        if: steps.cmd.outputs.IS_COMMAND == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.BOT_PAT }}
+          REPO: ${{ github.repository }}
+          PR: ${{ steps.pr.outputs.number }}
+        run: |
+          set -euo pipefail
+          # Fail closed if the API call itself fails — an empty list must mean
+          # "PR changed no spec", never "we couldn't check".
+          if ! files_json="$(gh pr view "$PR" --repo "$REPO" --json files 2>/dev/null)"; then
+            echo "::error::could not list PR files (gh pr view) — cannot verify removed fields."
+            exit 1
+          fi
+          # Root-level *.json only (no '/' in path): the spec file(s) this PR touches.
+          # while-read (not mapfile) for bash 3.2+ portability; process substitution
+          # keeps the loop in this shell so `present` persists.
+          present=()
+          while IFS= read -r s; do
+            [ -n "$s" ] && [ -f "$s" ] && present+=("$s")
+          done < <(printf '%s' "$files_json" | jq -r '.files[].path | select(test("^[^/]+\\.json$"))')
+          if [ "${#present[@]}" -eq 0 ]; then
+            echo "No root-level spec JSON changed in this PR — nothing to guard."
+            exit 0
+          fi
+          echo "Guarding removed fields in: ${present[*]}"
+          bash .claude/skills/create-spec/scripts/check_unused_fields.sh "${present[@]}"
 
       # Persist the Phase-10 fix pass. The skill never runs git itself (SKILL.md:
       # "User handles all git manually") and the prompt forbids the agent from

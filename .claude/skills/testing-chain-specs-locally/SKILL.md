@@ -17,6 +17,12 @@ DNS lookups are NOT node traffic — `getent hosts <candidates>` is allowed and 
 
 1. **Gather.** `gh pr view <n> --json body,comments` — endpoints, chain-ids, expected values, and prior probe tables live there; reuse them. Check auto-memory for a prior `<CHAIN> smartrouter run` (chain gotchas). Then sync the tree: `git fetch origin <branch>` and confirm `git log --oneline HEAD..origin/<branch>` is empty — spec pipelines push fix commits after the PR opens; a stale tree tests the wrong spec.
 
+   **Field-cleanup guard.** Before boot, run the reintroduction guard on the spec file(s) the PR adds or modifies — smart-router removed 15 spec fields (spec-level governance, `proposal.title`/`description`, top-level `deposit`, api-level `extra_compute_units`/`category.local`/`category.subscription`) and a reintroduced one is a spec defect to report, not to test around:
+   ```bash
+   bash .claude/skills/create-spec/scripts/check_unused_fields.sh <chain>.json   # + any parent the PR touches
+   ```
+   Strict is the default — exit 1 on any removed field, printing its exact JSON path. Add `--warn` (reports but exits 0) ONLY when deliberately booting a known-legacy fixture that still carries the old fields, so it can still be exercised — never as an escape hatch for a live PR spec.
+
    While reading the Phase-8 comment, look for a "router-config note" saying the pruning **archive** verification was NOT_EXERCISED / `skip-verifications: [pruning]` was applied ("no gateway serves `{archive, websocket}` on one connection") — that's the docker harness being unable to express archive-tagged ws legs, NOT a real limitation. The 4-leg layout (step 2) exercises the verification for real; a green `verification=pruning verificationKey={Extension:archive}` boot line closes the pipeline's open item and belongs in the PR comment's headline (ASTAR refuted the claimed limitation; CODEX reconfirmed on both nets).
 
    **Family pre-flight** — known family-wide spec defects; check BEFORE boot #1, fix per-chain (never the base spec):
@@ -41,6 +47,17 @@ DNS lookups are NOT node traffic — `getent hosts <candidates>` is allowed and 
      addons: ([.api_collections[].collection_data.add_on]|unique - [""]),
      exts: ([.api_collections[].extensions[]?.name]|unique)}' <chain>.json
    ```
+
+   **WebSocket need = SUBSCRIBE directives, not a category flag.** Whether a spec needs a ws leg is decided by its `FUNCTION_TAG_SUBSCRIBE` parse directives (serialized `"function_tag": "SUBSCRIBE"`) — there is no `category.subscription` field to read. The api_interface that carries a SUBSCRIBE directive needs, in each of its provider blocks, either a `wss://` leg or `--skip-websocket-verification` (step 3), or chain-router creation for that interface fails. SUBSCRIBE almost always arrives **through `imports`**, so grepping the chain's own collections reads 0 for the very chains that need it: every EVM L2 inherits `eth_subscribe` (jsonrpc) from `ETH1`, and every cosmos chain inherits `subscribe` (tendermintrpc) from `TENDERMINT`, both with zero own directives (`BASE`→`imports:["ETH1"]`; `BASES`→`BASE`→`ETH1` is two hops), while substrate specs like `ASTAR` add their own jsonrpc `chain_subscribe*` on top. Own-count 0 is not "no subscriptions" — resolve the chain. `--use-static-spec "$PWD/"` loads the whole catalog, so slurp every file and close over imports (use the `index` from the interrogation above):
+   ```bash
+   jq -n --arg target "<INDEX>" '
+     ([inputs.proposal.specs[]] | map({(.index): .}) | add) as $by
+     | def sub($i): ($by[$i] // {}) as $s
+         | (([$s.api_collections[]?.parse_directives[]? | select(.function_tag=="SUBSCRIBE")] | length) > 0)
+           or (($s.imports // []) | any(sub(.)));
+       {target: $target, needs_ws: sub($target)}' *.json
+   ```
+   A `true` carried on **jsonrpc** — EVM `eth_subscribe` or substrate `chain_subscribe*` — is what the "subscription chain" rules below assume: that block can't serve without a wss leg (a no-wss endpoint is unservable there), and on an archive chain it pulls in the https/wss 4-leg recipe (`config/astar.yml`, below). A `true` carried only on **cosmos tendermintrpc** (`subscribe` via TENDERMINT) is expected and implies neither — cosmos serves over https; confirm at boot whether that interface actually needs a ws leg or just `--skip-websocket-verification`. `false` → https-only, no ws leg needed.
 
    Copy the schema from `config/cronos.yml` (EVM, no public wss) — other references: `config/astar.yml` (**spec with subscriptions + real wss + archive** — the FLARE/BOB 4-leg recipe: main blocks = https/wss × {base, `addons:["archive"]`}, because subscriptions force a ws leg per serving block AND the pruning verification needs one `{archive+websocket}`-capable leg; gap addons START in https-only blocks — excluded at boot, itemized by `health`; do NOT give a FAILING gap block wss legs, the dial storm 429s the origin — MOONBEAM. But on a subscription chain that exclusion is transport-caused and proves nothing about capability — see the gap-addon promotion rule in step 5), `config/akash.yml` (cosmos rest/grpc/tendermintrpc), `config/concordium.yml` (grpc protoset), `config/stacks.yml` or `config/multiversx.yml` (rest-only gateway API), `config/mina.yml` (GraphQL-over-rest). Skeleton:
 

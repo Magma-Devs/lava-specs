@@ -102,12 +102,12 @@ direct-rpc:
 Rules — apply exactly:
 - Create **one `direct-rpc` block per node URL** passed in (1, 2, or 3). Each is a distinct upstream the router can rotate across; this is what exercises the multi-node probe.
 - `chain-id` is the spec index — UPPERCASE — and MUST match a `proposal.specs[].index` inside `<chain>.json`. A mismatch fails the router's startup spec resolution.
-- **Subscriptions (HARD requirement, not optional).** If the spec enables ANY subscription method (`category.subscription: true` anywhere in `<chain>.json` — e.g. `eth_subscribe` inherited from ETH1), then **every** `direct-rpc` block's `node-urls` MUST include a `ws://`/`wss://` URL alongside the https URL. The router does NOT treat this as a warning: a provider with no ws upstream **fails verification and is excluded from the provider list**, and once every provider is excluded the router exits at boot with:
+- **Subscriptions (HARD requirement, not optional).** If the spec enables ANY subscription method (a `SUBSCRIBE` parse directive anywhere in `<chain>.json`'s resolved import closure — e.g. `eth_subscribe` inherited from ETH1), then **every** `direct-rpc` block's `node-urls` MUST include a `ws://`/`wss://` URL alongside the https URL. The router does NOT treat this as a warning: a provider with no ws upstream **fails verification and is excluded from the provider list**, and once every provider is excluded the router exits at boot with:
   ```
   static provider: failed creating chain router — excluding from provider list
   all static providers failed verification — cannot serve endpoint
   ```
-  So: add `<WS_URL>` (or any `wss://` node URL) to every block. If the spec has subscriptions and you were given NO ws/wss URL, do not boot a doomed config — STOP and return `SMOKE: BOOT_FAILED` noting that a ws/wss upstream is required for this chain, so the orchestrator can ask the user for one. (Check with: `jq -e '[.proposal.specs[].api_collections[].apis[]?.category.subscription] | any' <chain>.json` → `true` means subscriptions are present.)
+  So: add `<WS_URL>` (or any `wss://` node URL) to every block. If the spec has subscriptions and you were given NO ws/wss URL, do not boot a doomed config — STOP and return `SMOKE: BOOT_FAILED` noting that a ws/wss upstream is required for this chain, so the orchestrator can ask the user for one. (Check with: `jq -e '[.proposal.specs[].api_collections[]?.parse_directives[]? | select(.function_tag == "SUBSCRIBE")] | any' <chain>.json` → `true` means subscriptions are present. Resolve `imports` too — the subscribe directive is often inherited, e.g. from ETH1.)
 - **Multi-interface chains** (`<EXTRA_INTERFACES>` non-empty): add one more `endpoints[]` entry per extra interface on the next free port (`3361`, `3362`, …, same `chain-id`, the extra `api-interface`) AND a matching set of `direct-rpc[]` blocks for that interface's upstreams. See `config/smartrouter_examples/smartrouter_lava.yml` (rest + grpc + tendermintrpc) for the multi-interface shape.
 - `addons:` on a `node-urls` entry tells the router that upstream serves an addon/extension (`archive`, `debug`, `trace`, …) and arms the matching startup verifications. Do NOT guess them here — leave them out of the initial config; Step 1c probes each upstream and adds only the addons it actually supports. (The spec-side `add_on` field still lives in `collection_data`, not in this config.)
 
@@ -275,7 +275,7 @@ For every API in every collection of the current spec variant, send the call **t
 | Category | Probe action |
 |---|---|
 | `category.stateful: 1` | SKIP. Record reason: "stateful — would broadcast transaction". |
-| `category.subscription: true` | Open a WebSocket to the router (`ws://localhost:3360` — confirm the ws path in the startup logs), send the subscribe call with sample params from the spec's `parse_directive`/`block_parsing` hints, **wait up to 30 seconds for at least one message**, then send unsubscribe. PASS = ≥1 message received. FAIL = timeout. Probe via the router, not the upstream node. |
+| subscribe method (named by a `SUBSCRIBE` parse directive) | Open a WebSocket to the router (`ws://localhost:3360` — confirm the ws path in the startup logs), send the subscribe call with sample params from the spec's `parse_directive`/`block_parsing` hints, **wait up to 30 seconds for at least one message**, then send unsubscribe. PASS = ≥1 message received. FAIL = timeout. Probe via the router, not the upstream node. |
 | Anything else | Build the simplest valid call from `block_parsing` + `parse_directive` hints and POST it to `http://localhost:3360` (jsonrpc/tendermintrpc) or GET the REST path (rest). Classify the router's response. |
 
 Example jsonrpc probe:

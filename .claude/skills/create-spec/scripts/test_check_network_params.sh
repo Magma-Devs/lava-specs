@@ -11,14 +11,16 @@ FAIL_ROWS=$(echo "$OUT" | awk '/^=== FAIL/{f=1;next} /^=== /{f=0} f && NF' | wc 
 [ "$FAIL_ROWS" -eq 0 ] || fail "good: FAIL rows=$FAIL_ROWS, want 0"
 echo "good: OK"
 
-# Case 2: bad — exit 1, FAIL rows present
+# Case 2: bad — exit 1, block-timing FAIL rows present
+# BADCHAIN trips exactly two block-timing checks: blocks_in_finalization_proof=2
+# (not in {1,3}) and allowed_block_lag_for_qos_sync=5 (expected ceil(10000/1000)=10).
 set +e
 OUT=$("$SCRIPT" "$DIR/fixtures/network_params_bad.json")
 RC=$?
 set -e
 [ "$RC" -eq 1 ] || fail "bad: exit code=$RC, want 1"
 FAIL_ROWS=$(echo "$OUT" | awk '/^=== FAIL/{f=1;next} /^=== /{f=0} f && NF' | wc -l)
-[ "$FAIL_ROWS" -ge 4 ] || fail "bad: FAIL rows=$FAIL_ROWS, want >=4"
+[ "$FAIL_ROWS" -eq 2 ] || fail "bad: FAIL rows=$FAIL_ROWS, want 2"
 echo "bad: OK"
 
 # Case 3: instant-finality — blocks_in_finalization_proof=1 is finality-typed and

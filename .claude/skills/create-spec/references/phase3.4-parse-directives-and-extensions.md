@@ -107,31 +107,6 @@
 
 ```
 
-#### Step 2.2: Economic Parameters
-**Objective**: Set appropriate staking and reward requirements
-
-**Tasks**:
-- [ ] **`min_stake_provider`**: Set minimum provider stake
-  - Standard: `{"denom": "ulava", "amount": "5000000000"}` (5000 LAVA)
-  - High-value chains: Consider higher stakes
-  - Lower for testnets if appropriate
-
-- [ ] **`min_stake_client`**: Set minimum consumer stake (if required)
-  - Often omitted (not mandatory)
-  - Use for high-demand chains
-
-- [ ] **`shares`**: Set priority/weight
-  - Standard: `1`
-  - Higher values for premium chains (requires governance approval)
-
-- [ ] **`contributor`**: Add if you're contributing the spec
-  - Your Lava address
-  - Only for original spec creators
-
-- [ ] **`contributor_percentage`**: Set reward percentage
-  - Typical: `"0.035"` (3.5%)
-  - Requires governance approval
-
 #### Step 2.3: Chain Verification
 **Objective**: Configure chain identity verification
 

@@ -40,23 +40,18 @@ jq -e '.proposal.specs | type == "array" and length > 0' <spec>.json
 - `index`
 - `name`
 - `enabled`
-- `reliability_threshold`
-- `data_reliability_enabled`
 - `block_distance_for_finalized_data`
 - `blocks_in_finalization_proof`
 - `average_block_time`
 - `allowed_block_lag_for_qos_sync`
-- `shares`
-- `min_stake_provider`
 - `api_collections`
 
 ```bash
 jq -e '[.proposal.specs[] | 
   (has("index") and has("name") and has("enabled") and 
-   has("reliability_threshold") and has("data_reliability_enabled") and 
    has("block_distance_for_finalized_data") and has("blocks_in_finalization_proof") and 
    has("average_block_time") and has("allowed_block_lag_for_qos_sync") and 
-   has("shares") and has("min_stake_provider") and has("api_collections"))
+   has("api_collections"))
 ] | all' <spec>.json
 ```
 
@@ -99,6 +94,48 @@ jq -e '.proposal.specs | length >= 2' <spec>.json
 **Pass condition:** Command outputs `true`.
 
 **Failure report:** `gate: fail | reason: Must have at least 2 specs (mainnet + testnet), found: N`
+
+---
+
+### Gate 6: No Removed Fields
+
+**Check:** No spec object, api, or proposal envelope carries a field removed in the spec field-level cleanup (smart-router #218). The generated spec must emit ONLY active fields — the canonical shape is `{ "proposal": { "specs": [ ... ] } }` with no proposal title/description and no top-level deposit. Emitting any removed field is a hard failure, not a content deduction.
+
+Removed fields that MUST be absent:
+- spec-level: `min_stake_provider`, `providers_types`, `contributor`, `contributor_percentage`, `shares`, `identity`, `block_last_updated`, `reliability_threshold`, `data_reliability_enabled`
+- proposal envelope: `proposal.title`, `proposal.description`, top-level `deposit`
+- api-level: `extra_compute_units`, `category.local`, `category.subscription`
+
+```bash
+jq -e '[
+  (.proposal | has("title")),
+  (.proposal | has("description")),
+  has("deposit"),
+  (.proposal.specs[]? | has("min_stake_provider","providers_types","contributor","contributor_percentage","shares","identity","block_last_updated","reliability_threshold","data_reliability_enabled")),
+  (.proposal.specs[]?.api_collections[]?.apis[]? | has("extra_compute_units")),
+  (.proposal.specs[]?.api_collections[]?.apis[]?.category? | select(type == "object") | has("local","subscription"))
+] | any | not' <spec>.json
+```
+
+**Pass condition:** Command outputs `true` (no removed field present anywhere in the spec).
+
+**List the offending fields for the failure report:**
+
+```bash
+jq -c '[
+  (if .proposal|has("title") then "proposal.title" else empty end),
+  (if .proposal|has("description") then "proposal.description" else empty end),
+  (if has("deposit") then "deposit (top-level)" else empty end),
+  (.proposal.specs[]? as $s
+     | ["min_stake_provider","providers_types","contributor","contributor_percentage","shares","identity","block_last_updated","reliability_threshold","data_reliability_enabled"][]
+     | select(. as $k | $s|has($k))),
+  (if [.proposal.specs[]?.api_collections[]?.apis[]?|select(has("extra_compute_units"))]|length>0 then "extra_compute_units" else empty end),
+  (if [.proposal.specs[]?.api_collections[]?.apis[]?.category?|select(type=="object" and has("local"))]|length>0 then "category.local" else empty end),
+  (if [.proposal.specs[]?.api_collections[]?.apis[]?.category?|select(type=="object" and has("subscription"))]|length>0 then "category.subscription" else empty end)
+] | unique' <spec>.json
+```
+
+**Failure report:** `gate: fail | reason: Spec contains removed field(s) — must be absent per smart-router #218: <field list>`
 
 ---
 

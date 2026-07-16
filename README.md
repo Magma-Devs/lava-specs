@@ -2,16 +2,44 @@
 
 Chain specifications for the [Lava Network](https://www.lavanet.xyz/). Each `<chain>.json` at the repo root defines the APIs a provider commits to serving for one blockchain (mainnet + testnet entries), used to onboard that chain to Lava.
 
+## Spec shape (field contract)
+
+Every `<chain>.json` is exactly one canonical proposal envelope — nothing else at the top level:
+
+```json
+{ "proposal": { "specs": [ /* mainnet entry, testnet entry */ ] } }
+```
+
+No `proposal.title`, no `proposal.description`, no top-level `deposit`. smart-router [#218](https://github.com/Magma-Devs/smart-router/pull/218) removed 15 spec fields the router never read; specs must not carry any of them:
+
+- **Spec-level (governance):** `min_stake_provider`, `providers_types`, `contributor`, `contributor_percentage`, `shares`, `identity`, `block_last_updated`, `reliability_threshold`, `data_reliability_enabled`
+- **Proposal envelope:** `proposal.title`, `proposal.description`, top-level `deposit`
+- **API-level:** `extra_compute_units`, `category.local`, `category.subscription`
+
+Two consequences for authoring:
+
+- **`compute_units` is the only CU input** — `extra_compute_units` is gone.
+- **A method is a subscription iff it carries a `FUNCTION_TAG_SUBSCRIBE` parse directive** — never via `category.subscription`.
+
+A reintroduction guard enforces the contract. Run it on any spec:
+
+```
+bash .claude/skills/create-spec/scripts/check_unused_fields.sh <chain>.json
+```
+
+Strict mode (the default) exits non-zero and prints the JSON path of every removed field it finds; pass `--warn` only when deliberately exercising a legacy fixture. Both CI workflows run this guard as a hard gate, so a generated or committed spec that carries any removed field fails the run (and, where branch protection requires the check, is blocked from merging).
+
 ## Skill-assisted workflow
 
-The repo ships Claude Code skills (slash commands) to build, audit, and tune these specs.
+The repo ships Claude Code skills (slash commands) to build, audit, tune, and test these specs.
 
-Three skills build and maintain chain specs. Each is a slash command in Claude Code.
+Four skills build and maintain chain specs. Each is a slash command in Claude Code.
 
 | Command | Does | Output |
 |---|---|---|
 | `/create-spec` | Onboards a new chain: research → synthesize → validate → boot/probe → review. 12-phase pipeline. | `<chain>.json` at repo root |
 | `/review-spec` | Audits an existing spec: params, API coverage, block parsing, parse directives. | review report (no edits) |
+| `/testing-chain-specs-locally` | Boots a spec PR through the local smart-router binary against real endpoints; reports PASS/FAIL per interface. | run verdict + optional PR comment |
 | `/eval-spec` | Tunes `/create-spec` itself: generates a batch, scores vs ground truth, edits the skill, loops. | tuned `create-spec/` + scores |
 
 ## Normal workflow
@@ -58,12 +86,21 @@ Three skills build and maintain chain specs. Each is a slash command in Claude C
 
 **Rerun:** just re-invoke. To revert a bad tuning run, restore from the `create-spec.backup-<timestamp>` dir it created.
 
+## /testing-chain-specs-locally
+
+- Trigger: "test/run/boot spec PR <n> locally", "verify the `<chain>` spec with the smart-router".
+- Boots the committed `<chain>.json` through a local smart-router binary (`${SMARTROUTER_BIN:-../smart-router/build/smartrouter}`) against real mainnet + testnet endpoints and reports PASS/FAIL per interface/leg (http/ws/grpc, archive, subscription).
+- Iron rule: all traffic goes **through** the router — never curl/websocat a node directly. The router's boot verifications and relay logs are the evidence.
+- Read-only w.r.t. the spec: it runs the spec, it does not edit it. Can post a manual-run results comment on the spec PR.
+
 ## Running in CI (GitHub Actions)
 
 Two workflows automate the same pipeline headless:
 
 - **Create Spec** (`create_spec.yml`) — Actions tab → "Create Spec" → Run workflow. Inputs: `chain_name`, `chain_mainnet_index`, `chain_testnet_index`, `additional_data` (docs/node URLs, hints). Runs phases 1–7 and opens a PR.
 - **Spec Pipeline** (`spec_pipeline.yml`) — fires automatically when that PR opens (boot/probe → review → fix → final, phases 8–11).
+
+Both workflows run the removed-field guard (`check_unused_fields.sh`, strict) as a hard gate: **Create Spec** checks the freshly written spec before it commits/opens the PR, and **Spec Pipeline** checks the PR's spec after the Phase-10 fix pass before it commits — either fails the run if any of the 15 removed fields is present.
 
 **Create Spec** example:
 <kbd>

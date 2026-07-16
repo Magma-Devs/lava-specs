@@ -9,10 +9,11 @@
 {
   "name": "method_name",
   "enabled": true,
-  "compute_units": 10,
-  "extra_compute_units": 0
+  "compute_units": 10
 }
 ```
+
+`compute_units` is the ONLY CU input — there is no `extra_compute_units` field (it was removed from the model).
 
 **Compute Units Guidelines**:
 
@@ -163,8 +164,6 @@ Some REST specs extract block information from the response body rather than the
 {
   "category": {
     "deterministic": true,
-    "local": false,
-    "subscription": false,
     "stateful": 0,
     "hanging_api": false
   }
@@ -182,13 +181,7 @@ Some REST specs extract block information from the response body rather than the
 - Result varies between calls
 - Examples: getAccounts, mining, syncing, pending transactions
 
-**`local: true`** - Use when:
-- Data is node-specific
-- Examples: filters, node version, mining status
-
-**`subscription: true`** - Use when:
-- API is for WebSocket subscriptions
-- Examples: eth_subscribe, eth_unsubscribe
+> **Subscriptions are NOT a `category` flag.** A method is a subscription because its collection has a `SUBSCRIBE`/`UNSUBSCRIBE` parse directive whose `api_name` is that method (see `phase3.4-parse-directives-and-extensions.md`). Do NOT emit `category.subscription` or `category.local` — both fields were removed from the model.
 
 **`stateful: 1`** - Use ONLY when the API **submits** a transaction or otherwise modifies chain state. Read-only helpers that prepare, simulate, or inspect transactions are **not** stateful even if they take a transaction-shaped argument.
 
