@@ -1,24 +1,15 @@
 {
   "proposal": {
-    "title": "Add Specs: Blast",
-    "description": "Adding new specification support for relaying data on Blast ",
     "specs": [
       {
         "index": "BLAST",
         "name": "Blast Mainnet",
         "enabled": true,
         "imports": ["ETH1"],
-        "reliability_threshold": 268435455,
-        "data_reliability_enabled": true,
         "block_distance_for_finalized_data": 6,
         "blocks_in_finalization_proof": 2,
         "average_block_time": 2000,
         "allowed_block_lag_for_qos_sync": 15,
-        "shares": 1,
-        "min_stake_provider": {
-          "denom": "ulava",
-          "amount": "5000000000"
-        },
         "api_collections": [
           {
             "enabled": true,
@@ -51,17 +42,10 @@
         "name": "Blast Sepolia Testnet",
         "enabled": true,
         "imports": ["BLAST"],
-        "reliability_threshold": 268435455,
-        "data_reliability_enabled": true,
         "block_distance_for_finalized_data": 6,
         "blocks_in_finalization_proof": 2,
         "average_block_time": 2000,
         "allowed_block_lag_for_qos_sync": 15,
-        "shares": 1,
-        "min_stake_provider": {
-          "denom": "ulava",
-          "amount": "5000000000"
-        },
         "api_collections": [
           {
             "enabled": true,
@@ -89,6 +73,5 @@
         ]
       }
     ]
-  },
-  "deposit": "10000000ulava"
+  }
 }

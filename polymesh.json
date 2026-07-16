@@ -1,24 +1,15 @@
 {
   "proposal": {
-    "title": "Add Specs: POLYMESH",
-    "description": "Adding new specification support for relaying Polymesh data on Lava",
     "specs": [
       {
         "index": "POLYMESH",
         "name": "Polymesh Mainnet",
         "enabled": true,
-        "reliability_threshold": 268435455,
-        "data_reliability_enabled": true,
         "block_distance_for_finalized_data": 3,
         "blocks_in_finalization_proof": 1,
         "average_block_time": 6000,
         "allowed_block_lag_for_qos_sync": 2,
         "imports": [],
-        "shares": 1,
-        "min_stake_provider": {
-          "denom": "ulava",
-          "amount": "5000000000"
-        },
         "api_collections": [
           {
             "enabled": true,
@@ -41,11 +32,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "archive_v1_body",
@@ -59,11 +47,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "archive_v1_call",
@@ -77,11 +62,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "archive_v1_finalizedHeight",
@@ -95,11 +77,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "archive_v1_genesisHash",
@@ -113,11 +92,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "archive_v1_hashByHeight",
@@ -131,11 +107,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "archive_v1_header",
@@ -149,11 +122,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "archive_v1_stopStorage",
@@ -167,11 +137,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "archive_v1_storage",
@@ -185,11 +152,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "archive_v1_storageDiff",
@@ -203,11 +167,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "archive_v1_storageDiff_stopStorageDiff",
@@ -221,11 +182,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "author_hasKey",
@@ -239,11 +197,8 @@
                 "enabled": false,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "author_hasSessionKeys",
@@ -257,11 +212,8 @@
                 "enabled": false,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "author_insertKey",
@@ -275,11 +227,8 @@
                 "enabled": false,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 1
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "author_pendingExtrinsics",
@@ -293,11 +242,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "author_removeExtrinsic",
@@ -311,11 +257,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 1
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "author_rotateKeys",
@@ -329,11 +272,8 @@
                 "enabled": false,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 1
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "author_rotateKeysWithOwner",
@@ -347,11 +287,8 @@
                 "enabled": false,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 1
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "author_submitAndWatchExtrinsic",
@@ -365,11 +302,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": true,
                   "stateful": 1
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "author_submitExtrinsic",
@@ -383,12 +317,9 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 1,
                   "hanging_api": true
                 },
-                "extra_compute_units": 0,
                 "timeout_ms": 20000
               },
               {
@@ -403,11 +334,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": true,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "chainHead_v1_body",
@@ -421,11 +349,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "chainHead_v1_call",
@@ -439,11 +364,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "chainHead_v1_continue",
@@ -457,11 +379,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "chainHead_v1_follow",
@@ -475,11 +394,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": true,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "chainHead_v1_header",
@@ -493,11 +409,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "chainHead_v1_stopOperation",
@@ -511,11 +424,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "chainHead_v1_storage",
@@ -529,11 +439,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "chainHead_v1_unfollow",
@@ -547,11 +454,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": true,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "chainHead_v1_unpin",
@@ -565,11 +469,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "chainSpec_v1_chainName",
@@ -583,11 +484,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "chainSpec_v1_genesisHash",
@@ -601,11 +499,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "chainSpec_v1_properties",
@@ -619,11 +514,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "chain_getBlock",
@@ -637,11 +529,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "chain_getBlockHash",
@@ -655,11 +544,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "chain_getFinalisedHead",
@@ -673,11 +559,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "chain_getFinalizedHead",
@@ -691,11 +574,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "chain_getHead",
@@ -709,11 +589,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "chain_getHeader",
@@ -727,11 +604,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "chain_getRuntimeVersion",
@@ -745,11 +619,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "chain_subscribeAllHeads",
@@ -763,11 +634,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": true,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "chain_subscribeFinalisedHeads",
@@ -781,11 +649,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": true,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "chain_subscribeFinalizedHeads",
@@ -799,11 +664,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": true,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "chain_subscribeNewHead",
@@ -817,11 +679,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": true,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "chain_subscribeNewHeads",
@@ -835,11 +694,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": true,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "chain_subscribeRuntimeVersion",
@@ -853,11 +709,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": true,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "chain_unsubscribeAllHeads",
@@ -871,11 +724,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": true,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "chain_unsubscribeFinalisedHeads",
@@ -889,11 +739,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": true,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "chain_unsubscribeFinalizedHeads",
@@ -907,11 +754,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": true,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "chain_unsubscribeNewHead",
@@ -925,11 +769,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": true,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "chain_unsubscribeNewHeads",
@@ -943,11 +784,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": true,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "chain_unsubscribeRuntimeVersion",
@@ -961,11 +799,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": true,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "childstate_getKeys",
@@ -979,11 +814,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "childstate_getKeysPaged",
@@ -997,11 +829,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "childstate_getKeysPagedAt",
@@ -1015,11 +844,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "childstate_getStorage",
@@ -1033,11 +859,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "childstate_getStorageEntries",
@@ -1051,11 +874,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "childstate_getStorageHash",
@@ -1069,11 +889,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "childstate_getStorageSize",
@@ -1087,11 +904,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "dev_getBlockStats",
@@ -1105,11 +919,8 @@
                 "enabled": false,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "offchain_localStorageClear",
@@ -1123,11 +934,8 @@
                 "enabled": false,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 1
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "offchain_localStorageGet",
@@ -1141,11 +949,8 @@
                 "enabled": false,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "offchain_localStorageSet",
@@ -1159,11 +964,8 @@
                 "enabled": false,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 1
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "payment_queryFeeDetails",
@@ -1177,11 +979,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "payment_queryInfo",
@@ -1195,11 +994,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "rpc_methods",
@@ -1213,11 +1009,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "state_call",
@@ -1231,11 +1024,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "state_callAt",
@@ -1249,11 +1039,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "state_getChildReadProof",
@@ -1267,11 +1054,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "state_getKeys",
@@ -1285,11 +1069,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "state_getKeysPaged",
@@ -1303,11 +1084,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "state_getKeysPagedAt",
@@ -1321,11 +1099,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "state_getMetadata",
@@ -1339,11 +1114,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "state_getPairs",
@@ -1357,11 +1129,8 @@
                 "enabled": false,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "state_getReadProof",
@@ -1375,11 +1144,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "state_getRuntimeVersion",
@@ -1393,11 +1159,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "state_getStorage",
@@ -1411,11 +1174,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "state_getStorageAt",
@@ -1429,11 +1189,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "state_getStorageHash",
@@ -1447,11 +1204,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "state_getStorageHashAt",
@@ -1465,11 +1219,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "state_getStorageSize",
@@ -1483,11 +1234,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "state_getStorageSizeAt",
@@ -1501,11 +1249,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "state_queryStorage",
@@ -1519,11 +1264,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "state_queryStorageAt",
@@ -1537,11 +1279,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "state_subscribeRuntimeVersion",
@@ -1555,11 +1294,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": true,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "state_subscribeStorage",
@@ -1573,11 +1309,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": true,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "state_traceBlock",
@@ -1591,11 +1324,8 @@
                 "enabled": false,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "state_unsubscribeRuntimeVersion",
@@ -1609,11 +1339,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": true,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "state_unsubscribeStorage",
@@ -1627,11 +1354,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": true,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "subscribe_newHead",
@@ -1645,11 +1369,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": true,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "system_accountNextIndex",
@@ -1663,11 +1384,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "system_addLogFilter",
@@ -1681,11 +1399,8 @@
                 "enabled": false,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 1
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "system_addReservedPeer",
@@ -1699,11 +1414,8 @@
                 "enabled": false,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 1
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "system_chain",
@@ -1717,11 +1429,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "system_chainType",
@@ -1735,11 +1444,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "system_dryRun",
@@ -1753,11 +1459,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "system_dryRunAt",
@@ -1771,11 +1474,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "system_health",
@@ -1789,11 +1489,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "system_localListenAddresses",
@@ -1807,11 +1504,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "system_localPeerId",
@@ -1825,11 +1519,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "system_name",
@@ -1843,11 +1534,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "system_nodeRoles",
@@ -1861,11 +1549,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "system_peers",
@@ -1879,11 +1564,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "system_properties",
@@ -1897,11 +1579,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "system_removeReservedPeer",
@@ -1915,11 +1594,8 @@
                 "enabled": false,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 1
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "system_reservedPeers",
@@ -1933,11 +1609,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "system_resetLogFilter",
@@ -1951,11 +1624,8 @@
                 "enabled": false,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 1
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "system_syncState",
@@ -1969,11 +1639,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "system_unstable_networkState",
@@ -1987,11 +1654,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "system_version",
@@ -2005,11 +1669,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "transactionWatch_v1_submitAndWatch",
@@ -2023,11 +1684,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": true,
                   "stateful": 1
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "transactionWatch_v1_unwatch",
@@ -2041,11 +1699,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": true,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "transaction_v1_broadcast",
@@ -2059,12 +1714,9 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 1,
                   "hanging_api": true
                 },
-                "extra_compute_units": 0,
                 "timeout_ms": 20000
               },
               {
@@ -2079,11 +1731,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "unsubscribe_newHead",
@@ -2097,11 +1746,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": true,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "babe_epochAuthorship",
@@ -2115,11 +1761,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "beefy_getFinalizedHead",
@@ -2133,11 +1776,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "grandpa_proveFinality",
@@ -2151,11 +1791,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "grandpa_roundState",
@@ -2169,11 +1806,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "mmr_generateProof",
@@ -2187,11 +1821,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "mmr_generateAncestryProof",
@@ -2205,11 +1836,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "mmr_root",
@@ -2223,11 +1851,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "mmr_verifyProof",
@@ -2241,11 +1866,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "mmr_verifyProofStateless",
@@ -2259,11 +1881,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "sync_state_genSyncSpec",
@@ -2277,11 +1896,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "beefy_subscribeJustifications",
@@ -2295,11 +1911,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": true,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "grandpa_subscribeJustifications",
@@ -2313,11 +1926,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": true,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "beefy_unsubscribeJustifications",
@@ -2331,11 +1941,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": true,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "grandpa_unsubscribeJustifications",
@@ -2349,11 +1956,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": true,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "identity_getDidRecords",
@@ -2367,11 +1971,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "identity_getDidStatus",
@@ -2385,11 +1986,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "identity_getFilteredAuthorizations",
@@ -2403,11 +2001,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "identity_getKeyIdentityData",
@@ -2421,11 +2016,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "pips_getVotes",
@@ -2439,11 +2031,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "pips_proposedBy",
@@ -2457,11 +2046,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "pips_votedOn",
@@ -2475,11 +2061,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "settlement_getAffirmationCount",
@@ -2493,11 +2076,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "settlement_getExecuteInstructionInfo",
@@ -2511,11 +2091,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "settlement_getExecuteInstructionReport",
@@ -2529,11 +2106,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "settlement_getTransferReport",
@@ -2547,11 +2121,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "group_getCDDValidMembers",
@@ -2565,11 +2136,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "group_getGCValidMembers",
@@ -2583,11 +2151,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "protocolFee_computeFee",
@@ -2601,11 +2166,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               }
             ],
             "headers": [],
@@ -2832,8 +2394,6 @@
         "index": "POLYMESHT",
         "name": "Polymesh Testnet",
         "enabled": true,
-        "reliability_threshold": 268435455,
-        "data_reliability_enabled": true,
         "block_distance_for_finalized_data": 3,
         "blocks_in_finalization_proof": 1,
         "average_block_time": 6000,
@@ -2841,11 +2401,6 @@
         "imports": [
           "POLYMESH"
         ],
-        "shares": 1,
-        "min_stake_provider": {
-          "denom": "ulava",
-          "amount": "5000000000"
-        },
         "api_collections": [
           {
             "enabled": true,
@@ -2891,6 +2446,5 @@
         ]
       }
     ]
-  },
-  "deposit": "10000000ulava"
+  }
 }

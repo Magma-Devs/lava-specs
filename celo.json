@@ -1,7 +1,5 @@
 {
     "proposal": {
-        "title": "Add Specs: Celo",
-        "description": "Adding new specification support for relaying Celo data on Lava",
         "specs": [
             {
                 "index": "CELO",
@@ -10,17 +8,10 @@
                 "imports": [
                     "ETH1"
                 ],
-                "reliability_threshold": 268435455,
-                "data_reliability_enabled": true,
                 "block_distance_for_finalized_data": 1,
                 "blocks_in_finalization_proof": 3,
                 "average_block_time": 5000,
                 "allowed_block_lag_for_qos_sync": 2,
-                "shares": 1,
-                "min_stake_provider": {
-                    "denom": "ulava",
-                    "amount": "5000000000"
-                },
                 "api_collections": [
                     {
                         "enabled": true,
@@ -79,17 +70,10 @@
                 "imports": [
                     "CELO"
                 ],
-                "reliability_threshold": 268435455,
-                "data_reliability_enabled": true,
                 "block_distance_for_finalized_data": 1,
                 "blocks_in_finalization_proof": 3,
                 "average_block_time": 1000,
                 "allowed_block_lag_for_qos_sync": 10,
-                "shares": 1,
-                "min_stake_provider": {
-                    "denom": "ulava",
-                    "amount": "5000000000"
-                },
                 "api_collections": [
                     {
                         "enabled": true,
@@ -129,6 +113,5 @@
                 ]
             }
         ]
-    },
-    "deposit": "10000000ulava"
+    }
 }

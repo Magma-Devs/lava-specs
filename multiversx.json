@@ -1,24 +1,15 @@
 {
   "proposal": {
-    "title": "Add Specs: MULTIVERSX",
-    "description": "Adding new specification support for relaying MultiversX Gateway REST data on Lava.",
     "specs": [
       {
         "index": "MULTIVERSX",
         "name": "MultiversX Mainnet",
         "enabled": true,
-        "reliability_threshold": 268435455,
-        "data_reliability_enabled": true,
         "block_distance_for_finalized_data": 0,
         "blocks_in_finalization_proof": 1,
         "average_block_time": 6000,
         "allowed_block_lag_for_qos_sync": 2,
         "imports": [],
-        "shares": 1,
-        "min_stake_provider": {
-          "denom": "ulava",
-          "amount": "5000000000"
-        },
         "api_collections": [
           {
             "enabled": true,
@@ -41,11 +32,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/about/nodes-versions",
@@ -59,11 +47,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/address/{address}",
@@ -77,11 +62,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/address/{address}/balance",
@@ -95,11 +77,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/address/{address}/username",
@@ -113,11 +92,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/address/{address}/nonce",
@@ -131,11 +107,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/address/{address}/shard",
@@ -149,11 +122,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/address/{address}/code-hash",
@@ -167,11 +137,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/address/{address}/keys",
@@ -185,11 +152,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/address/{address}/key/{key}",
@@ -203,11 +167,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/address/{address}/esdt",
@@ -221,11 +182,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/address/{address}/esdt/{tokenIdentifier}",
@@ -239,11 +197,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/address/{address}/esdts-with-role/{role}",
@@ -257,11 +212,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/address/{address}/esdts/roles",
@@ -275,11 +227,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/address/{address}/registered-nfts",
@@ -293,11 +242,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/address/{address}/nft/{tokenIdentifier}/nonce/{nonce}",
@@ -311,11 +257,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/address/{address}/guardian-data",
@@ -329,11 +272,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/address/{address}/is-data-trie-migrated",
@@ -347,11 +287,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/block/{shard}/by-nonce/{nonce}",
@@ -365,11 +302,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/block/{shard}/by-hash/{hash}",
@@ -383,11 +317,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/block/{shard}/altered-accounts/by-nonce/{nonce}",
@@ -401,11 +332,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/block/{shard}/altered-accounts/by-hash/{hash}",
@@ -419,11 +347,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/blocks/by-round/{round}",
@@ -437,11 +362,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/hyperblock/by-hash/{hash}",
@@ -455,11 +377,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/hyperblock/by-nonce/{nonce}",
@@ -473,11 +392,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/internal/{shard}/raw/block/by-nonce/{nonce}",
@@ -491,11 +407,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/internal/{shard}/raw/block/by-hash/{hash}",
@@ -509,11 +422,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/internal/{shard}/json/block/by-nonce/{nonce}",
@@ -527,11 +437,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/internal/{shard}/json/block/by-hash/{hash}",
@@ -545,11 +452,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/internal/{shard}/json/miniblock/by-hash/{hash}/epoch/{epoch}",
@@ -563,11 +467,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/internal/{shard}/raw/miniblock/by-hash/{hash}/epoch/{epoch}",
@@ -581,11 +482,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/internal/raw/startofepoch/metablock/by-epoch/{epoch}",
@@ -599,11 +497,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/internal/json/startofepoch/metablock/by-epoch/{epoch}",
@@ -617,11 +512,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/internal/json/startofepoch/validators/by-epoch/{epoch}",
@@ -635,11 +527,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/network/status/{shard}",
@@ -653,11 +542,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/network/config",
@@ -671,11 +557,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/network/economics",
@@ -689,11 +572,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/network/esdts",
@@ -707,11 +587,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/network/esdt/fungible-tokens",
@@ -725,11 +602,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/network/esdt/semi-fungible-tokens",
@@ -743,11 +617,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/network/esdt/non-fungible-tokens",
@@ -761,11 +632,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/network/esdt/supply/{token}",
@@ -779,11 +647,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/network/enable-epochs",
@@ -797,11 +662,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/network/direct-staked-info",
@@ -815,11 +677,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/network/delegated-info",
@@ -833,11 +692,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/network/ratings",
@@ -851,11 +707,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/network/genesis-nodes",
@@ -869,11 +722,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/network/gas-configs",
@@ -887,11 +737,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/network/trie-statistics/{shard}",
@@ -905,11 +752,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/network/epoch-start/{shard}/by-epoch/{epoch}",
@@ -923,11 +767,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/node/heartbeatstatus",
@@ -941,11 +782,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/node/old-storage-token/{token}/nonce/{nonce}",
@@ -959,11 +797,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/node/waiting-epochs-left/{key}",
@@ -977,11 +812,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/proof/root-hash/{roothash}/address/{address}",
@@ -995,11 +827,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/proof/root-hash/{roothash}/address/{address}/key/{key}",
@@ -1013,11 +842,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/proof/address/{address}",
@@ -1031,11 +857,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/transaction/{txHash}/status",
@@ -1049,11 +872,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/transaction/{txHash}/process-status",
@@ -1067,11 +887,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/transaction/{txHash}",
@@ -1085,11 +902,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/transaction/pool",
@@ -1103,11 +917,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/validator/statistics",
@@ -1121,11 +932,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/validator/auction",
@@ -1139,11 +947,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               }
             ],
             "headers": [],
@@ -1248,11 +1053,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/address/bulk",
@@ -1266,11 +1068,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/proof/verify",
@@ -1284,11 +1083,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/transaction/send",
@@ -1302,12 +1098,9 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 1,
                   "hanging_api": false
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/transaction/simulate",
@@ -1321,11 +1114,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/transaction/send-multiple",
@@ -1339,12 +1129,9 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 1,
                   "hanging_api": false
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/transaction/send-user-funds",
@@ -1358,12 +1145,9 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 1,
                   "hanging_api": false
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/transaction/cost",
@@ -1377,11 +1161,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/vm-values/hex",
@@ -1395,11 +1176,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/vm-values/string",
@@ -1413,11 +1191,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/vm-values/int",
@@ -1431,11 +1206,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/vm-values/query",
@@ -1449,11 +1221,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               }
             ],
             "headers": [],
@@ -1466,8 +1235,6 @@
         "index": "MULTIVERSXT",
         "name": "MultiversX Testnet",
         "enabled": true,
-        "reliability_threshold": 268435455,
-        "data_reliability_enabled": true,
         "block_distance_for_finalized_data": 0,
         "blocks_in_finalization_proof": 1,
         "average_block_time": 600,
@@ -1475,11 +1242,6 @@
         "imports": [
           "MULTIVERSX"
         ],
-        "shares": 1,
-        "min_stake_provider": {
-          "denom": "ulava",
-          "amount": "5000000000"
-        },
         "api_collections": [
           {
             "enabled": true,
@@ -1508,6 +1270,5 @@
         ]
       }
     ]
-  },
-  "deposit": "10000000ulava"
+  }
 }

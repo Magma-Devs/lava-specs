@@ -1,7 +1,5 @@
 {
     "proposal": {
-        "title": "Add Specs: Hedera",
-        "description": "Adding new specification support for relaying Hedera data on Lava",
         "specs": [
             {
                 "index": "HEDERA",
@@ -10,16 +8,10 @@
                 "imports": [
                     "ETH1"
                 ],
-                "reliability_threshold": 268435455,
                 "block_distance_for_finalized_data": 7,
                 "blocks_in_finalization_proof": 1,
                 "average_block_time": 2000,
                 "allowed_block_lag_for_qos_sync": 2,
-                "shares": 1,
-                "min_stake_provider": {
-                    "denom": "ulava",
-                    "amount": "5000000000"
-                },
                 "api_collections": [
                     {
                         "enabled": true,
@@ -53,16 +45,10 @@
                 "imports": [
                     "ETH1"
                 ],
-                "reliability_threshold": 268435455,
                 "block_distance_for_finalized_data": 7,
                 "blocks_in_finalization_proof": 1,
                 "average_block_time": 2000,
                 "allowed_block_lag_for_qos_sync": 2,
-                "shares": 1,
-                "min_stake_provider": {
-                    "denom": "ulava",
-                    "amount": "5000000000"
-                },
                 "api_collections": [
                     {
                         "enabled": true,
@@ -90,6 +76,5 @@
                 ]
             }
         ]
-    },
-    "deposit": "7000000000ulava"
+    }
 }

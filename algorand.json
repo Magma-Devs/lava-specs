@@ -1,23 +1,14 @@
 {
   "proposal": {
-    "title": "Add Specs: ALGORAND",
-    "description": "Adding new specification support for relaying Algorand (algod REST) data on Lava",
     "specs": [
       {
         "index": "ALGORAND",
         "name": "algorand mainnet",
         "enabled": true,
-        "reliability_threshold": 268435455,
-        "data_reliability_enabled": true,
         "block_distance_for_finalized_data": 1,
         "blocks_in_finalization_proof": 1,
         "average_block_time": 2800,
         "allowed_block_lag_for_qos_sync": 4,
-        "shares": 1,
-        "min_stake_provider": {
-          "denom": "ulava",
-          "amount": "5000000000"
-        },
         "api_collections": [
           {
             "enabled": true,
@@ -40,11 +31,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/versions",
@@ -58,11 +46,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/v2/accounts/{address}",
@@ -76,11 +61,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/v2/accounts/{address}/applications",
@@ -94,11 +76,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/v2/accounts/{address}/applications/{application-id}",
@@ -112,11 +91,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/v2/accounts/{address}/assets",
@@ -130,11 +106,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/v2/accounts/{address}/assets/{asset-id}",
@@ -148,11 +121,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/v2/accounts/{address}/transactions/pending",
@@ -166,11 +136,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/v2/applications/{application-id}",
@@ -184,11 +151,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/v2/applications/{application-id}/box",
@@ -202,11 +166,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/v2/applications/{application-id}/boxes",
@@ -220,11 +181,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/v2/assets/{asset-id}",
@@ -238,11 +196,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/v2/blocks/{round}",
@@ -258,11 +213,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/v2/blocks/{round}/hash",
@@ -278,11 +230,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/v2/blocks/{round}/lightheader/proof",
@@ -298,11 +247,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/v2/blocks/{round}/logs",
@@ -318,11 +264,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/v2/blocks/{round}/transactions/{txid}/proof",
@@ -338,11 +281,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/v2/blocks/{round}/txids",
@@ -358,11 +298,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/v2/deltas/txn/group/{id}",
@@ -376,11 +313,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/v2/deltas/{round}",
@@ -396,11 +330,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/v2/deltas/{round}/txn/group",
@@ -416,11 +347,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/v2/ledger/supply",
@@ -434,11 +362,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/v2/ledger/sync",
@@ -452,11 +377,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/v2/stateproofs/{round}",
@@ -472,11 +394,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/v2/status",
@@ -490,11 +409,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/v2/status/wait-for-block-after/{round}",
@@ -509,12 +425,9 @@
                 "timeout_ms": 30000,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": true
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/v2/transactions/params",
@@ -528,11 +441,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/v2/transactions/pending",
@@ -546,11 +456,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/v2/transactions/pending/{txid}",
@@ -564,11 +471,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               }
             ],
             "headers": [
@@ -682,11 +586,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/v2/teal/compile",
@@ -700,11 +601,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/v2/teal/disassemble",
@@ -718,11 +616,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/v2/teal/dryrun",
@@ -736,11 +631,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/v2/transactions",
@@ -754,11 +646,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 1
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/v2/transactions/async",
@@ -772,11 +661,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 1
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/v2/transactions/simulate",
@@ -790,11 +676,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               }
             ],
             "headers": [
@@ -819,17 +702,10 @@
         "imports": [
           "ALGORAND"
         ],
-        "reliability_threshold": 268435455,
-        "data_reliability_enabled": true,
         "block_distance_for_finalized_data": 1,
         "blocks_in_finalization_proof": 1,
         "average_block_time": 2800,
         "allowed_block_lag_for_qos_sync": 4,
-        "shares": 1,
-        "min_stake_provider": {
-          "denom": "ulava",
-          "amount": "5000000000"
-        },
         "api_collections": [
           {
             "enabled": true,
@@ -858,6 +734,5 @@
         ]
       }
     ]
-  },
-  "deposit": "10000000ulava"
+  }
 }

@@ -1,7 +1,5 @@
 {
   "proposal": {
-    "title": "Add Specs: Dash",
-    "description": "Adding new specification support for relaying Dash data on Lava. Dash-native ChainLock/InstantSend, masternode/quorum/ProTx (Evo), governance/CoinJoin-info and special-transaction reads are added on top of the imported BTC Bitcoin-Core RPC surface; the address/spent/timestamp-index reads require a node started with -addressindex/-spentindex/-timestampindex.",
     "specs": [
       {
         "index": "DASH",
@@ -10,17 +8,10 @@
         "imports": [
           "BTC"
         ],
-        "reliability_threshold": 268435455,
-        "data_reliability_enabled": true,
         "block_distance_for_finalized_data": 1,
         "blocks_in_finalization_proof": 1,
         "average_block_time": 150000,
         "allowed_block_lag_for_qos_sync": 1,
-        "shares": 1,
-        "min_stake_provider": {
-          "denom": "ulava",
-          "amount": "5000000000"
-        },
         "api_collections": [
           {
             "enabled": true,
@@ -43,11 +34,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "getspecialtxes",
@@ -61,11 +49,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
                 },
-                "extra_compute_units": 0,
                 "parsers": [
                   {
                     "parse_path": ".params.[0]",
@@ -85,11 +70,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
                 },
-                "extra_compute_units": 0,
                 "parsers": [
                   {
                     "parse_path": ".params.[1]",
@@ -109,11 +91,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "getcoinjoininfo",
@@ -127,11 +106,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "getsuperblockbudget",
@@ -145,11 +121,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "gobject",
@@ -163,12 +136,9 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 1,
                   "hanging_api": true
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "masternode",
@@ -182,11 +152,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "masternodelist",
@@ -200,11 +167,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "mnsync",
@@ -218,11 +182,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "protx",
@@ -236,12 +197,9 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 1,
                   "hanging_api": true
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "quorum",
@@ -255,11 +213,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "bls",
@@ -273,11 +228,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "verifychainlock",
@@ -291,11 +243,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
                 },
-                "extra_compute_units": 0,
                 "parsers": [
                   {
                     "parse_path": ".params.[0]",
@@ -315,11 +264,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "getzmqnotifications",
@@ -333,11 +279,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "getassetunlockstatuses",
@@ -351,11 +294,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "getblockheaders",
@@ -369,11 +309,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
                 },
-                "extra_compute_units": 0,
                 "parsers": [
                   {
                     "parse_path": ".params.[0]",
@@ -393,11 +330,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "getrawtransactionmulti",
@@ -411,11 +345,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "gettxchainlocks",
@@ -429,11 +360,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "spork",
@@ -447,11 +375,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               }
             ],
             "headers": [],
@@ -498,11 +423,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "getaddressdeltas",
@@ -517,11 +439,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "getaddressmempool",
@@ -535,11 +454,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "getaddresstxids",
@@ -554,11 +470,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "getaddressutxos",
@@ -572,11 +485,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "getspentinfo",
@@ -590,11 +500,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "getblockhashes",
@@ -608,11 +515,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               }
             ],
             "headers": [],
@@ -694,17 +598,10 @@
         "imports": [
           "DASH"
         ],
-        "reliability_threshold": 268435455,
-        "data_reliability_enabled": true,
         "block_distance_for_finalized_data": 1,
         "blocks_in_finalization_proof": 1,
         "average_block_time": 150000,
         "allowed_block_lag_for_qos_sync": 1,
-        "shares": 1,
-        "min_stake_provider": {
-          "denom": "ulava",
-          "amount": "5000000000"
-        },
         "api_collections": [
           {
             "enabled": true,
@@ -732,6 +629,5 @@
         ]
       }
     ]
-  },
-  "deposit": "10000000ulava"
+  }
 }

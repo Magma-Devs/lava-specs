@@ -1,7 +1,5 @@
 {
     "proposal": {
-        "title": "Add Specs: Fuse",
-        "description": "Adding new specification support for relaying Fuse data on Lava",
         "specs": [
             {
                 "index": "FUSE",
@@ -10,17 +8,10 @@
                 "imports": [
                     "ETH1"
                 ],
-                "reliability_threshold": 268435455,
-                "data_reliability_enabled": true,
                 "block_distance_for_finalized_data": 34,
                 "blocks_in_finalization_proof": 1,
                 "average_block_time": 5000,
                 "allowed_block_lag_for_qos_sync": 2,
-                "shares": 1,
-                "min_stake_provider": {
-                    "denom": "ulava",
-                    "amount": "5000000000"
-                },
                 "api_collections": [
                     {
                         "enabled": true,
@@ -46,11 +37,7 @@
                         ],
                         "extensions": []
                     }
-                ],
-                "contributor": [
-                  "lava@16gjdwqfpvk3dyasy83wsr26pk27kjq9wvfz0qy"
-                ],
-                "contributor_percentage": "0.015"
+                ]
             },
             {
                 "index": "SPARK",
@@ -59,17 +46,10 @@
                 "imports": [
                     "FUSE"
                 ],
-                "reliability_threshold": 268435455,
-                "data_reliability_enabled": true,
                 "block_distance_for_finalized_data": 34,
                 "blocks_in_finalization_proof": 1,
                 "average_block_time": 5000,
                 "allowed_block_lag_for_qos_sync": 2,
-                "shares": 1,
-                "min_stake_provider": {
-                    "denom": "ulava",
-                    "amount": "5000000000"
-                },
                 "api_collections": [
                     {
                         "enabled": true,
@@ -94,13 +74,8 @@
                             }
                         ]
                     }
-                ],
-                "contributor": [
-                  "lava@16gjdwqfpvk3dyasy83wsr26pk27kjq9wvfz0qy"
-                ],
-                "contributor_percentage": "0.015"
+                ]
             }
         ]
-    },
-    "deposit": "10000000ulava"
+    }
   }

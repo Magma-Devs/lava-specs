@@ -1,7 +1,5 @@
 {
   "proposal": {
-    "title": "Add Specs: FLOW",
-    "description": "Adding Flow EVM mainnet and testnet JSON-RPC specifications (EVM-compatible, imports ETH1)",
     "specs": [
       {
         "index": "FLOW",
@@ -10,17 +8,10 @@
         "imports": [
           "ETH1"
         ],
-        "reliability_threshold": 268435455,
-        "data_reliability_enabled": true,
         "block_distance_for_finalized_data": 1,
         "blocks_in_finalization_proof": 1,
         "average_block_time": 800,
         "allowed_block_lag_for_qos_sync": 13,
-        "shares": 1,
-        "min_stake_provider": {
-          "denom": "ulava",
-          "amount": "5000000000"
-        },
         "api_collections": [
           {
             "enabled": true,
@@ -37,8 +28,6 @@
                 "enabled": false,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": true,
                   "stateful": 0
                 },
                 "block_parsing": {
@@ -54,8 +43,6 @@
                 "enabled": false,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": true,
                   "stateful": 0
                 },
                 "block_parsing": {
@@ -169,8 +156,6 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
                 },
                 "block_parsing": {
@@ -186,8 +171,6 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
                 },
                 "block_parsing": {
@@ -203,8 +186,6 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
                 },
                 "block_parsing": {
@@ -220,8 +201,6 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
                 },
                 "block_parsing": {
@@ -237,8 +216,6 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
                 },
                 "block_parsing": {
@@ -304,8 +281,6 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
                 },
                 "block_parsing": {
@@ -321,8 +296,6 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
                 },
                 "block_parsing": {
@@ -338,8 +311,6 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
                 },
                 "block_parsing": {
@@ -355,8 +326,6 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
                 },
                 "block_parsing": {
@@ -466,17 +435,10 @@
         "imports": [
           "FLOW"
         ],
-        "reliability_threshold": 268435455,
-        "data_reliability_enabled": true,
         "block_distance_for_finalized_data": 1,
         "blocks_in_finalization_proof": 1,
         "average_block_time": 500,
         "allowed_block_lag_for_qos_sync": 20,
-        "shares": 1,
-        "min_stake_provider": {
-          "denom": "ulava",
-          "amount": "5000000000"
-        },
         "api_collections": [
           {
             "enabled": true,
@@ -542,6 +504,5 @@
         ]
       }
     ]
-  },
-  "deposit": "10000000ulava"
+  }
 }

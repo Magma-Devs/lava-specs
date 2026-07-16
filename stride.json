@@ -1,7 +1,5 @@
 {
     "proposal": {
-      "title": "Add Specs: Stride",
-      "description": "Adding new specification support for relaying Stride data on Lava",
       "specs": [
         {
           "index": "STRIDE",
@@ -10,17 +8,10 @@
           "imports": [
             "COSMOSSDK"
           ],
-          "reliability_threshold": 268435455,
-          "data_reliability_enabled": true,
           "block_distance_for_finalized_data": 0,
           "blocks_in_finalization_proof": 1,
           "average_block_time": 6000,
           "allowed_block_lag_for_qos_sync": 2,
-          "shares": 1,
-          "min_stake_provider": {
-            "denom": "ulava",
-            "amount": "5000000000"
-          },
           "api_collections": [
             {
               "enabled": true,
@@ -43,11 +34,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "/mint/v1beta1/params",
@@ -61,11 +49,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "/Stridelabs/stride/epochs",
@@ -79,11 +64,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "/Stridelabs/stride/epochs/current_epoch",
@@ -97,11 +79,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "/Stridelabs/stride/epochs/epoch_info",
@@ -115,11 +94,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "/Stride-Labs/stride/icacallbacks/callback_data",
@@ -133,11 +109,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "/Stride-Labs/stride/icacallbacks/callback_data/{callbackKey}",
@@ -151,11 +124,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "/Stride-Labs/stride/icacallbacks/params",
@@ -169,11 +139,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "/Stride-Labs/stride/records/deposit_record",
@@ -187,11 +154,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "/Stride-Labs/stride/records/deposit_record/{id}",
@@ -205,11 +169,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "/Stride-Labs/stride/records/epoch_unbonding_record",
@@ -223,11 +184,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "/Stride-Labs/stride/records/epoch_unbonding_record/{epochNumber}",
@@ -241,11 +199,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "/Stride-Labs/stride/records/user_redemption_record",
@@ -259,11 +214,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "/Stride-Labs/stride/records/user_redemption_record/{id}",
@@ -277,11 +229,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "/Stride-Labs/stride/records/user_redemption_record_for_user/{chainId}/{day}/{address}/{limit}",
@@ -295,11 +244,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "/StrideLabs/stride/records/params",
@@ -313,11 +259,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "/Stride-Labs/stride/stakeibc/epoch_tracker",
@@ -331,11 +274,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "/Stride-Labs/stride/stakeibc/epoch_tracker/{epochIdentifier}",
@@ -349,11 +289,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "/Stride-Labs/stride/stakeibc/host_zone",
@@ -367,11 +304,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "/Stride-Labs/stride/stakeibc/host_zone/{chain_id}",
@@ -385,11 +319,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "/Stride-Labs/stride/stakeibc/ica_account",
@@ -403,11 +334,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "/Stride-Labs/stride/stakeibc/module_address/{name}",
@@ -421,11 +349,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "/Stride-Labs/stride/stakeibc/validators/{chain_id}",
@@ -439,11 +364,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "/Stridelabs/stride/stakeibc/params",
@@ -457,11 +379,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 }
               ],
               "headers": [],
@@ -520,11 +439,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "interchain_security.ccv.consumer.v1.Query/QueryParams",
@@ -538,11 +454,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "interchain_security.ccv.consumer.v1.Query/QueryProviderInfo",
@@ -556,11 +469,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "interchain_security.ccv.consumer.v1.Query/QueryThrottleState",
@@ -574,11 +484,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "packetforward.v1.Query/Params",
@@ -592,11 +499,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "ratelimit.v1.Query/AllBlacklistedDenoms",
@@ -610,11 +514,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "ratelimit.v1.Query/AllRateLimits",
@@ -628,11 +529,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "ratelimit.v1.Query/AllWhitelistedAdresses",
@@ -646,11 +544,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "ratelimit.v1.Query/RateLimit",
@@ -664,11 +559,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "ratelimit.v1.Query/RateLimitsByChainId",
@@ -682,11 +574,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "ratelimit.v1.Query/RateLimitsByChannelId",
@@ -700,11 +589,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.autopilot.Query/Params",
@@ -718,11 +604,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.claim.Query/ClaimMetadata",
@@ -736,11 +619,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.claim.Query/ClaimRecord",
@@ -754,11 +634,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.claim.Query/ClaimStatus",
@@ -772,11 +649,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.claim.Query/ClaimableForAction",
@@ -790,11 +664,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.claim.Query/DistributorAccountBalance",
@@ -808,11 +679,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.claim.Query/Params",
@@ -826,11 +694,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.claim.Query/TotalClaimable",
@@ -844,11 +709,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.claim.Query/UserVestings",
@@ -862,11 +724,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.epochs.Query/EpochInfo",
@@ -880,11 +739,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.epochs.Query/EpochInfos",
@@ -898,11 +754,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.epochs.Query/CurrentEpoch",
@@ -916,11 +769,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.icacallbacks.Query/CallbackData",
@@ -934,11 +784,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.icacallbacks.Query/CallbackDataAll",
@@ -952,11 +799,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.icacallbacks.Query/Params",
@@ -970,11 +814,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.icaoracle.Query/ActiveOracles",
@@ -988,11 +829,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.icaoracle.Query/AllOracles",
@@ -1006,11 +844,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.icaoracle.Query/Metrics",
@@ -1024,11 +859,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.icaoracle.Query/Oracle",
@@ -1042,11 +874,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.mint.v1beta1.Query/EpochProvisions",
@@ -1060,11 +889,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.mint.v1beta1.Query/Params",
@@ -1078,11 +904,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.records.Query/DepositRecord",
@@ -1096,11 +919,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.records.Query/DepositRecordAll",
@@ -1114,11 +934,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.records.Query/DepositRecordByHost",
@@ -1132,11 +949,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.records.Query/EpochUnbondingRecord",
@@ -1150,11 +964,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.records.Query/EpochUnbondingRecordAll",
@@ -1168,11 +979,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.records.Query/LSMDeposits",
@@ -1186,11 +994,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.records.Query/Params",
@@ -1204,11 +1009,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.records.Query/UserRedemptionRecord",
@@ -1222,11 +1024,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.records.Query/UserRedemptionRecordAll",
@@ -1240,11 +1039,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.records.Query/UserRedemptionRecordForUser",
@@ -1258,11 +1054,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.stakedym.Query/DelegationRecords",
@@ -1276,11 +1069,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.stakedym.Query/HostZone",
@@ -1294,11 +1084,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.stakedym.Query/RedemptionRecord",
@@ -1312,11 +1099,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.stakedym.Query/RedemptionRecords",
@@ -1330,11 +1114,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.stakedym.Query/SlashRecords",
@@ -1348,11 +1129,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.stakedym.Query/UnbondingRecords",
@@ -1366,11 +1144,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.stakeibc.Query/AddressUnbondings",
@@ -1384,11 +1159,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.stakeibc.Query/AllTradeRoutes",
@@ -1402,11 +1174,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.stakeibc.Query/EpochTracker",
@@ -1420,11 +1189,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.stakeibc.Query/EpochTrackerAll",
@@ -1438,11 +1204,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.stakeibc.Query/HostZone",
@@ -1456,11 +1219,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.stakeibc.Query/HostZoneAll",
@@ -1474,11 +1234,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.stakeibc.Query/InterchainAccountFromAddress",
@@ -1492,11 +1249,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.stakeibc.Query/NextPacketSequence",
@@ -1510,11 +1264,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.stakeibc.Query/Params",
@@ -1528,11 +1279,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.stakeibc.Query/Validators",
@@ -1546,11 +1294,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.staketia.Query/DelegationRecords",
@@ -1564,11 +1309,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.staketia.Query/HostZone",
@@ -1582,11 +1324,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.staketia.Query/RedemptionRecord",
@@ -1600,11 +1339,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.staketia.Query/RedemptionRecords",
@@ -1618,11 +1354,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.staketia.Query/SlashRecords",
@@ -1636,11 +1369,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "stride.staketia.Query/UnbondingRecords",
@@ -1654,11 +1384,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 },
                 {
                   "name": "vesting.v1.Query/Balances",
@@ -1672,11 +1399,8 @@
                   "enabled": true,
                   "category": {
                     "deterministic": true,
-                    "local": false,
-                    "subscription": false,
                     "stateful": 0
-                  },
-                  "extra_compute_units": 0
+                  }
                 }
               ],
               "headers": [],
@@ -1767,17 +1491,10 @@
           "imports": [
             "STRIDE"
           ],
-          "reliability_threshold": 268435455,
-          "data_reliability_enabled": true,
           "block_distance_for_finalized_data": 0,
           "blocks_in_finalization_proof": 1,
           "average_block_time": 6500,
           "allowed_block_lag_for_qos_sync": 2,
-          "shares": 1,
-          "min_stake_provider": {
-            "denom": "ulava",
-            "amount": "5000000000"
-          },
           "api_collections": [
             {
               "enabled": true,
@@ -1851,6 +1568,5 @@
           ]
         }
       ]
-    },
-    "deposit": "10000000ulava"
+    }
   }
