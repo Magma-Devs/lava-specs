@@ -33,50 +33,15 @@
    - Examples: Polygon=5 (`ceil(10000/2000)=5`), Cosmos Hub=2 (`ceil(10000/6500)=2`), Ethereum=1 (`ceil(10000/13000)=ceil(0.77)=1`)
    - This is the verified convention (~64% of existing specs match it exactly, clustering at ~10s tolerance). A few slow-chain specs carry a hand-bumped value (e.g. ETH1's committed spec uses `2`); the formula value is the default — only deviate with a stated reason.
 
-5. **`reliability_threshold`**
-   - Default: `268435455` (results in 1/16 VRF ratio)
-   - Keep standard unless specific requirements
-
-6. **`data_reliability_enabled`**
-   - Set to `true` for production chains
-   - Only disable for testing
-
 **Configuration Block**:
 ```json
 {
   "average_block_time": 2000,
   "block_distance_for_finalized_data": 1,
   "blocks_in_finalization_proof": 3,
-  "allowed_block_lag_for_qos_sync": 5,
-  "reliability_threshold": 268435455,
-  "data_reliability_enabled": true
+  "allowed_block_lag_for_qos_sync": 5
 }
 ```
-
-## Step 2.2: Economic Parameters
-**Objective**: Set appropriate staking and reward requirements
-
-**Tasks**:
-- [ ] **`min_stake_provider`**: Set minimum provider stake
-  - Standard: `{"denom": "ulava", "amount": "5000000000"}` (5000 LAVA)
-  - High-value chains: Consider higher stakes
-  - Lower for testnets if appropriate
-
-- [ ] **`min_stake_client`**: Set minimum consumer stake (if required)
-  - Often omitted (not mandatory)
-  - Use for high-demand chains
-
-- [ ] **`shares`**: Set priority/weight
-  - Standard: `1`
-  - Higher values for premium chains (requires governance approval)
-
-- [ ] **`contributor`**: Add if you're contributing the spec
-  - Your Lava address
-  - Only for original spec creators
-
-- [ ] **`contributor_percentage`**: Set reward percentage
-  - Typical: `"0.035"` (3.5%)
-  - Requires governance approval
 
 ## Step 2.3: Chain Verification
 **Objective**: Configure chain identity verification

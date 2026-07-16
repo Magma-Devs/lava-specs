@@ -20,7 +20,6 @@ A **specification (spec)** in Lava is a structured definition that describes the
 - **Compute Units (CU)** for each API call (reflecting the computational cost)
 - **Block parsing rules** (how to extract block information from requests/responses)
 - **Data reliability parameters** (finalization rules, verification methods)
-- **Staking requirements** (minimum stake for providers and consumers)
 
 Each spec has a unique **index** (e.g., `ETH1` for Ethereum, `STRK` for StarkNet, `POLYGON` for Polygon) and can **inherit from other specs** using imports (e.g., Polygon imports ETH1 since it supports Ethereum's JSON-RPC APIs).
 
@@ -52,10 +51,10 @@ The spec methods and configurations serve multiple critical purposes:
 ### API Categorization
 
 - **`deterministic`**: Whether the API returns the same result when called twice at the same block (enables data reliability checks)
-- **`local`**: Marks node-local APIs that aren't relevant to other nodes
-- **`subscription`**: Identifies WebSocket subscription APIs
 - **`stateful`**: Marks transaction APIs that modify state
 - **`hanging_api`**: APIs that wait for new blocks to be created
+
+> WebSocket subscription APIs are identified by SUBSCRIBE/UNSUBSCRIBE parse directives (`function_tag` + `api_name`, including inherited), not a category flag. The `local` and `subscription` category flags were removed from the spec model.
 
 ### Network-Specific Configuration
 
@@ -90,8 +89,6 @@ Specs are **foundational** to Lava's architecture and serve as the backbone for:
 
 ### Economic Model
 - Compute Units determine pricing and resource allocation
-- Minimum stake requirements protect network quality
-- Contributor percentages reward spec creators
 
 ### Data Reliability
 - Deterministic APIs enable cross-provider verification
@@ -117,9 +114,13 @@ Specs are **foundational** to Lava's architecture and serve as the backbone for:
 
 ## Quality Evaluation Parameters
 
+### Spec Hygiene Checklist
+- [ ] **No removed fields**: Run `.claude/skills/create-spec/scripts/check_unused_fields.sh <spec>` — it must exit 0. Any `REMOVED_FIELD` hit is a cleanup finding (the 15 fields removed in smart-router#218 must not reappear).
+- [ ] **Canonical envelope**: The proposal is exactly `{ "proposal": { "specs": [ ... ] } }` — no `title`, `description`, or `deposit`.
+
 ### Completeness Checklist
 - [ ] **API Coverage**: Does it include all major APIs for the blockchain?
-- [ ] **API Categorization**: Are all APIs properly marked (deterministic, local, subscription, stateful)?
+- [ ] **API Categorization**: Are all APIs properly marked (deterministic, stateful, hanging_api)?
 - [ ] **Block Parsing**: Does every API have correct parsing configuration?
 - [ ] **Compute Units**: Are CU values realistic for the computational cost?
 
@@ -133,7 +134,6 @@ Specs are **foundational** to Lava's architecture and serve as the backbone for:
 - [ ] **Deterministic APIs**: Are read-only, repeatable APIs marked as deterministic?
 - [ ] **Parse Directives**: Are `GET_BLOCKNUM`, `GET_BLOCK_BY_NUM`, and hash verification properly configured?
 - [ ] **Finalization Rules**: Do finalization parameters match the blockchain's consensus mechanism?
-- [ ] **Reliability Threshold**: Is VRF threshold set appropriately (typically 268435455 for 1/16 ratio)?
 
 ### Consistency Checklist
 - [ ] **Inheritance**: If importing another spec, are only additional/override APIs defined?
@@ -150,13 +150,7 @@ Specs are **foundational** to Lava's architecture and serve as the backbone for:
 ### Usability Checklist
 - [ ] **Enabled Status**: Are deprecated/unsafe APIs properly disabled?
 - [ ] **Add-ons**: Are specialized API groups (debug, trace) properly separated?
-- [ ] **Subscription Support**: Are WebSocket APIs properly configured with SUBSCRIBE/UNSUBSCRIBE directives?
-- [ ] **Documentation**: Does the spec proposal include clear title and description?
-
-### Economic Viability Checklist
-- [ ] **Min Stake**: Are provider/consumer stake requirements appropriate for the network's importance?
-- [ ] **Contributor Percentage**: If specified, is the contributor reward reasonable?
-- [ ] **Shares**: Is the shares value set correctly for network priority?
+- [ ] **Subscription Support**: Are WebSocket APIs backed by SUBSCRIBE/UNSUBSCRIBE parse directives (including inherited from a parent spec)?
 
 ### Forward Compatibility Checklist
 - [ ] **Multiple Versions**: Does the spec support multiple RPC versions where applicable?
@@ -304,52 +298,17 @@ Testnet: MYCHAINT
    - Formula: `10000ms / average_block_time` AND >= 1
    - Examples: Ethereum=2 (10000/13000≈0.77→2), Polygon=5 (10000/2000=5)
 
-5. **`reliability_threshold`**
-   - Default: `268435455` (results in 1/16 VRF ratio)
-   - Keep standard unless specific requirements
-
-6. **`data_reliability_enabled`**
-   - Set to `true` for production chains
-   - Only disable for testing
-
 **Configuration Block**:
 ```json
 {
   "average_block_time": 2000,
   "block_distance_for_finalized_data": 1,
   "blocks_in_finalization_proof": 3,
-  "allowed_block_lag_for_qos_sync": 5,
-  "reliability_threshold": 268435455,
-  "data_reliability_enabled": true
+  "allowed_block_lag_for_qos_sync": 5
 }
 ```
 
-#### Step 2.2: Economic Parameters
-**Objective**: Set appropriate staking and reward requirements
-
-**Tasks**:
-- [ ] **`min_stake_provider`**: Set minimum provider stake
-  - Standard: `{"denom": "ulava", "amount": "5000000000"}` (5000 LAVA)
-  - High-value chains: Consider higher stakes
-  - Lower for testnets if appropriate
-
-- [ ] **`min_stake_client`**: Set minimum consumer stake (if required)
-  - Often omitted (not mandatory)
-  - Use for high-demand chains
-
-- [ ] **`shares`**: Set priority/weight
-  - Standard: `1`
-  - Higher values for premium chains (requires governance approval)
-
-- [ ] **`contributor`**: Add if you're contributing the spec
-  - Your Lava address
-  - Only for original spec creators
-
-- [ ] **`contributor_percentage`**: Set reward percentage
-  - Typical: `"0.035"` (3.5%)
-  - Requires governance approval
-
-#### Step 2.3: Chain Verification
+#### Step 2.2: Chain Verification
 **Objective**: Configure chain identity verification
 
 **Tasks**:
@@ -686,8 +645,7 @@ For those interested in the code:
 {
   "name": "method_name",
   "enabled": true,
-  "compute_units": 10,
-  "extra_compute_units": 0
+  "compute_units": 10
 }
 ```
 
@@ -840,8 +798,6 @@ Some REST specs extract block information from the response body rather than the
 {
   "category": {
     "deterministic": true,
-    "local": false,
-    "subscription": false,
     "stateful": 0,
     "hanging_api": false
   }
@@ -859,13 +815,7 @@ Some REST specs extract block information from the response body rather than the
 - Result varies between calls
 - Examples: getAccounts, mining, syncing, pending transactions
 
-**`local: true`** - Use when:
-- Data is node-specific
-- Examples: filters, node version, mining status
-
-**`subscription: true`** - Use when:
-- API is for WebSocket subscriptions
-- Examples: eth_subscribe, eth_unsubscribe
+> The `local` and `subscription` category flags were removed from the spec model. WebSocket subscription APIs are declared via SUBSCRIBE/UNSUBSCRIBE parse directives (see Step 3.4), including those inherited from a parent spec — not a category flag.
 
 **`stateful: 1`** - Use when:
 - API modifies blockchain state
@@ -933,7 +883,7 @@ Some REST specs extract block information from the response body rather than the
       "headers": [],
       "inheritance_apis": [],
       "parse_directives": [ /* See Step 3.4 */ ],
-      "verifications": [ /* See Step 2.3 */ ],
+      "verifications": [ /* See Step 2.2 */ ],
       "extensions": [ /* See Step 3.5 */ ]
     }
   ]
@@ -1289,6 +1239,8 @@ If your chain uses a different RPC path than the parent, disable inherited colle
 
 **Note**: Adjust method names and templates for non-EVM chains.
 
+**Subscription coverage is determined by these SUBSCRIBE/UNSUBSCRIBE parse directives** — matched on `function_tag` + `api_name`, **including directives inherited from a parent spec** (a child importing ETH1 inherits ETH1's SUBSCRIBE/UNSUBSCRIBE and needs none of its own). There is no `category.subscription` flag; do not add one or flag its absence.
+
 #### Step 3.5: Configure Extensions (Optional)
 **Objective**: Define special service tiers like archive nodes
 
@@ -1339,6 +1291,10 @@ If your chain uses a different RPC path than the parent, disable inherited colle
 - [ ] Validate JSON syntax (use `jq` or online validator)
 ```bash
 jq . mychain.json
+```
+- [ ] Run the removed-field guard (must exit 0; any hit is a cleanup finding)
+```bash
+bash .claude/skills/create-spec/scripts/check_unused_fields.sh mychain.json
 ```
 - [ ] Check all required fields are present
 - [ ] Verify no duplicate API names within same collection
@@ -1485,8 +1441,6 @@ curl -X POST -H "Content-Type: application/json" \
 - **Block Distance for Finalized Data**: [value]
 - **Blocks in Finalization Proof**: [value]
 - **Allowed Block Lag for QoS**: [value]
-- **Reliability Threshold**: 268435455
-- **Data Reliability**: Enabled
 
 ## API Collections
 
@@ -1672,8 +1626,6 @@ lavad tx pairing stake-provider \
 ```json
 {
   "proposal": {
-    "title": "Add Specs: [Chain Name]",
-    "description": "Adding new specification support for relaying [Chain Name] data on Lava",
     "specs": [
       {
         "index": "MAINNETINDEX",
@@ -1689,16 +1641,15 @@ lavad tx pairing stake-provider \
         // ... minimal testnet overrides
       }
     ]
-  },
-  "deposit": "10000000ulava"
+  }
 }
 ```
 
 **Proposal Guidelines**:
+- The proposal envelope is exactly `{ "proposal": { "specs": [ ... ] } }` — no `title`, `description`, or top-level `deposit` (all removed from the model; flag them if present)
 - Include both mainnet and testnet specs in one proposal
 - Testnet should inherit from mainnet (use `imports`)
 - Only override what's different in testnet (typically just verifications)
-- Deposit: `10000000ulava` (10,000 LAVA) is the mandated standard — flag any other value
 
 #### Step 6.2: Save Proposal Files
 **Objective**: Store proposal in correct locations
@@ -1740,7 +1691,6 @@ This proposal adds support for [Chain Name] ([MAINNETINDEX]/[TESTNETINDEX]) to t
 ### Configuration Highlights
 - Average block time: [value]ms
 - Finality distance: [value] blocks
-- Data reliability: Enabled
 - Archive support: Available via extension
 
 ## Testing
@@ -1753,11 +1703,6 @@ This specification has been thoroughly tested:
 
 See full test results: [link to testing documentation]
 
-## Economic Impact
-- **Min Provider Stake**: 5,000 LAVA
-- **Min Consumer Stake**: None
-- **Contributor Reward**: [if applicable]
-
 ## Timeline
 - Proposal submission: [date]
 - Voting period: [duration]
@@ -1768,9 +1713,6 @@ See full test results: [link to testing documentation]
 - Documentation: [links]
 - Testing guide: [link]
 - Official [Chain Name] docs: [link]
-
-## Contributor
-[Your information if claiming contributor rewards]
 ```
 
 ### Phase 7: Submission & Deployment
@@ -1790,7 +1732,6 @@ See full test results: [link to testing documentation]
   - [ ] Block parsing validated for each API
   - [ ] Verifications pass on live nodes
   - [ ] Compute units benchmarked
-  - [ ] Economic parameters reasonable
 
 - [ ] **Documentation Complete**
   - [ ] SPEC_IMPLEMENTATION.md created
@@ -1806,9 +1747,8 @@ See full test results: [link to testing documentation]
   - [ ] Both tested on respective networks
 
 - [ ] **Governance Prep**
-  - [ ] Proposal JSON formatted correctly
-  - [ ] Proposal description written
-  - [ ] Deposit amount confirmed (`10000000ulava`)
+  - [ ] Proposal JSON formatted correctly (`{ "proposal": { "specs": [ ... ] } }`)
+  - [ ] Proposal narrative written (for the PR / governance post)
   - [ ] Community feedback gathered (if applicable)
 
 #### Step 7.2: Submit to GitHub
@@ -1974,15 +1914,12 @@ lavad query gov votes [PROPOSAL_ID] --chain-id "lava-mainnet-1"
 ```json
 {
   "proposal": {
-    "title": "Update Specs: [Chain Name] - [Brief Description]",
-    "description": "Updating [Chain Name] specification to [reason]",
     "specs": [
       {
         // Updated spec with changes
       }
     ]
-  },
-  "deposit": "10000000ulava"
+  }
 }
 ```
 
@@ -2156,6 +2093,7 @@ lavad query gov votes [PROPOSAL_ID] --chain-id "lava-mainnet-1"
 **SUBSCRIBE/UNSUBSCRIBE**
 - Purpose: WebSocket subscription management
 - Required: Only if chain supports subscriptions
+- Note: these directives (including inherited from a parent spec) are the source of truth for subscription support — there is no `category.subscription` flag
 
 ### D. Category Values Quick Reference
 
@@ -2163,19 +2101,18 @@ lavad query gov votes [PROPOSAL_ID] --chain-id "lava-mainnet-1"
 {
   "category": {
     "deterministic": true,      // Same result every call for same block
-    "local": false,             // Node-local data (not chain state)
-    "subscription": false,      // WebSocket subscription API
-    "stateful": 0,             // 1 for transaction APIs, 0 for reads
-    "hanging_api": false       // true if waits for block creation
+    "stateful": 0,              // 1 for transaction APIs, 0 for reads
+    "hanging_api": false        // true if waits for block creation
   }
 }
 ```
 
 **Common Patterns**:
-- Read query: `{deterministic: true, local: false, subscription: false, stateful: 0}`
-- Transaction: `{deterministic: false, local: false, subscription: false, stateful: 1, hanging_api: true}`
-- Subscription: `{deterministic: false, local: true, subscription: true, stateful: 0}`
-- Node info: `{deterministic: false, local: true, subscription: false, stateful: 0}`
+- Read query: `{deterministic: true, stateful: 0}`
+- Transaction: `{deterministic: false, stateful: 1, hanging_api: true}`
+- Node info: `{deterministic: false, stateful: 0}`
+
+WebSocket subscription APIs are identified by SUBSCRIBE/UNSUBSCRIBE parse directives (including inherited), not a category flag. The `local` and `subscription` category flags were removed from the spec model.
 
 ### E. Header Kinds Reference
 

@@ -34,6 +34,16 @@ For existing spec patterns, reference:
 
 ## Workflow
 
+### Phase 0: Removed-field guard (run first)
+
+15 spec fields were removed from the smart-router model (Magma-Devs/smart-router#218) and must not reappear. Before reviewing content, run the shared guard against every spec file under review:
+
+```bash
+bash .claude/skills/create-spec/scripts/check_unused_fields.sh <spec.json> [more.json ...]
+```
+
+It exits non-zero (strict mode) and prints `REMOVED_FIELD | <file> | <json.path>` for each occurrence. Report every hit as a **cleanup finding** at MEDIUM or higher severity — a spec carrying these fields is stale and will not load clean against the current model. The removed fields are: spec-level `min_stake_provider`, `providers_types`, `contributor`, `contributor_percentage`, `shares`, `identity`, `block_last_updated`, `reliability_threshold`, `data_reliability_enabled`; proposal-envelope `title` and `description`, plus top-level `deposit`; api-level `extra_compute_units`, `category.local`, `category.subscription`. The canonical spec shape is `{ "proposal": { "specs": [ ... ] } }` — nothing else at the envelope level.
+
 ### Phase 1: Identify the API provider
 
 Read the spec file and determine which API provider is being used (e.g., Blockfrost for Cardano, native node RPC, etc.). Identify:
@@ -51,8 +61,6 @@ Verify these values against the chain's actual characteristics. Read the spec gu
 | `block_distance_for_finalized_data` | Based on consensus: PoW=6-12, BFT=1-3, instant=1 |
 | `blocks_in_finalization_proof` | Finality-typed: `3` for probabilistic finality (PoW / slow PoS); `1` for fast/instant finality (BFT, Tendermint/Cosmos, instant-settlement L2s — e.g. base.json, optimism.json use 1); fallback ONLY when the finality model is unclear: `max(ceil(1000ms / average_block_time), 3)`. Do not flag a spec for using `1` when its finality model is fast/instant. |
 | `allowed_block_lag_for_qos_sync` | `10000ms / average_block_time`, minimum 1 |
-| `reliability_threshold` | Standard: `268435455` (1/16 VRF ratio) |
-| `data_reliability_enabled` | `true` for production chains |
 
 ### Phase 3: API completeness audit
 
@@ -87,10 +95,10 @@ For REST APIs: most endpoints use DEFAULT. Use EMPTY only for truly static endpo
 #### 4b. Category flags
 - `deterministic: true` — only if same result at same block, every time
 - `deterministic: false` — for mempool, pending, network stats, node-local data
-- `local: true` — node-specific data (filters, node version, mining status)
-- `subscription: true` — WebSocket subscription APIs only
 - `stateful: 1` — transaction submission APIs that modify state
 - `hanging_api: true` — APIs that wait for new blocks (often paired with stateful)
+
+`category.local` and `category.subscription` were removed from the spec model — do not add them or flag their absence. WebSocket subscription coverage is determined by SUBSCRIBE/UNSUBSCRIBE parse directives (see Phase 5), not a category flag.
 
 #### 4c. Compute units
 Cross-reference with the CU table in the spec guide:
@@ -112,7 +120,7 @@ Verify the collection has the required parse directives:
 1. **GET_BLOCKNUM** (required) — must correctly extract the current block/height from the response
 2. **GET_BLOCK_BY_NUM** (required) — must correctly extract the block hash from a block-by-number response
 3. **GET_EARLIEST_BLOCK** — required if the spec has an `archive` extension
-4. **SUBSCRIBE / UNSUBSCRIBE** — required if the chain supports WebSocket subscriptions
+4. **SUBSCRIBE / UNSUBSCRIBE** — required if the chain supports WebSocket subscriptions. These directives (matched on `function_tag` + `api_name`) are the source of truth for subscription support — **including directives inherited from a parent spec**, so a child that imports ETH1 inherits its SUBSCRIBE/UNSUBSCRIBE and needs none of its own. There is no `category.subscription` flag; do not judge subscription coverage by category.
 
 For each directive, verify:
 - `function_template` matches the actual API call format
@@ -155,6 +163,7 @@ Produce a gap report in markdown with:
 - **Severity levels**: CRITICAL, MEDIUM, MINOR for each gap
 - **Evidence**: cite specific line numbers from the spec, API docs, and spec guide
 - **Impact**: explain what breaks or degrades if the gap is not fixed
+- **Cleanup findings**: every removed field reported by the Phase 0 guard, with the JSON path of each occurrence
 
 Save the report to `docs/<CHAIN_NAME>/SPEC_REVIEW_GAPS.md`.
 

@@ -30,6 +30,14 @@ reconstruct context from committed state and run Phase N → end.
    ```
 1. Read the committed spec: `cat <chain>.json` (filename = mainnet index lowercased).
    Derive `<chain>`, `<INDEX>`, `<INTERFACE>` from it — do NOT re-derive from research.
+   Then run the removed-field guard as a hard gate before any phase work — a resumed
+   spec MUST NOT contain any of the 15 fields removed from the model:
+   ```bash
+   bash .claude/skills/create-spec/scripts/check_unused_fields.sh <chain>.json
+   ```
+   It exits 0 with `RESULT: PASS (no removed fields)`. On a non-zero exit it lists each
+   `REMOVED_FIELD | <file> | <json-path>`; strip every offender (and commit the fix)
+   before running Phase `START_PHASE`.
 2. Pull prior phase outputs from the PR comments instead of regenerating them:
    ```bash
    gh pr view "$PR_NUMBER" --json comments --jq '.comments[].body'
@@ -43,7 +51,8 @@ Every resolved URL is probed over BOTH transports: request/response methods over
 http(s), subscription methods over ws(s). There is no separate ws input. If a node
 serves only one transport (e.g. a ws-only provider), keep whichever transport it
 answers and rely on the other listed URLs for the rest. Only if the spec enables any
-`category.subscription` method AND no provided URL answers ws: STOP and post a PR
+subscription method (a `SUBSCRIBE` parse directive in the resolved import closure) AND
+no provided URL answers ws: STOP and post a PR
 comment requesting a ws-capable node — do not let the router die with the opaque
 `all static providers failed verification`.
 

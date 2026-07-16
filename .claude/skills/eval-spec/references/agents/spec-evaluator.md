@@ -35,9 +35,9 @@ jq -e '.proposal.specs | type == "array" and length > 0' GENERATED.json
 ```
 
 **Check 3 — Required fields on every spec object:**
-Fields: `index`, `name`, `enabled`, `reliability_threshold`, `data_reliability_enabled`, `block_distance_for_finalized_data`, `blocks_in_finalization_proof`, `average_block_time`, `allowed_block_lag_for_qos_sync`, `shares`, `min_stake_provider`, `api_collections`
+Fields: `index`, `name`, `enabled`, `block_distance_for_finalized_data`, `blocks_in_finalization_proof`, `average_block_time`, `allowed_block_lag_for_qos_sync`, `api_collections`
 ```bash
-jq -e '[.proposal.specs[] | has("index","name","enabled","reliability_threshold","data_reliability_enabled","block_distance_for_finalized_data","blocks_in_finalization_proof","average_block_time","allowed_block_lag_for_qos_sync","shares","min_stake_provider","api_collections")] | all' GENERATED.json
+jq -e '[.proposal.specs[] | has("index","name","enabled","block_distance_for_finalized_data","blocks_in_finalization_proof","average_block_time","allowed_block_lag_for_qos_sync","api_collections")] | all' GENERATED.json
 ```
 
 **Check 4 — api_collections well-formed:**
@@ -48,6 +48,33 @@ jq -e '[.proposal.specs[].api_collections[] | has("collection_data","enabled","a
 **Check 5 — At least 2 specs:**
 ```bash
 jq -e '.proposal.specs | length >= 2' GENERATED.json
+```
+
+**Check 6 — No removed fields present (smart-router #218):**
+Fails if the spec carries any field removed in the field-level cleanup — spec-level (`min_stake_provider`, `providers_types`, `contributor`, `contributor_percentage`, `shares`, `identity`, `block_last_updated`, `reliability_threshold`, `data_reliability_enabled`), proposal envelope (`proposal.title`, `proposal.description`, top-level `deposit`), or api-level (`extra_compute_units`, `category.local`, `category.subscription`). Outputs `true` ONLY when the spec is clean. A removed field is a gate failure (score 0), not a content deduction.
+```bash
+jq -e '[
+  (.proposal | has("title")),
+  (.proposal | has("description")),
+  has("deposit"),
+  (.proposal.specs[]? | has("min_stake_provider","providers_types","contributor","contributor_percentage","shares","identity","block_last_updated","reliability_threshold","data_reliability_enabled")),
+  (.proposal.specs[]?.api_collections[]?.apis[]? | has("extra_compute_units")),
+  (.proposal.specs[]?.api_collections[]?.apis[]?.category? | select(type == "object") | has("local","subscription"))
+] | any | not' GENERATED.json
+```
+On failure, list the offending fields for `gate_failure_reason`:
+```bash
+jq -c '[
+  (if .proposal|has("title") then "proposal.title" else empty end),
+  (if .proposal|has("description") then "proposal.description" else empty end),
+  (if has("deposit") then "deposit (top-level)" else empty end),
+  (.proposal.specs[]? as $s
+     | ["min_stake_provider","providers_types","contributor","contributor_percentage","shares","identity","block_last_updated","reliability_threshold","data_reliability_enabled"][]
+     | select(. as $k | $s|has($k))),
+  (if [.proposal.specs[]?.api_collections[]?.apis[]?|select(has("extra_compute_units"))]|length>0 then "extra_compute_units" else empty end),
+  (if [.proposal.specs[]?.api_collections[]?.apis[]?.category?|select(type=="object" and has("local"))]|length>0 then "category.local" else empty end),
+  (if [.proposal.specs[]?.api_collections[]?.apis[]?.category?|select(type=="object" and has("subscription"))]|length>0 then "category.subscription" else empty end)
+] | unique' GENERATED.json
 ```
 
 If ALL pass → gate = "pass", proceed to Step 2.

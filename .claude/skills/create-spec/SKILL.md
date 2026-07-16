@@ -40,7 +40,7 @@ Your (the orchestrator's) context is the single most expensive resource in this 
 ## Output target
 
 - **Path:** `<chain>.json` (lowercase filename matching the mainnet `index` lowercased — e.g. `iota.json`, `polygon.json`)
-- **Structure:** single file, `proposal.title` + `proposal.description` + `proposal.specs[]` (2 entries: mainnet + testnet) + `deposit: "10000000ulava"`
+- **Structure:** single file, canonical shape `{ "proposal": { "specs": [ … ] } }` — `proposal.specs[]` holds 2 entries (mainnet + testnet); NO `title`, `description`, or `deposit` (all removed from the model)
 - **Reference:** `iota.json` is the canonical example
 
 ## Full-read enforcement (mandatory)
@@ -193,7 +193,7 @@ This phase runs 9 deterministic static-check gates in parallel and, on any failu
 Walk this checklist to confirm the orchestrator's working state. The first four bullets surface as gate failures below; the last two are NOT covered by any validator and must be hand-checked here:
 
 - `index` is uppercase, unique, matches the chain
-- `name`, `enabled`, `min_stake_provider`, `shares` present at top level of each spec entry
+- `name`, `enabled` present at top level of each spec entry (no `min_stake_provider`/`shares` — the governance fields were removed from the model)
 - `chain-id` `expected_value` obtained from a **live curl** against the mainnet RPC (not converted from a docs decimal)
 - Testnet entry's `chain-id` `expected_value` obtained from a live curl against the testnet RPC
 - Every API with `category.hanging_api: true` has an explicit `timeout_ms` (no validator covers this — confirm by running `jq -r '.proposal.specs[].api_collections[].apis[] | select(.category.hanging_api == true and (.timeout_ms // null) == null) | .name' <chain>.json` and confirming the output is empty)
@@ -306,7 +306,7 @@ A gate's `RESULT: FAIL` (cu-semantic Layer-0 subscription-CU violation, pruning 
 
 4. Do NOT re-run the validators — Phase 9's parallel reviewers and Phase 11's final reviewer catch any residual issues. Proceed to Phase 7.
 
-## Phase 7 — Final jq gate
+## Phase 7 — Final jq + removed-field gate
 
 `<chain>.json` was written and jq-validated by the `spec-builder` subagent (Phase 4), and re-validated by the Phase 6 fixer after any edits. This phase is a final gate before the probe — confirm the file on disk is still valid jq **without reading its body into your context**:
 
@@ -321,7 +321,15 @@ If exit is non-zero (a fixer edit broke it), capture the excerpt and dispatch th
 jq . <chain>.json 2>&1 | head -n 20
 ```
 
-Do not proceed to Phase 7.5 until `jq` exits 0. The canonical file structure (matching `iota.json` — `proposal.title` + `description` + `specs[]` mainnet/testnet + `deposit: "10000000ulava"`) is produced and enforced inside spec-builder, not here.
+Then run the removed-field guard as a **hard static gate** — reject the spec if it carries any of the 15 fields removed from the model (`title`/`description`/`deposit`, the nine governance fields, `extra_compute_units`, `category.local`, `category.subscription`):
+
+```bash
+bash .claude/skills/create-spec/scripts/check_unused_fields.sh <chain>.json
+```
+
+It exits 0 with `RESULT: PASS (no removed fields)` on a clean spec. On a non-zero exit it prints one `REMOVED_FIELD | <file> | <json-path>` line per offender — dispatch the Phase 6 fixer subagent to delete every reported field (do NOT open and edit the spec body yourself), then re-run both this guard and the `jq` check.
+
+Do not proceed to Phase 7.5 until BOTH `jq` exits 0 AND the guard passes. The canonical file structure (matching `iota.json` — exactly `{ "proposal": { "specs": [ … ] } }` with the mainnet/testnet entries and NO `title`/`description`/`deposit`) is produced and enforced inside spec-builder, not here.
 
 ## Phase 7.5 — Endpoint discovery (delegated subagent)
 
@@ -397,7 +405,7 @@ Dispatch THREE Agent subagents in parallel via a SINGLE message, each with `suba
 >
 > Before running `/review-spec`, read `docs/<chain>/METHOD_PROBE_REPORT.md` if it exists and incorporate the probe findings into your review (especially any FAIL or WARN classifications).
 >
-> The following are settled, skill-mandated decisions — do NOT report them as findings: (a) `deposit` is `"10000000ulava"`; (b) `blocks_in_finalization_proof` is finality-typed — `3` probabilistic (PoW/slow PoS), `1` fast/instant finality (BFT, Tendermint/Cosmos, instant-settlement L2s), fallback `max(ceil(1000 / average_block_time), 3)` only when the finality model is unclear; (c) a method/addon/collection must NOT be flagged for disabling because a probe returned `-32601`/errors on the provided nodes — free-tier limitation; disabling requires positive evidence (docs explicitly state unsupported/removed, or the chain's node-client implementation lacks it, with URL).
+> The following are settled, skill-mandated decisions — do NOT report them as findings: (a) the canonical spec shape is `{ "proposal": { "specs": [ … ] } }` — the absence of `title`/`description`/`deposit` and of the nine governance fields (`min_stake_provider`, `shares`, `contributor`, …) is CORRECT (they were removed from the model); do NOT flag any of them as missing; (b) `blocks_in_finalization_proof` is finality-typed — `3` probabilistic (PoW/slow PoS), `1` fast/instant finality (BFT, Tendermint/Cosmos, instant-settlement L2s), fallback `max(ceil(1000 / average_block_time), 3)` only when the finality model is unclear; (c) a method/addon/collection must NOT be flagged for disabling because a probe returned `-32601`/errors on the provided nodes — free-tier limitation; disabling requires positive evidence (docs explicitly state unsupported/removed, or the chain's node-client implementation lacks it, with URL).
 >
 > `/review-spec` writes its report to the hard-coded path `docs/<chain>/SPEC_REVIEW_GAPS.md`. **As the LAST step of your work — immediately after `/review-spec` returns** — rename that file to a unique numbered path so the other parallel reviewers do not clobber it:
 >
@@ -513,7 +521,7 @@ Dispatch ONE Agent subagent with `subagent_type: general-purpose`, `model: "sonn
 >
 > Before running `/review-spec`, read `docs/<chain>/METHOD_PROBE_REPORT.md` if it exists.
 >
-> The following are settled, skill-mandated decisions — do NOT report them as findings: (a) `deposit` is `"10000000ulava"`; (b) `blocks_in_finalization_proof` is finality-typed — `3` probabilistic, `1` fast/instant finality, fallback `max(ceil(1000 / average_block_time), 3)` only when the finality model is unclear; (c) probe errors on the provided nodes never justify disabling a method/addon/collection.
+> The following are settled, skill-mandated decisions — do NOT report them as findings: (a) the canonical spec shape is `{ "proposal": { "specs": [ … ] } }` — the absence of `title`/`description`/`deposit` and of the nine governance fields is CORRECT (removed from the model); do NOT flag any of them as missing; (b) `blocks_in_finalization_proof` is finality-typed — `3` probabilistic, `1` fast/instant finality, fallback `max(ceil(1000 / average_block_time), 3)` only when the finality model is unclear; (c) probe errors on the provided nodes never justify disabling a method/addon/collection.
 >
 > Additionally verify disable justifications: list every `enabled: false` api/collection in `<chain>.json` (`jq`) and check each has a positive-evidence row (docs-explicit or client-source, with URL) in the **Disabled-API Justifications ledger** reproduced below. Any disabled entry without one is a CRITICAL finding.
 >
@@ -562,7 +570,6 @@ If a phase was skipped (e.g., Phase 8 skipped because user didn't supply node UR
 - ~ Addons & extensions tested                            (Phase 8 Step 1c: <n> tested-ok / <n> failed / <n> not-testable — not-testable items need a supporting node to verify)
 - ✓ Verifications pass on live nodes                     (Phase 6 chain-id curl + Phase 8 boot-window verification scan + multi-node probe)
 - ☐ Compute units benchmarked under expected load        (user to measure)
-- ☐ Economic parameters reasonable (min_stake_provider, shares)  (user judgment)
 
 #### Documentation (out of skill scope — manual reminder)
 - ☐ SPEC_IMPLEMENTATION.md created
@@ -577,9 +584,7 @@ If a phase was skipped (e.g., Phase 8 skipped because user didn't supply node UR
 - ~ Both tested on respective networks                   (Phase 8 probed all node URLs provided per variant)
 
 #### Governance Prep (out of skill scope — manual reminder)
-- ☐ Proposal JSON formatted correctly                    (the file produced has the proposal wrapper; user verifies title/description)
-- ☐ Proposal description written
-- ☐ Deposit amount confirmed                             (default "10000000ulava" written; user confirms)
+- ☐ Proposal JSON formatted correctly                    (the file produced has the `{ "proposal": { "specs": [ … ] } }` wrapper — no title/description/deposit)
 - ☐ Community feedback gathered (if applicable)
 ```
 

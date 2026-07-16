@@ -73,8 +73,6 @@ Quick-lookup tables for parser functions, encoding, function tags, category valu
 {
   "category": {
     "deterministic": true,      // Same result every call for same block
-    "local": false,             // Node-local data (not chain state)
-    "subscription": false,      // WebSocket subscription API
     "stateful": 0,             // 1 for transaction APIs, 0 for reads
     "hanging_api": false       // true if waits for block creation
   }
@@ -82,10 +80,10 @@ Quick-lookup tables for parser functions, encoding, function tags, category valu
 ```
 
 **Common Patterns**:
-- Read query: `{deterministic: true, local: false, subscription: false, stateful: 0}`
-- Transaction: `{deterministic: false, local: false, subscription: false, stateful: 1, hanging_api: true}`
-- Subscription: `{deterministic: false, local: true, subscription: true, stateful: 0}`
-- Node info: `{deterministic: false, local: true, subscription: false, stateful: 0}`
+- Read query: `{deterministic: true, stateful: 0}`
+- Transaction: `{deterministic: false, stateful: 1, hanging_api: true}`
+- Subscription: detected from a `SUBSCRIBE`/`UNSUBSCRIBE` parse directive, not a category flag; the method's category is typically `{deterministic: false, stateful: 0}`
+- Node info: `{deterministic: false, stateful: 0}` (node-local data; the `local` flag was removed from the model)
 
 ### E. Header Kinds Reference
 

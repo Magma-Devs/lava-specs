@@ -196,6 +196,19 @@ jobs:
             - Additional data (docs URLs, node URLs, inheritance hints): ${{ github.event.inputs.additional_data }}
 
             Execution rules for this unattended CI run:
+            - The spec MUST use the canonical envelope EXACTLY:
+              { "proposal": { "specs": [ <mainnet entry>, <testnet entry> ] } }
+              — nothing else at the top level. Do NOT emit any of the 15 fields
+              smart-router removed in #218: spec-level governance
+              (min_stake_provider, providers_types, contributor,
+              contributor_percentage, shares, identity, block_last_updated,
+              reliability_threshold, data_reliability_enabled); proposal envelope
+              (proposal.title, proposal.description, top-level deposit); api-level
+              (extra_compute_units, category.local, category.subscription).
+              compute_units is the ONLY compute-unit input; a method is a
+              subscription IFF it carries a FUNCTION_TAG_SUBSCRIBE parse directive
+              (never category.subscription). A CI guard fails this run — no PR is
+              opened — if the spec carries any of these fields.
             - Run ONLY Phases 1 through 7 (research → network params → synthesis →
               static validation → write <chain>.json → jq validation). STOP after
               Phase 7 produces a jq-valid <chain>.json. Do NOT run Phase 8 or later
@@ -269,6 +282,17 @@ jobs:
             exit 1
           fi
           echo "spec=$spec" >> "$GITHUB_OUTPUT"
+
+      # Reintroduction guard for the smart-router#218 field cleanup: fail the run
+      # BEFORE commit/PR if the freshly written spec carries any of the 15 removed
+      # fields. Strict mode (default) exits 1 and prints the JSON path of each
+      # occurrence. The script is tracked on `main`; jq is preinstalled on
+      # ubuntu-latest. This is the create-side half of the guard; spec_pipeline.yml
+      # re-checks after its Phase-10 fix pass.
+      - name: Guard — reject removed spec fields
+        run: |
+          set -euo pipefail
+          bash .claude/skills/create-spec/scripts/check_unused_fields.sh "${{ steps.verify.outputs.spec }}"
 
       - name: Commit and push spec
         env:

@@ -36,8 +36,6 @@ Build this table (it is part of your return value):
 | `block_distance_for_finalized_data` | (consensus type — PoW=6–12, BFT=1–3, instant=1) | — | (int) |
 | `blocks_in_finalization_proof` | finality-typed | `3` if probabilistic finality (PoW / slow PoS, e.g. Ethereum, Arbitrum); `1` if fast/instant finality (BFT, Tendermint/Cosmos, Solana, BTC-style longest-chain-with-checkpoints, L2s that inherit instant settlement). **Fallback when finality model can't be confidently classified:** `max(ceil(1000 / average_block_time), 3)` (floors at 3 → conservative; never falls back to 1) | (int) |
 | `allowed_block_lag_for_qos_sync` | derived | `max(ceil(10000 / average_block_time), 1)` | (int) |
-| `reliability_threshold` | standard | `268435455` | `268435455` |
-| `data_reliability_enabled` | standard | `true` | `true` |
 
 `<average_block_time_ms>` is authoritative — the orchestrator already applied the docs-vs-empirical tie-breaker (rule C) in Phase 2. If it was somehow not provided, apply rule C yourself: (1) single docs value → use it unless empirical disagrees by >20%; (2) docs range → lower bound or empirical, whichever is lower (never round up — it cascades into the formulas above); (3) docs silent → empirical median; (4) >20% disagreement with no resolution → use the docs value and record the conflict in your return.
 
@@ -47,21 +45,21 @@ Build this table (it is part of your return value):
 - **REJECT all "trim", "scope", "exclude", or "narrow" recommendations** from the research brief. The full discovered method list is the input. Apply only the explicit-omission rule below — never an agent's opinion.
 - **Method-set input = UNION of api-docs-researcher AND upstream-spec-scout (A).** The synthesis input is the union of (1) every method the researcher discovered and (2) every method the scout found in any existing spec/template. If the scout found a method the researcher didn't, **INCLUDE IT** — existing-spec evidence beats fresh web search. The only valid reason to omit a scout-found method is **positive documentary evidence of absence** (official docs explicitly mark it removed/unsupported, or the chain's node-client source does not implement it — with a URL). A probe/curl error against the public node — `-32601`, HTTP `501`/`404`/`5xx`, timeout, anything — is NEVER sufficient on its own (free-tier/gateway artifact; see the Step 5 disable rule); keep the method and put it on the watch-list. "Researcher didn't find it" is NOT a valid omission reason either.
 - **All methods from chain docs MUST appear in the spec.** Include every method in the union. The only acceptable omission reasons are documented in the chain's API reference itself: explicitly deprecated, explicitly internal/admin-only, or explicitly platform-specific (e.g. GraphQL-only on a JSON-RPC spec).
-- **Subscription methods belong in MAIN, not in an add-on (B).** Methods with `category.subscription: true` (subscribe/unsubscribe pairs) live in the **same collection as the chain's core read API**, NOT in a separate `add_on: "indexer"` collection. The `indexer` add-on is for methods that require an external indexer service (metrics aggregations, address/epoch rollups). Methods served by every regular full node — dynamic-fields, owned-objects, query-events, query-transactions, and ALL subscriptions — belong in MAIN. If the scout's template has a method in MAIN, KEEP IT IN MAIN.
-- **Parse-directive completeness for subscriptions (D).** For every API with `category.subscription: true`:
+- **Subscription methods belong in MAIN, not in an add-on (B).** Subscribe/unsubscribe methods (recognized by name — contains `ubscribe` — paired with their `SUBSCRIBE`/`UNSUBSCRIBE` parse directives) live in the **same collection as the chain's core read API**, NOT in a separate `add_on: "indexer"` collection. The `indexer` add-on is for methods that require an external indexer service (metrics aggregations, address/epoch rollups). Methods served by every regular full node — dynamic-fields, owned-objects, query-events, query-transactions, and ALL subscriptions — belong in MAIN. If the scout's template has a method in MAIN, KEEP IT IN MAIN.
+- **Parse-directive completeness for subscriptions (D).** For every subscribe/unsubscribe method (name contains `ubscribe`):
   - Subscribe variants (name contains `ubscribe` but NOT `nsubscribe`) → MUST have a matching `parse_directive` with `function_tag: "SUBSCRIBE"` and `api_name: "<method name>"` in the same collection.
   - Unsubscribe variants (name contains `nsubscribe`) → MUST have a matching `parse_directive` with `function_tag: "UNSUBSCRIBE"`, an explicit `function_template` (e.g. `"{\"jsonrpc\":\"2.0\",\"method\":\"<name>\",\"params\":[\"%s\"],\"id\":1}"`), and `api_name: "<method name>"`.
   - Without these, the methods are listed but the relay layer cannot route them — effectively broken.
 - **Parse-directives, extensions, and verifications follow the references — not the template (F).** Canonical structures (function tags, `function_template` shapes, `result_parsing` patterns, archive/pruning encoding) live in `references/phase3.4-parse-directives-and-extensions.md` and `references/appendix-reference-tables.md` (you read both above) — use them as the source of truth. A template spec is a **concrete syntax example** for same-ecosystem chains, useful for copying exact `function_template` arg shapes for non-obvious cases (e.g. `params: [null, 1, false]` for `GET_EARLIEST_BLOCK` in Sui/IOTA). The reference dictates WHICH elements must exist; the template shows what they look like. Completeness is enforced by the Phase 6 gates, not by template diff.
 - **Multi-collection splits.** Add an `add_on` collection ONLY when the methods require external infrastructure (indexer service, archive node, trace database). Default everything else to MAIN.
 - **Every addon and extension has a matching `verifications` block.** An archive extension requires a `pruning` verification. The canonical EVM/jsonrpc shape uses a `GET_EARLIEST_BLOCK` directive; **REST/slot chains (Beacon, Cardano, Tezos) instead gate the archive tier with `GET_BLOCK_BY_NUM` + `latest_distance` + an archive-tier `expected_value`** (non-EVM `"1"` = slot/block 1; never `"*"`, never EVM's `"0x0"`) — do NOT force a `GET_EARLIEST_BLOCK` directive onto these families. An `add_on` collection requires its own verification (e.g. indexer verifies via `iotax_getTotalTransactions` returning `*`; a beacon `debug` add-on verifies via `/eth/v2/debug/beacon/states/genesis` → `slot == "0"`).
-- **SUBSCRIBE and UNSUBSCRIBE share the same `local`/`stateful` flags** (typically both `local: false, stateful: 0, subscription: true`).
+- **SUBSCRIBE and UNSUBSCRIBE share the same `stateful` flag** (typically both `stateful: 0`). Their subscription nature comes from the `SUBSCRIBE`/`UNSUBSCRIBE` parse directives (with `api_name`), NOT a `category` flag — do not emit `category.subscription` or `category.local`.
 - **Block-rate inheritance override.** If `imports` is set AND the child's `average_block_time` is materially faster than the parent's: **explicitly override** the inherited `archive.rule.block` and `pruning.latest_distance` in the child's main collection. Silently inheriting parent values calibrated for a slower block rate produces a wrong pruning window (e.g. a 1s-block chain importing `ETH1` inherits 12s-calibrated sizing → archive window ~12× too short).
 - **`stateful: 1` ONLY for state-modifying broadcasts.** Read-only helpers (`eth_call`, `eth_estimateGas`, `eth_fillTransaction`, `debug_traceCall`) are `stateful: 0` even when they take tx-shaped args.
 - **`hanging_api` timeout.** Every API with `category.hanging_api: true` has an explicit `timeout_ms` (the flag alone only adds `2 * average_block_time` — insufficient on fast chains).
 - **Slot-based chains (Solana, Ethereum Beacon, and any chain whose "block number" is a slot/height with gaps).** These chains have EMPTY slots — a slot number that no block occupies. Build the `GET_BLOCK_BY_NUM` directive by exact slot number anyway (`getBlock(%d)` for Solana, `/eth/v1/beacon/headers/%d` for Beacon) — this is the correct, in-production shape (`solana.json` ships it). Two rules follow:
   1. **`GET_BLOCK_BY_NUM.result_parsing.parser_arg` MUST extract a genuine block IDENTIFIER (hash/root), NOT the echoed slot.** Returning the slot field (e.g. `["...","slot"]` on Beacon, which just echoes the `%d` input) defeats data-reliability cross-checks — every provider "agrees" trivially regardless of the block content they served. Use the real identifier: Solana `["0","blockhash"]`, Beacon `["0","data","root"]`, EVM `["0","hash"]`. `GET_BLOCKNUM` on the same chain legitimately returns the slot number itself (slot IS the block-number analog) — only `GET_BLOCK_BY_NUM` needs the hash.
-  2. **Do NOT rewrite the `%d` template to a fixed reference (`finalized`, `latest`) to dodge missed-slot errors.** A fixed reference cannot serve a per-slot walk; it breaks the tracker. Missed slots returning 404/error is EXPECTED and is NOT a spec defect — it is handled at deploy time by running **≥2 upstreams** (so no single provider's availability collapses on the ~1% empty-slot rate). Note the ≥2-upstream requirement in the spec `description`. See the Phase-8 smart-router-tester "slot-based chain" note for why a single-upstream boot may show availability degradation that is not a directive bug.
+  2. **Do NOT rewrite the `%d` template to a fixed reference (`finalized`, `latest`) to dodge missed-slot errors.** A fixed reference cannot serve a per-slot walk; it breaks the tracker. Missed slots returning 404/error is EXPECTED and is NOT a spec defect — it is handled at deploy time by running **≥2 upstreams** (so no single provider's availability collapses on the ~1% empty-slot rate). Note the ≥2-upstream requirement in your return summary (the orchestrator surfaces it in the PR body — the spec file has no `description` field). See the Phase-8 smart-router-tester "slot-based chain" note for why a single-upstream boot may show availability degradation that is not a directive bug.
 
 ### Per-method `block_parsing` inference (H)
 
@@ -85,8 +83,8 @@ Cross-check `references/phase3.2-api-methods-configuration.md` for the canonical
 | `parser_func == "DEFAULT"` with `parser_arg == ["latest"]` (simple current-state read) | 10 |
 | `parser_func == "PARSE_BY_ARG"` OR `"PARSE_CANONICAL"` (state-by-id query) | 20 |
 | `parser_func == "PARSE_DICTIONARY_OR_ORDERED"` (block-or-tag query) | 20 |
-| `subscription: true` AND **subscribe** variant | 1000 |
-| `subscription: true` AND **unsubscribe** variant | 10 |
+| **subscribe** variant (name contains `ubscribe`, NOT `nsubscribe`; has a `SUBSCRIBE` directive) | 1000 |
+| **unsubscribe** variant (name contains `nsubscribe`; has an `UNSUBSCRIBE` directive) | 10 |
 | `stateful: 1` (broadcast/state-modifying) | 10 |
 | Heavy compute (full-scan, `getLogs`-style) when explicitly classified by api-docs-researcher | 60–100 |
 | Traces / `debug_*` | 100–200 |
@@ -106,25 +104,22 @@ Methods included in spec:                   <M> (split: main=<X>, <addon1>=<Y>, 
 
 **Refuse-to-write gate.** If `M < N_union`, list every omitted method with a reason from the allowed set — each backed by a doc/source URL: `deprecated` / `admin-only` / `platform-specific (e.g. GraphQL-only)` / `node-client does not implement it (cite repo/docs URL)`. A probe/curl result (`-32601`, HTTP `501`/`404`/`5xx`, timeout) is **NOT** an allowed omission reason — keep the method and carry it on the watch-list. If any omission lacks a documented reason, ADD THE METHOD BACK before writing. Do NOT write until `M == N_union` OR every gap is justified.
 
-Then validate one shape detail: for every `category.subscription: true` method, confirm a matching `parse_directive` exists in the same collection (rule D); add any missing one.
+Then validate one shape detail: for every subscribe/unsubscribe method (name contains `ubscribe`), confirm a matching `SUBSCRIBE`/`UNSUBSCRIBE` `parse_directive` (with `api_name` set to the method name) exists in the same collection (rule D); add any missing one.
 
 ## Step 4 — Write `<chain>.json`
 
-Write the single file `<chain>.json` (lowercase, matching the mainnet index lowercased). Structure matches `iota.json`:
+Write the single file `<chain>.json` (lowercase, matching the mainnet index lowercased). The canonical shape is exactly `{ "proposal": { "specs": [ ... ] } }` — NO `title`, `description`, or `deposit` (all removed from the model). Structure matches `iota.json`:
 
 ```json
 {
   "proposal": {
-    "title": "Add Specs: <CHAIN>",
-    "description": "<one-sentence description>",
     "specs": [
       { "index": "<CHAIN>", "name": "<chain> mainnet", "imports": [], ... },
       { "index": "<CHAIN_T>", "name": "<chain> testnet",
         "imports": ["<CHAIN>"],
         "api_collections": [{ ..., "apis": [], "verifications": [{ "name": "chain-id", "values": [{ "expected_value": "<testnet_hex>" }] }] }] }
     ]
-  },
-  "deposit": "10000000ulava"
+  }
 }
 ```
 
@@ -173,13 +168,21 @@ comm -13 /tmp/parent_methods.txt /tmp/chain_methods.txt > /tmp/additions.txt
 
 Every method in `/tmp/additions.txt` MUST appear in the child spec. Commonly missed: `admin_*`, `txpool_*`, `*_Sync` variants.
 
-## Step 6 — jq validation
+## Step 6 — jq validation + removed-field guard
 
 ```bash
 jq . <chain>.json > /dev/null; echo "jq exit: $?"
 ```
 
-If non-zero, capture `jq . <chain>.json 2>&1 | head -n 20`, fix, and re-run until exit 0. Do NOT return `SPEC: WRITTEN` until jq exits 0.
+If non-zero, capture `jq . <chain>.json 2>&1 | head -n 20`, fix, and re-run until exit 0.
+
+Then run the reintroduction guard — the spec MUST contain none of the 15 fields removed from the model:
+
+```bash
+bash .claude/skills/create-spec/scripts/check_unused_fields.sh <chain>.json
+```
+
+A clean spec prints `RESULT: PASS (no removed fields)` and exits 0. On a non-zero exit it prints one `REMOVED_FIELD | <file> | <json-path>` line per offender — delete every reported field and re-run until it passes. Do NOT return `SPEC: WRITTEN` until BOTH jq exits 0 AND the guard passes.
 
 ## Return format (compact — never paste the spec body)
 

@@ -23,8 +23,8 @@ in the leaf file):
 jq -r '.proposal.specs[].api_collections[]?.collection_data.api_interface' <spec_path> | sort -u
 # addons / extensions (whatever the spec declares — chain-custom included)
 jq -r '.proposal.specs[].api_collections[]? | (.collection_data.add_on // empty), (.extensions[]?.name // empty)' <spec_path> | sort -u
-# interfaces that need a ws upstream (any subscription method present)
-jq -r '.proposal.specs[].api_collections[]? | select([.apis[]?.category.subscription] | any) | .collection_data.api_interface' <spec_path> | sort -u
+# interfaces that need a ws upstream (any SUBSCRIBE parse directive present)
+jq -r '.proposal.specs[].api_collections[]? | select([.parse_directives[]? | select(.function_tag == "SUBSCRIBE")] | any) | .collection_data.api_interface' <spec_path> | sort -u
 ```
 
 Resolve `imports` against the repo's base specs (`cosmossdkv50.json`,

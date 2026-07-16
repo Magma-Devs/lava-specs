@@ -13,7 +13,7 @@ SPEC=$(realpath -- "$1")
 PASS=()
 FAIL=()
 
-while IFS=$'\t' read -r idx abt bdff bifp ablqs rt dre msp shares; do
+while IFS=$'\t' read -r idx abt bdff bifp ablqs; do
   [[ -z "$idx" ]] && continue
 
   # Compute expected values (guard against abt<=0 to avoid div-by-zero)
@@ -47,18 +47,6 @@ while IFS=$'\t' read -r idx abt bdff bifp ablqs rt dre msp shares; do
     FAIL+=("allowed_block_lag_for_qos_sync|$idx|expected=$EXP_ABLQS declared=$ablqs")
   fi
 
-  if [[ "$rt" == "268435455" ]]; then
-    PASS+=("reliability_threshold|$idx|$rt")
-  else
-    FAIL+=("reliability_threshold|$idx|expected=268435455 declared=$rt")
-  fi
-
-  if [[ "$dre" == "true" ]]; then
-    PASS+=("data_reliability_enabled|$idx|true")
-  else
-    FAIL+=("data_reliability_enabled|$idx|expected=true declared=$dre")
-  fi
-
   if [[ -z "$abt" || "$abt" == "null" || "$abt" == "0" ]]; then
     FAIL+=("average_block_time|$idx|missing or zero")
   else
@@ -70,27 +58,15 @@ while IFS=$'\t' read -r idx abt bdff bifp ablqs rt dre msp shares; do
   else
     PASS+=("block_distance_for_finalized_data|$idx|$bdff")
   fi
-
-  if [[ "$msp" == "true" ]]; then
-    PASS+=("min_stake_provider|$idx|present")
-  else
-    FAIL+=("min_stake_provider|$idx|missing")
-  fi
-
-  if [[ -z "$shares" || "$shares" == "null" ]]; then
-    FAIL+=("shares|$idx|missing")
-  else
-    PASS+=("shares|$idx|$shares")
-  fi
 done < <(jq -r '
   .proposal.specs[]
-  | "\(.index)\t\(.average_block_time // 0)\t\(.block_distance_for_finalized_data // "null")\t\(.blocks_in_finalization_proof // "null")\t\(.allowed_block_lag_for_qos_sync // "null")\t\(.reliability_threshold // "null")\t\(if .data_reliability_enabled == null then "null" else (.data_reliability_enabled | tostring) end)\t\(.min_stake_provider != null)\t\(.shares // "null")"
+  | "\(.index)\t\(.average_block_time // 0)\t\(.block_distance_for_finalized_data // "null")\t\(.blocks_in_finalization_proof // "null")\t\(.allowed_block_lag_for_qos_sync // "null")"
 ' "$SPEC")
 
 echo "=== PASS ==="
-printf '%s\n' "${PASS[@]}"
+printf '%s\n' ${PASS[@]+"${PASS[@]}"}
 echo
 echo "=== FAIL ==="
-printf '%s\n' "${FAIL[@]}"
+printf '%s\n' ${FAIL[@]+"${FAIL[@]}"}
 
 [[ ${#FAIL[@]} -eq 0 ]] || exit 1

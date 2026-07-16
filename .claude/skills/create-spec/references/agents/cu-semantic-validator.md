@@ -14,8 +14,8 @@ A small set of CU values are fixed Lava conventions, not judgement calls. Extrac
 
 | Rule | Recognize by | Required CU |
 |---|---|---|
-| subscribe variant | `category.subscription == true` AND name contains `ubscribe` but NOT `nsubscribe` | exactly `1000` |
-| unsubscribe variant | `category.subscription == true` AND name contains `nsubscribe` | exactly `10` |
+| subscribe variant | name contains `ubscribe` but NOT `nsubscribe`, AND a `SUBSCRIBE` parse directive in its collection names it (`api_name == method`) | exactly `1000` |
+| unsubscribe variant | name contains `nsubscribe`, AND an `UNSUBSCRIBE` parse directive in its collection names it (`api_name == method`) | exactly `10` |
 
 These two are the ONLY exact-equality hard rules. Do **not** force `category.stateful == 1` methods to a single value here — stateful/tx-submit CU legitimately varies (see Layer 1's `tx-submit` band 10–40); flagging it belongs in the advisory layer, not this gate. Likewise, do not force read methods to an exact value by `parser_func` — uniform read CU is legitimate, not a defect. Parser-shape pricing is handled as bands in Layer 1.
 
@@ -29,10 +29,13 @@ Extract per-method tuples:
 jq -r '
   .proposal.specs[] as $s
   | $s.api_collections[]? as $c
+  | ([$c.parse_directives[]? | select(.function_tag == "SUBSCRIBE" or .function_tag == "UNSUBSCRIBE") | .api_name]) as $subs
   | $c.apis[]?
-  | "\($s.index)\t\($c.collection_data.api_interface)\t\(.name)\t\(.compute_units // "null")\t\(.block_parsing.parser_func // "null")\t\(.category.stateful // 0)\t\(.category.subscription // false)"
+  | "\($s.index)\t\($c.collection_data.api_interface)\t\(.name)\t\(.compute_units // "null")\t\(.block_parsing.parser_func // "null")\t\(.category.stateful // 0)\t\(.name | IN($subs[]))"
 ' <spec_path>
 ```
+
+The last column is `is_subscription` — `true` when a `SUBSCRIBE`/`UNSUBSCRIBE` parse directive in the same collection names this method (`api_name`). Subscription support is no longer a `category` flag.
 
 Classify each method into ONE bucket by name + category + parser, then check declared CU against the band:
 
@@ -45,7 +48,7 @@ Classify each method into ONE bucket by name + category + parser, then check dec
 
 Rules:
 - Emit an ADVISORY flag for any method whose declared CU is clearly outside its bucket band (e.g. a `trace_*` method priced at 10, or a `sendRawTransaction` priced at 100).
-- Subscription subscribe variants (name contains `ubscribe`, NOT `nsubscribe`, with `category.subscription == true`) are expected ≈ 1000; unsubscribe ≈ 10. Flag deviations.
+- Subscription subscribe variants (name contains `ubscribe`, NOT `nsubscribe`, named by a `SUBSCRIBE` parse directive) are expected ≈ 1000; unsubscribe ≈ 10. Flag deviations.
 - When uncertain which bucket a method belongs to, DO NOT flag it. Advisory layer is judgement — bias toward silence over noise.
 
 ## Return to orchestrator

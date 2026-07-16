@@ -1,7 +1,5 @@
 {
   "proposal": {
-    "title": "methods fixture",
-    "description": "fixture spec for test_compare_spec_methods.sh — self-contained, no imports",
     "specs": [
       {
         "index": "TESTMETHODS",
@@ -25,6 +23,5 @@
         ]
       }
     ]
-  },
-  "deposit": "10000000ulava"
+  }
 }
