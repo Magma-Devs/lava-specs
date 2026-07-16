@@ -1,7 +1,5 @@
 {
   "proposal": {
-    "title": "Add Specs: DYDX",
-    "description": "Adding new specification support for relaying dYdX Chain data on Lava",
     "specs": [
       {
         "index": "DYDX",
@@ -10,17 +8,10 @@
         "imports": [
           "COSMOSSDK50"
         ],
-        "reliability_threshold": 268435455,
-        "data_reliability_enabled": true,
         "block_distance_for_finalized_data": 1,
         "blocks_in_finalization_proof": 1,
         "average_block_time": 550,
         "allowed_block_lag_for_qos_sync": 19,
-        "shares": 1,
-        "min_stake_provider": {
-          "denom": "ulava",
-          "amount": "5000000000"
-        },
         "api_collections": [
           {
             "enabled": true,
@@ -35,11 +26,8 @@
                 "enabled": true,
                 "name": "/cosmos/tx/v1beta1/decode/amino",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -56,11 +44,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/accountplus/account_state/{address}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -77,11 +62,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/accountplus/authenticator/{account}/{authenticator_id}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -98,11 +80,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/accountplus/authenticators/{account}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -119,11 +98,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/accountplus/params",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -140,11 +116,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/affiliates/affiliate_info/{address}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -161,11 +134,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/affiliates/affiliate_overrides",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -182,11 +152,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/affiliates/affiliate_parameters",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -203,11 +170,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/affiliates/affiliate_whitelist",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -224,11 +188,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/affiliates/all_affiliate_tiers",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -245,11 +206,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/affiliates/referred_by/{address}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -266,11 +224,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/assets/asset",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -287,11 +242,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/assets/asset/{id}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -308,11 +260,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/clob/block_rate",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -329,11 +278,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/clob/clob_pair",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -350,11 +296,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/clob/clob_pair/{id}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -371,11 +314,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/clob/equity_tier",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -392,11 +332,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/clob/leverage/{owner}/{number}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -413,11 +350,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/clob/liquidations_config",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -434,11 +368,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/clob/mev_node_to_node_calculation",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -455,11 +386,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/clob/next_clob_pair_id",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -476,11 +404,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/listing/markets_hard_cap",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -497,11 +422,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/listing/vault_deposit_params",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -518,11 +440,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/perpetuals/liquidity_tiers",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -539,11 +458,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/perpetuals/next_perpetual_id",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -560,11 +476,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/perpetuals/params",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -581,11 +494,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/perpetuals/perpetual",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -602,11 +512,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/perpetuals/perpetual/{id}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -623,11 +530,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/perpetuals/premium_samples",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -644,11 +548,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/perpetuals/premium_votes",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -665,11 +566,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/prices/market",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -686,11 +584,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/prices/market/{id}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -707,11 +602,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/prices/next_market_id",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -728,11 +620,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/prices/params/market",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -749,11 +638,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/prices/params/market/{id}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -770,11 +656,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/revshare/market_mapper_rev_share_details/{market_id}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -791,11 +674,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/revshare/market_mapper_rev_share_params",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -812,11 +692,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/revshare/order_router_rev_share/{address}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -833,11 +710,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/revshare/unconditional_rev_share",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -854,11 +728,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/subaccounts/collateral_pool_address/{perpetual_id}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -875,11 +746,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/subaccounts/subaccount",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -896,11 +764,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/subaccounts/subaccount/{owner}/{number}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -917,11 +782,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/subaccounts/withdrawals_and_transfers_blocked_info/{perpetual_id}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -938,11 +800,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/v4/blocktime/all_downtime_info",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -959,11 +818,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/v4/blocktime/downtime_params",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -980,11 +836,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/v4/blocktime/synchrony_params",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1001,11 +854,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/v4/bridge/acknowledged_event_info",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1022,11 +872,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/v4/bridge/delayed_complete_bridge_messages",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1043,11 +890,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/v4/bridge/event_params",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1064,11 +908,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/v4/bridge/propose_params",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1085,11 +926,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/v4/bridge/recognized_event_info",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1106,11 +944,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/v4/bridge/safety_params",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1127,11 +962,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/v4/delaymsg/block/message_ids/{block_height}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1148,11 +980,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/v4/delaymsg/message/{id}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1169,11 +998,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/v4/delaymsg/next_id",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1190,11 +1016,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/v4/epochs/epoch_info",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1211,11 +1034,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/v4/epochs/epoch_info/{name}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1232,11 +1052,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/v4/feetiers/market_fee_discount_params",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1253,11 +1070,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/v4/feetiers/market_fee_discount_params/{clob_pair_id}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1274,11 +1088,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/v4/feetiers/perpetual_fee_params",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1295,11 +1106,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/v4/feetiers/staking_tiers",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1316,11 +1124,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/v4/feetiers/user_fee_tier",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1337,11 +1142,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/v4/feetiers/user_staking_tier/{address}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1358,11 +1160,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/v4/ratelimit/capacity_by_denom",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1379,11 +1178,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/v4/ratelimit/get_all_pending_send_packet",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1400,11 +1196,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/v4/ratelimit/list_limit_params",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1421,11 +1214,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/v4/rewards/params",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1442,11 +1232,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/v4/stats/epoch_stats/{epoch}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1463,11 +1250,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/v4/stats/global_stats",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1484,11 +1268,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/v4/stats/params",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1505,11 +1286,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/v4/stats/stats_metadata",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1526,11 +1304,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/v4/stats/user_stats",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1547,11 +1322,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/v4/vest/vest_entry",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1568,11 +1340,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/vault/megavault/all_owner_shares",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1589,11 +1358,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/vault/megavault/owner_shares/{address}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1610,11 +1376,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/vault/megavault/total_shares",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1631,11 +1394,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/vault/megavault/withdrawal_info",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1652,11 +1412,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/vault/params",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1673,11 +1430,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/vault/params/{type}/{number}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1694,11 +1448,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/vault/vault",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1715,11 +1466,8 @@
                 "enabled": true,
                 "name": "/dydxprotocol/vault/vault/{type}/{number}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1736,11 +1484,8 @@
                 "enabled": true,
                 "name": "/ibc/apps/transfer/v1/denoms/{denom}/total_escrow",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1757,11 +1502,8 @@
                 "enabled": true,
                 "name": "/ibc/core/client/v1/verify_membership",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1778,11 +1520,8 @@
                 "enabled": true,
                 "name": "/slinky/marketmap/v1/last_updated",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1799,11 +1538,8 @@
                 "enabled": true,
                 "name": "/slinky/marketmap/v1/market",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1820,11 +1556,8 @@
                 "enabled": true,
                 "name": "/slinky/marketmap/v1/marketmap",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1841,11 +1574,8 @@
                 "enabled": true,
                 "name": "/slinky/marketmap/v1/markets",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1862,11 +1592,8 @@
                 "enabled": true,
                 "name": "/slinky/marketmap/v1/params",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1924,11 +1651,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.accountplus.Query/AccountState",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1945,11 +1669,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.accountplus.Query/GetAuthenticator",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1966,11 +1687,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.accountplus.Query/GetAuthenticators",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1987,11 +1705,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.accountplus.Query/Params",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2008,11 +1723,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.affiliates.Query/AffiliateInfo",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2029,11 +1741,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.affiliates.Query/AffiliateOverrides",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2050,11 +1759,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.affiliates.Query/AffiliateParameters",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2071,11 +1777,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.affiliates.Query/AffiliateWhitelist",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2092,11 +1795,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.affiliates.Query/AllAffiliateTiers",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2113,11 +1813,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.affiliates.Query/ReferredBy",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2134,11 +1831,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.assets.Query/AllAssets",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2155,11 +1849,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.assets.Query/Asset",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2176,11 +1867,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.blocktime.Query/AllDowntimeInfo",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2197,11 +1885,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.blocktime.Query/DowntimeParams",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2218,11 +1903,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.blocktime.Query/PreviousBlockInfo",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2239,11 +1921,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.blocktime.Query/SynchronyParams",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2260,11 +1939,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.bridge.Query/AcknowledgedEventInfo",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2281,11 +1957,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.bridge.Query/DelayedCompleteBridgeMessages",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2302,11 +1975,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.bridge.Query/EventParams",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2323,11 +1993,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.bridge.Query/ProposeParams",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2344,11 +2011,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.bridge.Query/RecognizedEventInfo",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2365,11 +2029,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.bridge.Query/SafetyParams",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2386,11 +2047,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.clob.Query/BlockRateLimitConfiguration",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2407,11 +2065,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.clob.Query/ClobPair",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2428,11 +2083,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.clob.Query/ClobPairAll",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2449,11 +2101,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.clob.Query/EquityTierLimitConfiguration",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2470,11 +2119,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.clob.Query/Leverage",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2491,11 +2137,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.clob.Query/LiquidationsConfiguration",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2512,11 +2155,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.clob.Query/MevNodeToNodeCalculation",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2533,11 +2173,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.clob.Query/NextClobPairId",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2554,11 +2191,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.clob.Query/StatefulOrder",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2575,11 +2209,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.clob.Query/StreamOrderbookUpdates",
                 "compute_units": 1000,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": true,
                   "stateful": 0,
                   "hanging_api": true
                 },
@@ -2596,11 +2227,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.delaymsg.Query/BlockMessageIds",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2617,11 +2245,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.delaymsg.Query/Message",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2638,11 +2263,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.delaymsg.Query/NextDelayedMessageId",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2659,11 +2281,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.epochs.Query/EpochInfo",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2680,11 +2299,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.epochs.Query/EpochInfoAll",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2701,11 +2317,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.feetiers.Query/AllMarketFeeDiscountParams",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2722,11 +2335,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.feetiers.Query/PerMarketFeeDiscountParams",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2743,11 +2353,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.feetiers.Query/PerpetualFeeParams",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2764,11 +2371,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.feetiers.Query/StakingTiers",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2785,11 +2389,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.feetiers.Query/UserFeeTier",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2806,11 +2407,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.feetiers.Query/UserStakingTier",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2827,11 +2425,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.listing.Query/ListingVaultDepositParams",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2848,11 +2443,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.listing.Query/MarketsHardCap",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2869,11 +2461,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.perpetuals.Query/AllLiquidityTiers",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2890,11 +2479,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.perpetuals.Query/AllPerpetuals",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2911,11 +2497,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.perpetuals.Query/NextPerpetualId",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2932,11 +2515,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.perpetuals.Query/Params",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2953,11 +2533,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.perpetuals.Query/Perpetual",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2974,11 +2551,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.perpetuals.Query/PremiumSamples",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2995,11 +2569,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.perpetuals.Query/PremiumVotes",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -3016,11 +2587,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.prices.Query/AllMarketParams",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -3037,11 +2605,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.prices.Query/AllMarketPrices",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -3058,11 +2623,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.prices.Query/MarketParam",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -3079,11 +2641,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.prices.Query/MarketPrice",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -3100,11 +2659,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.prices.Query/NextMarketId",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -3121,11 +2677,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.ratelimit.Query/AllPendingSendPackets",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -3142,11 +2695,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.ratelimit.Query/CapacityByDenom",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -3163,11 +2713,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.ratelimit.Query/ListLimitParams",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -3184,11 +2731,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.revshare.Query/MarketMapperRevShareDetails",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -3205,11 +2749,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.revshare.Query/MarketMapperRevenueShareParams",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -3226,11 +2767,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.revshare.Query/OrderRouterRevShare",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -3247,11 +2785,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.revshare.Query/UnconditionalRevShareConfig",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -3268,11 +2803,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.rewards.Query/Params",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -3289,11 +2821,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.stats.Query/EpochStats",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -3310,11 +2839,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.stats.Query/GlobalStats",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -3331,11 +2857,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.stats.Query/Params",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -3352,11 +2875,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.stats.Query/StatsMetadata",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -3373,11 +2893,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.stats.Query/UserStats",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -3394,11 +2911,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.subaccounts.Query/CollateralPoolAddress",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -3415,11 +2929,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.subaccounts.Query/GetWithdrawalAndTransfersBlockedInfo",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -3436,11 +2947,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.subaccounts.Query/Subaccount",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -3457,11 +2965,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.subaccounts.Query/SubaccountAll",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -3478,11 +2983,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.vault.Query/AllVaults",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -3499,11 +3001,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.vault.Query/MegavaultAllOwnerShares",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -3520,11 +3019,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.vault.Query/MegavaultOwnerShares",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -3541,11 +3037,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.vault.Query/MegavaultTotalShares",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -3562,11 +3055,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.vault.Query/MegavaultWithdrawalInfo",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -3583,11 +3073,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.vault.Query/Params",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -3604,11 +3091,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.vault.Query/Vault",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -3625,11 +3109,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.vault.Query/VaultParams",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -3646,11 +3127,8 @@
                 "enabled": true,
                 "name": "dydxprotocol.vest.Query/VestEntry",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -3667,11 +3145,8 @@
                 "enabled": true,
                 "name": "slinky.marketmap.v1.Query/LastUpdated",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -3688,11 +3163,8 @@
                 "enabled": true,
                 "name": "slinky.marketmap.v1.Query/Market",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -3709,11 +3181,8 @@
                 "enabled": true,
                 "name": "slinky.marketmap.v1.Query/MarketMap",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -3730,11 +3199,8 @@
                 "enabled": true,
                 "name": "slinky.marketmap.v1.Query/Markets",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -3751,11 +3217,8 @@
                 "enabled": true,
                 "name": "slinky.marketmap.v1.Query/Params",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -3864,17 +3327,10 @@
         "imports": [
           "DYDX"
         ],
-        "reliability_threshold": 268435455,
-        "data_reliability_enabled": true,
         "block_distance_for_finalized_data": 1,
         "blocks_in_finalization_proof": 1,
         "average_block_time": 1000,
         "allowed_block_lag_for_qos_sync": 10,
-        "shares": 1,
-        "min_stake_provider": {
-          "denom": "ulava",
-          "amount": "5000000000"
-        },
         "api_collections": [
           {
             "enabled": true,
@@ -3948,6 +3404,5 @@
         ]
       }
     ]
-  },
-  "deposit": "10000000ulava"
+  }
 }

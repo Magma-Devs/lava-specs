@@ -1,7 +1,5 @@
 {
     "proposal": {
-        "title": "Add Specs: Sonic",
-        "description": "Adding new specification support for relaying Sonic data on Lava",
         "specs": [
             {
                 "index": "SONIC",
@@ -10,17 +8,10 @@
                 "imports": [
                     "ETH1"
                 ],
-                "reliability_threshold": 268435455,
-                "data_reliability_enabled": true,
                 "block_distance_for_finalized_data": 7,
                 "blocks_in_finalization_proof": 3,
                 "average_block_time": 350,
                 "allowed_block_lag_for_qos_sync": 29,
-                "shares": 1,
-                "min_stake_provider": {
-                    "denom": "ulava",
-                    "amount": "5000000000"
-                },
                 "api_collections": [
                     {
                         "enabled": true,
@@ -67,11 +58,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "trace_filter",
@@ -85,11 +73,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "trace_transaction",
@@ -103,11 +88,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             }
                         ],
                         "verifications": [],
@@ -122,17 +104,10 @@
                 "imports": [
                     "SONIC"
                 ],
-                "reliability_threshold": 268435455,
-                "data_reliability_enabled": true,
                 "block_distance_for_finalized_data": 7,
                 "blocks_in_finalization_proof": 3,
                 "average_block_time": 350,
                 "allowed_block_lag_for_qos_sync": 29,
-                "shares": 1,
-                "min_stake_provider": {
-                    "denom": "ulava",
-                    "amount": "5000000000"
-                },
                 "api_collections": [
                     {
                         "enabled": true,
@@ -160,6 +135,5 @@
                 ]
             }
         ]
-    },
-    "deposit": "10001000ulava"
+    }
 }

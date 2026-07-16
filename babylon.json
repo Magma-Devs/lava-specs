@@ -1,7 +1,5 @@
 {
     "proposal": {
-        "title": "Add Specs: BABYLON",
-        "description": "Adding new specification support for relaying Babylon data on Lava",
         "specs": [
             {
                 "index": "BABYLON",
@@ -11,18 +9,10 @@
                     "COSMOSSDK50",
                     "COSMOSWASM"
                 ],
-                "providers_types": 0,
-                "reliability_threshold": 268435455,
-                "data_reliability_enabled": true,
                 "block_distance_for_finalized_data": 0,
                 "blocks_in_finalization_proof": 1,
                 "average_block_time": 10000,
                 "allowed_block_lag_for_qos_sync": 1,
-                "shares": 1,
-                "min_stake_provider": {
-                    "denom": "ulava",
-                    "amount": "5000000000"
-                },
                 "api_collections": [
                     {
                         "enabled": true,
@@ -37,11 +27,8 @@
                                 "enabled": true,
                                 "name": "/babylon/btccheckpoint/v1",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -58,11 +45,8 @@
                                 "enabled": true,
                                 "name": "/babylon/btccheckpoint/v1/params",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -79,11 +63,8 @@
                                 "enabled": true,
                                 "name": "/babylon/btccheckpoint/v1/{epoch_num}",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -100,11 +81,8 @@
                                 "enabled": true,
                                 "name": "/babylon/btccheckpoint/v1/{epoch_num}/submissions",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -121,11 +99,8 @@
                                 "enabled": true,
                                 "name": "/babylon/btclightclient/v1/baseheader",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -142,11 +117,8 @@
                                 "enabled": true,
                                 "name": "/babylon/btclightclient/v1/contains",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -163,11 +135,8 @@
                                 "enabled": true,
                                 "name": "/babylon/btclightclient/v1/containsBytes",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -184,11 +153,8 @@
                                 "enabled": true,
                                 "name": "/babylon/btclightclient/v1/depth/{hash}",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -205,11 +171,8 @@
                                 "enabled": true,
                                 "name": "/babylon/btclightclient/v1/hashes",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -226,11 +189,8 @@
                                 "enabled": true,
                                 "name": "/babylon/btclightclient/v1/mainchain",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -247,11 +207,8 @@
                                 "enabled": true,
                                 "name": "/babylon/btclightclient/v1/params",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -268,11 +225,8 @@
                                 "enabled": true,
                                 "name": "/babylon/btclightclient/v1/tip",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -289,11 +243,8 @@
                                 "enabled": true,
                                 "name": "/babylon/btcstaking/v1/btc_delegation/{staking_tx_hash_hex}",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -310,11 +261,8 @@
                                 "enabled": true,
                                 "name": "/babylon/btcstaking/v1/btc_delegations/{status}",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -331,11 +279,8 @@
                                 "enabled": true,
                                 "name": "/babylon/btcstaking/v1/finality_providers",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -352,11 +297,8 @@
                                 "enabled": true,
                                 "name": "/babylon/btcstaking/v1/finality_providers/{fp_btc_pk_hex}/delegations",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -373,11 +315,8 @@
                                 "enabled": true,
                                 "name": "/babylon/btcstaking/v1/finality_providers/{fp_btc_pk_hex}/finality_provider",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -394,11 +333,8 @@
                                 "enabled": true,
                                 "name": "/babylon/btcstaking/v1/largest_btc_reorg",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -415,11 +351,8 @@
                                 "enabled": true,
                                 "name": "/babylon/btcstaking/v1/params",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -436,11 +369,8 @@
                                 "enabled": true,
                                 "name": "/babylon/btcstaking/v1/params/btc_height/{btc_height}",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -457,11 +387,8 @@
                                 "enabled": true,
                                 "name": "/babylon/btcstaking/v1/params/{version}",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -478,11 +405,8 @@
                                 "enabled": true,
                                 "name": "/babylon/btcstaking/v1/params_versions",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -499,11 +423,8 @@
                                 "enabled": true,
                                 "name": "/babylon/checkpointing/v1/bls_public_keys/{epoch_num}",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -520,11 +441,8 @@
                                 "enabled": true,
                                 "name": "/babylon/checkpointing/v1/epochs/{epoch_num}/status",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -541,11 +459,8 @@
                                 "enabled": true,
                                 "name": "/babylon/checkpointing/v1/epochs:status_count",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -562,11 +477,8 @@
                                 "enabled": true,
                                 "name": "/babylon/checkpointing/v1/last_raw_checkpoint/{status}",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -583,11 +495,8 @@
                                 "enabled": true,
                                 "name": "/babylon/checkpointing/v1/raw_checkpoint/{epoch_num}",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -604,11 +513,8 @@
                                 "enabled": true,
                                 "name": "/babylon/checkpointing/v1/raw_checkpoints",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -625,11 +531,8 @@
                                 "enabled": true,
                                 "name": "/babylon/checkpointing/v1/raw_checkpoints/{status}",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -646,11 +549,8 @@
                                 "enabled": true,
                                 "name": "/babylon/costaking/v1/costakers/{costaker_address}/rewards_tracker",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -667,11 +567,8 @@
                                 "enabled": true,
                                 "name": "/babylon/costaking/v1/current_rewards",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -688,11 +585,8 @@
                                 "enabled": true,
                                 "name": "/babylon/costaking/v1/historical_rewards/{period}",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -709,11 +603,8 @@
                                 "enabled": true,
                                 "name": "/babylon/costaking/v1/params",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -730,11 +621,8 @@
                                 "enabled": true,
                                 "name": "/babylon/epoching/v1/current_epoch",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -751,11 +639,8 @@
                                 "enabled": true,
                                 "name": "/babylon/epoching/v1/delegation_lifecycle/{del_addr}",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -772,11 +657,8 @@
                                 "enabled": true,
                                 "name": "/babylon/epoching/v1/epochs",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -793,11 +675,8 @@
                                 "enabled": true,
                                 "name": "/babylon/epoching/v1/epochs/{epoch_num}",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -814,11 +693,8 @@
                                 "enabled": true,
                                 "name": "/babylon/epoching/v1/epochs/{epoch_num}/messages",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -835,11 +711,8 @@
                                 "enabled": true,
                                 "name": "/babylon/epoching/v1/epochs/{epoch_num}/validator_set",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -856,11 +729,8 @@
                                 "enabled": true,
                                 "name": "/babylon/epoching/v1/epochs:latest/messages",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -877,11 +747,8 @@
                                 "enabled": true,
                                 "name": "/babylon/epoching/v1/params",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -898,11 +765,8 @@
                                 "enabled": true,
                                 "name": "/babylon/epoching/v1/validator_lifecycle/{val_addr}",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -919,11 +783,8 @@
                                 "enabled": true,
                                 "name": "/babylon/finality/v1/activated_height",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -940,11 +801,8 @@
                                 "enabled": true,
                                 "name": "/babylon/finality/v1/blocks",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -961,11 +819,8 @@
                                 "enabled": true,
                                 "name": "/babylon/finality/v1/blocks/{height}",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -982,11 +837,8 @@
                                 "enabled": true,
                                 "name": "/babylon/finality/v1/evidences",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1003,11 +855,8 @@
                                 "enabled": true,
                                 "name": "/babylon/finality/v1/finality_providers/{fp_btc_pk_hex}/evidence",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1024,11 +873,8 @@
                                 "enabled": true,
                                 "name": "/babylon/finality/v1/finality_providers/{fp_btc_pk_hex}/power",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1045,11 +891,8 @@
                                 "enabled": true,
                                 "name": "/babylon/finality/v1/finality_providers/{fp_btc_pk_hex}/power/{height}",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1066,11 +909,8 @@
                                 "enabled": true,
                                 "name": "/babylon/finality/v1/finality_providers/{fp_btc_pk_hex}/pub_rand_commit_list",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1087,11 +927,8 @@
                                 "enabled": true,
                                 "name": "/babylon/finality/v1/finality_providers/{fp_btc_pk_hex}/public_randomness_list",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1108,11 +945,8 @@
                                 "enabled": true,
                                 "name": "/babylon/finality/v1/finality_providers/{height}",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1129,11 +963,8 @@
                                 "enabled": true,
                                 "name": "/babylon/finality/v1/params",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1150,11 +981,8 @@
                                 "enabled": true,
                                 "name": "/babylon/finality/v1/signing_infos",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1171,11 +999,8 @@
                                 "enabled": true,
                                 "name": "/babylon/finality/v1/signing_infos/{fp_btc_pk_hex}",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1192,11 +1017,8 @@
                                 "enabled": true,
                                 "name": "/babylon/finality/v1/votes/{height}",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1213,11 +1035,8 @@
                                 "enabled": true,
                                 "name": "/babylon/finality/v1/vp_dst_cache/{height}",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1234,11 +1053,8 @@
                                 "enabled": true,
                                 "name": "/babylon/incentive/address/{address}/reward_gauge",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1255,11 +1071,8 @@
                                 "enabled": true,
                                 "name": "/babylon/incentive/btc_staking_gauge/{height}",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1276,11 +1089,8 @@
                                 "enabled": true,
                                 "name": "/babylon/incentive/delegators/{delegator_address}/withdraw_address",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1297,11 +1107,8 @@
                                 "enabled": true,
                                 "name": "/babylon/incentive/finality_providers/{finality_provider_address}/delegators/{delegator_address}/delegation_rewards",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1318,11 +1125,8 @@
                                 "enabled": true,
                                 "name": "/babylon/incentive/finality_providers_current_rewards/{finality_provider_address}",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1339,11 +1143,8 @@
                                 "enabled": true,
                                 "name": "/babylon/incentive/params",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1360,11 +1161,8 @@
                                 "enabled": true,
                                 "name": "/babylon/monitor/v1/checkpoints/{ckpt_hash}",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1381,11 +1179,8 @@
                                 "enabled": true,
                                 "name": "/babylon/monitor/v1/epochs/{epoch_num}",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1402,11 +1197,8 @@
                                 "enabled": true,
                                 "name": "/cosmos/mint/v1beta1/annual_provisions",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1423,11 +1215,8 @@
                                 "enabled": true,
                                 "name": "/cosmos/mint/v1beta1/genesis_time",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1444,11 +1233,8 @@
                                 "enabled": true,
                                 "name": "/cosmos/mint/v1beta1/inflation_rate",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1465,11 +1251,8 @@
                                 "enabled": true,
                                 "name": "/ibc/apps/transfer/v1/denoms/{denom}/total_escrow",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1531,11 +1314,8 @@
                                 "enabled": true,
                                 "name": "babylon.btccheckpoint.v1.Query/BtcCheckpointInfo",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1552,11 +1332,8 @@
                                 "enabled": true,
                                 "name": "babylon.btccheckpoint.v1.Query/BtcCheckpointsInfo",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1573,11 +1350,8 @@
                                 "enabled": true,
                                 "name": "babylon.btccheckpoint.v1.Query/EpochSubmissions",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1594,11 +1368,8 @@
                                 "enabled": true,
                                 "name": "babylon.btccheckpoint.v1.Query/Params",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1615,11 +1386,8 @@
                                 "enabled": true,
                                 "name": "babylon.btclightclient.v1.Query/BaseHeader",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1636,11 +1404,8 @@
                                 "enabled": true,
                                 "name": "babylon.btclightclient.v1.Query/Contains",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1657,11 +1422,8 @@
                                 "enabled": true,
                                 "name": "babylon.btclightclient.v1.Query/ContainsBytes",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1678,11 +1440,8 @@
                                 "enabled": true,
                                 "name": "babylon.btclightclient.v1.Query/Hashes",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1699,11 +1458,8 @@
                                 "enabled": true,
                                 "name": "babylon.btclightclient.v1.Query/HeaderDepth",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1720,11 +1476,8 @@
                                 "enabled": true,
                                 "name": "babylon.btclightclient.v1.Query/MainChain",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1741,11 +1494,8 @@
                                 "enabled": true,
                                 "name": "babylon.btclightclient.v1.Query/Params",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1762,11 +1512,8 @@
                                 "enabled": true,
                                 "name": "babylon.btclightclient.v1.Query/Tip",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1783,11 +1530,8 @@
                                 "enabled": true,
                                 "name": "babylon.btcstaking.v1.Query/BTCDelegation",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1804,11 +1548,8 @@
                                 "enabled": true,
                                 "name": "babylon.btcstaking.v1.Query/BTCDelegations",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1825,11 +1566,8 @@
                                 "enabled": true,
                                 "name": "babylon.btcstaking.v1.Query/FinalityProvider",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1846,11 +1584,8 @@
                                 "enabled": true,
                                 "name": "babylon.btcstaking.v1.Query/FinalityProviderDelegations",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1867,11 +1602,8 @@
                                 "enabled": true,
                                 "name": "babylon.btcstaking.v1.Query/FinalityProviders",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1888,11 +1620,8 @@
                                 "enabled": true,
                                 "name": "babylon.btcstaking.v1.Query/LargestBtcReOrg",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1909,11 +1638,8 @@
                                 "enabled": true,
                                 "name": "babylon.btcstaking.v1.Query/Params",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1930,11 +1656,8 @@
                                 "enabled": true,
                                 "name": "babylon.btcstaking.v1.Query/ParamsByBTCHeight",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1951,11 +1674,8 @@
                                 "enabled": true,
                                 "name": "babylon.btcstaking.v1.Query/ParamsByVersion",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1972,11 +1692,8 @@
                                 "enabled": true,
                                 "name": "babylon.btcstaking.v1.Query/ParamsVersions",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -1993,11 +1710,8 @@
                                 "enabled": true,
                                 "name": "babylon.checkpointing.v1.Query/BlsPublicKeyList",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2014,11 +1728,8 @@
                                 "enabled": true,
                                 "name": "babylon.checkpointing.v1.Query/EpochStatus",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2035,11 +1746,8 @@
                                 "enabled": true,
                                 "name": "babylon.checkpointing.v1.Query/LastCheckpointWithStatus",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2056,11 +1764,8 @@
                                 "enabled": true,
                                 "name": "babylon.checkpointing.v1.Query/RawCheckpoint",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2077,11 +1782,8 @@
                                 "enabled": true,
                                 "name": "babylon.checkpointing.v1.Query/RawCheckpointList",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2098,11 +1800,8 @@
                                 "enabled": true,
                                 "name": "babylon.checkpointing.v1.Query/RawCheckpoints",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2119,11 +1818,8 @@
                                 "enabled": true,
                                 "name": "babylon.checkpointing.v1.Query/RecentEpochStatusCount",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2140,11 +1836,8 @@
                                 "enabled": true,
                                 "name": "babylon.costaking.v1.Query/CostakerRewardsTracker",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2161,11 +1854,8 @@
                                 "enabled": true,
                                 "name": "babylon.costaking.v1.Query/CurrentRewards",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2182,11 +1872,8 @@
                                 "enabled": true,
                                 "name": "babylon.costaking.v1.Query/HistoricalRewards",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2203,11 +1890,8 @@
                                 "enabled": true,
                                 "name": "babylon.costaking.v1.Query/Params",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2224,11 +1908,8 @@
                                 "enabled": true,
                                 "name": "babylon.epoching.v1.Query/CurrentEpoch",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2245,11 +1926,8 @@
                                 "enabled": true,
                                 "name": "babylon.epoching.v1.Query/DelegationLifecycle",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2266,11 +1944,8 @@
                                 "enabled": true,
                                 "name": "babylon.epoching.v1.Query/EpochInfo",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2287,11 +1962,8 @@
                                 "enabled": true,
                                 "name": "babylon.epoching.v1.Query/EpochMsgs",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2308,11 +1980,8 @@
                                 "enabled": true,
                                 "name": "babylon.epoching.v1.Query/EpochValSet",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2329,11 +1998,8 @@
                                 "enabled": true,
                                 "name": "babylon.epoching.v1.Query/EpochsInfo",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2350,11 +2016,8 @@
                                 "enabled": true,
                                 "name": "babylon.epoching.v1.Query/LatestEpochMsgs",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2371,11 +2034,8 @@
                                 "enabled": true,
                                 "name": "babylon.epoching.v1.Query/Params",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2392,11 +2052,8 @@
                                 "enabled": true,
                                 "name": "babylon.epoching.v1.Query/ValidatorLifecycle",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2413,11 +2070,8 @@
                                 "enabled": true,
                                 "name": "babylon.finality.v1.Query/ActivatedHeight",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2434,11 +2088,8 @@
                                 "enabled": true,
                                 "name": "babylon.finality.v1.Query/ActiveFinalityProvidersAtHeight",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2455,11 +2106,8 @@
                                 "enabled": true,
                                 "name": "babylon.finality.v1.Query/Block",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2476,11 +2124,8 @@
                                 "enabled": true,
                                 "name": "babylon.finality.v1.Query/Evidence",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2497,11 +2142,8 @@
                                 "enabled": true,
                                 "name": "babylon.finality.v1.Query/FinalityProviderCurrentPower",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2518,11 +2160,8 @@
                                 "enabled": true,
                                 "name": "babylon.finality.v1.Query/FinalityProviderPowerAtHeight",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2539,11 +2178,8 @@
                                 "enabled": true,
                                 "name": "babylon.finality.v1.Query/ListBlocks",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2560,11 +2196,8 @@
                                 "enabled": true,
                                 "name": "babylon.finality.v1.Query/ListEvidences",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2581,11 +2214,8 @@
                                 "enabled": true,
                                 "name": "babylon.finality.v1.Query/ListPubRandCommit",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2602,11 +2232,8 @@
                                 "enabled": true,
                                 "name": "babylon.finality.v1.Query/ListPublicRandomness",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2623,11 +2250,8 @@
                                 "enabled": true,
                                 "name": "babylon.finality.v1.Query/Params",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2644,11 +2268,8 @@
                                 "enabled": true,
                                 "name": "babylon.finality.v1.Query/SigningInfo",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2665,11 +2286,8 @@
                                 "enabled": true,
                                 "name": "babylon.finality.v1.Query/SigningInfos",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2686,11 +2304,8 @@
                                 "enabled": true,
                                 "name": "babylon.finality.v1.Query/VotesAtHeight",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2707,11 +2322,8 @@
                                 "enabled": true,
                                 "name": "babylon.finality.v1.Query/VotingPowerDistribution",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2728,11 +2340,8 @@
                                 "enabled": true,
                                 "name": "babylon.incentive.Query/BTCStakingGauge",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2749,11 +2358,8 @@
                                 "enabled": true,
                                 "name": "babylon.incentive.Query/DelegationRewards",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2770,11 +2376,8 @@
                                 "enabled": true,
                                 "name": "babylon.incentive.Query/DelegatorWithdrawAddress",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2791,11 +2394,8 @@
                                 "enabled": true,
                                 "name": "babylon.incentive.Query/FpCurrentRewards",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2812,11 +2412,8 @@
                                 "enabled": true,
                                 "name": "babylon.incentive.Query/Params",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2833,11 +2430,8 @@
                                 "enabled": true,
                                 "name": "babylon.incentive.Query/RewardGauges",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2854,11 +2448,8 @@
                                 "enabled": true,
                                 "name": "babylon.mint.v1.Query/AnnualProvisions",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2875,11 +2466,8 @@
                                 "enabled": true,
                                 "name": "babylon.mint.v1.Query/GenesisTime",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2896,11 +2484,8 @@
                                 "enabled": true,
                                 "name": "babylon.mint.v1.Query/InflationRate",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2917,11 +2502,8 @@
                                 "enabled": true,
                                 "name": "babylon.monitor.v1.Query/EndedEpochBtcHeight",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -2938,11 +2520,8 @@
                                 "enabled": true,
                                 "name": "babylon.monitor.v1.Query/ReportedCheckpointBtcHeight",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0,
                                     "hanging_api": false
                                 },
@@ -3063,11 +2642,8 @@
                                 "enabled": true,
                                 "name": "/cosmos/tx/v1beta1/decode/amino",
                                 "compute_units": 10,
-                                "extra_compute_units": 0,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 1,
                                     "hanging_api": false
                                 },
@@ -3096,18 +2672,10 @@
                 "imports": [
                     "BABYLON"
                 ],
-                "providers_types": 0,
-                "reliability_threshold": 268435455,
-                "data_reliability_enabled": true,
                 "block_distance_for_finalized_data": 0,
                 "blocks_in_finalization_proof": 1,
                 "average_block_time": 10000,
                 "allowed_block_lag_for_qos_sync": 1,
-                "shares": 1,
-                "min_stake_provider": {
-                    "denom": "ulava",
-                    "amount": "5000000000"
-                },
                 "api_collections": [
                     {
                         "enabled": true,
@@ -3184,6 +2752,5 @@
                 ]
             }
         ]
-    },
-    "deposit": "10000000ulava"
+    }
 }

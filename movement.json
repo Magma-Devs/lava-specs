@@ -1,7 +1,5 @@
 {
     "proposal": {
-        "title": "Add Specs: Movement",
-        "description": "Adding new specification support for relaying Movement data on Lava",
         "specs": [
             {
                 "index": "MOVEMENT",
@@ -10,17 +8,10 @@
                 "imports": [
                     "APT1"
                 ],
-                "reliability_threshold": 268435455,
-                "data_reliability_enabled": true,
                 "block_distance_for_finalized_data": 0,
                 "blocks_in_finalization_proof": 1,
                 "average_block_time": 10000,
                 "allowed_block_lag_for_qos_sync": 50,
-                "shares": 1,
-                "min_stake_provider": {
-                    "denom": "ulava",
-                    "amount": "5000000000"
-                },
                 "api_collections": [
                     {
                         "enabled": true,
@@ -43,11 +34,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             }
                         ],
                         "headers": [
@@ -89,11 +77,7 @@
                             }
                         ]
                     }
-                ],
-                "contributor": [
-                  "lava@1w3qs6ksgzy66rjljmsjnetlqpvvhl9qkvntf0a"
-                ],
-                "contributor_percentage": "0.025"
+                ]
             },
             {
                 "index": "MOVEMENTT",
@@ -102,17 +86,10 @@
                 "imports": [
                     "MOVEMENT"
                 ],
-                "reliability_threshold": 268435455,
-                "data_reliability_enabled": true,
                 "block_distance_for_finalized_data": 0,
                 "blocks_in_finalization_proof": 1,
                 "average_block_time": 1000,
                 "allowed_block_lag_for_qos_sync": 30,
-                "shares": 1,
-                "min_stake_provider": {
-                    "denom": "ulava",
-                    "amount": "5000000000"
-                },
                 "api_collections": [
                     {
                         "enabled": true,
@@ -157,13 +134,8 @@
                             }
                         ]
                     }
-                ],
-                "contributor": [
-                  "lava@1w3qs6ksgzy66rjljmsjnetlqpvvhl9qkvntf0a"
-                ],
-                "contributor_percentage": "0.025"
+                ]
             }
         ]
-    },
-    "deposit": "1750000000ulava"
+    }
 }

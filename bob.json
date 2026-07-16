@@ -1,7 +1,5 @@
 {
   "proposal": {
-    "title": "Add Specs: BOB",
-    "description": "Adding new specification support for relaying BOB (Build on Bitcoin) data on Lava. BOB is an OP-Stack EVM-equivalent hybrid L2 (Bitcoin-secured) served over jsonrpc by op-reth; imports ETH1 and adds the reth debug/txpool surface.",
     "specs": [
       {
         "index": "BOB",
@@ -10,17 +8,10 @@
         "imports": [
           "ETH1"
         ],
-        "reliability_threshold": 268435455,
-        "data_reliability_enabled": true,
         "block_distance_for_finalized_data": 1,
         "blocks_in_finalization_proof": 1,
         "average_block_time": 2000,
         "allowed_block_lag_for_qos_sync": 5,
-        "shares": 1,
-        "min_stake_provider": {
-          "denom": "ulava",
-          "amount": "5000000000"
-        },
         "api_collections": [
           {
             "enabled": true,
@@ -35,7 +26,6 @@
                 "name": "eth_getHeaderByHash",
                 "enabled": true,
                 "compute_units": 20,
-                "extra_compute_units": 0,
                 "block_parsing": {
                   "parser_arg": [
                     "latest"
@@ -44,8 +34,6 @@
                 },
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
                 }
               },
@@ -53,7 +41,6 @@
                 "name": "eth_getHeaderByNumber",
                 "enabled": true,
                 "compute_units": 20,
-                "extra_compute_units": 0,
                 "block_parsing": {
                   "parser_arg": [
                     "0"
@@ -62,8 +49,6 @@
                 },
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
                 }
               },
@@ -71,7 +56,6 @@
                 "name": "eth_simulateV1",
                 "enabled": true,
                 "compute_units": 50,
-                "extra_compute_units": 0,
                 "block_parsing": {
                   "parser_arg": [
                     "1"
@@ -80,8 +64,6 @@
                 },
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
                 }
               },
@@ -89,7 +71,6 @@
                 "name": "txpool_content",
                 "enabled": true,
                 "compute_units": 5000,
-                "extra_compute_units": 0,
                 "block_parsing": {
                   "parser_arg": [
                     "latest"
@@ -98,8 +79,6 @@
                 },
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
                 }
               },
@@ -107,7 +86,6 @@
                 "name": "txpool_contentFrom",
                 "enabled": true,
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "block_parsing": {
                   "parser_arg": [
                     "latest"
@@ -116,8 +94,6 @@
                 },
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
                 }
               },
@@ -125,7 +101,6 @@
                 "name": "txpool_inspect",
                 "enabled": true,
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "block_parsing": {
                   "parser_arg": [
                     "latest"
@@ -134,8 +109,6 @@
                 },
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
                 }
               },
@@ -143,7 +116,6 @@
                 "name": "txpool_status",
                 "enabled": true,
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "block_parsing": {
                   "parser_arg": [
                     "latest"
@@ -152,8 +124,6 @@
                 },
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
                 }
               }
@@ -223,7 +193,6 @@
                 "name": "debug_traceCallMany",
                 "enabled": true,
                 "compute_units": 100,
-                "extra_compute_units": 0,
                 "block_parsing": {
                   "parser_arg": [
                     "1",
@@ -233,8 +202,6 @@
                 },
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
                 }
               },
@@ -242,7 +209,6 @@
                 "name": "debug_getRawTransactions",
                 "enabled": true,
                 "compute_units": 100,
-                "extra_compute_units": 0,
                 "block_parsing": {
                   "parser_arg": [
                     "0"
@@ -251,8 +217,6 @@
                 },
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
                 }
               },
@@ -260,7 +224,6 @@
                 "name": "debug_executionWitness",
                 "enabled": true,
                 "compute_units": 100,
-                "extra_compute_units": 0,
                 "block_parsing": {
                   "parser_arg": [
                     "0"
@@ -269,8 +232,6 @@
                 },
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
                 }
               },
@@ -278,7 +239,6 @@
                 "name": "debug_executionWitnessByBlockHash",
                 "enabled": true,
                 "compute_units": 100,
-                "extra_compute_units": 0,
                 "block_parsing": {
                   "parser_arg": [
                     "latest"
@@ -287,8 +247,6 @@
                 },
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
                 }
               },
@@ -296,7 +254,6 @@
                 "name": "debug_intermediateRoots",
                 "enabled": true,
                 "compute_units": 100,
-                "extra_compute_units": 0,
                 "block_parsing": {
                   "parser_arg": [
                     "latest"
@@ -305,8 +262,6 @@
                 },
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
                 }
               },
@@ -314,7 +269,6 @@
                 "name": "debug_accountAt",
                 "enabled": true,
                 "compute_units": 100,
-                "extra_compute_units": 0,
                 "block_parsing": {
                   "parser_arg": [
                     "0"
@@ -323,8 +277,6 @@
                 },
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
                 }
               },
@@ -332,7 +284,6 @@
                 "name": "debug_accountInfoAt",
                 "enabled": true,
                 "compute_units": 100,
-                "extra_compute_units": 0,
                 "block_parsing": {
                   "parser_arg": [
                     "0"
@@ -341,8 +292,6 @@
                 },
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
                 }
               },
@@ -350,7 +299,6 @@
                 "name": "debug_chainConfig",
                 "enabled": true,
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "block_parsing": {
                   "parser_arg": [
                     ""
@@ -359,8 +307,6 @@
                 },
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
                 }
               },
@@ -368,7 +314,6 @@
                 "name": "debug_codeByHash",
                 "enabled": true,
                 "compute_units": 100,
-                "extra_compute_units": 0,
                 "block_parsing": {
                   "parser_arg": [
                     "latest"
@@ -377,8 +322,6 @@
                 },
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
                 }
               },
@@ -386,7 +329,6 @@
                 "name": "debug_dbGet",
                 "enabled": true,
                 "compute_units": 100,
-                "extra_compute_units": 0,
                 "block_parsing": {
                   "parser_arg": [
                     "latest"
@@ -395,8 +337,6 @@
                 },
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
                 }
               }
@@ -441,17 +381,10 @@
         "imports": [
           "BOB"
         ],
-        "reliability_threshold": 268435455,
-        "data_reliability_enabled": true,
         "block_distance_for_finalized_data": 1,
         "blocks_in_finalization_proof": 1,
         "average_block_time": 2000,
         "allowed_block_lag_for_qos_sync": 5,
-        "shares": 1,
-        "min_stake_provider": {
-          "denom": "ulava",
-          "amount": "5000000000"
-        },
         "api_collections": [
           {
             "enabled": true,
@@ -479,6 +412,5 @@
         ]
       }
     ]
-  },
-  "deposit": "10000000ulava"
+  }
 }

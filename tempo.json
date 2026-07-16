@@ -1,14 +1,10 @@
 {
     "proposal": {
-        "title": "Add Specs: TEMPO",
-        "description": "Adding new specification support for relaying Tempo data on Lava. Tempo is a Stripe/Paradigm payments-focused, Reth-based EVM Layer-1 with Simplex BFT consensus and sub-second (~0.5s) deterministic instant finality (no reorgs); the spec imports ETH1 and adds Tempo-specific JSON-RPC methods (eth_sendRawTransactionSync, eth_getStorageValues, eth_getBlockAccessList, eth_simulateV1, eth_fillTransaction, tempo_forkSchedule) plus a txpool add-on. Tempo has no native gas token (fees are paid in stablecoins/TIP-20 tokens, so eth_getBalance returns a placeholder constant). The inherited ERC-4337 bundler add-on is disabled because Tempo nodes do not serve bundler RPC (no in-protocol bundler/paymaster/EntryPoint). The separate authenticated hosted REST 'Tempo API' (api.tempo.xyz) is out of scope for this JSON-RPC spec.",
         "specs": [
             {
                 "index": "TEMPO",
                 "name": "Tempo Mainnet",
                 "enabled": true,
-                "reliability_threshold": 268435455,
-                "data_reliability_enabled": true,
                 "block_distance_for_finalized_data": 1,
                 "blocks_in_finalization_proof": 1,
                 "average_block_time": 500,
@@ -16,11 +12,6 @@
                 "imports": [
                     "ETH1"
                 ],
-                "shares": 1,
-                "min_stake_provider": {
-                    "denom": "ulava",
-                    "amount": "5000000000"
-                },
                 "api_collections": [
                     {
                         "enabled": false,
@@ -58,24 +49,21 @@
                                 "block_parsing": {"parser_arg": ["latest"], "parser_func": "DEFAULT"},
                                 "compute_units": 5000,
                                 "enabled": true,
-                                "category": {"deterministic": false, "local": true, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": false, "stateful": 0}
                             },
                             {
                                 "name": "txpool_inspect",
                                 "block_parsing": {"parser_arg": ["latest"], "parser_func": "DEFAULT"},
                                 "compute_units": 20,
                                 "enabled": true,
-                                "category": {"deterministic": false, "local": true, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": false, "stateful": 0}
                             },
                             {
                                 "name": "txpool_status",
                                 "block_parsing": {"parser_arg": ["latest"], "parser_func": "DEFAULT"},
                                 "compute_units": 10,
                                 "enabled": true,
-                                "category": {"deterministic": false, "local": true, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": false, "stateful": 0}
                             }
                         ],
                         "headers": [],
@@ -109,48 +97,42 @@
                                 "compute_units": 100,
                                 "enabled": true,
                                 "timeout_ms": 10000,
-                                "category": {"deterministic": false, "local": false, "subscription": false, "stateful": 1, "hanging_api": true},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": false, "stateful": 1, "hanging_api": true}
                             },
                             {
                                 "name": "eth_getStorageValues",
                                 "block_parsing": {"parser_arg": ["1"], "parser_func": "PARSE_BY_ARG"},
                                 "compute_units": 20,
                                 "enabled": true,
-                                "category": {"deterministic": true, "local": false, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": true, "stateful": 0}
                             },
                             {
                                 "name": "eth_getBlockAccessList",
                                 "block_parsing": {"parser_arg": ["0"], "parser_func": "PARSE_BY_ARG"},
                                 "compute_units": 20,
                                 "enabled": true,
-                                "category": {"deterministic": true, "local": false, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": true, "stateful": 0}
                             },
                             {
                                 "name": "eth_simulateV1",
                                 "block_parsing": {"parser_arg": ["1"], "parser_func": "PARSE_BY_ARG"},
                                 "compute_units": 100,
                                 "enabled": true,
-                                "category": {"deterministic": true, "local": false, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": true, "stateful": 0}
                             },
                             {
                                 "name": "eth_fillTransaction",
                                 "block_parsing": {"parser_arg": ["latest"], "parser_func": "DEFAULT"},
                                 "compute_units": 10,
                                 "enabled": true,
-                                "category": {"deterministic": false, "local": false, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": false, "stateful": 0}
                             },
                             {
                                 "name": "tempo_forkSchedule",
                                 "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"},
                                 "compute_units": 10,
                                 "enabled": true,
-                                "category": {"deterministic": false, "local": false, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": false, "stateful": 0}
                             }
                         ],
                         "headers": [],
@@ -247,17 +229,10 @@
                 "imports": [
                     "TEMPO"
                 ],
-                "reliability_threshold": 268435455,
-                "data_reliability_enabled": true,
                 "block_distance_for_finalized_data": 1,
                 "blocks_in_finalization_proof": 1,
                 "average_block_time": 500,
                 "allowed_block_lag_for_qos_sync": 20,
-                "shares": 1,
-                "min_stake_provider": {
-                    "denom": "ulava",
-                    "amount": "5000000000"
-                },
                 "api_collections": [
                     {
                         "enabled": true,
@@ -286,6 +261,5 @@
                 ]
             }
         ]
-    },
-    "deposit": "10000000ulava"
+    }
 }

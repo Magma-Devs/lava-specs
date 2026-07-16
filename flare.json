@@ -1,14 +1,10 @@
 {
     "proposal": {
-        "title": "Add Specs: FLARE",
-        "description": "Adding new specification support for relaying Flare data on Lava. Flare's C-Chain is an EVM-compatible coreth fork (go-flare = avalanchego + coreth). The spec imports ETH1 and adds coreth-specific eth_*/txpool_* methods plus the extended coreth debug namespace. The trace_* (OpenEthereum) and ERC-4337 bundler add-ons are disabled because coreth/go-flare does not implement them. Note: debug_* and txpool_* methods are supported by coreth on nodes configured with the appropriate API flags but are gated on the public free-tier endpoint.",
         "specs": [
             {
                 "index": "FLARE",
                 "name": "Flare Mainnet",
                 "enabled": true,
-                "reliability_threshold": 268435455,
-                "data_reliability_enabled": true,
                 "block_distance_for_finalized_data": 1,
                 "blocks_in_finalization_proof": 1,
                 "average_block_time": 1200,
@@ -16,11 +12,6 @@
                 "imports": [
                     "ETH1"
                 ],
-                "shares": 1,
-                "min_stake_provider": {
-                    "denom": "ulava",
-                    "amount": "5000000000"
-                },
                 "api_collections": [
                     {
                         "enabled": false,
@@ -80,248 +71,217 @@
                                 "block_parsing": {"parser_arg": ["0"], "parser_func": "PARSE_BY_ARG"},
                                 "compute_units": 100,
                                 "enabled": true,
-                                "category": {"deterministic": true, "local": false, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": true, "stateful": 0}
                             },
                             {
                                 "name": "debug_dumpBlock",
                                 "block_parsing": {"parser_arg": ["0"], "parser_func": "PARSE_BY_ARG"},
                                 "compute_units": 100,
                                 "enabled": true,
-                                "category": {"deterministic": true, "local": false, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": true, "stateful": 0}
                             },
                             {
                                 "name": "debug_getModifiedAccountsByHash",
                                 "block_parsing": {"parser_arg": ["latest"], "parser_func": "DEFAULT"},
                                 "compute_units": 100,
                                 "enabled": true,
-                                "category": {"deterministic": true, "local": false, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": true, "stateful": 0}
                             },
                             {
                                 "name": "debug_getModifiedAccountsByNumber",
                                 "block_parsing": {"parser_arg": ["0"], "parser_func": "PARSE_BY_ARG"},
                                 "compute_units": 100,
                                 "enabled": true,
-                                "category": {"deterministic": true, "local": false, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": true, "stateful": 0}
                             },
                             {
                                 "name": "debug_intermediateRoots",
                                 "block_parsing": {"parser_arg": ["latest"], "parser_func": "DEFAULT"},
                                 "compute_units": 100,
                                 "enabled": true,
-                                "category": {"deterministic": true, "local": false, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": true, "stateful": 0}
                             },
                             {
                                 "name": "debug_printBlock",
                                 "block_parsing": {"parser_arg": ["0"], "parser_func": "PARSE_BY_ARG"},
                                 "compute_units": 100,
                                 "enabled": true,
-                                "category": {"deterministic": true, "local": false, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": true, "stateful": 0}
                             },
                             {
                                 "name": "debug_traceBadBlock",
                                 "block_parsing": {"parser_arg": ["latest"], "parser_func": "DEFAULT"},
                                 "compute_units": 200,
                                 "enabled": true,
-                                "category": {"deterministic": false, "local": true, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": false, "stateful": 0}
                             },
                             {
                                 "name": "debug_preimage",
                                 "block_parsing": {"parser_arg": ["latest"], "parser_func": "DEFAULT"},
                                 "compute_units": 100,
                                 "enabled": true,
-                                "category": {"deterministic": true, "local": false, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": true, "stateful": 0}
                             },
                             {
                                 "name": "debug_memStats",
                                 "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"},
                                 "compute_units": 10,
                                 "enabled": true,
-                                "category": {"deterministic": false, "local": true, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": false, "stateful": 0}
                             },
                             {
                                 "name": "debug_gcStats",
                                 "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"},
                                 "compute_units": 10,
                                 "enabled": true,
-                                "category": {"deterministic": false, "local": true, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": false, "stateful": 0}
                             },
                             {
                                 "name": "debug_stacks",
                                 "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"},
                                 "compute_units": 10,
                                 "enabled": true,
-                                "category": {"deterministic": false, "local": true, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": false, "stateful": 0}
                             },
                             {
                                 "name": "debug_verbosity",
                                 "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"},
                                 "compute_units": 10,
                                 "enabled": true,
-                                "category": {"deterministic": false, "local": true, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": false, "stateful": 0}
                             },
                             {
                                 "name": "debug_vmodule",
                                 "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"},
                                 "compute_units": 10,
                                 "enabled": true,
-                                "category": {"deterministic": false, "local": true, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": false, "stateful": 0}
                             },
                             {
                                 "name": "debug_cpuProfile",
                                 "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"},
                                 "compute_units": 10,
                                 "enabled": true,
-                                "category": {"deterministic": false, "local": true, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": false, "stateful": 0}
                             },
                             {
                                 "name": "debug_startCPUProfile",
                                 "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"},
                                 "compute_units": 10,
                                 "enabled": true,
-                                "category": {"deterministic": false, "local": true, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": false, "stateful": 0}
                             },
                             {
                                 "name": "debug_stopCPUProfile",
                                 "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"},
                                 "compute_units": 10,
                                 "enabled": true,
-                                "category": {"deterministic": false, "local": true, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": false, "stateful": 0}
                             },
                             {
                                 "name": "debug_blockProfile",
                                 "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"},
                                 "compute_units": 10,
                                 "enabled": true,
-                                "category": {"deterministic": false, "local": true, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": false, "stateful": 0}
                             },
                             {
                                 "name": "debug_setBlockProfileRate",
                                 "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"},
                                 "compute_units": 10,
                                 "enabled": true,
-                                "category": {"deterministic": false, "local": true, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": false, "stateful": 0}
                             },
                             {
                                 "name": "debug_writeBlockProfile",
                                 "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"},
                                 "compute_units": 10,
                                 "enabled": true,
-                                "category": {"deterministic": false, "local": true, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": false, "stateful": 0}
                             },
                             {
                                 "name": "debug_mutexProfile",
                                 "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"},
                                 "compute_units": 10,
                                 "enabled": true,
-                                "category": {"deterministic": false, "local": true, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": false, "stateful": 0}
                             },
                             {
                                 "name": "debug_setMutexProfileFraction",
                                 "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"},
                                 "compute_units": 10,
                                 "enabled": true,
-                                "category": {"deterministic": false, "local": true, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": false, "stateful": 0}
                             },
                             {
                                 "name": "debug_writeMutexProfile",
                                 "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"},
                                 "compute_units": 10,
                                 "enabled": true,
-                                "category": {"deterministic": false, "local": true, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": false, "stateful": 0}
                             },
                             {
                                 "name": "debug_writeMemProfile",
                                 "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"},
                                 "compute_units": 10,
                                 "enabled": true,
-                                "category": {"deterministic": false, "local": true, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": false, "stateful": 0}
                             },
                             {
                                 "name": "debug_goTrace",
                                 "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"},
                                 "compute_units": 10,
                                 "enabled": true,
-                                "category": {"deterministic": false, "local": true, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": false, "stateful": 0}
                             },
                             {
                                 "name": "debug_startGoTrace",
                                 "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"},
                                 "compute_units": 10,
                                 "enabled": true,
-                                "category": {"deterministic": false, "local": true, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": false, "stateful": 0}
                             },
                             {
                                 "name": "debug_stopGoTrace",
                                 "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"},
                                 "compute_units": 10,
                                 "enabled": true,
-                                "category": {"deterministic": false, "local": true, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": false, "stateful": 0}
                             },
                             {
                                 "name": "debug_freeOSMemory",
                                 "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"},
                                 "compute_units": 10,
                                 "enabled": true,
-                                "category": {"deterministic": false, "local": true, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": false, "stateful": 0}
                             },
                             {
                                 "name": "debug_setGCPercent",
                                 "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"},
                                 "compute_units": 10,
                                 "enabled": true,
-                                "category": {"deterministic": false, "local": true, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": false, "stateful": 0}
                             },
                             {
                                 "name": "debug_setHead",
                                 "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"},
                                 "compute_units": 10,
                                 "enabled": true,
-                                "category": {"deterministic": false, "local": true, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": false, "stateful": 0}
                             },
                             {
                                 "name": "debug_chaindbCompact",
                                 "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"},
                                 "compute_units": 10,
                                 "enabled": true,
-                                "category": {"deterministic": false, "local": true, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": false, "stateful": 0}
                             },
                             {
                                 "name": "debug_chaindbProperty",
                                 "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"},
                                 "compute_units": 10,
                                 "enabled": true,
-                                "category": {"deterministic": false, "local": true, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": false, "stateful": 0}
                             }
                         ],
                         "headers": [],
@@ -354,87 +314,77 @@
                                 "block_parsing": {"parser_arg": ["latest"], "parser_func": "DEFAULT"},
                                 "compute_units": 10,
                                 "enabled": true,
-                                "category": {"deterministic": true, "local": false, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": true, "stateful": 0}
                             },
                             {
                                 "name": "eth_getChainConfig",
                                 "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"},
                                 "compute_units": 10,
                                 "enabled": true,
-                                "category": {"deterministic": true, "local": false, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": true, "stateful": 0}
                             },
                             {
                                 "name": "eth_callDetailed",
                                 "block_parsing": {"parser_arg": ["1"], "parser_func": "PARSE_BY_ARG"},
                                 "compute_units": 20,
                                 "enabled": true,
-                                "category": {"deterministic": true, "local": false, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": true, "stateful": 0}
                             },
                             {
                                 "name": "eth_getBadBlocks",
                                 "block_parsing": {"parser_arg": ["latest"], "parser_func": "DEFAULT"},
                                 "compute_units": 10,
                                 "enabled": true,
-                                "category": {"deterministic": false, "local": true, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": false, "stateful": 0}
                             },
                             {
                                 "name": "eth_suggestPriceOptions",
                                 "block_parsing": {"parser_arg": ["latest"], "parser_func": "DEFAULT"},
                                 "compute_units": 10,
                                 "enabled": true,
-                                "category": {"deterministic": false, "local": false, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": false, "stateful": 0}
                             },
                             {
                                 "name": "eth_newAcceptedTransactions",
                                 "block_parsing": {"parser_arg": ["latest"], "parser_func": "DEFAULT"},
                                 "compute_units": 1000,
                                 "enabled": true,
-                                "category": {"deterministic": false, "local": false, "subscription": true, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": false, "stateful": 0}
                             },
                             {
                                 "name": "txpool_status",
                                 "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"},
                                 "compute_units": 10,
                                 "enabled": true,
-                                "category": {"deterministic": false, "local": false, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": false, "stateful": 0}
                             },
                             {
                                 "name": "txpool_content",
                                 "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"},
                                 "compute_units": 5000,
                                 "enabled": true,
-                                "category": {"deterministic": false, "local": false, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": false, "stateful": 0}
                             },
                             {
                                 "name": "txpool_contentFrom",
                                 "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"},
                                 "compute_units": 10,
                                 "enabled": true,
-                                "category": {"deterministic": false, "local": false, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": false, "stateful": 0}
                             },
                             {
                                 "name": "txpool_inspect",
                                 "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"},
                                 "compute_units": 10,
                                 "enabled": true,
-                                "category": {"deterministic": false, "local": false, "subscription": false, "stateful": 0},
-                                "extra_compute_units": 0
+                                "category": {"deterministic": false, "stateful": 0}
                             },
-                            {"name": "eth_mining",          "enabled": false, "compute_units": 1, "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"}, "category": {"deterministic": false, "local": false, "subscription": false, "stateful": 0}, "extra_compute_units": 0},
-                            {"name": "eth_hashrate",        "enabled": false, "compute_units": 1, "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"}, "category": {"deterministic": false, "local": false, "subscription": false, "stateful": 0}, "extra_compute_units": 0},
-                            {"name": "eth_getWork",         "enabled": false, "compute_units": 1, "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"}, "category": {"deterministic": false, "local": false, "subscription": false, "stateful": 0}, "extra_compute_units": 0},
-                            {"name": "eth_compileLLL",      "enabled": false, "compute_units": 1, "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"}, "category": {"deterministic": false, "local": false, "subscription": false, "stateful": 0}, "extra_compute_units": 0},
-                            {"name": "eth_getCompilers",    "enabled": false, "compute_units": 1, "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"}, "category": {"deterministic": false, "local": false, "subscription": false, "stateful": 0}, "extra_compute_units": 0},
-                            {"name": "eth_protocolVersion", "enabled": false, "compute_units": 1, "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"}, "category": {"deterministic": false, "local": false, "subscription": false, "stateful": 0}, "extra_compute_units": 0}
+                            {"name": "eth_mining",          "enabled": false, "compute_units": 1, "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"}, "category": {"deterministic": false, "stateful": 0}},
+                            {"name": "eth_hashrate",        "enabled": false, "compute_units": 1, "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"}, "category": {"deterministic": false, "stateful": 0}},
+                            {"name": "eth_getWork",         "enabled": false, "compute_units": 1, "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"}, "category": {"deterministic": false, "stateful": 0}},
+                            {"name": "eth_compileLLL",      "enabled": false, "compute_units": 1, "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"}, "category": {"deterministic": false, "stateful": 0}},
+                            {"name": "eth_getCompilers",    "enabled": false, "compute_units": 1, "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"}, "category": {"deterministic": false, "stateful": 0}},
+                            {"name": "eth_protocolVersion", "enabled": false, "compute_units": 1, "block_parsing": {"parser_arg": [""], "parser_func": "EMPTY"}, "category": {"deterministic": false, "stateful": 0}}
                         ],
                         "headers": [],
                         "inheritance_apis": [],
@@ -530,17 +480,10 @@
                 "imports": [
                     "FLARE"
                 ],
-                "reliability_threshold": 268435455,
-                "data_reliability_enabled": true,
                 "block_distance_for_finalized_data": 1,
                 "blocks_in_finalization_proof": 1,
                 "average_block_time": 2800,
                 "allowed_block_lag_for_qos_sync": 4,
-                "shares": 1,
-                "min_stake_provider": {
-                    "denom": "ulava",
-                    "amount": "5000000000"
-                },
                 "api_collections": [
                     {
                         "enabled": true,
@@ -569,6 +512,5 @@
                 ]
             }
         ]
-    },
-    "deposit": "10000000ulava"
+    }
 }

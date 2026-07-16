@@ -1,7 +1,5 @@
 {
   "proposal": {
-    "title": "Add Specs: THORCHAIN",
-    "description": "Adding new specification support for relaying THORChain data on Lava; requires >=2 upstreams for reliable block tracking.",
     "specs": [
       {
         "index": "THORCHAIN",
@@ -10,17 +8,10 @@
         "imports": [
           "TENDERMINT"
         ],
-        "reliability_threshold": 268435455,
-        "data_reliability_enabled": true,
         "block_distance_for_finalized_data": 0,
         "blocks_in_finalization_proof": 1,
         "average_block_time": 6000,
         "allowed_block_lag_for_qos_sync": 2,
-        "shares": 1,
-        "min_stake_provider": {
-          "denom": "ulava",
-          "amount": "5000000000"
-        },
         "api_collections": [
           {
             "enabled": true,
@@ -35,11 +26,8 @@
                 "enabled": true,
                 "name": "/auth/accounts/{address}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -56,11 +44,8 @@
                 "enabled": true,
                 "name": "/bank/balances/{address}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -77,11 +62,8 @@
                 "enabled": true,
                 "name": "/cosmos/auth/v1beta1/account_info/{address}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -98,11 +80,8 @@
                 "enabled": true,
                 "name": "/cosmos/auth/v1beta1/accounts",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -119,11 +98,8 @@
                 "enabled": true,
                 "name": "/cosmos/auth/v1beta1/accounts/{address}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -140,11 +116,8 @@
                 "enabled": true,
                 "name": "/cosmos/auth/v1beta1/address_by_id/{id}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -161,11 +134,8 @@
                 "enabled": true,
                 "name": "/cosmos/auth/v1beta1/bech32",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -182,11 +152,8 @@
                 "enabled": true,
                 "name": "/cosmos/auth/v1beta1/module_accounts",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -203,11 +170,8 @@
                 "enabled": true,
                 "name": "/cosmos/auth/v1beta1/module_accounts/{name}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -224,11 +188,8 @@
                 "enabled": true,
                 "name": "/cosmos/auth/v1beta1/params",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -245,11 +206,8 @@
                 "enabled": true,
                 "name": "/cosmos/authz/v1beta1/grants",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -266,11 +224,8 @@
                 "enabled": true,
                 "name": "/cosmos/authz/v1beta1/grants/grantee/{grantee}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -287,11 +242,8 @@
                 "enabled": true,
                 "name": "/cosmos/authz/v1beta1/grants/granter/{granter}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -308,11 +260,8 @@
                 "enabled": true,
                 "name": "/cosmos/bank/v1beta1/balances/{address}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -329,11 +278,8 @@
                 "enabled": true,
                 "name": "/cosmos/bank/v1beta1/balances/{address}/by_denom",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -350,11 +296,8 @@
                 "enabled": true,
                 "name": "/cosmos/bank/v1beta1/denom_owners/{denom}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -371,11 +314,8 @@
                 "enabled": true,
                 "name": "/cosmos/bank/v1beta1/denom_owners_by_query",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -392,11 +332,8 @@
                 "enabled": true,
                 "name": "/cosmos/bank/v1beta1/denoms_metadata",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -413,11 +350,8 @@
                 "enabled": true,
                 "name": "/cosmos/bank/v1beta1/denoms_metadata/{denom}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -434,11 +368,8 @@
                 "enabled": true,
                 "name": "/cosmos/bank/v1beta1/params",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -455,11 +386,8 @@
                 "enabled": true,
                 "name": "/cosmos/bank/v1beta1/send_enabled",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -476,11 +404,8 @@
                 "enabled": true,
                 "name": "/cosmos/bank/v1beta1/spendable_balances/{address}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -497,11 +422,8 @@
                 "enabled": true,
                 "name": "/cosmos/bank/v1beta1/spendable_balances/{address}/by_denom",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -518,11 +440,8 @@
                 "enabled": true,
                 "name": "/cosmos/bank/v1beta1/supply",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -539,11 +458,8 @@
                 "enabled": true,
                 "name": "/cosmos/bank/v1beta1/supply/by_denom",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -560,11 +476,8 @@
                 "enabled": true,
                 "name": "/cosmos/base/node/v1beta1/config",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -581,11 +494,8 @@
                 "enabled": true,
                 "name": "/cosmos/base/tendermint/v1beta1/abci_query",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -602,11 +512,8 @@
                 "enabled": true,
                 "name": "/cosmos/base/tendermint/v1beta1/blocks/latest",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -623,11 +530,8 @@
                 "enabled": true,
                 "name": "/cosmos/base/tendermint/v1beta1/blocks/{height}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -646,11 +550,8 @@
                 "enabled": true,
                 "name": "/cosmos/base/tendermint/v1beta1/node_info",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -667,11 +568,8 @@
                 "enabled": true,
                 "name": "/cosmos/base/tendermint/v1beta1/syncing",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -688,11 +586,8 @@
                 "enabled": true,
                 "name": "/cosmos/base/tendermint/v1beta1/validatorsets/latest",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -709,11 +604,8 @@
                 "enabled": true,
                 "name": "/cosmos/base/tendermint/v1beta1/validatorsets/{height}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -731,11 +623,8 @@
                 "enabled": true,
                 "name": "/cosmos/consensus/v1/params",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -752,11 +641,8 @@
                 "enabled": true,
                 "name": "/cosmos/params/v1beta1/params",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -773,11 +659,8 @@
                 "enabled": true,
                 "name": "/cosmos/params/v1beta1/subspaces",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -794,11 +677,8 @@
                 "enabled": true,
                 "name": "/cosmos/tx/v1beta1/txs",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -815,11 +695,8 @@
                 "enabled": true,
                 "name": "/cosmos/tx/v1beta1/txs/block/{height}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -838,11 +715,8 @@
                 "enabled": true,
                 "name": "/cosmos/tx/v1beta1/txs/{hash}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -859,11 +733,8 @@
                 "enabled": true,
                 "name": "/cosmos/upgrade/v1beta1/applied_plan/{name}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -880,11 +751,8 @@
                 "enabled": true,
                 "name": "/cosmos/upgrade/v1beta1/current_plan",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -901,11 +769,8 @@
                 "enabled": true,
                 "name": "/cosmos/upgrade/v1beta1/module_versions",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -922,11 +787,8 @@
                 "enabled": true,
                 "name": "/thorchain/ban/{address}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -943,11 +805,8 @@
                 "enabled": true,
                 "name": "/thorchain/block",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -964,11 +823,8 @@
                 "enabled": true,
                 "name": "/thorchain/clout/swap/{address}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -985,11 +841,8 @@
                 "enabled": true,
                 "name": "/thorchain/codes",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1006,11 +859,8 @@
                 "enabled": true,
                 "name": "/thorchain/constants",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1027,11 +877,8 @@
                 "enabled": true,
                 "name": "/thorchain/contract/{address}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1048,11 +895,8 @@
                 "enabled": true,
                 "name": "/thorchain/contracts",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1069,11 +913,8 @@
                 "enabled": true,
                 "name": "/thorchain/dpool/{asset}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1090,11 +931,8 @@
                 "enabled": true,
                 "name": "/thorchain/dpools",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1111,11 +949,8 @@
                 "enabled": true,
                 "name": "/thorchain/dynamic_l1_fees",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1132,11 +967,8 @@
                 "enabled": true,
                 "name": "/thorchain/dynamic_l1_fees/{thorname}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1153,11 +985,8 @@
                 "enabled": true,
                 "name": "/thorchain/dynamic_l1_fees_current",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1174,11 +1003,8 @@
                 "enabled": true,
                 "name": "/thorchain/export",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1195,11 +1021,8 @@
                 "enabled": true,
                 "name": "/thorchain/inbound_addresses",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1216,11 +1039,8 @@
                 "enabled": true,
                 "name": "/thorchain/invariant/{invariant}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1237,11 +1057,8 @@
                 "enabled": true,
                 "name": "/thorchain/invariants",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1258,11 +1075,8 @@
                 "enabled": true,
                 "name": "/thorchain/keygen/{height}/{pubkey}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1281,11 +1095,8 @@
                 "enabled": true,
                 "name": "/thorchain/keysign/{height}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1304,11 +1115,8 @@
                 "enabled": true,
                 "name": "/thorchain/keysign/{height}/{pubkey}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1327,11 +1135,8 @@
                 "enabled": true,
                 "name": "/thorchain/lastblock",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1348,11 +1153,8 @@
                 "enabled": true,
                 "name": "/thorchain/lastblock/{chain}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1369,11 +1171,8 @@
                 "enabled": true,
                 "name": "/thorchain/memo/check/{asset}/{amount}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1390,11 +1189,8 @@
                 "enabled": true,
                 "name": "/thorchain/memo/{asset}/{reference}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1411,11 +1207,8 @@
                 "enabled": true,
                 "name": "/thorchain/memo/{hash}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1432,11 +1225,8 @@
                 "enabled": true,
                 "name": "/thorchain/metric/keygen/{pubkey}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1453,11 +1243,8 @@
                 "enabled": true,
                 "name": "/thorchain/metrics",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1474,11 +1261,8 @@
                 "enabled": true,
                 "name": "/thorchain/mimir",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1495,11 +1279,8 @@
                 "enabled": true,
                 "name": "/thorchain/mimir/admin",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1516,11 +1297,8 @@
                 "enabled": true,
                 "name": "/thorchain/mimir/key/{key}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1537,11 +1315,8 @@
                 "enabled": true,
                 "name": "/thorchain/mimir/node/{address}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1558,11 +1333,8 @@
                 "enabled": true,
                 "name": "/thorchain/mimir/nodes_all",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1579,11 +1351,8 @@
                 "enabled": true,
                 "name": "/thorchain/network",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1600,11 +1369,8 @@
                 "enabled": true,
                 "name": "/thorchain/node/{address}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1621,11 +1387,8 @@
                 "enabled": true,
                 "name": "/thorchain/nodes",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1642,11 +1405,8 @@
                 "enabled": true,
                 "name": "/thorchain/oracle/price/{symbol}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1663,11 +1423,8 @@
                 "enabled": true,
                 "name": "/thorchain/oracle/prices",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1684,11 +1441,8 @@
                 "enabled": true,
                 "name": "/thorchain/outbound_fee/{asset}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1705,11 +1459,8 @@
                 "enabled": true,
                 "name": "/thorchain/outbound_fees",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1726,11 +1477,8 @@
                 "enabled": true,
                 "name": "/thorchain/ping",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1747,11 +1495,8 @@
                 "enabled": true,
                 "name": "/thorchain/pool/{asset}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1768,11 +1513,8 @@
                 "enabled": true,
                 "name": "/thorchain/pool/{asset}/liquidity_provider/{address}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1789,11 +1531,8 @@
                 "enabled": true,
                 "name": "/thorchain/pool/{asset}/liquidity_providers",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1810,11 +1549,8 @@
                 "enabled": true,
                 "name": "/thorchain/pool/{asset}/saver/{address}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1831,11 +1567,8 @@
                 "enabled": true,
                 "name": "/thorchain/pool/{asset}/savers",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1852,11 +1585,8 @@
                 "enabled": true,
                 "name": "/thorchain/pools",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1873,11 +1603,8 @@
                 "enabled": true,
                 "name": "/thorchain/queue",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1894,11 +1621,8 @@
                 "enabled": true,
                 "name": "/thorchain/queue/limit_swaps",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1915,11 +1639,8 @@
                 "enabled": true,
                 "name": "/thorchain/queue/limit_swaps/summary",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1936,11 +1657,8 @@
                 "enabled": true,
                 "name": "/thorchain/queue/outbound",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1957,11 +1675,8 @@
                 "enabled": true,
                 "name": "/thorchain/queue/scheduled",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1978,11 +1693,8 @@
                 "enabled": true,
                 "name": "/thorchain/queue/swap",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -1999,11 +1711,8 @@
                 "enabled": true,
                 "name": "/thorchain/queue/swap/details/{tx_id}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2020,11 +1729,8 @@
                 "enabled": true,
                 "name": "/thorchain/queue/swap/paginated",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2041,11 +1747,8 @@
                 "enabled": true,
                 "name": "/thorchain/quote/limit",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2062,11 +1765,8 @@
                 "enabled": true,
                 "name": "/thorchain/quote/swap",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2083,11 +1783,8 @@
                 "enabled": true,
                 "name": "/thorchain/ragnarok",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2104,11 +1801,8 @@
                 "enabled": true,
                 "name": "/thorchain/rune_provider/{address}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2125,11 +1819,8 @@
                 "enabled": true,
                 "name": "/thorchain/rune_providers",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2146,11 +1837,8 @@
                 "enabled": true,
                 "name": "/thorchain/runepool",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2167,11 +1855,8 @@
                 "enabled": true,
                 "name": "/thorchain/securedasset/{asset}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2188,11 +1873,8 @@
                 "enabled": true,
                 "name": "/thorchain/securedassets",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2209,11 +1891,8 @@
                 "enabled": true,
                 "name": "/thorchain/slip/{asset}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2230,11 +1909,8 @@
                 "enabled": true,
                 "name": "/thorchain/slips",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2251,11 +1927,8 @@
                 "enabled": true,
                 "name": "/thorchain/supply",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2272,11 +1945,8 @@
                 "enabled": true,
                 "name": "/thorchain/supply/cmc",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2293,11 +1963,8 @@
                 "enabled": true,
                 "name": "/thorchain/swap/streaming/{hash}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2314,11 +1981,8 @@
                 "enabled": true,
                 "name": "/thorchain/swaps/streaming",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2335,11 +1999,8 @@
                 "enabled": true,
                 "name": "/thorchain/tcy_claimer/{address}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2356,11 +2017,8 @@
                 "enabled": true,
                 "name": "/thorchain/tcy_claimers",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2377,11 +2035,8 @@
                 "enabled": true,
                 "name": "/thorchain/tcy_protocol_owned",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2398,11 +2053,8 @@
                 "enabled": true,
                 "name": "/thorchain/tcy_staker/{address}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2419,11 +2071,8 @@
                 "enabled": true,
                 "name": "/thorchain/tcy_stakers",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2440,11 +2089,8 @@
                 "enabled": true,
                 "name": "/thorchain/thorname/{name}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2461,11 +2107,8 @@
                 "enabled": true,
                 "name": "/thorchain/trade/account/{address}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2482,11 +2125,8 @@
                 "enabled": true,
                 "name": "/thorchain/trade/accounts/{asset}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2503,11 +2143,8 @@
                 "enabled": true,
                 "name": "/thorchain/trade/unit/{asset}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2524,11 +2161,8 @@
                 "enabled": true,
                 "name": "/thorchain/trade/units",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2545,11 +2179,8 @@
                 "enabled": true,
                 "name": "/thorchain/tx/details/{hash}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2566,11 +2197,8 @@
                 "enabled": true,
                 "name": "/thorchain/tx/stages/{hash}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2587,11 +2215,8 @@
                 "enabled": true,
                 "name": "/thorchain/tx/status/{hash}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2608,11 +2233,8 @@
                 "enabled": true,
                 "name": "/thorchain/tx/{hash}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2629,11 +2251,8 @@
                 "enabled": true,
                 "name": "/thorchain/tx/{hash}/signers",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2650,11 +2269,8 @@
                 "enabled": true,
                 "name": "/thorchain/upgrade_proposal/{name}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2671,11 +2287,8 @@
                 "enabled": true,
                 "name": "/thorchain/upgrade_proposals",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2692,11 +2305,8 @@
                 "enabled": true,
                 "name": "/thorchain/upgrade_votes/{name}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2713,11 +2323,8 @@
                 "enabled": true,
                 "name": "/thorchain/vault/{pubkey}",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2734,11 +2341,8 @@
                 "enabled": true,
                 "name": "/thorchain/vault/{pubkey}/keysign_party",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2755,11 +2359,8 @@
                 "enabled": true,
                 "name": "/thorchain/vaults/asgard",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2776,11 +2377,8 @@
                 "enabled": true,
                 "name": "/thorchain/vaults/pubkeys",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2797,11 +2395,8 @@
                 "enabled": true,
                 "name": "/thorchain/vaults/solvency",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2818,11 +2413,8 @@
                 "enabled": true,
                 "name": "/thorchain/vaults/yggdrasil",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2839,11 +2431,8 @@
                 "enabled": true,
                 "name": "/thorchain/version",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -2999,11 +2588,8 @@
                 "enabled": true,
                 "name": "/cosmos/tx/v1beta1/decode",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -3020,11 +2606,8 @@
                 "enabled": true,
                 "name": "/cosmos/tx/v1beta1/encode",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -3041,11 +2624,8 @@
                 "enabled": true,
                 "name": "/cosmos/tx/v1beta1/simulate",
                 "compute_units": 10,
-                "extra_compute_units": 0,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0,
                   "hanging_api": false
                 },
@@ -3121,17 +2701,10 @@
         "imports": [
           "THORCHAIN"
         ],
-        "reliability_threshold": 268435455,
-        "data_reliability_enabled": true,
         "block_distance_for_finalized_data": 0,
         "blocks_in_finalization_proof": 1,
         "average_block_time": 6000,
         "allowed_block_lag_for_qos_sync": 2,
-        "shares": 1,
-        "min_stake_provider": {
-          "denom": "ulava",
-          "amount": "5000000000"
-        },
         "api_collections": [
           {
             "enabled": true,
@@ -3182,6 +2755,5 @@
         ]
       }
     ]
-  },
-  "deposit": "10000000ulava"
+  }
 }

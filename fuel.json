@@ -1,23 +1,14 @@
 {
     "proposal": {
-        "title": "Add Specs: Fuel network",
-        "description": "Adding new specification support for Fuel network GraphQL",
         "specs": [
             {
                 "index": "FUELNETWORK",
                 "name": "Fuel Network GraphQL",
                 "enabled": true,
-                "reliability_threshold": 268435455,
-                "data_reliability_enabled": false,
                 "block_distance_for_finalized_data": 0,
                 "blocks_in_finalization_proof": 1,
                 "average_block_time": 1000,
                 "allowed_block_lag_for_qos_sync": 1,
-                "shares": 1,
-                "min_stake_provider": {
-                    "denom": "ulava",
-                    "amount": "5000000000"
-                },
                 "api_collections": [
                     {
                         "enabled": true,
@@ -40,11 +31,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             }
                         ],
                         "inheritance_apis": [],
@@ -76,6 +64,5 @@
                 ]
             }
         ]
-    },
-    "deposit": "10000000ulava"
+    }
 }
