@@ -4100,7 +4100,7 @@
       },
       {
         "index": "TEZOST",
-        "name": "Tezos Shadownet Testnet",
+        "name": "Tezos Ghostnet Testnet",
         "enabled": true,
         "reliability_threshold": 268435455,
         "data_reliability_enabled": true,
@@ -4133,7 +4133,7 @@
                 "name": "chain-id",
                 "values": [
                   {
-                    "expected_value": "NetXsqzbfFenSTS"
+                    "expected_value": "NetXnHfVqm9iesp"
                   }
                 ]
               }
