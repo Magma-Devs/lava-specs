@@ -29,4 +29,17 @@ echo "$OUT" | grep -q "RESULT: PASS (warn mode" || fail "bad-warn: expected warn
 echo "$OUT" | grep -q "REMOVED_FIELD" || fail "bad-warn: expected findings still reported"
 echo "bad-warn: OK"
 
+# Case 4: malformed JSON — must fail closed (exit 2, invalid-JSON FAIL), never a
+# silent pass. Guards the process-substitution trap where jq's parse error is
+# swallowed and the removed-field scan sees no input.
+MALFORMED=$(mktemp)
+printf '{ not valid json' > "$MALFORMED"
+set +e
+OUT=$("$SCRIPT" "$MALFORMED"); RC=$?
+set -e
+rm -f "$MALFORMED"
+[ "$RC" -eq 2 ] || fail "malformed: exit=$RC want 2"
+echo "$OUT" | grep -q "RESULT: FAIL (invalid JSON" || fail "malformed: expected invalid-JSON FAIL"
+echo "malformed: OK"
+
 echo "ALL TESTS PASSED"

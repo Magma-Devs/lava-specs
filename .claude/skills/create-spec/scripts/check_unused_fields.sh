@@ -28,6 +28,15 @@ TARGETS='["min_stake_provider","providers_types","contributor","contributor_perc
 
 count=0
 for f in "$@"; do
+  # Fail closed on unparseable input. The jq below runs inside a process
+  # substitution whose non-zero exit the shell never checks, so a malformed
+  # file would otherwise yield no paths and be reported as a clean pass --
+  # letting a corrupt spec slip past the guard. Validate it parses first.
+  if ! jq empty "$f" 2>/dev/null; then
+    echo "INVALID_JSON | $f" >&2
+    echo "RESULT: FAIL (invalid JSON: $f)"
+    exit 2
+  fi
   while IFS= read -r path; do
     [[ -z "$path" ]] && continue
     echo "REMOVED_FIELD | $f | $path"
