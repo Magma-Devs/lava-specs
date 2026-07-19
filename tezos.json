@@ -843,7 +843,7 @@
                   ],
                   "parser_func": "DEFAULT"
                 },
-                "compute_units": 20,
+                "compute_units": 500,
                 "enabled": true,
                 "category": {
                   "deterministic": true,
@@ -851,7 +851,8 @@
                   "subscription": false,
                   "stateful": 0
                 },
-                "extra_compute_units": 0
+                "extra_compute_units": 0,
+                "timeout_ms": 60000
               },
               {
                 "name": "/chains/main/blocks/{block_id}/context/contracts/{contract_id}",
@@ -1114,24 +1115,6 @@
                   "parser_func": "DEFAULT"
                 },
                 "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "local": false,
-                  "subscription": false,
-                  "stateful": 0
-                },
-                "extra_compute_units": 0
-              },
-              {
-                "name": "/chains/main/blocks/{block_id}/context/contracts/{contract_id}/storage/normalized",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 20,
                 "enabled": true,
                 "category": {
                   "deterministic": true,
@@ -2366,24 +2349,6 @@
                 "extra_compute_units": 0
               },
               {
-                "name": "/chains/main/blocks/{block_id}/context/seed",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "local": false,
-                  "subscription": false,
-                  "stateful": 0
-                },
-                "extra_compute_units": 0
-              },
-              {
                 "name": "/chains/main/blocks/{block_id}/context/seed_computation",
                 "block_parsing": {
                   "parser_arg": [
@@ -3426,6 +3391,42 @@
                 "extra_compute_units": 0
               },
               {
+                "name": "/config/network/user_activated_protocol_overrides",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": false,
+                  "local": true,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/config/network/user_activated_upgrades",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": false,
+                  "local": true,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
                 "name": "/errors",
                 "block_parsing": {
                   "parser_arg": [
@@ -3492,7 +3493,8 @@
             "headers": [
               {
                 "name": "content-type",
-                "kind": "pass_send"
+                "kind": "pass_override",
+                "value": "application/json"
               }
             ],
             "inheritance_apis": [],
@@ -4085,6 +4087,132 @@
                   "parser_func": "DEFAULT"
                 },
                 "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/chains/main/blocks/{block_id}/context/seed",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/chains/main/blocks/{block_id}/context/contracts/{contract_id}/storage/normalized",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/bls/aggregate_proofs",
+                "block_parsing": {
+                  "parser_arg": [
+                    ""
+                  ],
+                  "parser_func": "EMPTY"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/bls/aggregate_public_keys",
+                "block_parsing": {
+                  "parser_arg": [
+                    ""
+                  ],
+                  "parser_func": "EMPTY"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/bls/aggregate_signatures",
+                "block_parsing": {
+                  "parser_arg": [
+                    ""
+                  ],
+                  "parser_func": "EMPTY"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/bls/check_proof",
+                "block_parsing": {
+                  "parser_arg": [
+                    ""
+                  ],
+                  "parser_func": "EMPTY"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "local": false,
+                  "subscription": false,
+                  "stateful": 0
+                },
+                "extra_compute_units": 0
+              },
+              {
+                "name": "/bls/threshold_signatures",
+                "block_parsing": {
+                  "parser_arg": [
+                    ""
+                  ],
+                  "parser_func": "EMPTY"
+                },
+                "compute_units": 20,
                 "enabled": true,
                 "category": {
                   "deterministic": true,
