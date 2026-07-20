@@ -85,8 +85,72 @@ Run:
 ls <chain>.json 2>/dev/null
 ```
 
-- If the file exists, ask the user: "Use as base / adapt / scratch?" Do not overwrite without explicit confirmation.
+- If the file exists, ask the user which mode they want — do not overwrite or edit existing entries without explicit confirmation:
+  - **add-testnet** — append ONE new testnet entry that imports the existing mainnet, changing NO existing spec. This is the right choice for the common "add chain X's testnet Y" task (e.g. the MAG-2430 rows). It runs the short **Phase 1A — Add-testnet mode** below and SKIPS Phases 2–7 entirely. Choose this unless the user explicitly wants to regenerate the mainnet — regenerating an existing spec is what silently drifted the mainnet on PR #80.
+  - **base / adapt** — use the existing file as a starting point and regenerate (runs the full Phases 2–7 pipeline).
+  - **scratch** — overwrite and regenerate from nothing.
 - If it does not exist, proceed to Phase 2.
+
+## Phase 1A — Add-testnet mode (append a testnet to an existing spec)
+
+Run this ONLY when the Phase 1 gate selected **add-testnet**. It appends exactly one testnet entry and is *structurally incapable* of altering the mainnet or any other existing spec. **Do NOT dispatch `spec-builder` and do NOT run Phases 2–7** — those re-synthesise and re-emit the whole file, which WILL drift the existing mainnet (the exact failure of PR #80, whose regeneration silently changed `average_block_time` 200→35 and a parse arg `block_height`→`block_hash`). When A4 passes, jump straight to **Phase 7.5 → 8**, scoped to the new testnet only.
+
+### A1 — Inputs (ask only what's needed)
+- **Existing mainnet index** — MUST already be a spec in the file. Verify: `jq -r '.proposal.specs[].index' <chain>.json`. This is the index the testnet will `imports`. If it is NOT present, this is not an add-testnet case — STOP and route to the normal pipeline.
+- **New testnet index** (uppercase) + human-readable **testnet name**.
+- **Testnet RPC endpoint(s)**. If the user doesn't supply them, dispatch the `endpoint-discovery` agent scoped to the testnet only.
+
+### A2 — Research the testnet params ONLY (no mainnet re-research)
+Resolve, for the testnet, in ONE scoped step (do NOT fan out the 5-agent Phase-3 swarm):
+- **chain-id** — live-fetch from a testnet endpoint (EVM `eth_chainId`; Cosmos `/status`; Aptos `/` field `chain_id`; etc.). This is the one value the testnet overrides and it MUST be live-confirmed.
+- **average_block_time** — empirical, measured on the testnet (sample blocks over a fixed window). Derive `blocks_in_finalization_proof`, `allowed_block_lag_for_qos_sync`, and `block_distance_for_finalized_data` from it using the Phase-4 formulas in `references/phase2-network-params.md`.
+
+### A3 — Build the lean testnet block, then append it surgically
+The testnet entry is thin: it imports the mainnet and defines NO apis of its own. Use the canonical lean shape (identical key set to `FLARET`/`SEP1` on `main` — NONE of the 15 removed fields):
+
+```json
+{
+  "index": "<TESTNET_INDEX>",
+  "name": "<Testnet Name>",
+  "enabled": true,
+  "imports": ["<MAINNET_INDEX>"],
+  "block_distance_for_finalized_data": <derived>,
+  "blocks_in_finalization_proof": <derived>,
+  "average_block_time": <empirical ms>,
+  "allowed_block_lag_for_qos_sync": <derived>,
+  "api_collections": [
+    {
+      "enabled": true,
+      "collection_data": { "api_interface": "<same as mainnet's main collection>", "internal_path": "", "type": "<POST|GET>", "add_on": "" },
+      "apis": [], "headers": [], "inheritance_apis": [], "parse_directives": [],
+      "verifications": [ { "name": "chain-id", "values": [ { "expected_value": "<live testnet chain-id>" } ] } ],
+      "extensions": []
+    }
+  ]
+}
+```
+
+Write that block to `/tmp/<chain>_testnet_block.json`, then append it with a **single surgical jq write** — never re-emit the file body:
+
+```bash
+jq --indent 4 --slurpfile t /tmp/<chain>_testnet_block.json \
+   '.proposal.specs += $t' <chain>.json > <chain>.json.new
+# root spec files carry no trailing newline — match that convention:
+printf '%s' "$(cat <chain>.json.new)" > <chain>.json && rm -f <chain>.json.new
+```
+
+### A4 — Gate: BOTH guards must pass before you continue
+```bash
+jq empty <chain>.json                                                          # valid JSON
+bash .claude/skills/create-spec/scripts/check_unused_fields.sh <chain>.json    # lean-format (field-name level)
+# base = the file as it exists on main (fallback to committed HEAD locally):
+git show origin/main:<chain>.json > /tmp/<chain>_base.json 2>/dev/null || git show HEAD:<chain>.json > /tmp/<chain>_base.json
+bash .claude/skills/create-spec/scripts/check_preservation.sh /tmp/<chain>_base.json <chain>.json <TESTNET_INDEX>
+```
+`check_preservation.sh` is what makes mainnet drift impossible: it FAILS unless the ONLY change is the added `<TESTNET_INDEX>` and every pre-existing spec is canonical-identical to the base (`check_unused_fields.sh` only sees removed field *names* — it is blind to a mainnet whose values drifted). If EITHER guard fails, STOP and fix the testnet block; do NOT proceed with a modified file.
+
+### A5 — Test the testnet only, then hand off
+Proceed to **Phase 7.5 → 8** with **testnet endpoints only** (leave the mainnet endpoint list blank) so the smart-router boot/probe (Phase 8) and the Phase 9/11 reviews exercise ONLY the new testnet — the mainnet is byte-for-byte unchanged and needs no re-probe. In the PR body's machine-readable `<!-- ENDPOINTS -->` block, fill `testnet:` and leave `mainnet:` blank. Record the `TESTNET_VERIFY:` verdict as usual (a wrong testnet chain-id is a CRITICAL defect). Skip Phase 10's mainnet-oriented fixes unless a testnet defect is found.
 
 ## Phase 2 — Gather inputs
 

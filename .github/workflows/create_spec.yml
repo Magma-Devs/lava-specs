@@ -41,6 +41,11 @@ on:
         required: false
         type: string
         default: ""
+      add_testnet:
+        description: "Add-testnet mode: append ONLY the testnet index to an existing <chain>.json (imports the mainnet, changes nothing else). The mainnet index must already exist on main."
+        required: false
+        type: boolean
+        default: false
       show_full_output:
         description: "Stream ALL Claude messages live (watch phase progress / detect a stall). WARNING: dumps tool results to the PUBLIC run log — may expose URLs/keys."
         required: false
@@ -187,13 +192,39 @@ jobs:
             --dangerously-skip-permissions
             --max-turns 1000
           prompt: |
-            Run the /create-spec skill end-to-end for a new chain, fully unattended.
+            MODE: ${{ inputs.add_testnet == true && 'ADD_TESTNET' || 'NEW_CHAIN' }}
 
-            Phase 2 inputs (do NOT ask me for these — use exactly these values):
+            Inputs (do NOT ask me for these — use exactly these values):
             - Chain name: ${{ github.event.inputs.chain_name }}
             - Mainnet spec index: ${{ github.event.inputs.chain_mainnet_index }}
             - Testnet spec index: ${{ github.event.inputs.chain_testnet_index }}
             - Additional data (docs URLs, node URLs, inheritance hints): ${{ github.event.inputs.additional_data }}
+
+            ═══ IF MODE IS ADD_TESTNET — follow ONLY this block; IGNORE the NEW_CHAIN block below ═══
+            Run the /create-spec skill in ADD-TESTNET mode (see SKILL.md "Phase 1A — Add-testnet
+            mode"), fully unattended. The <chain>.json for the mainnet index above ALREADY EXISTS
+            on main and is checked out (<chain> = mainnet index lowercased). Append ONLY the new
+            testnet entry (the "Testnet spec index" above), importing the existing mainnet entry;
+            change NO existing spec. Run Phase 1A steps A1–A5 only — do NOT run Phases 2–7 and do
+            NOT dispatch spec-builder.
+            - Live-confirm the testnet chain-id from a testnet RPC in "Additional data"; if none is
+              given, discover a public testnet node yourself.
+            - Append with a surgical `jq '.proposal.specs += [$block]'` write; never re-emit the file body.
+            - Before finishing you MUST run and PASS both guards on <chain>.json:
+                bash .claude/skills/create-spec/scripts/check_unused_fields.sh <chain>.json
+                git show HEAD:<chain>.json > /tmp/base_spec.json
+                bash .claude/skills/create-spec/scripts/check_preservation.sh /tmp/base_spec.json <chain>.json "${{ github.event.inputs.chain_testnet_index }}"
+              Fix the testnet block until BOTH pass. (A CI step re-runs the preservation guard and
+              fails the run — no PR — if any existing spec drifted.)
+            - Do NOT run git. Do NOT run Phase 8+ (spec_pipeline.yml probes after the PR opens).
+            - Write pr_body.md at the repo root from the template below, but title it
+              "## Add testnet: ${{ github.event.inputs.chain_testnet_index }} on ${{ github.event.inputs.chain_name }}",
+              and fill the ENDPOINTS block with the TESTNET url(s) ONLY — leave `mainnet:` blank so
+              the pipeline probes only the new testnet.
+            STOP once both guards pass and pr_body.md is written.
+
+            ═══ IF MODE IS NEW_CHAIN — follow this block ═══
+            Run the /create-spec skill end-to-end for a new chain, fully unattended.
 
             Execution rules for this unattended CI run:
             - The spec MUST use the canonical envelope EXACTLY:
@@ -281,6 +312,15 @@ jobs:
             ls -1 ./*.json >&2 || true
             exit 1
           fi
+          # Add-testnet mode: the file pre-exists, so also confirm the testnet
+          # index was actually appended (otherwise the run is a silent no-op).
+          if [ "${{ inputs.add_testnet }}" = "true" ]; then
+            tnet="${{ github.event.inputs.chain_testnet_index }}"
+            if ! jq -e --arg i "$tnet" '.proposal.specs[] | select(.index==$i)' "$spec" >/dev/null 2>&1; then
+              echo "add-testnet mode: testnet index '$tnet' was not added to $spec" >&2
+              exit 1
+            fi
+          fi
           echo "spec=$spec" >> "$GITHUB_OUTPUT"
 
       # Reintroduction guard for the smart-router#218 field cleanup: fail the run
@@ -294,16 +334,38 @@ jobs:
           set -euo pipefail
           bash .claude/skills/create-spec/scripts/check_unused_fields.sh "${{ steps.verify.outputs.spec }}"
 
+      # Add-testnet safety net: fail the run BEFORE commit/PR if the append drifted
+      # the mainnet or any pre-existing spec. The removed-fields guard above only
+      # catches removed field NAMES; this catches semantic drift (changed values,
+      # parse args, array reorders) and any extra spec/envelope key. Base = the
+      # file at the branch point (a copy of main); the agent's append is still
+      # uncommitted in the working tree at this step.
+      - name: Guard — preservation (add-testnet only)
+        if: ${{ inputs.add_testnet == true }}
+        env:
+          SPEC: ${{ steps.verify.outputs.spec }}
+          TESTNET_INDEX: ${{ github.event.inputs.chain_testnet_index }}
+        run: |
+          set -euo pipefail
+          git show HEAD:"$SPEC" > /tmp/base_spec.json
+          bash .claude/skills/create-spec/scripts/check_preservation.sh /tmp/base_spec.json "$SPEC" "$TESTNET_INDEX"
+
       - name: Commit and push spec
         env:
           CHAIN_NAME: ${{ github.event.inputs.chain_name }}
+          TESTNET_INDEX: ${{ github.event.inputs.chain_testnet_index }}
+          ADD_TESTNET: ${{ inputs.add_testnet }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           # Commit only the spec file at the repo root. Working artifacts the
           # skill emits (docs/<chain>/ probe + review reports) are gitignored.
           git add "${{ steps.verify.outputs.spec }}"
-          git commit -m "feat(spec): add ${CHAIN_NAME} chain spec"
+          if [ "$ADD_TESTNET" = "true" ]; then
+            git commit -m "feat(spec): add ${TESTNET_INDEX} testnet to ${CHAIN_NAME} spec"
+          else
+            git commit -m "feat(spec): add ${CHAIN_NAME} chain spec"
+          fi
           git push origin "${{ steps.branch.outputs.name }}"
 
       # Defense-in-depth: the agent is instructed never to dump the environment,
@@ -342,6 +404,8 @@ jobs:
           GH_TOKEN: ${{ secrets.BOT_PAT }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           CHAIN: ${{ github.event.inputs.chain_name }}
+          TESTNET_INDEX: ${{ github.event.inputs.chain_testnet_index }}
+          ADD_TESTNET: ${{ inputs.add_testnet }}
         run: |
           branch="${{ steps.branch.outputs.name }}"
           chain="$CHAIN"
@@ -371,8 +435,13 @@ jobs:
             mv pr_body.trunc.md pr_body.md
           fi
 
+          if [ "${ADD_TESTNET:-false}" = "true" ]; then
+            title="feat(spec): add ${TESTNET_INDEX} testnet to ${chain} spec"
+          else
+            title="feat(spec): add ${chain} chain spec"
+          fi
           gh pr create \
             --base main \
             --head "$branch" \
-            --title "feat(spec): add ${chain} chain spec" \
+            --title "$title" \
             --body-file pr_body.md
