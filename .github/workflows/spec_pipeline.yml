@@ -325,6 +325,72 @@ jobs:
           echo "Guarding removed fields in: ${present[*]}"
           bash .claude/skills/create-spec/scripts/check_unused_fields.sh "${present[@]}"
 
+      # Add-testnet preservation guard. Runs AFTER the Phase-10 fix pass and
+      # BEFORE the commit, beside the removed-fields guard above. create_spec.yml
+      # guards the CREATION half; this closes the post-PR half so the whole
+      # add-testnet flow is drift-proof — the Phase-10 fix pass cannot silently
+      # change the mainnet (or any pre-existing spec) and get committed.
+      #
+      # Fires ONLY when the PR — AS OPENED — was a clean add of exactly one spec
+      # index to a catalog file that already exists on main (i.e. a real
+      # add-testnet PR). New-chain PRs (file not on main), mainnet-edit PRs (no
+      # index added), and PRs already mixed when opened are N/A and skipped, so
+      # this never blocks a legitimately intended mainnet change. `check_unused_
+      # fields` above is name-level only; THIS catches semantic value drift.
+      - name: Guard — preservation (add-testnet PRs)
+        if: steps.cmd.outputs.IS_COMMAND == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.BOT_PAT }}
+          REPO: ${{ github.repository }}
+          PR: ${{ steps.pr.outputs.number }}
+        run: |
+          set -euo pipefail
+          SCRIPT=.claude/skills/create-spec/scripts/check_preservation.sh
+          if [ ! -f "$SCRIPT" ]; then
+            echo "::notice::check_preservation.sh not on this branch — skipping add-testnet preservation guard."
+            exit 0
+          fi
+          if ! files_json="$(gh pr view "$PR" --repo "$REPO" --json files 2>/dev/null)"; then
+            echo "::error::could not list PR files (gh pr view) — cannot verify preservation."
+            exit 1
+          fi
+          present=()
+          while IFS= read -r s; do
+            [ -n "$s" ] && [ -f "$s" ] && present+=("$s")
+          done < <(printf '%s' "$files_json" | jq -r '.files[].path | select(test("^[^/]+\\.json$"))')
+          if [ "${#present[@]}" -eq 0 ]; then
+            echo "No root-level spec JSON changed in this PR — nothing to guard."
+            exit 0
+          fi
+          # base = the spec as it exists on main (before this PR).
+          git fetch --quiet origin main || { echo "::error::could not fetch origin/main — cannot verify preservation."; exit 1; }
+          for spec in "${present[@]}"; do
+            if ! git show "FETCH_HEAD:$spec" > /tmp/pg_base.json 2>/dev/null; then
+              echo "  $spec: new on main (new-chain PR) — preservation N/A."
+              continue
+            fi
+            git show "HEAD:$spec" > /tmp/pg_opened.json 2>/dev/null || { echo "  $spec: no committed HEAD version — N/A."; continue; }
+            # indexes the PR added (as opened) vs main
+            added="$(comm -13 \
+              <(jq -r '.proposal.specs[]?.index' /tmp/pg_base.json   | LC_ALL=C sort) \
+              <(jq -r '.proposal.specs[]?.index' /tmp/pg_opened.json | LC_ALL=C sort))"
+            n_added="$(printf '%s\n' "$added" | grep -c . || true)"
+            if [ "$n_added" != "1" ]; then
+              echo "  $spec: opened PR adds $n_added index(es) — not a single-testnet-add; preservation N/A."
+              continue
+            fi
+            # Enforce only if the PR, AS OPENED, was itself a clean add-testnet.
+            if ! bash "$SCRIPT" /tmp/pg_base.json /tmp/pg_opened.json "$added" >/dev/null 2>&1; then
+              echo "  $spec: opened PR already modifies pre-existing specs — not a clean add-testnet; preservation N/A."
+              continue
+            fi
+            echo "  $spec: clean add-testnet of '$added' — enforcing preservation through the fix pass."
+            if ! bash "$SCRIPT" /tmp/pg_base.json "$spec" "$added"; then
+              echo "::error::The Phase-10 fix pass drifted a pre-existing spec in $spec. An add-testnet PR must change only '$added' — refusing to commit the fix."
+              exit 1
+            fi
+          done
+
       # Persist the Phase-10 fix pass. The skill never runs git itself (SKILL.md:
       # "User handles all git manually") and the prompt forbids the agent from
       # committing — so the fix lives only in the runner's working tree. Without
