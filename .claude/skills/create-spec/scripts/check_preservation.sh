@@ -115,6 +115,20 @@ if [[ "$saw_new" -eq 1 ]]; then
   fi
 fi
 
+# 6) Catch-all backstop: the candidate with the new index stripped out must be
+#    canonical-identical to the base. This subsumes checks 1/3/4 AND closes two
+#    gaps the itemized checks miss: a REORDERED pre-existing specs array (checks
+#    3 select by index, so are order-blind), and a changed VALUE of any non-`specs`
+#    envelope key (check 4 compares key SETS only). The itemized checks above stay
+#    for actionable diagnostics; this is the authoritative mechanical gate.
+cand_minus_new=$(jq -S --arg i "$NEW_INDEX" '.proposal.specs |= map(select(.index != $i))' "$CAND")
+base_canon=$(jq -S . "$BASE")
+if [[ "$cand_minus_new" == "$base_canon" ]]; then
+  PASS+=("catch-all|ok|candidate minus $NEW_INDEX is canonical-identical to base")
+else
+  FAIL+=("catch-all|drift|candidate minus $NEW_INDEX differs from base (spec reorder or envelope change)")
+fi
+
 echo "=== PASS ==="
 printf '%s\n' ${PASS[@]+"${PASS[@]}"}
 echo

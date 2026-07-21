@@ -157,6 +157,44 @@ jobs:
           git checkout -b "$name"
           git push -u origin "$name"
 
+      # Resolve the spec filename. Add-testnet mode locates the file by the
+      # mainnet index it CONTAINS, because ~26% of the catalog isn't named
+      # <index>.json (ETH1 -> ethereum.json, APT1 -> aptos.json, AVAX ->
+      # avalanche.json, …). Deriving the name from the index (as new-chain mode
+      # does) would point at a nonexistent file and hard-fail the verify step.
+      # New-chain mode keeps <index>.json — the file doesn't exist yet (the agent
+      # creates it), so there is nothing to resolve by content.
+      - name: Resolve spec file
+        id: spec
+        env:
+          IDX: ${{ github.event.inputs.chain_mainnet_index }}
+          INDEX_LOWER: ${{ steps.branch.outputs.index_lower }}
+          ADD_TESTNET: ${{ inputs.add_testnet }}
+        run: |
+          set -euo pipefail
+          if [ "$ADD_TESTNET" = "true" ]; then
+            matches=""
+            for f in ./*.json; do
+              if jq -e --arg i "$IDX" 'any((.proposal.specs // [])[]?; .index == $i)' "$f" >/dev/null 2>&1; then
+                matches="${matches:+$matches }$(basename "$f")"
+              fi
+            done
+            # shellcheck disable=SC2086
+            set -- $matches
+            if [ "$#" -eq 0 ]; then
+              echo "::error::add-testnet: no root *.json defines mainnet index '$IDX' — it must already exist on main." >&2
+              exit 1
+            elif [ "$#" -gt 1 ]; then
+              echo "::error::add-testnet: mainnet index '$IDX' found in multiple files: $matches" >&2
+              exit 1
+            fi
+            spec="$1"
+          else
+            spec="${INDEX_LOWER}.json"
+          fi
+          echo "spec=$spec" >> "$GITHUB_OUTPUT"
+          echo "Resolved spec file: $spec"
+
       # Node 22 guarantees a global `WebSocket` so the agent can probe ws/
       # subscription chains (eth_subscribe) without npm installs.
       - name: Setup Node
@@ -202,18 +240,19 @@ jobs:
 
             ═══ IF MODE IS ADD_TESTNET — follow ONLY this block; IGNORE the NEW_CHAIN block below ═══
             Run the /create-spec skill in ADD-TESTNET mode (see SKILL.md "Phase 1A — Add-testnet
-            mode"), fully unattended. The <chain>.json for the mainnet index above ALREADY EXISTS
-            on main and is checked out (<chain> = mainnet index lowercased). Append ONLY the new
-            testnet entry (the "Testnet spec index" above), importing the existing mainnet entry;
-            change NO existing spec. Run Phase 1A steps A1–A5 only — do NOT run Phases 2–7 and do
-            NOT dispatch spec-builder.
+            mode"), fully unattended. The target spec file is `${{ steps.spec.outputs.spec }}`
+            (already resolved by its mainnet index and checked out — it may be a legacy name such
+            as ethereum.json, NOT <index>.json). Append ONLY the new testnet entry (the "Testnet
+            spec index" above) to that file, importing the existing mainnet entry; change NO
+            existing spec. Run Phase 1A steps A1–A5 only — do NOT run Phases 2–7 and do NOT
+            dispatch spec-builder.
             - Live-confirm the testnet chain-id from a testnet RPC in "Additional data"; if none is
               given, discover a public testnet node yourself.
             - Append with a surgical `jq '.proposal.specs += [$block]'` write; never re-emit the file body.
-            - Before finishing you MUST run and PASS both guards on <chain>.json:
-                bash .claude/skills/create-spec/scripts/check_unused_fields.sh <chain>.json
-                git show HEAD:<chain>.json > /tmp/base_spec.json
-                bash .claude/skills/create-spec/scripts/check_preservation.sh /tmp/base_spec.json <chain>.json "${{ github.event.inputs.chain_testnet_index }}"
+            - Before finishing you MUST run and PASS both guards on ${{ steps.spec.outputs.spec }}:
+                bash .claude/skills/create-spec/scripts/check_unused_fields.sh ${{ steps.spec.outputs.spec }}
+                git show HEAD:${{ steps.spec.outputs.spec }} > /tmp/base_spec.json
+                bash .claude/skills/create-spec/scripts/check_preservation.sh /tmp/base_spec.json ${{ steps.spec.outputs.spec }} "${{ github.event.inputs.chain_testnet_index }}"
               Fix the testnet block until BOTH pass. (A CI step re-runs the preservation guard and
               fails the run — no PR — if any existing spec drifted.)
             - Do NOT run git. Do NOT run Phase 8+ (spec_pipeline.yml probes after the PR opens).
@@ -302,10 +341,10 @@ jobs:
       - name: Verify spec produced
         id: verify
         run: |
-          # Specs live flat at the repo root. The file is named after the mainnet
-          # index lowercased (e.g. ZEC -> zec.json), NOT the chain name.
-          index_lower="${{ steps.branch.outputs.index_lower }}"
-          spec="${index_lower}.json"
+          # Specs live flat at the repo root. The filename was resolved earlier:
+          # new-chain -> <index>.json; add-testnet -> the file that already holds
+          # the mainnet index (may be a legacy name like ethereum.json).
+          spec="${{ steps.spec.outputs.spec }}"
           if [ ! -f "$spec" ]; then
             echo "Expected spec file $spec was not produced by create-spec" >&2
             echo "--- repo-root *.json (for debugging) ---" >&2

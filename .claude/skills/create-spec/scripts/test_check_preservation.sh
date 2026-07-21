@@ -49,6 +49,13 @@ run preservation_removed.json MAINT2
 echo "$OUT" | grep -q "removed-spec|MAINT" || fail "removed: missing removed-spec|MAINT ($OUT)"
 echo "removed: OK"
 
+# 6b) reorder — pre-existing specs individually unchanged but REORDERED: the
+# itemized per-index checks pass, so the catch-all backstop must catch it.
+run preservation_reorder.json MAINT2
+[ "$RC" -eq 1 ] || fail "reorder: exit=$RC want 1 ($OUT)"
+echo "$OUT" | grep -q "catch-all|drift" || fail "reorder: missing catch-all|drift ($OUT)"
+echo "reorder: OK"
+
 # 7) missing new index — NEW_INDEX not actually added: exit 1, missing-new-spec
 run preservation_good.json NOPE
 [ "$RC" -eq 1 ] || fail "missing: exit=$RC want 1"
