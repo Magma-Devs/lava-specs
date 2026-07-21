@@ -77,26 +77,26 @@ date +%s > /tmp/create_spec_run_start.epoch
 cat /tmp/create_spec_run_start.epoch
 ```
 
-Then check whether `<chain>.json` already exists, where `<chain>` is the lowercased mainnet index the user wants to add.
-
-Run:
+Then check whether a spec for the requested **mainnet index** already exists. The file is usually `<index-lowercased>.json`, but ~26% of the catalog uses legacy names (e.g. `ETH1` lives in `ethereum.json`, `APT1` in `aptos.json`, `AVAX` in `avalanche.json`), so locate it by the index it CONTAINS — never assume `<index>.json`:
 
 ```bash
-ls <chain>.json 2>/dev/null
+# the root spec file (if any) that already defines this mainnet index — call it <SPEC_FILE>:
+for f in ./*.json; do jq -e --arg i "<MAINNET_INDEX>" 'any((.proposal.specs // [])[]?; .index==$i)' "$f" >/dev/null 2>&1 && echo "$f"; done
 ```
 
-- If the file exists, ask the user which mode they want — do not overwrite or edit existing entries without explicit confirmation:
+- If a file is found (`<SPEC_FILE>`), that chain already exists — ask the user which mode they want, operating on `<SPEC_FILE>`; do not overwrite or edit existing entries without explicit confirmation:
   - **add-testnet** — append ONE new testnet entry that imports the existing mainnet, changing NO existing spec. This is the right choice for the common "add chain X's testnet Y" task (e.g. the MAG-2430 rows). It runs the short **Phase 1A — Add-testnet mode** below and SKIPS Phases 2–7 entirely. Choose this unless the user explicitly wants to regenerate the mainnet — regenerating an existing spec is what silently drifted the mainnet on PR #80.
   - **base / adapt** — use the existing file as a starting point and regenerate (runs the full Phases 2–7 pipeline).
   - **scratch** — overwrite and regenerate from nothing.
-- If it does not exist, proceed to Phase 2.
+- If no file matches, this is a new chain — proceed to Phase 2 (the new file will be named `<index-lowercased>.json`).
 
 ## Phase 1A — Add-testnet mode (append a testnet to an existing spec)
 
 Run this ONLY when the Phase 1 gate selected **add-testnet**. It appends exactly one testnet entry and is *structurally incapable* of altering the mainnet or any other existing spec. **Do NOT dispatch `spec-builder` and do NOT run Phases 2–7** — those re-synthesise and re-emit the whole file, which WILL drift the existing mainnet (the exact failure of PR #80, whose regeneration silently changed `average_block_time` 200→35 and a parse arg `block_height`→`block_hash`). When A4 passes, jump straight to **Phase 7.5 → 8**, scoped to the new testnet only.
 
 ### A1 — Inputs (ask only what's needed)
-- **Existing mainnet index** — MUST already be a spec in the file. Verify: `jq -r '.proposal.specs[].index' <chain>.json`. This is the index the testnet will `imports`. If it is NOT present, this is not an add-testnet case — STOP and route to the normal pipeline.
+- **Target spec file** `<SPEC_FILE>` — the file resolved in Phase 1 by the mainnet index it contains (a legacy name like `ethereum.json` is normal; do NOT assume `<index>.json`). Every A3/A4 command below operates on `<SPEC_FILE>`.
+- **Existing mainnet index** — MUST already be a spec in `<SPEC_FILE>`. Verify: `jq -r '.proposal.specs[].index' <SPEC_FILE>`. This is the index the testnet will `imports`. If it is NOT present, this is not an add-testnet case — STOP and route to the normal pipeline.
 - **New testnet index** (uppercase) + human-readable **testnet name**.
 - **Testnet RPC endpoint(s)**. If the user doesn't supply them, dispatch the `endpoint-discovery` agent scoped to the testnet only.
 
@@ -134,18 +134,18 @@ Write that block to `/tmp/<chain>_testnet_block.json`, then append it with a **s
 
 ```bash
 jq --indent 4 --slurpfile t /tmp/<chain>_testnet_block.json \
-   '.proposal.specs += $t' <chain>.json > <chain>.json.new
+   '.proposal.specs += $t' <SPEC_FILE> > <SPEC_FILE>.new
 # root spec files carry no trailing newline — match that convention:
-printf '%s' "$(cat <chain>.json.new)" > <chain>.json && rm -f <chain>.json.new
+printf '%s' "$(cat <SPEC_FILE>.new)" > <SPEC_FILE> && rm -f <SPEC_FILE>.new
 ```
 
 ### A4 — Gate: BOTH guards must pass before you continue
 ```bash
-jq empty <chain>.json                                                          # valid JSON
-bash .claude/skills/create-spec/scripts/check_unused_fields.sh <chain>.json    # lean-format (field-name level)
+jq empty <SPEC_FILE>                                                          # valid JSON
+bash .claude/skills/create-spec/scripts/check_unused_fields.sh <SPEC_FILE>    # lean-format (field-name level)
 # base = the file as it exists on main (fallback to committed HEAD locally):
-git show origin/main:<chain>.json > /tmp/<chain>_base.json 2>/dev/null || git show HEAD:<chain>.json > /tmp/<chain>_base.json
-bash .claude/skills/create-spec/scripts/check_preservation.sh /tmp/<chain>_base.json <chain>.json <TESTNET_INDEX>
+git show origin/main:<SPEC_FILE> > /tmp/base_spec.json 2>/dev/null || git show HEAD:<SPEC_FILE> > /tmp/base_spec.json
+bash .claude/skills/create-spec/scripts/check_preservation.sh /tmp/base_spec.json <SPEC_FILE> <TESTNET_INDEX>
 ```
 `check_preservation.sh` is what makes mainnet drift impossible: it FAILS unless the ONLY change is the added `<TESTNET_INDEX>` and every pre-existing spec is canonical-identical to the base (`check_unused_fields.sh` only sees removed field *names* — it is blind to a mainnet whose values drifted). If EITHER guard fails, STOP and fix the testnet block; do NOT proceed with a modified file.
 
