@@ -311,15 +311,19 @@ jobs:
             echo "::error::could not list PR files (gh pr view) — cannot verify removed fields."
             exit 1
           fi
-          # Root-level *.json only (no '/' in path): the spec file(s) this PR touches.
+          # Candidate set = the PR's own root-level *.json PLUS any root JSON the
+          # Phase-10 fix pass changed in the working tree — because the commit step
+          # stages ALL of them (`git add :(glob)*.json`). Checking only PR-listed
+          # files would let a fix pass reintroduce a removed field in a strayed file.
           # while-read (not mapfile) for bash 3.2+ portability; process substitution
           # keeps the loop in this shell so `present` persists.
           present=()
           while IFS= read -r s; do
             [ -n "$s" ] && [ -f "$s" ] && present+=("$s")
-          done < <(printf '%s' "$files_json" | jq -r '.files[].path | select(test("^[^/]+\\.json$"))')
+          done < <( { printf '%s' "$files_json" | jq -r '.files[].path | select(test("^[^/]+\\.json$"))'; \
+                      git diff --name-only HEAD -- ':(glob)*.json'; } | LC_ALL=C sort -u )
           if [ "${#present[@]}" -eq 0 ]; then
-            echo "No root-level spec JSON changed in this PR — nothing to guard."
+            echo "No root-level spec JSON to guard."
             exit 0
           fi
           echo "Guarding removed fields in: ${present[*]}"
@@ -354,42 +358,63 @@ jobs:
             echo "::error::could not list PR files (gh pr view) — cannot verify preservation."
             exit 1
           fi
-          present=()
-          while IFS= read -r s; do
-            [ -n "$s" ] && [ -f "$s" ] && present+=("$s")
-          done < <(printf '%s' "$files_json" | jq -r '.files[].path | select(test("^[^/]+\\.json$"))')
-          if [ "${#present[@]}" -eq 0 ]; then
-            echo "No root-level spec JSON changed in this PR — nothing to guard."
-            exit 0
-          fi
-          # base = the spec as it exists on main (before this PR).
+          # base = the catalog as it exists on main (before this PR).
           git fetch --quiet origin main || { echo "::error::could not fetch origin/main — cannot verify preservation."; exit 1; }
-          for spec in "${present[@]}"; do
-            if ! git show "FETCH_HEAD:$spec" > /tmp/pg_base.json 2>/dev/null; then
-              echo "  $spec: new on main (new-chain PR) — preservation N/A."
-              continue
+          BASE=FETCH_HEAD
+
+          # --- Eligibility: resolve the single (target file, new index) from the PR
+          # AS OPENED. A guarded PR is a clean add of exactly one spec index to
+          # exactly one file that already exists on main. Anything else (new chain,
+          # multi-file, mainnet edit, already-mixed) is N/A — skip the whole guard.
+          prfiles=()
+          while IFS= read -r s; do
+            [ -n "$s" ] && prfiles+=("$s")
+          done < <(printf '%s' "$files_json" | jq -r '.files[].path | select(test("^[^/]+\\.json$"))')
+          if [ "${#prfiles[@]}" -eq 0 ]; then
+            echo "No root-level spec JSON in this PR — preservation guard N/A."; exit 0
+          fi
+          TARGET=""; NEW_INDEX=""
+          for spec in "${prfiles[@]}"; do
+            if ! git show "$BASE:$spec" > /tmp/pg_base.json 2>/dev/null; then
+              echo "  $spec: new on main (new-chain PR) — preservation guard N/A for this PR."; exit 0
             fi
-            git show "HEAD:$spec" > /tmp/pg_opened.json 2>/dev/null || { echo "  $spec: no committed HEAD version — N/A."; continue; }
-            # indexes the PR added (as opened) vs main
+            git show "HEAD:$spec" > /tmp/pg_opened.json 2>/dev/null || { echo "  $spec: no committed HEAD — N/A."; exit 0; }
             added="$(comm -13 \
               <(jq -r '.proposal.specs[]?.index' /tmp/pg_base.json   | LC_ALL=C sort) \
               <(jq -r '.proposal.specs[]?.index' /tmp/pg_opened.json | LC_ALL=C sort))"
-            n_added="$(printf '%s\n' "$added" | grep -c . || true)"
-            if [ "$n_added" != "1" ]; then
-              echo "  $spec: opened PR adds $n_added index(es) — not a single-testnet-add; preservation N/A."
-              continue
+            n="$(printf '%s\n' "$added" | grep -c . || true)"
+            if [ "$n" != "1" ] || ! bash "$SCRIPT" /tmp/pg_base.json /tmp/pg_opened.json "$added" >/dev/null 2>&1; then
+              echo "  $spec: opened PR is not a clean single-testnet add — preservation guard N/A for this PR."; exit 0
             fi
-            # Enforce only if the PR, AS OPENED, was itself a clean add-testnet.
-            if ! bash "$SCRIPT" /tmp/pg_base.json /tmp/pg_opened.json "$added" >/dev/null 2>&1; then
-              echo "  $spec: opened PR already modifies pre-existing specs — not a clean add-testnet; preservation N/A."
-              continue
+            if [ -n "$TARGET" ]; then
+              echo "  multiple add-testnet targets ($TARGET, $spec) — ambiguous, preservation guard N/A."; exit 0
             fi
-            echo "  $spec: clean add-testnet of '$added' — enforcing preservation through the fix pass."
-            if ! bash "$SCRIPT" /tmp/pg_base.json "$spec" "$added"; then
-              echo "::error::The Phase-10 fix pass drifted a pre-existing spec in $spec. An add-testnet PR must change only '$added' — refusing to commit the fix."
-              exit 1
-            fi
+            TARGET="$spec"; NEW_INDEX="$added"
           done
+          echo "Add-testnet PR: target='$TARGET' new_index='$NEW_INDEX' — enforcing preservation through the fix pass."
+
+          # --- Enforcement anchored on what will actually be COMMITTED, not the PR
+          # file list. The commit step stages EVERY root JSON (`git add :(glob)*.json`),
+          # so a fix pass that strays into another chain's catalog would be pushed and
+          # a PR-file-list guard would miss it. So: (1) assert the fix pass changed
+          # nothing but the target (working tree vs the opened HEAD), then (2) that the
+          # target changed only by the new testnet index.
+          strayed=0
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            if [ "$f" != "$TARGET" ]; then
+              echo "::error::fix pass changed '$f', outside this add-testnet PR's target '$TARGET'. Refusing to commit."
+              strayed=1
+            fi
+          done < <(git diff --name-only HEAD -- ':(glob)*.json')
+          [ "$strayed" -eq 0 ] || exit 1
+
+          git show "$BASE:$TARGET" > /tmp/pg_base.json
+          if ! bash "$SCRIPT" /tmp/pg_base.json "$TARGET" "$NEW_INDEX"; then
+            echo "::error::fix pass drifted a pre-existing spec in '$TARGET'. An add-testnet PR must change only '$NEW_INDEX'. Refusing to commit."
+            exit 1
+          fi
+          echo "Preservation OK — only '$NEW_INDEX' in '$TARGET' changed; no other catalog file touched."
 
       # Persist the Phase-10 fix pass. The skill never runs git itself (SKILL.md:
       # "User handles all git manually") and the prompt forbids the agent from
