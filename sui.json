@@ -2,13 +2,13 @@
     "proposal": {
         "specs": [
             {
-                "index": "SUIT",
-                "name": "Sui Devnet",
+                "index": "SUI",
+                "name": "Sui Mainnet",
                 "enabled": true,
-                "block_distance_for_finalized_data": 0,
+                "block_distance_for_finalized_data": 1,
                 "blocks_in_finalization_proof": 1,
-                "average_block_time": 1000,
-                "allowed_block_lag_for_qos_sync": 10,
+                "average_block_time": 250,
+                "allowed_block_lag_for_qos_sync": 40,
                 "api_collections": [
                     {
                         "enabled": true,
@@ -23,11 +23,11 @@
                                 "name": "sui_getChainIdentifier",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "latest"
+                                        ""
                                     ],
-                                    "parser_func": "DEFAULT"
+                                    "parser_func": "EMPTY"
                                 },
-                                "compute_units": 100,
+                                "compute_units": 10,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
@@ -42,11 +42,11 @@
                                     ],
                                     "parser_func": "DEFAULT"
                                 },
-                                "compute_units": 100,
+                                "compute_units": 10,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
+                                    "deterministic": false,
+                                    "stateful": 1
                                 }
                             },
                             {
@@ -90,8 +90,9 @@
                                 "compute_units": 10,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
+                                    "deterministic": false,
+                                    "stateful": 1,
+                                    "hanging_api": true
                                 }
                             },
                             {
@@ -105,8 +106,9 @@
                                 "compute_units": 10,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
+                                    "deterministic": false,
+                                    "stateful": 1,
+                                    "hanging_api": true
                                 }
                             },
                             {
@@ -600,8 +602,8 @@
                                 "compute_units": 10,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
+                                    "deterministic": false,
+                                    "stateful": 1
                                 }
                             },
                             {
@@ -615,8 +617,8 @@
                                 "compute_units": 10,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
+                                    "deterministic": false,
+                                    "stateful": 1
                                 }
                             },
                             {
@@ -630,8 +632,8 @@
                                 "compute_units": 10,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
+                                    "deterministic": false,
+                                    "stateful": 1
                                 }
                             },
                             {
@@ -645,8 +647,8 @@
                                 "compute_units": 10,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
+                                    "deterministic": false,
+                                    "stateful": 1
                                 }
                             },
                             {
@@ -660,8 +662,8 @@
                                 "compute_units": 10,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
+                                    "deterministic": false,
+                                    "stateful": 1
                                 }
                             },
                             {
@@ -675,8 +677,8 @@
                                 "compute_units": 10,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
+                                    "deterministic": false,
+                                    "stateful": 1
                                 }
                             },
                             {
@@ -690,8 +692,8 @@
                                 "compute_units": 10,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
+                                    "deterministic": false,
+                                    "stateful": 1
                                 }
                             },
                             {
@@ -705,8 +707,8 @@
                                 "compute_units": 10,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
+                                    "deterministic": false,
+                                    "stateful": 1
                                 }
                             },
                             {
@@ -720,8 +722,8 @@
                                 "compute_units": 10,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
+                                    "deterministic": false,
+                                    "stateful": 1
                                 }
                             },
                             {
@@ -735,8 +737,8 @@
                                 "compute_units": 10,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
+                                    "deterministic": false,
+                                    "stateful": 1
                                 }
                             },
                             {
@@ -750,8 +752,8 @@
                                 "compute_units": 10,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
+                                    "deterministic": false,
+                                    "stateful": 1
                                 }
                             },
                             {
@@ -765,8 +767,9 @@
                                 "compute_units": 10,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
+                                    "deterministic": false,
+                                    "stateful": 1,
+                                    "hanging_api": true
                                 }
                             },
                             {
@@ -810,8 +813,8 @@
                                 "compute_units": 10,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
+                                    "deterministic": false,
+                                    "stateful": 1
                                 }
                             },
                             {
@@ -825,8 +828,8 @@
                                 "compute_units": 10,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
+                                    "deterministic": false,
+                                    "stateful": 1
                                 }
                             },
                             {
@@ -905,11 +908,87 @@
                                 },
                                 "values": [
                                     {
-                                        "expected_value": "6bd1dd20"
+                                        "expected_value": "35834a8a"
                                     }
                                 ]
                             }
                         ]
+                    }
+                ]
+            },
+            {
+                "index": "SUIT",
+                "name": "Sui Testnet",
+                "enabled": true,
+                "imports": [
+                    "SUI"
+                ],
+                "block_distance_for_finalized_data": 1,
+                "blocks_in_finalization_proof": 1,
+                "average_block_time": 250,
+                "allowed_block_lag_for_qos_sync": 40,
+                "api_collections": [
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "jsonrpc",
+                            "internal_path": "",
+                            "type": "POST",
+                            "add_on": ""
+                        },
+                        "apis": [],
+                        "headers": [],
+                        "inheritance_apis": [],
+                        "parse_directives": [],
+                        "verifications": [
+                            {
+                                "name": "chain-id",
+                                "values": [
+                                    {
+                                        "expected_value": "4c78adac"
+                                    }
+                                ]
+                            }
+                        ],
+                        "extensions": []
+                    }
+                ]
+            },
+            {
+                "index": "SUID",
+                "name": "Sui Devnet",
+                "enabled": true,
+                "imports": [
+                    "SUI"
+                ],
+                "block_distance_for_finalized_data": 0,
+                "blocks_in_finalization_proof": 1,
+                "average_block_time": 1000,
+                "allowed_block_lag_for_qos_sync": 10,
+                "api_collections": [
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "jsonrpc",
+                            "internal_path": "",
+                            "type": "POST",
+                            "add_on": ""
+                        },
+                        "apis": [],
+                        "headers": [],
+                        "inheritance_apis": [],
+                        "parse_directives": [],
+                        "verifications": [
+                            {
+                                "name": "chain-id",
+                                "values": [
+                                    {
+                                        "expected_value": "6bd1dd20"
+                                    }
+                                ]
+                            }
+                        ],
+                        "extensions": []
                     }
                 ]
             }
