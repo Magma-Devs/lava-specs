@@ -1812,7 +1812,7 @@
                                 "api_name": "/wallet/getblockbynum"
                             },
                             {
-                                "function_template": "/wallet/getnowblock",
+                                "function_template": "{}",
                                 "function_tag": "GET_BLOCKNUM",
                                 "result_parsing": {
                                     "parser_arg": [
