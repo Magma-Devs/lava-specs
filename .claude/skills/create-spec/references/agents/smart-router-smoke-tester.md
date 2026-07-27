@@ -47,10 +47,10 @@ $DOCKER run -d --name sr_<chain> \
   -v "$SPECS_DIR":/smart-router/specs:ro \
   -v /tmp/sr_<chain>.yml:/smart-router/sr.yml:ro \
   "$IMAGE" \
-  sr.yml --geolocation 1 --use-static-spec specs/ --log-level debug --log-format json
+  sr.yml --use-static-spec specs/ --log-level debug --log-format json
 ```
 
-Run the readiness check from Phase 8 Step 3 (poll the listener; fail fast on `panic|fatal|failed to (load|expand|resolve) spec|all static providers failed verification|cannot serve endpoint|no matching spec` — per-provider `failed verification on provider startup` lines are NOT fatal; they are classified in Step 1.5). Re-use the SAME Phase-8 config — if the chain has subscriptions, it must still carry a `ws`/`wss` upstream in every `direct-rpc` block, or the router excludes all providers and refuses to serve.
+Run the readiness check from Phase 8 Step 3 (poll the listener; fail fast on `panic|fatal|failed to load any specs|spec not found for chainId|all static providers failed verification|cannot serve endpoint` — per-provider `failed verification on provider startup` lines are NOT fatal; they are classified in Step 1.5). Re-use the SAME Phase-8 config — if the chain has subscriptions, it must still carry a `ws`/`wss` upstream in every `direct-rpc` block, or the router excludes all providers and refuses to serve.
 
 If the router fails to come up — listener never answers, or the log shows a fatal/spec-resolution error — STOP. Return the `$DOCKER logs` excerpt to the orchestrator: this is a **REGRESSION** introduced by Phase 10's fixes (`SMOKE: BOOT_FAILED`).
 
