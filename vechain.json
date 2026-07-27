@@ -595,7 +595,7 @@
                     ],
                     "parser_func": "PARSE_BY_ARG"
                   },
-                  "api_name": "/debug/tracers/call?revision=best"
+                  "api_name": "/debug/tracers/call"
                 },
                 "values": [
                   {
