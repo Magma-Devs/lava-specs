@@ -1,7 +1,5 @@
 {
     "proposal": {
-        "title": "Add Specs: Zcash",
-        "description": "Adding new specification support for relaying Zcash data on Lava",
         "specs": [
             {
                 "index": "ZCASH",
@@ -10,17 +8,10 @@
                 "imports": [
                     "BTC"
                 ],
-                "reliability_threshold": 268435455,
-                "data_reliability_enabled": true,
                 "block_distance_for_finalized_data": 10,
                 "blocks_in_finalization_proof": 3,
                 "average_block_time": 75000,
                 "allowed_block_lag_for_qos_sync": 1,
-                "shares": 1,
-                "min_stake_provider": {
-                    "denom": "ulava",
-                    "amount": "5000000000"
-                },
                 "api_collections": [
                     {
                         "enabled": true,
@@ -43,11 +34,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "createmultisig",
@@ -61,11 +49,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "estimatesmartfee",
@@ -79,11 +64,8 @@
                                 "enabled": false,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "fundrawtransaction",
@@ -97,11 +79,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "generate",
@@ -115,11 +94,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "getbalance",
@@ -133,11 +109,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "getblockfilter",
@@ -151,11 +124,8 @@
                                 "enabled": false,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0
                                 },
-                                "extra_compute_units": 0,
                                 "parsers": [
                                     {
                                         "parse_path": ".params.[0]",
@@ -175,11 +145,8 @@
                                 "enabled": false,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0
                                 },
-                                "extra_compute_units": 0,
                                 "parsers": [
                                     {
                                         "parse_path": ".params.[0]",
@@ -203,11 +170,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "getblocktemplate",
@@ -221,11 +185,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "getchaintxstats",
@@ -239,11 +200,8 @@
                                 "enabled": false,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "getdeprecationinfo",
@@ -257,11 +215,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "getexperimentalfeatures",
@@ -275,11 +230,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "getgenerate",
@@ -293,11 +245,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "getindexinfo",
@@ -311,11 +260,8 @@
                                 "enabled": false,
                                 "category": {
                                     "deterministic": true,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "getinfo",
@@ -329,11 +275,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "getlocalsolps",
@@ -347,11 +290,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "getmempoolancestors",
@@ -365,11 +305,8 @@
                                 "enabled": false,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "getmempooldescendants",
@@ -383,11 +320,8 @@
                                 "enabled": false,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "getmempoolentry",
@@ -401,11 +335,8 @@
                                 "enabled": false,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "getmininginfo",
@@ -419,11 +350,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "getnettotals",
@@ -437,11 +365,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "getnetworkinfo",
@@ -455,11 +380,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "getnetworksolps",
@@ -473,11 +395,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "getnewaddress",
@@ -491,11 +410,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "getpeerinfo",
@@ -509,11 +425,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "getrawchangeaddress",
@@ -527,11 +440,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "getreceivedbyaddress",
@@ -545,11 +455,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "gettransaction",
@@ -563,11 +470,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "getunconfirmedbalance",
@@ -581,11 +485,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "getwalletinfo",
@@ -599,11 +500,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "help",
@@ -617,11 +515,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "importaddress",
@@ -635,11 +530,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "importprivkey",
@@ -653,11 +545,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "importpubkey",
@@ -671,11 +560,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "keypoolrefill",
@@ -689,11 +575,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "listaddresses",
@@ -707,11 +590,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "listaddressgroupings",
@@ -725,11 +605,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "listlockunspent",
@@ -743,11 +620,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "listreceivedbyaddress",
@@ -761,11 +635,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "listsinceblock",
@@ -779,11 +650,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "listtransactions",
@@ -797,11 +665,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "listunspent",
@@ -815,11 +680,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "lockunspent",
@@ -833,11 +695,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "ping",
@@ -851,11 +710,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "prioritisetransaction",
@@ -869,11 +725,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "setgenerate",
@@ -887,11 +740,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "setlogfilter",
@@ -905,11 +755,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "settxfee",
@@ -923,11 +770,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "signmessage",
@@ -941,11 +785,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "signrawtransaction",
@@ -959,11 +800,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "submitblock",
@@ -977,11 +815,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 1
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "submitpackage",
@@ -995,12 +830,9 @@
                                 "enabled": false,
                                 "category": {
                                     "deterministic": false,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 1,
                                     "hanging_api": true
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "testmempoolaccept",
@@ -1014,11 +846,8 @@
                                 "enabled": false,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "verifychain",
@@ -1032,11 +861,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "walletconfirmbackup",
@@ -1050,11 +876,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "z_converttex",
@@ -1068,11 +891,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "z_exportwallet",
@@ -1086,11 +906,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "z_getaddressforaccount",
@@ -1104,11 +921,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "z_getbalance",
@@ -1122,11 +936,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "z_getbalanceforaccount",
@@ -1140,11 +951,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "z_getbalanceforviewingkey",
@@ -1158,11 +966,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "z_getmigrationstatus",
@@ -1176,11 +981,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "z_getnewaccount",
@@ -1194,11 +996,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "z_getnewaddress",
@@ -1212,11 +1011,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "z_getnotescount",
@@ -1230,11 +1026,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "z_getoperationresult",
@@ -1248,11 +1041,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "z_getoperationstatus",
@@ -1266,11 +1056,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "z_getpaymentdisclosure",
@@ -1284,11 +1071,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "z_getsubtreesbyindex",
@@ -1302,11 +1086,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "z_gettotalbalance",
@@ -1320,11 +1101,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "z_gettreestate",
@@ -1338,11 +1116,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "z_importkey",
@@ -1356,11 +1131,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "z_importviewingkey",
@@ -1374,11 +1146,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "z_importwallet",
@@ -1392,11 +1161,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "z_listaccounts",
@@ -1410,11 +1176,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "z_listaddresses",
@@ -1428,11 +1191,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "z_listoperationids",
@@ -1446,11 +1206,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "z_listreceivedbyaddress",
@@ -1464,11 +1221,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "z_listunifiedreceivers",
@@ -1482,11 +1236,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "z_listunspent",
@@ -1500,11 +1251,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "z_setmigration",
@@ -1518,11 +1266,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "z_validateaddress",
@@ -1536,11 +1281,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "z_validatepaymentdisclosure",
@@ -1554,11 +1296,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "z_viewtransaction",
@@ -1572,11 +1311,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "zcbenchmark",
@@ -1590,11 +1326,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "zcsamplejoinsplit",
@@ -1608,11 +1341,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             }
                         ],
                         "headers": [],
@@ -1655,11 +1385,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "getaddressdeltas",
@@ -1673,11 +1400,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "getaddressmempool",
@@ -1691,11 +1415,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "local": true,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "getaddresstxids",
@@ -1709,11 +1430,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "getaddressutxos",
@@ -1727,11 +1445,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "getblockdeltas",
@@ -1745,11 +1460,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "getblockhashes",
@@ -1763,11 +1475,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             },
                             {
                                 "name": "getspentinfo",
@@ -1781,11 +1490,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
-                                    "local": false,
-                                    "subscription": false,
                                     "stateful": 0
-                                },
-                                "extra_compute_units": 0
+                                }
                             }
                         ]
                     }
@@ -1798,17 +1504,10 @@
                 "imports": [
                     "ZCASH"
                 ],
-                "reliability_threshold": 268435455,
-                "data_reliability_enabled": true,
                 "block_distance_for_finalized_data": 10,
                 "blocks_in_finalization_proof": 3,
                 "average_block_time": 265000,
                 "allowed_block_lag_for_qos_sync": 1,
-                "shares": 1,
-                "min_stake_provider": {
-                    "denom": "ulava",
-                    "amount": "5000000000"
-                },
                 "api_collections": [
                     {
                         "enabled": true,
@@ -1836,6 +1535,5 @@
                 ]
             }
         ]
-    },
-    "deposit": "10000000ulava"
+    }
 }

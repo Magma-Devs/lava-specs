@@ -1,14 +1,10 @@
 {
   "proposal": {
-    "title": "Add Specs: X Layer",
-    "description": "Adding new specification support for relaying X Layer data on Lava",
     "specs": [
       {
         "index": "OKB",
         "name": "x layer mainnet",
         "enabled": true,
-        "reliability_threshold": 268435455,
-        "data_reliability_enabled": true,
         "block_distance_for_finalized_data": 1,
         "blocks_in_finalization_proof": 1,
         "average_block_time": 1000,
@@ -16,11 +12,6 @@
         "imports": [
           "ETH1"
         ],
-        "shares": 1,
-        "min_stake_provider": {
-          "denom": "ulava",
-          "amount": "5000000000"
-        },
         "api_collections": [
           {
             "enabled": true,
@@ -43,11 +34,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               }
             ],
             "headers": [],
@@ -120,11 +108,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               }
             ],
             "extensions": [
@@ -192,11 +177,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "txpool_inspect",
@@ -205,11 +187,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "txpool_status",
@@ -218,11 +197,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               }
             ],
             "verifications": [
@@ -253,8 +229,6 @@
         "index": "OKBT",
         "name": "x layer testnet",
         "enabled": true,
-        "reliability_threshold": 268435455,
-        "data_reliability_enabled": true,
         "block_distance_for_finalized_data": 1,
         "blocks_in_finalization_proof": 1,
         "average_block_time": 1000,
@@ -262,11 +236,6 @@
         "imports": [
           "OKB"
         ],
-        "shares": 1,
-        "min_stake_provider": {
-          "denom": "ulava",
-          "amount": "5000000000"
-        },
         "api_collections": [
           {
             "enabled": true,
@@ -330,6 +299,5 @@
         ]
       }
     ]
-  },
-  "deposit": "10000000ulava"
+  }
 }
