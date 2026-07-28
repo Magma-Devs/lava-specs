@@ -898,7 +898,7 @@
                                 "block_parsing": {
                                     "parser_arg": [
                                         "0",
-                                        "num"
+                                        "number"
                                     ],
                                     "parser_func": "PARSE_CANONICAL"
                                 },
@@ -2538,7 +2538,7 @@
                                     "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 10,
-                                "enabled": true,
+                                "enabled": false,
                                 "category": {
                                     "deterministic": false,
                                     "stateful": 1,
