@@ -76,7 +76,8 @@
                       "0",
                       "root_key"
                     ],
-                    "parser_func": "PARSE_CANONICAL"
+                    "parser_func": "PARSE_CANONICAL",
+                    "encoding": "hex"
                   },
                   "api_name": "/api/v2/status"
                 },
@@ -110,7 +111,7 @@
                 "compute_units": 10,
                 "enabled": true,
                 "category": {
-                  "deterministic": true,
+                  "deterministic": false,
                   "stateful": 0
                 }
               },
@@ -125,7 +126,7 @@
                 "compute_units": 10,
                 "enabled": true,
                 "category": {
-                  "deterministic": true,
+                  "deterministic": false,
                   "stateful": 0
                 }
               },
@@ -140,7 +141,7 @@
                 "compute_units": 10,
                 "enabled": true,
                 "category": {
-                  "deterministic": true,
+                  "deterministic": false,
                   "stateful": 0
                 }
               },
@@ -229,9 +230,11 @@
                 },
                 "compute_units": 10,
                 "enabled": true,
+                "timeout_ms": 300000,
                 "category": {
                   "deterministic": false,
-                  "stateful": 1
+                  "stateful": 1,
+                  "hanging_api": true
                 }
               },
               {
@@ -244,9 +247,11 @@
                 },
                 "compute_units": 10,
                 "enabled": true,
+                "timeout_ms": 300000,
                 "category": {
                   "deterministic": false,
-                  "stateful": 1
+                  "stateful": 1,
+                  "hanging_api": true
                 }
               },
               {
@@ -259,9 +264,11 @@
                 },
                 "compute_units": 10,
                 "enabled": true,
+                "timeout_ms": 300000,
                 "category": {
                   "deterministic": false,
-                  "stateful": 1
+                  "stateful": 1,
+                  "hanging_api": true
                 }
               }
             ],
