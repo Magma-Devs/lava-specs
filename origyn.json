@@ -1,24 +1,15 @@
 {
   "proposal": {
-    "title": "Add Specs: ORIGYN",
-    "description": "Adding new specification support for relaying ORIGYN data on Lava, served via the Internet Computer (ICP) public HTTP interface exposed by boundary nodes (icp-api.io). ORIGYN has no independent L1; it is a suite of canisters on the IC and its node-RPC surface is the IC Interface Specification HTTPS interface with CBOR-encoded bodies. Network identity is the IC root public key returned by GET /api/v2/status (there is no numeric chain-id); the chain-id verification is anchored on that endpoint on a best-effort basis, noting that response bodies are CBOR and the standard result parser cannot decode CBOR. State selection (block/height) is carried inside the CBOR request body rather than in the URL path, so there is no URL-level positional block argument and no block-number-indexed wire method to anchor block-tracking or archive/pruning directives.",
     "specs": [
       {
         "index": "ORIGYN",
         "name": "origyn mainnet",
         "enabled": true,
         "imports": [],
-        "reliability_threshold": 268435455,
-        "data_reliability_enabled": true,
         "block_distance_for_finalized_data": 1,
         "blocks_in_finalization_proof": 1,
         "average_block_time": 1000,
         "allowed_block_lag_for_qos_sync": 10,
-        "shares": 1,
-        "min_stake_provider": {
-          "denom": "ulava",
-          "amount": "5000000000"
-        },
         "api_collections": [
           {
             "enabled": true,
@@ -41,11 +32,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": true,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               }
             ],
             "headers": [],
@@ -121,11 +109,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/api/v3/canister/{effective_canister_id}/query",
@@ -139,11 +124,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/api/v3/subnet/{effective_subnet_id}/query",
@@ -157,11 +139,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/api/v2/canister/{effective_canister_id}/read_state",
@@ -175,11 +154,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/api/v3/canister/{effective_canister_id}/read_state",
@@ -193,11 +169,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/api/v2/subnet/{effective_subnet_id}/read_state",
@@ -211,11 +184,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/api/v3/subnet/{effective_subnet_id}/read_state",
@@ -229,11 +199,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 0
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/api/v2/canister/{effective_canister_id}/call",
@@ -247,11 +214,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 1
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/api/v3/canister/{effective_canister_id}/call",
@@ -265,11 +229,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 1
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/api/v4/canister/{effective_canister_id}/call",
@@ -283,11 +244,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 1
-                },
-                "extra_compute_units": 0
+                }
               },
               {
                 "name": "/api/v4/subnet/{effective_subnet_id}/call",
@@ -301,11 +259,8 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "local": false,
-                  "subscription": false,
                   "stateful": 1
-                },
-                "extra_compute_units": 0
+                }
               }
             ],
             "headers": [
@@ -350,17 +305,10 @@
         "imports": [
           "ORIGYN"
         ],
-        "reliability_threshold": 268435455,
-        "data_reliability_enabled": true,
         "block_distance_for_finalized_data": 1,
         "blocks_in_finalization_proof": 1,
         "average_block_time": 1000,
         "allowed_block_lag_for_qos_sync": 10,
-        "shares": 1,
-        "min_stake_provider": {
-          "denom": "ulava",
-          "amount": "5000000000"
-        },
         "api_collections": [
           {
             "enabled": true,
@@ -389,6 +337,5 @@
         ]
       }
     ]
-  },
-  "deposit": "10000000ulava"
+  }
 }
