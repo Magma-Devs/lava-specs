@@ -17,7 +17,8 @@
               "api_interface": "rest",
               "internal_path": "",
               "type": "GET",
-              "add_on": ""
+              "add_on": "",
+              "encoding": "cbor"
             },
             "apis": [
               {
@@ -94,7 +95,8 @@
               "api_interface": "rest",
               "internal_path": "",
               "type": "POST",
-              "add_on": ""
+              "add_on": "",
+              "encoding": "cbor"
             },
             "apis": [
               {
@@ -274,22 +276,23 @@
             "parse_directives": [],
             "verifications": [
               {
-                "name": "chain-id",
+                "name": "origyn-identity",
                 "parse_directive": {
-                  "function_template": "/api/v2/status",
                   "function_tag": "VERIFICATION",
+                  "api_name": "/api/v2/canister/lkwrt-vyaaa-aaaaq-aadhq-cai/query",
+                  "function_template": "icrc1_symbol",
                   "result_parsing": {
+                    "parser_func": "PARSE_CANONICAL",
                     "parser_arg": [
                       "0",
-                      "root_key"
-                    ],
-                    "parser_func": "PARSE_CANONICAL"
-                  },
-                  "api_name": "/api/v2/status"
+                      "reply",
+                      "arg"
+                    ]
+                  }
                 },
                 "values": [
                   {
-                    "expected_value": "308182301d060d2b0601040182dc7c0503010201060c2b0601040182dc7c05030201036100814c0e6ec71fab583b08bd81373c255c3c371b2e84863c98a4f1e08b74235d14fb5d9c0cd546d9685f913a0c0b2cc5341583bf4b4392e467db96d65b9bb4cb717112f8472e0d5a4d14505ffd7484b01291091c5f87b98883463f98091a0baaae"
+                    "expected_value": "OGY"
                   }
                 ]
               }
@@ -316,7 +319,8 @@
               "api_interface": "rest",
               "internal_path": "",
               "type": "GET",
-              "add_on": ""
+              "add_on": "",
+              "encoding": "cbor"
             },
             "apis": [],
             "headers": [],
