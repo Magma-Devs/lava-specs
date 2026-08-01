@@ -39,32 +39,7 @@
             ],
             "headers": [],
             "inheritance_apis": [],
-            "parse_directives": [
-              {
-                "function_template": "",
-                "function_tag": "GET_BLOCKNUM",
-                "result_parsing": {
-                  "parser_arg": [
-                    "0",
-                    "certified_height"
-                  ],
-                  "parser_func": "PARSE_CANONICAL"
-                },
-                "api_name": "/api/v2/status"
-              },
-              {
-                "function_template": "",
-                "function_tag": "GET_BLOCK_BY_NUM",
-                "result_parsing": {
-                  "parser_arg": [
-                    "0",
-                    "certified_height"
-                  ],
-                  "parser_func": "PARSE_CANONICAL"
-                },
-                "api_name": "/api/v2/status"
-              }
-            ],
+            "parse_directives": [],
             "verifications": [
               {
                 "name": "chain-id",
