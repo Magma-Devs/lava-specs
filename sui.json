@@ -84,9 +84,9 @@
                                 "name": "sui_getEvents",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -99,9 +99,9 @@
                                 "name": "sui_getMoveFunctionArgTypes",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -114,9 +114,9 @@
                                 "name": "sui_getNormalizedMoveFunction",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -129,9 +129,9 @@
                                 "name": "sui_getNormalizedMoveModule",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -144,9 +144,9 @@
                                 "name": "sui_getNormalizedMoveModulesByPackage",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -159,9 +159,9 @@
                                 "name": "sui_getNormalizedMoveStruct",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -174,9 +174,9 @@
                                 "name": "sui_getObject",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -219,9 +219,9 @@
                                 "name": "sui_getTransactionBlock",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -264,9 +264,9 @@
                                 "name": "sui_tryGetPastObject",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -345,18 +345,20 @@
                                 },
                                 "compute_units": 10,
                                 "enabled": true,
+                                "timeout_ms": 8000,
                                 "category": {
                                     "deterministic": false,
-                                    "stateful": 1
+                                    "stateful": 1,
+                                    "hanging_api": true
                                 }
                             },
                             {
                                 "name": "suix_getAllBalances",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -369,9 +371,9 @@
                                 "name": "suix_getAllCoins",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -384,9 +386,9 @@
                                 "name": "suix_getBalance",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -399,9 +401,9 @@
                                 "name": "suix_getCoinMetadata",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -414,9 +416,9 @@
                                 "name": "suix_getCoins",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -429,9 +431,9 @@
                                 "name": "suix_getCommitteeInfo",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -444,9 +446,9 @@
                                 "name": "suix_getDynamicFieldObject",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -459,9 +461,9 @@
                                 "name": "suix_getDynamicFields",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -489,9 +491,9 @@
                                 "name": "suix_getOwnedObjects",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -519,9 +521,9 @@
                                 "name": "suix_getStakes",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -549,9 +551,9 @@
                                 "name": "suix_getTotalSupply",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -609,9 +611,9 @@
                                 "name": "suix_resolveNameServiceAddress",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -624,9 +626,9 @@
                                 "name": "suix_resolveNameServiceNames",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -941,10 +943,9 @@
                                 "name": "sui.rpc.v2.LedgerService/GetEpoch",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0",
-                                        "epoch"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_CANONICAL"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -957,10 +958,9 @@
                                 "name": "sui.rpc.v2.LedgerService/GetObject",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0",
-                                        "object_id"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_CANONICAL"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -988,10 +988,9 @@
                                 "name": "sui.rpc.v2.LedgerService/GetTransaction",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0",
-                                        "digest"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_CANONICAL"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -1052,10 +1051,9 @@
                                 "name": "sui.rpc.v2.MovePackageService/GetDatatype",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0",
-                                        "package_id"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_CANONICAL"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -1068,10 +1066,9 @@
                                 "name": "sui.rpc.v2.MovePackageService/GetFunction",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0",
-                                        "package_id"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_CANONICAL"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -1084,10 +1081,9 @@
                                 "name": "sui.rpc.v2.MovePackageService/GetPackage",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0",
-                                        "package_id"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_CANONICAL"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -1100,10 +1096,9 @@
                                 "name": "sui.rpc.v2.MovePackageService/ListPackageVersions",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0",
-                                        "package_id"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_CANONICAL"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -1116,10 +1111,9 @@
                                 "name": "sui.rpc.v2.NameService/LookupName",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0",
-                                        "name"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_CANONICAL"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -1132,10 +1126,9 @@
                                 "name": "sui.rpc.v2.NameService/ReverseLookupName",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0",
-                                        "address"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_CANONICAL"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -1163,10 +1156,9 @@
                                 "name": "sui.rpc.v2.StateService/GetBalance",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0",
-                                        "owner"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_CANONICAL"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -1179,10 +1171,9 @@
                                 "name": "sui.rpc.v2.StateService/GetCoinInfo",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0",
-                                        "coin_type"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_CANONICAL"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -1195,10 +1186,9 @@
                                 "name": "sui.rpc.v2.StateService/ListBalances",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0",
-                                        "owner"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_CANONICAL"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -1211,10 +1201,9 @@
                                 "name": "sui.rpc.v2.StateService/ListDynamicFields",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0",
-                                        "parent"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_CANONICAL"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -1227,10 +1216,9 @@
                                 "name": "sui.rpc.v2.StateService/ListOwnedObjects",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0",
-                                        "owner"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_CANONICAL"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -1247,7 +1235,7 @@
                                     ],
                                     "parser_func": "DEFAULT"
                                 },
-                                "compute_units": 10,
+                                "compute_units": 20,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
@@ -1262,7 +1250,7 @@
                                     ],
                                     "parser_func": "DEFAULT"
                                 },
-                                "compute_units": 10,
+                                "compute_units": 20,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
@@ -1277,7 +1265,7 @@
                                     ],
                                     "parser_func": "DEFAULT"
                                 },
-                                "compute_units": 10,
+                                "compute_units": 20,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
@@ -1294,9 +1282,11 @@
                                 },
                                 "compute_units": 10,
                                 "enabled": true,
+                                "timeout_ms": 8000,
                                 "category": {
                                     "deterministic": false,
-                                    "stateful": 1
+                                    "stateful": 1,
+                                    "hanging_api": true
                                 }
                             },
                             {
@@ -1460,6 +1450,21 @@
                     "SUI"
                 ],
                 "api_collections": [
+                    {
+                        "enabled": false,
+                        "collection_data": {
+                            "api_interface": "jsonrpc",
+                            "internal_path": "",
+                            "type": "POST",
+                            "add_on": ""
+                        },
+                        "apis": [],
+                        "headers": [],
+                        "inheritance_apis": [],
+                        "parse_directives": [],
+                        "verifications": [],
+                        "extensions": []
+                    },
                     {
                         "enabled": true,
                         "collection_data": {
