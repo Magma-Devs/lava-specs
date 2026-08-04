@@ -22,7 +22,9 @@ cat > "$TMP/$SID/subagents/agent-aaa.jsonl" <<'EOF'
 EOF
 
 # Start threshold = 2026-01-01T00:30:00Z → excludes line 1, includes line 2 + subagent.
-START=$(date -d "2026-01-01T00:30:00Z" +%s)
+# Hardcoded epoch, not `date -d`: that flag is GNU-only and BSD date (macOS) rejects it.
+# The fixture timestamps above are literals too, so this constant can never drift.
+START=1767227400
 
 # Case 1: usage filtered + summed across main + subagents
 OUT=$("$SCRIPT" "$START" "$TMP")

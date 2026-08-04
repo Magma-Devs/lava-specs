@@ -92,12 +92,17 @@ done
 [[ -n "$SPEC_TRIPLES" ]] || {
   echo "error: no APIs extracted from $SPEC (or transitive imports)" >&2; exit 1; }
 
-WANTED=$(
-  { [[ "$LIST" == "-" ]] && cat || cat -- "$LIST"; } \
+# The wanted list goes to a temp FILE, not an `awk -v` variable. BSD awk (macOS)
+# rejects a literal newline inside a -v assignment ("awk: newline in string"), so
+# passing the list that way broke every invocation with more than one method.
+# awk reads the file in BEGIN instead, which is portable and keeps list order.
+WANTED_FILE=$(mktemp "${TMPDIR:-/tmp}/spec_methods_wanted.XXXXXX")
+trap 'rm -f "$WANTED_FILE"' EXIT
+
+{ [[ "$LIST" == "-" ]] && cat || cat -- "$LIST"; } \
   | tr -d '\r' \
   | sed -E 's/#.*$//; s/[[:space:]]+$//; s/^[[:space:]]+//' \
-  | awk 'NF && !seen[$0]++'
-)
+  | awk 'NF && !seen[$0]++' > "$WANTED_FILE"
 
 # Transparency: print the resolved chain before the diff.
 {
@@ -108,7 +113,12 @@ WANTED=$(
 } | sort
 echo
 
-awk -F'\t' -v wanted="$WANTED" '
+awk -F'\t' -v wantedfile="$WANTED_FILE" '
+  BEGIN {
+    while ((getline line < wantedfile) > 0)
+      if (line != "") w[++n] = line
+    close(wantedfile)
+  }
   {
     key = $2
     if (key in ifaces) {
@@ -120,10 +130,9 @@ awk -F'\t' -v wanted="$WANTED" '
     spec_methods[key] = 1
   }
   END {
-    n = split(wanted, w, "\n")
     print "=== PRESENT (interface<TAB>method<TAB>source-index) ==="
     for (i = 1; i <= n; i++) {
-      m = w[i]; if (m == "") continue
+      m = w[i]
       if (m in spec_methods) print ifaces[m] "\t" m "\t" sources[m]
       wanted_set[m] = 1
     }
@@ -131,8 +140,8 @@ awk -F'\t' -v wanted="$WANTED" '
     print ""
     print "=== MISSING (in your list, not in spec or imports) ==="
     for (i = 1; i <= n; i++) {
-      m = w[i]; if (m == "" || (m in spec_methods)) continue
-      print m
+      m = w[i]
+      if (!(m in spec_methods)) print m
     }
 
     print ""
