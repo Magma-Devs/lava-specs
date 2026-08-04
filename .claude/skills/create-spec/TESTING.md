@@ -8,7 +8,9 @@ Every check the `create-spec` pipeline performs, what it inspects, how it decide
 > - `.claude/skills/create-spec/scripts/check_*.sh`, `compare_*.sh` (deterministic checks)
 > - `.claude/skills/review-spec/SKILL.md` (the Phase 9 / 11 reviewer workflow)
 >
-> **Derived from repo HEAD `46e2c4b`** (skill directory last modified 2026-07-06). Two exceptions postdate that pin: the portability fixes to `compare_spec_methods.sh` and `test_run_stats.sh` recorded in Appendix B, which are described as they now stand. If the skill has moved on further, re-derive rather than trusting this file — its predecessor, `references/phase4-testing-and-validation.md`, went stale exactly this way.
+> **Derived from `main` at `119f1bb`.** One exception postdates that pin: the portability fixes to `compare_spec_methods.sh` and `test_run_stats.sh` recorded in Appendix B, described as they now stand. If the skill has moved on further, re-derive rather than trusting this file — its predecessor, `references/phase4-testing-and-validation.md`, went stale exactly this way.
+>
+> **Looking for the QA-facing version?** [`QA_GUIDE.md`](../../../QA_GUIDE.md) at the repo root covers where to find a given spec's test evidence, how to read the verdicts, and what to test by hand. This file is the mechanics underneath it.
 
 ---
 
@@ -19,7 +21,7 @@ The pipeline is 12 phases; six of them verify. Ordered cheapest-first, so a dock
 | Phase | What it is | Runs | Failure consequence |
 |---|---|---|---|
 | **6** | 9 static gates (offline / jq-backed) + inline pre-flight | 9 parallel subagents | Any `RESULT: FAIL` → **one** fixer pass, then straight to Phase 7. Validators are **not** re-run. Triplet mismatch in pre-flight → **STOP** |
-| **7** | Final `jq` gate | orchestrator, inline | `jq` exit ≠ 0 → re-dispatch fixer; **do not proceed** until it exits 0 |
+| **7** | Final `jq` + removed-field gate | orchestrator, inline | Either fails → dispatch the fixer; **do not proceed** until `jq` exits 0 **and** the guard passes |
 | **7.5** | Endpoint discovery + validation | 1 subagent | `NOT_TESTABLE` rows are a transparent gap, **never a STOP** — they propagate into Phase 8 |
 | **8** | Smart-router boot + live method probe | 1 subagent | `BOOT_FAILED` → **STOP**, no Phase 9. `PARSE`/`VERIFY`/`TESTNET_VERIFY: FAIL` → run continues, carried into 9 + 10 as CRITICAL |
 | **9** | 3 parallel `/review-spec` reviewers | 3 subagents | Missing/unparseable `TALLY` → abort, name the reviewer |
@@ -29,6 +31,21 @@ The pipeline is 12 phases; six of them verify. Ordered cheapest-first, so a dock
 | **12** | Coverage checklist + run stats | orchestrator | Reporting only; no gate |
 
 Phases 1–5 (pre-flight, input gathering, research fan-out, synthesis, inheritance audit) produce the spec; they contain no verification gates. The refuse-to-write gate lives inside the `spec-builder` subagent and can return `SPEC: BLOCKED`, which stops the run before any test executes.
+
+**Phase 1A — add-testnet mode** is the exception. When Phase 1 resolves to "append a testnet to an existing spec", Phases 2–7 are skipped entirely and the run jumps to Phase 7.5 → 8, scoped to the new testnet only. Its single gate is **A4**, where both CI guards below must pass; the mainnet is byte-for-byte unchanged and is not re-probed. This mode exists because regenerating an existing file is what silently drifted the mainnet on PR #80.
+
+### CI-level guards (outside the 12 phases)
+
+Two guards run as `spec_pipeline.yml` steps rather than skill phases. Both **fail closed** — if `gh pr view` cannot list the PR's files, the step errors rather than reporting a clean pass.
+
+| Guard | Script | What it catches |
+|---|---|---|
+| **Reject removed spec fields** | `check_unused_fields.sh` | Any of the 15 fields deleted from the smart-router model (smart-router#218): the nine governance fields, `proposal.title`/`description`, top-level `deposit`, `extra_compute_units`, `category.local`, `category.subscription`. Strict by default (exit 1, printing each offender's exact JSON path); `--warn` reports but exits 0, for deliberately exercising a legacy fixture. Fails closed on unparseable JSON, so a corrupt spec cannot read as clean |
+| **Preservation** (add-testnet PRs) | `check_preservation.sh` | Semantic drift in any *pre-existing* spec entry. Compares `jq -S` canonical form, so it is immune to whitespace and key order but catches every value change, field add/remove, and array reorder |
+
+The second exists because the first is not enough: `check_unused_fields.sh` only sees removed field *names*. PR #80 regenerated a mainnet whose `average_block_time` drifted 200 → 35 and whose parser arg changed `block_height` → `block_hash` — both passed the removed-field guard cleanly.
+
+⚠️ **The preservation guard self-skips.** If `check_preservation.sh` is not on the PR branch, the step logs `::notice:: … skipping` and exits 0. In a CI log a skip is easy to mistake for a pass.
 
 ---
 
@@ -40,7 +57,9 @@ These are enforced in more than one phase. Documented once here rather than repe
 
 `create-spec` probes **free-tier public RPC nodes only**. A method absent there may work on a paid or on-prem node. Therefore a probe error — JSON-RPC `-32601`/`-32600`, HTTP `501`/`404`/`405`/`429`/`5xx`, a connection error, or a timeout — is **never** sufficient evidence to set `enabled: false`.
 
-`enabled: false` is legal only with **positive evidence of absence**: official docs explicitly stating unsupported/removed, or the chain's node-client implementation lacking the method — recorded with a URL in `docs/<chain>/DISABLED_JUSTIFICATIONS.md`.
+`enabled: false` is legal only with **positive evidence of absence**: official docs explicitly stating unsupported/removed, or the chain's node-client implementation lacking the method — recorded with a URL in the **Disabled-API Justifications PR comment**.
+
+> That ledger is a PR comment, **not** a file. It was previously written to `docs/<chain>/DISABLED_JUSTIFICATIONS.md`, but `docs/` is gitignored, so the file never reached the branch and a later fresh-runner review re-flagged every disable as unjustified. In an interactive run with no PR yet, the ledger is printed to the user instead.
 
 Enforced at three points:
 
@@ -73,7 +92,7 @@ Four of these surface again as gate failures. **The last two are covered by no v
 | Check | Mechanism | Covered by a gate? |
 |---|---|---|
 | `index` uppercase, unique, matches the chain | manual | partly (chain-metadata) |
-| `name`, `enabled`, `min_stake_provider`, `shares` present | manual | yes (chain-metadata) |
+| `name` and `enabled` present at spec-entry level | manual | partly (chain-metadata) |
 | Mainnet `chain-id` `expected_value` from a **live curl**, not a docs decimal | `curl` the mainnet RPC, capture the hex verbatim | value correctness only at Phase 8 |
 | Testnet `chain-id` `expected_value` from a live curl | `curl` the testnet RPC | value correctness only at Phase 8 Step 7 |
 | **Every `hanging_api: true` has an explicit `timeout_ms`** | `jq` selecting `hanging_api == true and timeout_ms == null`; output must be empty | **NO — hand-check only** (`SKILL.md:197`) |
@@ -145,10 +164,6 @@ Per spec entry, recomputes the formula-derived params from `average_block_time` 
 | `block_distance_for_finalized_data` | present |
 | `blocks_in_finalization_proof` | must be in the legal set `{1, 3, max(ceil(1000/abt), 3)}` |
 | `allowed_block_lag_for_qos_sync` | exactly `ceil(10000 / abt)`, minimum 1 |
-| `reliability_threshold` | exactly `268435455` |
-| `data_reliability_enabled` | exactly `true` |
-| `min_stake_provider` | present |
-| `shares` | present |
 
 The `blocks_in_finalization_proof` rule is a set, not a formula, on purpose: the value is **finality-typed** (`1` fast/instant finality — BFT, Tendermint/Cosmos, instant-settlement L2s; `3` probabilistic — PoW/slow PoS; the `max(ceil(1000/abt), 3)` fallback only when the finality model is unclear), and the finality class is not stored in the spec, so the gate can only reject off-formula numbers like 0, 2, 5. Pinning the fallback as the sole expected value previously forced instant-finality chains (Akash, Algorand) to `3` and overrode correct synthesis — see the script's Lumia PR #10 comment at `check_network_params.sh:30-37`.
 
@@ -216,9 +231,15 @@ The orchestrator parses each subagent's last `RESULT:` line. Three gates emit AD
 
 ---
 
-## Phase 7 — Final `jq` gate
+## Phase 7 — Final `jq` + removed-field gate
 
-`jq . <chain>.json > /dev/null` and check the exit code, without reading the spec body into the orchestrator's context. Non-zero (a fixer edit broke the file) → capture `jq . <chain>.json 2>&1 | head -n 20` and re-dispatch the Phase 6 fixer with the error. Do not proceed to Phase 7.5 until it exits 0.
+Two hard gates, both run inline without reading the spec body into the orchestrator's context.
+
+**1. Syntax.** `jq . <chain>.json > /dev/null` and check the exit code. Non-zero (a fixer edit broke the file) → capture `jq . <chain>.json 2>&1 | head -n 20` and re-dispatch the Phase 6 fixer with the error.
+
+**2. Removed fields.** `check_unused_fields.sh <chain>.json` — the same guard CI runs, here as a static gate before the expensive phases. Clean specs exit 0 with `RESULT: PASS (no removed fields)`. A non-zero exit prints one `REMOVED_FIELD | <file> | <json-path>` line per offender; the Phase 6 fixer deletes each reported field, then **both** checks re-run.
+
+Do not proceed to Phase 7.5 until `jq` exits 0 **and** the guard passes. The canonical envelope — exactly `{ "proposal": { "specs": [ … ] } }`, with no `title`/`description`/`deposit` — is produced and enforced inside `spec-builder`, not here.
 
 ---
 
@@ -467,7 +488,7 @@ One `sonnet` subagent in clean context, again with no worktree, for the same sta
 
 Prior reports are archived to `docs/<chain>/_archive/` first, and any stale un-suffixed `SPEC_REVIEW_GAPS.md` is removed, so the reviewer's `/review-spec` (whose Phase 1 scans `docs/<CHAIN_NAME>/`) cannot anchor on them.
 
-Same `/review-spec` audit and same three settled-decision exclusions as Phase 9, **plus one check unique to this phase**: enumerate every `enabled: false` api/collection with `jq` and confirm each has a positive-evidence row (docs-explicit or client-source, with URL) in `docs/<chain>/DISABLED_JUSTIFICATIONS.md`. **Any disabled entry without one is a CRITICAL finding.**
+Same `/review-spec` audit and same three settled-decision exclusions as Phase 9, **plus one check unique to this phase**: enumerate every `enabled: false` api/collection with `jq` and confirm each has a positive-evidence row (docs-explicit or client-source, with URL) in the **Disabled-API Justifications PR comment** (read via `gh pr view --json comments`, falling back to the ledger carried in the PR body). **Any disabled entry without one is a CRITICAL finding.**
 
 Unlike Phase 9, this reviewer returns the **full report body** plus its TALLY.
 
@@ -515,7 +536,7 @@ Phase 12 prints a checklist annotated `✓` verified / `~` partial / `☐` user-
 | **`category.stateful` direction** | no validator enforces it; Phase 6 hand-check only. *(Derived consequence, not stated in the sources: because Step 4 skips `stateful: 1` unconditionally, a read method wrongly marked stateful is also never probed — the two gaps compound.)* |
 | **gRPC methods through the router** | the gRPC listener has no server reflection; probes are direct-upstream and labelled as such |
 | **Compute units under load** | benchmarking is a manual `☐` item |
-| **Economic parameters** (`min_stake_provider`, `shares`) | presence is checked; reasonableness is user judgment |
+| **Economic parameters** | no longer part of the model (removed in smart-router#218); the removed-field guard now rejects them outright |
 | **CU uniformity** | deliberately not a check — uniform CU is legitimate |
 | Documentation and governance-proposal content | out of skill scope |
 
@@ -533,7 +554,8 @@ Every point where the pipeline halts rather than degrading:
 | 4 | spec-builder returns `SPEC: BLOCKED` | STOP |
 | 6 | archive/pruning/`GET_EARLIEST_BLOCK` triplet mixed | STOP |
 | 6 | `jq` invalid after the fixer | STOP with snapshot + error + diff |
-| 7 | `jq` exit ≠ 0 | Re-dispatch fixer; do not advance |
+| 1A | A4 gate: removed-field **or** preservation guard fails | STOP; fix the testnet block. Do not proceed with a modified file |
+| 7 | `jq` exit ≠ 0, **or** removed-field guard fails | Dispatch fixer; do not advance until both pass |
 | 8 | Zero node URLs available | STOP and ask the user; skipping requires explicit consent |
 | 8 | `SMOKE: BOOT_FAILED` | STOP, no Phase 9 |
 | 8 | Spec has subscriptions but no ws/wss URL | Refuse to boot; return `BOOT_FAILED` naming the cause |
@@ -563,7 +585,7 @@ done
 
 ### Suite status
 
-All 10 pass, verified 2026-08-04 on darwin under both BSD awk (`version 20200816`) and GNU Awk 5.4.0.
+All 12 pass, verified 2026-08-04 on darwin under both BSD awk (`version 20200816`) and GNU Awk 5.4.0.
 
 | Test | Covers |
 |---|---|
@@ -574,6 +596,8 @@ All 10 pass, verified 2026-08-04 on darwin under both BSD awk (`version 20200816
 | `test_check_pruning.sh` | `check_pruning.sh` |
 | `test_check_archive_value.sh` | `check_archive_value.sh` |
 | `test_check_directive_presence.sh` | `check_directive_presence.sh` |
+| `test_check_unused_fields.sh` | `check_unused_fields.sh` |
+| `test_check_preservation.sh` | `check_preservation.sh` |
 | `test_compare_spec_methods.sh` | `compare_spec_methods.sh` |
 | `test_compare_spec_directives.sh` | `compare_spec_directives.sh` |
 | `test_run_stats.sh` | `run_stats.sh` |
