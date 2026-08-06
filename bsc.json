@@ -8,7 +8,7 @@
                 "imports": [
                     "ETH1"
                 ],
-                "block_distance_for_finalized_data": 0,
+                "block_distance_for_finalized_data": 3,
                 "blocks_in_finalization_proof": 1,
                 "average_block_time": 450,
                 "allowed_block_lag_for_qos_sync": 14,
@@ -46,7 +46,7 @@
                 "imports": [
                     "BSC"
                 ],
-                "block_distance_for_finalized_data": 0,
+                "block_distance_for_finalized_data": 3,
                 "blocks_in_finalization_proof": 1,
                 "average_block_time": 450,
                 "allowed_block_lag_for_qos_sync": 14,
