@@ -37,4 +37,16 @@ OUT=$(printf '# header comment\n\neth_blockNumber  # inline\neth_getBalance\n' |
 [ "$(sec "$OUT" '=== MISSING')" -eq 0 ]        || fail "comments: MISSING != 0"
 echo "comments: OK"
 
+# Case 4: wanted list as a file argument, and the EXIT trap cleans the script's
+# temp file. A private TMPDIR makes the leak check hermetic.
+TDIR=$(mktemp -d "${TMPDIR:-/tmp}/cmp_methods_test.XXXXXX")
+printf 'eth_blockNumber\neth_getBalance\n' > "$TDIR/wanted.txt"
+OUT=$(TMPDIR="$TDIR" "$SCRIPT" "$SPEC" "$TDIR/wanted.txt")
+[ "$(sec "$OUT" '=== PRESENT')" -eq 2 ]        || fail "file-arg: PRESENT != 2"
+[ "$(sec "$OUT" '=== MISSING')" -eq 0 ]        || fail "file-arg: MISSING != 0"
+[ "$(find "$TDIR" -name 'spec_methods_wanted.*' | wc -l)" -eq 0 ] \
+                                               || fail "file-arg: temp file leaked"
+rm -rf "$TDIR"
+echo "file-arg: OK"
+
 echo "ALL TESTS PASSED"

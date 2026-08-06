@@ -66,8 +66,8 @@ Enforced at three points:
 | Where | How |
 |---|---|
 | Phase 6 `enabled` gate | Advisory watch-list only. Never FAILs, never recommends disabling (`enabled-validator.md:3,10-17`) |
-| Phase 10 consolidation | Strips every probe-justified disable suggestion from the fix list before the fixer sees it; stripped rows go to the PR watch-list instead (`SKILL.md:442`) |
-| Phase 11 final review | Audits every `enabled: false` entry for a justification row. Missing row → **CRITICAL** (`SKILL.md:514`) |
+| Phase 10 consolidation | Strips every probe-justified disable suggestion from the fix list before the fixer sees it; stripped rows go to the PR watch-list instead (`SKILL.md:516`) |
+| Phase 11 final review | Audits every `enabled: false` entry for a justification row. Missing row → **CRITICAL** (`SKILL.md:590`) |
 
 ### 2. The archive ↔ pruning ↔ `GET_EARLIEST_BLOCK` triplet
 
@@ -77,7 +77,7 @@ Per spec entry, these three are indivisible — all present or all absent:
 - a `pruning` verification
 - a `GET_EARLIEST_BLOCK` parse directive
 
-Checked inline at the top of Phase 6 with a single `jq` producing three booleans per entry. **Any mixed row → STOP** and fix by hand from `references/phase3.4-parse-directives-and-extensions.md` (`SKILL.md:211-225`).
+Checked inline at the top of Phase 6 with a single `jq` producing three booleans per entry. **Any mixed row → STOP** and fix by hand from `references/phase3.4-parse-directives-and-extensions.md` (`SKILL.md:277-291`).
 
 `GET_EARLIEST_BLOCK` is exercised at runtime *only* via the `pruning` verification at Phase 8 boot — the chain tracker never calls it (`smart-router-tester.md:243`).
 
@@ -95,8 +95,8 @@ Four of these surface again as gate failures. **The last two are covered by no v
 | `name` and `enabled` present at spec-entry level | manual | partly (chain-metadata) |
 | Mainnet `chain-id` `expected_value` from a **live curl**, not a docs decimal | `curl` the mainnet RPC, capture the hex verbatim | value correctness only at Phase 8 |
 | Testnet `chain-id` `expected_value` from a live curl | `curl` the testnet RPC | value correctness only at Phase 8 Step 7 |
-| **Every `hanging_api: true` has an explicit `timeout_ms`** | `jq` selecting `hanging_api == true and timeout_ms == null`; output must be empty | **NO — hand-check only** (`SKILL.md:197`) |
-| **`category.stateful` set only on broadcast / state-modifying methods** | spot-check against chain docs; read methods must be `stateful: 0` or unset | **NO — no validator enforces direction** (`SKILL.md:198`) |
+| **Every `hanging_api: true` has an explicit `timeout_ms`** | `jq` selecting `hanging_api == true and timeout_ms == null`; output must be empty | **NO — hand-check only** (`SKILL.md:263`) |
+| **`category.stateful` set only on broadcast / state-modifying methods** | spot-check against chain docs; read methods must be `stateful: 0` or unset | **NO — no validator enforces direction** (`SKILL.md:264`) |
 
 Note on the two chain-id rows: Phase 6 *obtains* the values by curling each network directly. Phase 8 is where the resulting spec verification is *executed through the router* — Step 3.5(c) for mainnet, Step 7 for testnet. Different operations, easily conflated.
 
@@ -227,7 +227,7 @@ The orchestrator parses each subagent's last `RESULT:` line. Three gates emit AD
 
 **Any FAIL** → print the aggregated `=== GATE: <name> ===` sections, dispatch **one** `sonnet` fixer with the deduplicated FAIL list ("Apply EVERY listed fix in one pass. Do not touch any field not mentioned"), then re-run `jq`. `jq` non-zero → present snapshot + error + diff, **STOP**.
 
-**The validators are not re-run after the fixer** (`SKILL.md:305`). Residual issues are caught by the Phase 9 reviewers and the Phase 11 final reviewer instead.
+**The validators are not re-run after the fixer** (`SKILL.md:371`). Residual issues are caught by the Phase 9 reviewers and the Phase 11 final reviewer instead.
 
 ---
 
@@ -270,7 +270,7 @@ Outputs a **keyed candidate list** (`{network, interface, kind, addon_name, url,
 
 The heart of the pipeline's live testing. Boots the candidate spec inside `ghcr.io/magma-devs/smart-router:main` with `--use-static-spec` and relays to the chain's public RPC upstreams. **No lava node, no gov proposal, no provider/consumer `screen` sessions** — a boot is seconds to a minute.
 
-Delegated entirely to one subagent. The orchestrator does not run docker, write the config, or probe — and explicitly must not debug boot failures by reading smart-router source, which is called out as "the single most expensive mistake in this phase" (`SKILL.md:366`).
+Delegated entirely to one subagent. The orchestrator does not run docker, write the config, or probe — and explicitly must not debug boot failures by reading smart-router source, which is called out as "the single most expensive mistake in this phase" (`SKILL.md:440`).
 
 **Preconditions.** Boot is mandatory whenever ≥1 node URL exists — even a single URL is worth booting, because startup spec resolution and upstream verification catch defects the static gates cannot see. Zero node URLs → **STOP and ask the user**; skipping requires explicit consent and is recorded in the Phase 12 checklist. The image is private; auth is handled by a pre-flight `docker login` in CI, and the subagent is forbidden from running `env`/`printenv`, reading `event.json`, or calling `docker login` itself.
 
@@ -582,6 +582,8 @@ for t in .claude/skills/create-spec/scripts/test_*.sh; do
   bash "$t" >/dev/null 2>&1 && echo PASS || echo FAIL
 done
 ```
+
+> **The suite requires bash ≥ 4.** Stock macOS `/bin/bash` is 3.2 and fails 5 of the 12 for reasons that have nothing to do with awk: `declare -A` in `compare_spec_methods.sh`, `compare_spec_directives.sh`, and `check_directive_presence.sh`, and the empty-array `"${arr[@]}"`-under-`set -u` expansion in `check_extensions.sh` and `check_method_schema.sh`. Run under Homebrew bash (or any bash ≥ 4.4) before concluding anything is broken.
 
 ### Suite status
 
