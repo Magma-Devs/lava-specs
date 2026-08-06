@@ -677,7 +677,7 @@
                             {
                                 "name": "chain-id",
                                 "parse_directive": {
-                                    "function_template": "/v0/dso",
+                                    "function_template": "/v0/dso-party-id",
                                     "function_tag": "VERIFICATION",
                                     "result_parsing": {
                                         "parser_arg": [
@@ -686,7 +686,7 @@
                                         ],
                                         "parser_func": "PARSE_CANONICAL"
                                     },
-                                    "api_name": "/v0/dso"
+                                    "api_name": "/v0/dso-party-id"
                                 },
                                 "values": [
                                     {
