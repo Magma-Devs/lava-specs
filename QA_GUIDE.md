@@ -165,7 +165,7 @@ jq -r '.proposal.specs[].api_collections[].apis[]
 
 ## 6. Not every spec has this trail
 
-There are **128 spec files** at the repo root. Only those onboarded or reworked *through the pipeline* have the evidence above. Older specs predate it and have no probe report, no tallies, no Phase 11 verdict.
+There are **127 spec files** at the repo root. Only those onboarded or reworked *through the pipeline* have the evidence above. Older specs predate it and have no probe report, no tallies, no Phase 11 verdict.
 
 Coverage also varies by PR type. Of six recent PRs I checked, five carried the full per-method table; **PR #100** (a mechanical strip of removed fields across 5 specs) had **no Phase 8 at all** — no behavioral change, so no probe. That is legitimate. When a table is missing, the question is whether Phase 8 was skipped deliberately or failed.
 
@@ -216,7 +216,7 @@ jq -c '.proposal.specs[] | {index,
   addons: ([.api_collections[].collection_data.add_on] | unique - [""]),
   exts:   ([.api_collections[].extensions[]?.name] | unique)}' <chain>.json
 
-# The tooling's own self-tests (12, all should pass)
+# The tooling's own self-tests (12, all should pass — needs bash ≥ 4; stock macOS bash 3.2 fails 5 of them)
 for t in .claude/skills/create-spec/scripts/test_*.sh; do
   printf '%-40s ' "$(basename $t)"; bash "$t" >/dev/null 2>&1 && echo PASS || echo FAIL
 done
