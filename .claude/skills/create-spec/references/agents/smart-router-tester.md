@@ -272,6 +272,10 @@ echo "P0=$P0"
 
 For every API in every collection of the current spec variant, send the call **through the router at `localhost:3360`** (the matching listener port for `<INTERFACE>`), NOT directly to the upstream `node-urls`. In production all traffic flows through the router, so this is the only representative path: it exercises client → router → upstream and surfaces spec-level parse/result-directive bugs that a direct-to-node call would hide.
 
+**Pacing — adaptive, off until the upstream asks for it.** Probe unpaced by default: most upstreams do not need it and a delay per method wastes wall-clock. But some free/public tiers are burst limiters, and firing 59 probes back-to-back exhausts them in seconds. So: **on the FIRST HTTP 429 (or equivalent rate-limit reply), switch to spaced mode for the rest of the run** — sleep ~6s between probes and back off 60s after any subsequent 429. Those figures are empirically calibrated against `api.cantonnodes.com`, which returns its first 429 within about a second (i.e. after ~2 requests) yet serves indefinitely at 6s spacing. Spaced mode is cheap insurance: 59 methods × 6s ≈ 6 minutes against a 120-minute job budget.
+
+Never let a rate limit truncate coverage silently. If methods remain unprobed when the phase ends, they are `UNPROBED`, not `SKIP` — see the classification list below.
+
 | Category | Probe action |
 |---|---|
 | `category.stateful: 1` | SKIP. Record reason: "stateful — would broadcast transaction". |
@@ -306,8 +310,10 @@ Response classification:
 - Response with `result` field (any value, including empty) → **PASS** (method exists and responded).
 - Response with `error.code == -32601` → **FAIL** (method does not exist on chain / not routed).
 - Response with `error.code == -32602` (invalid params) → **PASS-existence** (method exists; full functional probe would need correct args).
+- **HTTP 429, or any upstream reply meaning "rate limited"** → **NOT a method result.** Never record PASS/FAIL/WARN from it. Enter spaced mode (above) if not already in it, back off 60s, and re-probe the method. Only if the method is still unprobed when the phase ends does it become `UNPROBED`. A rate limit is a property of the upstream's billing tier, not of the chain's API — treating it as a method verdict is the same class of mistake as the free-tier disable rule guards against.
 - Response with any other `error.code` → **WARN** (record code + message) — subject to the re-probe-once gate above.
 - Timeout (no response in 10s) → **TIMEOUT** — subject to the re-probe-once gate above.
+- **Never probed** (phase ended with the upstream still rate-limiting, or the probe budget ran out) → **UNPROBED**. Distinct from `SKIP`: `SKIP` means "deliberately not probed" (stateful — broadcasting would move funds), `UNPROBED` means "we do not know". Report the two separately and never let `UNPROBED` rows read as coverage.
 - Node disagreement (different upstreams return materially different shapes for the same method) → **WARN-DISAGREEMENT** (record which upstream; the router rotates across them, so repeat the call a few times to surface disagreement).
 
 ## Step 4.5 — Scan the probe window for router errors
@@ -392,7 +398,7 @@ One row per addon/extension declared in the spec. Classifications:
 
 | Method | Classification | Upstream notes | Notes |
 |---|---|---|---|
-| <method> | <PASS/FAIL/SKIP/WARN/TIMEOUT> | <code(s)> | <one-line note> |
+| <method> | <PASS/FAIL/SKIP/UNPROBED/WARN/TIMEOUT> | <code(s)> | <one-line note> |
 | ... |
 
 ## Log-scan findings (probe window)
@@ -472,7 +478,7 @@ Return a short summary:
 2. `PARSE: OK | FAIL | PARTIAL` — the Step 3.5 (a)+(b) verdict (`FAIL` if PARSE_BLOCKNUM failed; `PARTIAL` if only PARSE_BLOCK_BY_NUM failed). On FAIL/PARTIAL include the metric values and up to 5 parse-signature log lines.
 3. `VERIFY: OK | FAIL | PARTIAL` — the Step 3.5 (c) verdict (`FAIL` if any verification failed on every provider or is badly defined; `PARTIAL` if providers were excluded). On FAIL/PARTIAL name the verification(s) and include the failure excerpt.
 4. `ADDONS: <n> tested-ok / <n> failed / <n> not-testable` (or `none declared`) — plus the full coverage table inline (it is small): every declared addon/extension with its classification, and for `NOT_TESTABLE` the per-upstream evidence ("nodes don't support it").
-5. Counts: `PASS=<n> FAIL=<n> SKIP=<n> WARN=<n> TIMEOUT=<n> LOG_WARN=<n>` (`LOG_WARN` = non-benign log-scan lines from Step 4.5).
+5. Counts: `PASS=<n> FAIL=<n> SKIP=<n> UNPROBED=<n> WARN=<n> TIMEOUT=<n> LOG_WARN=<n>` (`LOG_WARN` = non-benign log-scan lines from Step 4.5). When `UNPROBED > 0`, append `(PROBED=<n>/<total>, capped by the upstream rate limit)` and say which upstream — an unprobed method is unverified, not covered.
 6. The names of any FAIL/TIMEOUT methods (one per line), plus any method downgraded to WARN by the log scan, so the orchestrator can decide whether to fix the spec before Phase 9.
 7. `TESTNET_VERIFY: OK | FAIL | PARTIAL | SKIPPED` — the Step 7 verdict. On FAIL/PARTIAL name the verification(s) and include the failure excerpt; on SKIPPED include the reason.
 8. `BLOCK_TIME: mainnet=<ms|skipped> testnet=<ms|skipped>` — the Step 8 measurements, plus any `BLOCK_TIME_MISMATCH (<network>)` flag with the spec-vs-empirical values.
