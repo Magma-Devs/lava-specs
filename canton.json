@@ -52,6 +52,21 @@
                                 }
                             },
                             {
+                                "name": "/v0/admin/validator/licenses",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "stateful": 0
+                                }
+                            },
+                            {
                                 "name": "/v0/scans",
                                 "block_parsing": {
                                     "parser_arg": [
