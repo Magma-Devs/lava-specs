@@ -28,7 +28,8 @@
                                     ],
                                     "parser_func": "DEFAULT"
                                 },
-                                "compute_units": 10,
+                                "compute_units": 60,
+                                "timeout_ms": 5000,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
@@ -646,7 +647,7 @@
                                     "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 60,
-                                "enabled": true,
+                                "enabled": false,
                                 "category": {
                                     "deterministic": true,
                                     "stateful": 0
@@ -729,7 +730,8 @@
                                     ],
                                     "parser_func": "DEFAULT"
                                 },
-                                "compute_units": 10,
+                                "compute_units": 60,
+                                "timeout_ms": 5000,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
@@ -790,7 +792,7 @@
                                     "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 60,
-                                "enabled": true,
+                                "enabled": false,
                                 "category": {
                                     "deterministic": false,
                                     "stateful": 1
@@ -955,7 +957,7 @@
                                     "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 60,
-                                "enabled": true,
+                                "enabled": false,
                                 "category": {
                                     "deterministic": true,
                                     "stateful": 0
