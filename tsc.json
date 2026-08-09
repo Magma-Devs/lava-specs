@@ -1,0 +1,2049 @@
+{
+    "proposal": {
+        "specs": [
+            {
+                "index": "TSC",
+                "name": "Trusted Smart Chain",
+                "enabled": true,
+                "imports": [
+                    "COSMOSSDK50",
+                    "ETH1",
+                    "COSMOSWASM"
+                ],
+                "block_distance_for_finalized_data": 1,
+                "blocks_in_finalization_proof": 1,
+                "average_block_time": 30670,
+                "allowed_block_lag_for_qos_sync": 1,
+                "api_collections": [
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "rest",
+                            "internal_path": "",
+                            "type": "GET",
+                            "add_on": ""
+                        },
+                        "apis": [
+                            {
+                                "name": "/cosmos/bank/v1beta1/denom_owners/{denom=**}",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/cosmos/bank/v1beta1/denoms_metadata/{denom=**}",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/cosmos/epochs/v1beta1/current_epoch",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/cosmos/epochs/v1beta1/epochs",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/cosmos/evm/erc20/v1/params",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/cosmos/evm/erc20/v1/token_pairs",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/cosmos/evm/erc20/v1/token_pairs/{token=**}",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/cosmos/evm/feemarket/v1/base_fee",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/cosmos/evm/feemarket/v1/block_gas",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/cosmos/evm/feemarket/v1/params",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/cosmos/evm/vm/v1/account/{address}",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/cosmos/evm/vm/v1/balances/{address}",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/cosmos/evm/vm/v1/base_fee",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/cosmos/evm/vm/v1/codes/{address}",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/cosmos/evm/vm/v1/config",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/cosmos/evm/vm/v1/cosmos_account/{address}",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/cosmos/evm/vm/v1/estimate_gas",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 100,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/cosmos/evm/vm/v1/eth_call",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 20,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/cosmos/evm/vm/v1/min_gas_price",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/cosmos/evm/vm/v1/params",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/cosmos/evm/vm/v1/storage/{address}/{key}",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/cosmos/evm/vm/v1/trace_block",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 200,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/cosmos/evm/vm/v1/trace_call",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 100,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/cosmos/evm/vm/v1/trace_tx",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 100,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/cosmos/evm/vm/v1/validator_account/{cons_address}",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/cosmos/nft/v1beta1/balance/{owner}/{class_id}",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/cosmos/nft/v1beta1/classes",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/cosmos/nft/v1beta1/classes/{class_id}",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/cosmos/nft/v1beta1/nfts",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/cosmos/nft/v1beta1/nfts/{class_id}/{id}",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/cosmos/nft/v1beta1/owner/{class_id}/{id}",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/cosmos/nft/v1beta1/supply/{class_id}",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/cosmwasm/wasm/v1/code-info/{code_id}",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/cosmwasm/wasm/v1/wasm-limits-config",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/distro/v1/params",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/ibc/apps/transfer/v1/denoms",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/ibc/apps/transfer/v1/denoms/{hash=**}",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/ibc/apps/transfer/v1/total_escrow/{denom=**}",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/ibc/core/channel/v2/clients/{client_id}/next_sequence_send",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/ibc/core/channel/v2/clients/{client_id}/packet_acknowledgements",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/ibc/core/channel/v2/clients/{client_id}/packet_acks/{sequence}",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/ibc/core/channel/v2/clients/{client_id}/packet_commitments",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/ibc/core/channel/v2/clients/{client_id}/packet_commitments/{packet_ack_sequences}/unreceived_acks",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/ibc/core/channel/v2/clients/{client_id}/packet_commitments/{sequences}/unreceived_packets",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/ibc/core/channel/v2/clients/{client_id}/packet_commitments/{sequence}",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/ibc/core/channel/v2/clients/{client_id}/packet_receipts/{sequence}",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/ibc/core/client/v1/client_creator/{client_id}",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/ibc/core/client/v1/verify_membership",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/ibc/core/client/v2/config/{client_id}",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/ibc/core/client/v2/counterparty_info/{client_id}",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/tsc/lockup/account_locks",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/tsc/lockup/account_locks/{address}",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/tsc/lockup/active_locks",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "/tsc/lockup/total_locked_amount",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            }
+                        ],
+                        "verifications": [
+                            {
+                                "name": "chain-id",
+                                "values": [
+                                    {
+                                        "expected_value": "tsc_87878-1"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "pruning",
+                                "values": [
+                                    {
+                                        "latest_distance": 362880
+                                    },
+                                    {
+                                        "extension": "archive",
+                                        "expected_value": "1"
+                                    }
+                                ]
+                            }
+                        ],
+                        "extensions": [
+                            {
+                                "name": "archive",
+                                "cu_multiplier": 5,
+                                "rule": {
+                                    "block": 362880
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "grpc",
+                            "internal_path": "",
+                            "type": "",
+                            "add_on": ""
+                        },
+                        "apis": [
+                            {
+                                "name": "cosmos.epochs.v1beta1.Query/CurrentEpoch",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "cosmos.epochs.v1beta1.Query/EpochInfos",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "cosmos.evm.erc20.v1.Query/Params",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "cosmos.evm.erc20.v1.Query/TokenPair",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "cosmos.evm.erc20.v1.Query/TokenPairs",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "cosmos.evm.feemarket.v1.Query/BaseFee",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "cosmos.evm.feemarket.v1.Query/BlockGas",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "cosmos.evm.feemarket.v1.Query/Params",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "cosmos.evm.vm.v1.Query/Account",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "cosmos.evm.vm.v1.Query/Balance",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "cosmos.evm.vm.v1.Query/BaseFee",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "cosmos.evm.vm.v1.Query/Code",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "cosmos.evm.vm.v1.Query/Config",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "cosmos.evm.vm.v1.Query/CosmosAccount",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "cosmos.evm.vm.v1.Query/EstimateGas",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 100,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "cosmos.evm.vm.v1.Query/EthCall",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 20,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "cosmos.evm.vm.v1.Query/GlobalMinGasPrice",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "cosmos.evm.vm.v1.Query/Params",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "cosmos.evm.vm.v1.Query/Storage",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "cosmos.evm.vm.v1.Query/TraceBlock",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 200,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "cosmos.evm.vm.v1.Query/TraceCall",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 100,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "cosmos.evm.vm.v1.Query/TraceTx",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 100,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "cosmos.evm.vm.v1.Query/ValidatorAccount",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "cosmos.nft.v1beta1.Query/Balance",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "cosmos.nft.v1beta1.Query/Class",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "cosmos.nft.v1beta1.Query/Classes",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "cosmos.nft.v1beta1.Query/NFT",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "cosmos.nft.v1beta1.Query/NFTs",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "cosmos.nft.v1beta1.Query/Owner",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "cosmos.nft.v1beta1.Query/Supply",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "cosmwasm.wasm.v1.Query/CodeInfo",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "cosmwasm.wasm.v1.Query/WasmLimitsConfig",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "distro.v1.Query/Params",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "ibc.applications.transfer.v1.Query/Denom",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "ibc.applications.transfer.v1.Query/Denoms",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "ibc.core.channel.v2.Query/NextSequenceSend",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "ibc.core.channel.v2.Query/PacketAcknowledgement",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "ibc.core.channel.v2.Query/PacketAcknowledgements",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "ibc.core.channel.v2.Query/PacketCommitment",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "ibc.core.channel.v2.Query/PacketCommitments",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "ibc.core.channel.v2.Query/PacketReceipt",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "ibc.core.channel.v2.Query/UnreceivedAcks",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "ibc.core.channel.v2.Query/UnreceivedPackets",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "ibc.core.client.v1.Query/ClientCreator",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "ibc.core.client.v2.Query/Config",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "ibc.core.client.v2.Query/CounterpartyInfo",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "lockup.v1.Query/AccountLocks",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "lockup.v1.Query/ActiveLocks",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "lockup.v1.Query/Locks",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "lockup.v1.Query/TotalLockedAmount",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            }
+                        ],
+                        "verifications": [
+                            {
+                                "name": "chain-id",
+                                "values": [
+                                    {
+                                        "expected_value": "tsc_87878-1"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "pruning",
+                                "values": [
+                                    {
+                                        "latest_distance": 362880
+                                    },
+                                    {
+                                        "extension": "archive",
+                                        "expected_value": "1"
+                                    }
+                                ]
+                            }
+                        ],
+                        "extensions": [
+                            {
+                                "name": "archive",
+                                "cu_multiplier": 5,
+                                "rule": {
+                                    "block": 362880
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "tendermintrpc",
+                            "internal_path": "",
+                            "type": "",
+                            "add_on": ""
+                        },
+                        "apis": [],
+                        "verifications": [
+                            {
+                                "name": "chain-id",
+                                "values": [
+                                    {
+                                        "expected_value": "tsc_87878-1"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "pruning",
+                                "values": [
+                                    {
+                                        "latest_distance": 362880
+                                    },
+                                    {
+                                        "extension": "archive",
+                                        "expected_value": "1"
+                                    }
+                                ]
+                            }
+                        ],
+                        "extensions": [
+                            {
+                                "name": "archive",
+                                "cu_multiplier": 5,
+                                "rule": {
+                                    "block": 362880
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "jsonrpc",
+                            "internal_path": "",
+                            "type": "POST",
+                            "add_on": ""
+                        },
+                        "apis": [
+                            {
+                                "name": "eth_fillTransaction",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "eth_resend",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "stateful": 1,
+                                    "hanging_api": false
+                                }
+                            },
+                            {
+                                "name": "eth_signTypedData",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        ""
+                                    ],
+                                    "parser_func": "EMPTY"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0,
+                                    "hanging_api": false
+                                }
+                            }
+                        ],
+                        "parse_directives": [
+                            {
+                                "function_tag": "GET_BLOCK_BY_NUM",
+                                "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"eth_getBlockByNumber\",\"params\":[\"0x%x\", false],\"id\":1}",
+                                "result_parsing": {
+                                    "parser_arg": [
+                                        "0",
+                                        "hash"
+                                    ],
+                                    "parser_func": "PARSE_CANONICAL",
+                                    "encoding": "hex"
+                                },
+                                "api_name": "eth_getBlockByNumber"
+                            },
+                            {
+                                "function_tag": "SUBSCRIBE",
+                                "api_name": "eth_subscribe"
+                            },
+                            {
+                                "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"eth_unsubscribe\",\"params\":[\"%s\"],\"id\":1}",
+                                "function_tag": "UNSUBSCRIBE",
+                                "api_name": "eth_unsubscribe"
+                            }
+                        ],
+                        "verifications": [
+                            {
+                                "name": "chain-id",
+                                "values": [
+                                    {
+                                        "expected_value": "0x15746"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "pruning",
+                                "parse_directive": {
+                                    "function_tag": "GET_BLOCK_BY_NUM"
+                                },
+                                "values": [
+                                    {
+                                        "latest_distance": 362880
+                                    },
+                                    {
+                                        "extension": "archive",
+                                        "expected_value": "1"
+                                    }
+                                ]
+                            }
+                        ],
+                        "extensions": [
+                            {
+                                "name": "archive",
+                                "cu_multiplier": 5,
+                                "rule": {
+                                    "block": 362880
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "rest",
+                            "internal_path": "",
+                            "type": "POST",
+                            "add_on": ""
+                        },
+                        "apis": [
+                            {
+                                "name": "/cosmos/tx/v1beta1/decode/amino",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 1,
+                                    "hanging_api": false
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "index": "TSCT",
+                "name": "Trusted Smart Chain Testnet",
+                "enabled": true,
+                "imports": [
+                    "TSC"
+                ],
+                "block_distance_for_finalized_data": 1,
+                "blocks_in_finalization_proof": 1,
+                "average_block_time": 5086,
+                "allowed_block_lag_for_qos_sync": 2,
+                "api_collections": [
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "rest",
+                            "internal_path": "",
+                            "type": "GET",
+                            "add_on": ""
+                        },
+                        "apis": [],
+                        "verifications": [
+                            {
+                                "name": "chain-id",
+                                "values": [
+                                    {
+                                        "expected_value": "tsc_8878788-1"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "grpc",
+                            "internal_path": "",
+                            "type": "",
+                            "add_on": ""
+                        },
+                        "apis": [],
+                        "verifications": [
+                            {
+                                "name": "chain-id",
+                                "values": [
+                                    {
+                                        "expected_value": "tsc_8878788-1"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "tendermintrpc",
+                            "internal_path": "",
+                            "type": "",
+                            "add_on": ""
+                        },
+                        "apis": [],
+                        "verifications": [
+                            {
+                                "name": "chain-id",
+                                "values": [
+                                    {
+                                        "expected_value": "tsc_8878788-1"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "jsonrpc",
+                            "internal_path": "",
+                            "type": "POST",
+                            "add_on": ""
+                        },
+                        "apis": [],
+                        "verifications": [
+                            {
+                                "name": "chain-id",
+                                "values": [
+                                    {
+                                        "expected_value": "0x877ac4"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
