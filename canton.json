@@ -631,7 +631,8 @@
                                     ],
                                     "parser_func": "DEFAULT"
                                 },
-                                "compute_units": 10,
+                                "compute_units": 60,
+                                "timeout_ms": 5000,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
@@ -822,7 +823,8 @@
                                     ],
                                     "parser_func": "DEFAULT"
                                 },
-                                "compute_units": 10,
+                                "compute_units": 60,
+                                "timeout_ms": 5000,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
@@ -852,7 +854,8 @@
                                     ],
                                     "parser_func": "DEFAULT"
                                 },
-                                "compute_units": 10,
+                                "compute_units": 60,
+                                "timeout_ms": 5000,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
@@ -867,7 +870,8 @@
                                     ],
                                     "parser_func": "DEFAULT"
                                 },
-                                "compute_units": 10,
+                                "compute_units": 60,
+                                "timeout_ms": 5000,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
@@ -958,7 +962,8 @@
                                     ],
                                     "parser_func": "DEFAULT"
                                 },
-                                "compute_units": 10,
+                                "compute_units": 60,
+                                "timeout_ms": 5000,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
