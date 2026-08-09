@@ -110,7 +110,12 @@ Then probe these exactly, in order:
 
 Send every probe **through the router at `localhost:3360`** (subscriptions via `ws://localhost:3360`), exactly as Phase 8 does — NOT directly to the upstream `node-urls`.
 
-Classify each result using the same scheme as Phase 8 (PASS / FAIL / SKIP / WARN / TIMEOUT).
+**Pacing — inherit Phase 8's verdict on the upstream.** This phase reuses Phase 8's upstreams, so it inherits their rate limits too. Before probing, read the Phase 8 counts line in `<PHASE_8_REPORT_PATH>`: if it carries the `(PROBED=<n>/<total>, capped by the upstream rate limit)` marker, **start in spaced mode immediately** — ~6s between probes, 60s backoff after any 429. Otherwise probe unpaced, and switch to spaced mode on the FIRST 429, exactly as Phase 8 does. Bursting a limiter Phase 8 already documented is a self-inflicted failure: the probe set here is small (7 items plus per-addon), so spaced mode costs under a minute.
+
+Classify each result using the same scheme as Phase 8 (PASS / FAIL / SKIP / UNPROBED / WARN / TIMEOUT), including its 429 rule:
+
+- **HTTP 429 / rate-limited → NOT a probe result.** Never record PASS/FAIL/WARN from it. Enter spaced mode if not already in it, back off 60s, and re-probe. Only if the item is still unanswered at phase end does it become `UNPROBED`.
+- **`UNPROBED` is "no data", NOT a regression.** An item that was PASS in Phase 8 and is `UNPROBED` here has told us nothing — record it as unverified in the smoke report and carry Phase 8's classification forward. Never return `SMOKE: REGRESSION` for it.
 
 ## Step 3 — Compare classifications against Phase 8
 
@@ -120,9 +125,10 @@ For each probe:
 - PASS in Phase 8 and now FAIL or TIMEOUT → **REGRESSION**.
 - `TESTED_OK` addon/extension in Phase 8 and its probe now FAILs → **REGRESSION**.
 - FAIL/WARN/TIMEOUT in Phase 8 and now PASS → improvement (record but do not alert).
+- **PASS in Phase 8 and `UNPROBED` here → NOT a regression.** No data was obtained; carry Phase 8's classification forward and note the item as unverified in this pass.
 - All else → no change.
 
-Then scan the probe window in the container log for errors the response classification can hide — same patterns and benign allow-list as Phase 8 Step 4.5:
+Then scan the probe window in the container log for errors the response classification can hide — same patterns and benign allow-list as Phase 8 Step 4.5, **including its rate-limit carve-out: a 429 / "too many requests" line never downgrades an item and never constitutes a regression, even when it carries a `method=` field. Record such lines as pacing evidence in the report and leave classifications untouched.**
 
 ```bash
 BENIGN='self signed certificate|x509|OTel|:4318|otel|chain tracker|ChainTracker|WebSocket SendRequest not implemented|failed fetching data from the node|UNKNOWN_BLOCK|DB Not Found'
@@ -133,7 +139,7 @@ $DOCKER logs sr_<chain> 2>&1 | tail -n +$((P0+1)) \
   | grep -oE '"method":"[a-zA-Z0-9_]+"' | sort | uniq -c
 ```
 
-If any of the 7 probed items that was PASS in Phase 8 now produces a non-benign router `error` mapped to its method, treat it as a **REGRESSION** even if the response body looked acceptable. A `fatal`/`panic` after boot is also a regression.
+If any of the 7 probed items that was PASS in Phase 8 now produces a non-benign router `error` mapped to its method, treat it as a **REGRESSION** even if the response body looked acceptable — **except rate-limit lines, which are never a regression** (see the carve-out above; they say nothing about the spec, only about the upstream's billing tier). A `fatal`/`panic` after boot is also a regression.
 
 ## Step 4 — Tear down
 

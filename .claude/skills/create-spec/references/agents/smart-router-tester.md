@@ -351,8 +351,10 @@ $DOCKER logs sr_<chain> 2>&1 | tail -n +$((P0+1)) \
   | grep -oE '"method":"[a-zA-Z0-9_]+"' | sort | uniq -c
 ```
 
+**Rate-limit lines are pacing evidence, not method findings.** A 429 / "too many requests" / equivalent rate-limit line NEVER downgrades a method, even when it carries a `method=` field — including the common case where the method 429'd, backed off, and then PASSed on re-probe, leaving the error line inside the window. Record such lines under "Log-scan findings" as pacing evidence (they are the narrative for any `UNPROBED` rows), and leave every method classification untouched. This is the same rule as the 429 bullet in Step 4: an upstream billing tier is not a property of the chain's API, and the two mechanisms must not disagree.
+
 For each surviving line:
-- **Method-associated** (has a `method=`/`request=` field): downgrade that method's classification to at least **WARN** in the report, citing the error text and any code. If Step 4 already classified it FAIL on the same `-32601`, keep FAIL — do not double-count.
+- **Method-associated** (has a `method=`/`request=` field): downgrade that method's classification to at least **WARN** in the report, citing the error text and any code. If Step 4 already classified it FAIL on the same `-32601`, keep FAIL — do not double-count. **Exception: rate-limit lines, per the rule immediately above — never downgrade for those.**
 - **Not method-associated** (router-wide error): record it in the report's "Log-scan findings" section.
 - **`fatal`/`panic` after a successful boot**: a runtime crash *during probing*. Capture the full line, flag it prominently, and note the run is unreliable.
 
