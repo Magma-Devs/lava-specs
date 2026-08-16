@@ -188,7 +188,7 @@
             },
             {
                 "index": "ARBITRUMN",
-                "name": "Arbitrum Nova Testnet",
+                "name": "Arbitrum Nova",
                 "enabled": true,
                 "imports": [
                     "ARBITRUM"
