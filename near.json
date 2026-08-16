@@ -5,7 +5,7 @@
                 "index": "NEAR",
                 "name": "Near Mainnet",
                 "enabled": true,
-                "block_distance_for_finalized_data": 3,
+                "block_distance_for_finalized_data": 30,
                 "blocks_in_finalization_proof": 3,
                 "average_block_time": 1200,
                 "allowed_block_lag_for_qos_sync": 8,
@@ -675,7 +675,7 @@
                 "imports": [
                     "NEAR"
                 ],
-                "block_distance_for_finalized_data": 3,
+                "block_distance_for_finalized_data": 30,
                 "blocks_in_finalization_proof": 3,
                 "average_block_time": 1200,
                 "allowed_block_lag_for_qos_sync": 8,
