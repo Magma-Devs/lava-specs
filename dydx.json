@@ -3248,6 +3248,10 @@
                   "parser_func": "PARSE_CANONICAL"
                 },
                 "api_name": "cosmos.base.tendermint.v1beta1.Service/GetLatestBlock"
+              },
+              {
+                "function_tag": "SUBSCRIBE",
+                "api_name": "dydxprotocol.clob.Query/StreamOrderbookUpdates"
               }
             ],
             "verifications": [

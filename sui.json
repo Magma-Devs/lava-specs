@@ -1348,6 +1348,18 @@
                                     "parser_func": "PARSE_CANONICAL"
                                 },
                                 "api_name": "sui.rpc.v2.LedgerService/GetCheckpoint"
+                            },
+                            {
+                                "function_tag": "SUBSCRIBE",
+                                "api_name": "sui.rpc.v2.SubscriptionService/SubscribeCheckpoints"
+                            },
+                            {
+                                "function_tag": "SUBSCRIBE",
+                                "api_name": "sui.rpc.v2.SubscriptionService/SubscribeEvents"
+                            },
+                            {
+                                "function_tag": "SUBSCRIBE",
+                                "api_name": "sui.rpc.v2.SubscriptionService/SubscribeTransactions"
                             }
                         ],
                         "verifications": [
