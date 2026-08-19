@@ -1,0 +1,33 @@
+{
+  "proposal": {
+    "specs": [
+      {
+        "index": "GOODCHAIN",
+        "enabled": true,
+        "api_collections": [
+          {
+            "enabled": true,
+            "collection_data": { "api_interface": "rest", "internal_path": "/v2", "type": "GET", "add_on": "" },
+            "apis": [{ "name": "/getMasterchainInfo", "enabled": true }]
+          },
+          {
+            "enabled": true,
+            "collection_data": { "api_interface": "rest", "internal_path": "/v3", "type": "GET", "add_on": "" },
+            "apis": [{ "name": "/accountStates", "enabled": true }]
+          },
+          {
+            "enabled": false,
+            "collection_data": { "api_interface": "jsonrpc", "internal_path": "HTTP-ONLY", "type": "POST", "add_on": "" },
+            "apis": [{ "name": "chain_getBlock", "enabled": true }]
+          },
+          {
+            "enabled": true,
+            "collection_data": { "api_interface": "jsonrpc", "internal_path": "", "type": "POST", "add_on": "" },
+            "apis": [],
+            "inheritance_apis": [{ "api_interface": "jsonrpc", "internal_path": "HTTP-ONLY", "type": "POST", "add_on": "" }]
+          }
+        ]
+      }
+    ]
+  }
+}

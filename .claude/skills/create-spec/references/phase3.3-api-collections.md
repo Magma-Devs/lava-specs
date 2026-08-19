@@ -327,6 +327,117 @@ If your chain uses a different RPC path than the parent, disable inherited colle
 
 ---
 
+## Step 3.3c: `internal_path` — one chain, several doors
+
+**Run the guard on any spec that sets `internal_path`:**
+
+```bash
+bash .claude/skills/create-spec/scripts/check_internal_paths.sh <chain>.json
+```
+
+Only six chain families in the whole catalog use this — TON (`/v2` + `/v3`),
+AVAX (`/C/rpc` `/C/avax` `/P` `/X`), MONERO (`/json_rpc`), STRK (`/rpc/v0_8` …).
+If yours is a seventh, read this section before writing the collections; the
+router has caught three different misunderstandings of this field in
+production.
+
+### What the field IS
+
+The sub-path an **upstream serves that collection at**. It selects the
+node-url, and nothing else.
+
+```
+node-url declares `internal-path: /v2`   → that url IS the /v2 root, dialed as it stands
+node-url declares nothing                → shared root; the router appends the path itself
+                                            (`nodeUrl.Url = baseUrl + internalPath`)
+```
+
+So a chain whose vendor serves both versions under one base needs **one**
+node-url; a vendor that puts v2 at the host root and v3 under `/api/v3` needs
+two, each pinned. Say which shape your chain needs in the PR description — the
+operator writing the values file cannot infer it from the spec.
+
+### What the field is NOT: part of the api name
+
+**Never bake the path into `api.name`.** The name is what a client sends and
+what the router matches on; the path is how the router picks the url. They are
+different fields answering different questions.
+
+```jsonc
+// ✅ correct
+{"internal_path": "/v2"}, apis: [{"name": "/getMasterchainInfo"}]
+// ❌ nothing will ever match this
+{"internal_path": "/v2"}, apis: [{"name": "/v2/getMasterchainInfo"}]
+```
+
+A client calls `GET /getMasterchainInfo`. The router matches the api name,
+finds it in the `/v2` collection, and dials the `/v2` node-url. Send it
+`/v2/getMasterchainInfo` and it matches nothing:
+
+```console
+$ curl -s localhost:3460/getMasterchainInfo     | head -c 48
+{"ok":true,"result":{"@type":"blocks.masterchainInfo"…
+$ curl -s localhost:3460/v2/getMasterchainInfo
+{"code":12,"message":"Not Implemented","details":[]}
+```
+
+(The dashboard's Try-it catalog shipped the prefixed form once, and every TON
+method it offered was unsendable — smart-router-dashboard#145 → #146.)
+
+### REST: a name declared under two paths is only reachable under one
+
+The router matches REST by **(api name, connection type)** with no internal
+path. Declare `/estimateFee` under both `/v2` and `/v3` and one collection wins;
+the other is unreachable through the router. TON does exactly this for
+`/estimateFee` and `/runGetMethod` — the toncenter and tonindex APIs genuinely
+share two names — and that is an accepted cost, not a defect.
+
+`check_internal_paths.sh` reports it as `AMBIGUOUS_REST_NAME` (a warning, never
+blocking). If your chain hits it, make the call deliberately: either accept it
+and say so in the PR, or drop the duplicate from the version that matters less.
+
+JSON-RPC is unaffected: the loader registers each api under both its path key
+and the root key, so a versioned method still resolves from the root url.
+
+### Root collection, or paths only?
+
+Two shapes, and the choice is a real one:
+
+| Shape | Meaning | Examples |
+|---|---|---|
+| **paths only** — no enabled `""` collection | every call must resolve to a path; there is no version-less door | TON, AVAX, MONERO |
+| **root + paths** — `""` enabled alongside | a client can call without naming a version, and each path serves the same set again | STRK |
+
+AVAX shows how to get "paths only" out of an import: it declares the inherited
+`""` collections with `"enabled": false`, which kills ETH1's root, then serves
+from `/C/rpc`. STRK keeps its root enabled and lets `/rpc/v0_8` … be explicit
+opt-ins to a version.
+
+### `internal_path` as a plain label (inheritance ingredients only)
+
+STRK and SOLANA use the field as a **label** on collections that exist only to
+be inherited — `"HTTP-ONLY"`, `"WS-ONLY"`. That is legal **only while the
+collection is `"enabled": false`**. An enabled collection has its path appended
+to a node-url, and `https://host` + `HTTP-ONLY` is not an address. The guard
+reports this as `LABEL_AS_PATH`.
+
+```jsonc
+{"enabled": false, "collection_data": {"internal_path": "HTTP-ONLY", …}},   // ✅ ingredient
+{"enabled": true,  "collection_data": {"internal_path": "", …},
+ "inheritance_apis": [{"internal_path": "HTTP-ONLY", …}]}                    // ✅ the door
+```
+
+### Where the tracker polls
+
+Parse directives (`GET_BLOCKNUM`, `GET_BLOCK_BY_NUM`) and verifications live in
+ONE collection, and the chain tracker polls the node-url for **that
+collection's** path. TON puts them in `/v2` because that is the version whose
+`getMasterchainInfo` returns a height. Put them in the collection whose upstream
+can actually answer them, and make sure that path has a node-url in the test
+config.
+
+---
+
 ## Appended from SPEC_GUIDE.md §Mixed Content-Type Handling & SET_LATEST_IN_METADATA (lines 1063-1165)
 
 #### Step 3.3a: Configure Headers

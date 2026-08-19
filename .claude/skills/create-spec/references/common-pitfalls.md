@@ -36,6 +36,15 @@ Named antipatterns and "do not" rules learned from prior chain specs.
 - **Don't duplicate work** - check if similar spec already exists
 
 ### Common Pitfalls to Avoid
+
+**`internal_path` misunderstood** (only relevant if your chain serves several API surfaces at different URL sub-paths — TON, AVAX, MONERO, STRK):
+
+- ❌ **Baking the path into the api name** — `"name": "/v2/getMasterchainInfo"` inside the `/v2` collection. The name is what a client sends and what the router matches; the path only picks the node-url. Prefixed, it matches nothing and the router answers `{"code":12,"message":"Not Implemented"}` without ever reaching an upstream.
+- ❌ **A non-`/` `internal_path` on an ENABLED collection** — `"HTTP-ONLY"` / `"WS-ONLY"` are labels for DISABLED inheritance ingredients only. An enabled one gets appended to a node-url: `https://host` + `HTTP-ONLY`.
+- ⚠️ **The same REST name under two paths** — the router keys its REST lookup on (name, connection type) with no path, so one collection wins and the other is unreachable. Sometimes the right trade (TON accepts it for `/estimateFee` and `/runGetMethod`); make it deliberately.
+
+`bash .claude/skills/create-spec/scripts/check_internal_paths.sh <chain>.json` catches all three. Full guidance: `phase3.3-api-collections.md` → Step 3.3c.
+
 1. **Misunderstanding Inheritance**: Manually defining collections that should be inherited automatically (read Step 3.1a carefully!)
 2. **Incorrect Block Parsing**: Most common issue - verify parser positions. For REST APIs, use DEFAULT for most endpoints and EMPTY only for static/computation endpoints (see REST API Block Parsing Conventions)
 3. **Wrong Determinism Flags**: Breaks data reliability if incorrect

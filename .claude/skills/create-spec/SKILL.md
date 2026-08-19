@@ -393,6 +393,14 @@ bash .claude/skills/create-spec/scripts/check_unused_fields.sh <chain>.json
 
 It exits 0 with `RESULT: PASS (no removed fields)` on a clean spec. On a non-zero exit it prints one `REMOVED_FIELD | <file> | <json-path>` line per offender — dispatch the Phase 6 fixer subagent to delete every reported field (do NOT open and edit the spec body yourself), then re-run both this guard and the `jq` check.
 
+**If the spec sets `internal_path` anywhere**, run the internal-path guard too — a chain serving several API surfaces at different URL sub-paths (TON's `/v2` + `/v3`, AVAX's `/P` + `/X`) has three failure modes that are invisible in review and fatal in production:
+
+```bash
+bash .claude/skills/create-spec/scripts/check_internal_paths.sh <chain>.json
+```
+
+`NAME_CARRIES_PATH` and `LABEL_AS_PATH` are errors — fix them the same way, via the Phase 6 fixer. `AMBIGUOUS_REST_NAME` is a warning that never blocks: a REST name declared under two paths is reachable under only one, which is sometimes the correct trade (TON accepts it for `/estimateFee` and `/runGetMethod`) — decide deliberately and say so in the PR. See `references/phase3.3-api-collections.md` → Step 3.3c.
+
 Do not proceed to Phase 7.5 until BOTH `jq` exits 0 AND the guard passes. The canonical file structure (matching `iota.json` — exactly `{ "proposal": { "specs": [ … ] } }` with the mainnet/testnet entries and NO `title`/`description`/`deposit`) is produced and enforced inside spec-builder, not here.
 
 ## Phase 7.5 — Endpoint discovery (delegated subagent)
