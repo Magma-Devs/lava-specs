@@ -1,0 +1,30 @@
+{
+  "proposal": {
+    "specs": [
+      {
+        "index": "BADCHAIN",
+        "enabled": true,
+        "api_collections": [
+          {
+            "enabled": true,
+            "collection_data": { "api_interface": "rest", "internal_path": "/v2", "type": "GET", "add_on": "" },
+            "apis": [
+              { "name": "/v2/getMasterchainInfo", "enabled": true },
+              { "name": "/estimateFee", "enabled": true }
+            ]
+          },
+          {
+            "enabled": true,
+            "collection_data": { "api_interface": "rest", "internal_path": "/v3", "type": "GET", "add_on": "" },
+            "apis": [{ "name": "/estimateFee", "enabled": true }]
+          },
+          {
+            "enabled": true,
+            "collection_data": { "api_interface": "jsonrpc", "internal_path": "WS-ONLY", "type": "POST", "add_on": "" },
+            "apis": [{ "name": "chain_subscribe", "enabled": true }]
+          }
+        ]
+      }
+    ]
+  }
+}

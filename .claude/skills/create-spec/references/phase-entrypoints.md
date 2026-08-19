@@ -34,6 +34,8 @@ reconstruct context from committed state and run Phase N → end.
    spec MUST NOT contain any of the 15 fields removed from the model:
    ```bash
    bash .claude/skills/create-spec/scripts/check_unused_fields.sh <chain>.json
+   # …and, when the spec sets internal_path anywhere:
+   bash .claude/skills/create-spec/scripts/check_internal_paths.sh <chain>.json
    ```
    It exits 0 with `RESULT: PASS (no removed fields)`. On a non-zero exit it lists each
    `REMOVED_FIELD | <file> | <json-path>`; strip every offender (and commit the fix)
