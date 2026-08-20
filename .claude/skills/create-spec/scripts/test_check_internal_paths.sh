@@ -41,7 +41,24 @@ echo "$OUT" | grep -q "RESULT: PASS (1 warning(s), no errors)" || fail "warn-onl
 rm -f /tmp/ip_warn_only.json
 echo "warn-only: OK"
 
-# Case 5: unparseable input fails closed rather than reading as clean.
+# Case 5: two names that differ only inside their placeholders compile to one
+# pattern, so the router only ever reaches the last one declared. Reported as a
+# warning, and NOT also as AMBIGUOUS_REST_NAME — the names are not equal.
+cat > /tmp/ip_shape.json <<'JSON'
+{"proposal":{"specs":[{"index":"SHAPE","enabled":true,"api_collections":[
+ {"enabled":true,"collection_data":{"api_interface":"rest","internal_path":"","type":"GET","add_on":""},"apis":[
+   {"name":"/cosmos/auth/v1beta1/bech32/{address_bytes}","enabled":true},
+   {"name":"/cosmos/auth/v1beta1/bech32/{address_string}","enabled":true},
+   {"name":"/cosmos/auth/v1beta1/bech32/latest","enabled":true}]}]}]}}
+JSON
+OUT=$("$SCRIPT" /tmp/ip_shape.json)
+echo "$OUT" | grep -q "AMBIGUOUS_REST_SHAPE .*{address_bytes}  ~  .*{address_string}" || fail "shape: expected the shadowed pair, got: $OUT"
+echo "$OUT" | grep -q "AMBIGUOUS_REST_NAME" && fail "shape: distinct names must not also be reported as an ambiguous NAME"
+echo "$OUT" | grep -q "RESULT: PASS (1 warning(s), no errors)" || fail "shape: a literal sibling compiles to its own pattern and must not be flagged, got: $OUT"
+rm -f /tmp/ip_shape.json
+echo "shape: OK"
+
+# Case 6: unparseable input fails closed rather than reading as clean.
 echo '{ not json' > /tmp/ip_broken.json
 set +e
 OUT=$("$SCRIPT" /tmp/ip_broken.json 2>&1); RC=$?

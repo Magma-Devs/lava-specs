@@ -278,21 +278,6 @@
                                 }
                             },
                             {
-                                "name": "/elys-network/elys/assetprofile/entry/{base_denom}",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
-                                }
-                            },
-                            {
                                 "name": "/elys-network/elys/assetprofile/entry/{denom}",
                                 "block_parsing": {
                                     "parser_arg": [
@@ -564,21 +549,6 @@
                             },
                             {
                                 "name": "/elys-network/elys/leveragelp/params",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
-                                }
-                            },
-                            {
-                                "name": "/elys-network/elys/leveragelp/pool/{index}",
                                 "block_parsing": {
                                     "parser_arg": [
                                         "latest"
@@ -909,21 +879,6 @@
                             },
                             {
                                 "name": "/elys-network/elys/perpetual/params",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
-                                }
-                            },
-                            {
-                                "name": "/elys-network/elys/perpetual/pool/{index}",
                                 "block_parsing": {
                                     "parser_arg": [
                                         "latest"

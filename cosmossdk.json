@@ -99,21 +99,6 @@
                                 }
                             },
                             {
-                                "name": "/cosmos/auth/v1beta1/bech32/{address_bytes}",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
-                                }
-                            },
-                            {
                                 "name": "/cosmos/auth/v1beta1/bech32/{address_string}",
                                 "block_parsing": {
                                     "parser_arg": [

@@ -415,21 +415,6 @@
                                 }
                             },
                             {
-                                "name": "/lavanet/lava/spec/spec/{index}",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
-                                }
-                            },
-                            {
                                 "name": "/lavanet/lava/timerstore/next/{store_key}/{prefix}",
                                 "block_parsing": {
                                     "parser_arg": [

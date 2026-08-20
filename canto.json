@@ -115,21 +115,6 @@
                                 }
                             },
                             {
-                                "name": "/canto/fees/v1/fees/{contract_address}",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
-                                }
-                            },
-                            {
                                 "name": "/canto/fees/v1/fees/{deployer_address}",
                                 "block_parsing": {
                                     "parser_arg": [
