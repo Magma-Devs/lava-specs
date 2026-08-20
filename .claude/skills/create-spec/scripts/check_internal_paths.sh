@@ -39,6 +39,19 @@
 #                       /runGetMethod exist in both toncenter v2 and tonindex
 #                       v3) — an accepted cost, not a defect, but the spec
 #                       author has to make that call knowingly.
+#
+#   AMBIGUOUS_REST_SHAPE  Two REST api names that differ only inside their
+#                       {placeholders}. The router compiles a name to a pattern
+#                       and the placeholder identifier is erased in the process
+#                       — /bech32/{address_bytes} and /bech32/{address_string}
+#                       both become /bech32/[^/\s]*, so they key the SAME entry
+#                       and the one declared later silently replaces the other.
+#                       A path can only ever resolve to one of them, so the
+#                       shadowed name is documentation of an api the router
+#                       cannot reach. Upstream still serves both — the router
+#                       forwards the path it was given — so this costs the
+#                       shadowed name's own compute units and block parsing,
+#                       not the request.
 set -euo pipefail
 
 WARN=0
@@ -64,7 +77,7 @@ for f in "$@"; do
     [[ -z "$line" ]] && continue
     echo "$line"
     case "$line" in
-      AMBIGUOUS_REST_NAME*) warnings=$((warnings + 1)) ;;
+      AMBIGUOUS_REST_NAME*|AMBIGUOUS_REST_SHAPE*) warnings=$((warnings + 1)) ;;
       *)                    errors=$((errors + 1)) ;;
     esac
   done < <(jq -r --arg f "$f" '
@@ -105,6 +118,26 @@ for f in "$@"; do
       | .[]
       | select(length > 1)
       | "AMBIGUOUS_REST_NAME | \($f) | \(.[0].index) | \(.[0].type) \(.[0].name) | declared under \([.[].path] | sort | join(", ")) | the router reaches only one"
+    ),
+
+    # ── WARNING: two names that compile to one pattern ───────────────────────
+    # Grouped on the name with every {placeholder} flattened, which is what the
+    # the name -> pattern transform does. Names that are outright equal are
+    # AMBIGUOUS_REST_NAME above, so they are excluded here rather than reported
+    # twice.
+    ( [ collections
+        | select(.enabled and .cd.api_interface == "rest")
+        | . as $ctx
+        | .coll.apis[]?
+        | select(.enabled != false)
+        | { index: $ctx.index, type: ($ctx.cd.type // ""), name: .name,
+            shape: (.name | gsub("\\{[^}]*\\}"; "{}")) }
+      ]
+      | group_by([.index, .type, .shape])
+      | .[]
+      | select(length > 1)
+      | select([.[].name] | unique | length > 1)
+      | "AMBIGUOUS_REST_SHAPE | \($f) | \(.[0].index) | \(.[0].type) | \([.[].name] | sort | join("  ~  ")) | one pattern, the last one declared wins"
     )
   ' "$f")
 done

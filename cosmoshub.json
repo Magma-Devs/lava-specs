@@ -457,24 +457,6 @@
               },
               {
                 "enabled": true,
-                "name": "/Stride-Labs/ibc-rate-limiting/ratelimit/ratelimits/{chain_id}",
-                "compute_units": 10,
-                "category": {
-                  "deterministic": true,
-                  "stateful": 0,
-                  "hanging_api": false
-                },
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT",
-                  "default_value": "",
-                  "encoding": ""
-                }
-              },
-              {
-                "enabled": true,
                 "name": "/Stride-Labs/ibc-rate-limiting/ratelimit/ratelimits/{channel_id}",
                 "compute_units": 10,
                 "category": {

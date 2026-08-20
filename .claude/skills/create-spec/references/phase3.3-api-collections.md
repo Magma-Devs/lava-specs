@@ -399,6 +399,25 @@ and say so in the PR, or drop the duplicate from the version that matters less.
 JSON-RPC is unaffected: the loader registers each api under both its path key
 and the root key, so a versioned method still resolves from the root url.
 
+### REST: two names that differ only inside their placeholders are one api
+
+The router compiles a REST name to a pattern, and the placeholder identifier is
+erased on the way: `/cosmos/auth/v1beta1/bech32/{address_bytes}` and
+`/cosmos/auth/v1beta1/bech32/{address_string}` both become
+`^/cosmos/auth/v1beta1/bech32/[^/\s]*$`. Both names therefore key the same
+entry and the one declared later replaces the other at load, silently.
+
+A path can only resolve to one of them, so this is not a routing failure —
+upstream still serves both, because the router forwards the path it was given.
+What is lost is the shadowed name: its compute units, its block parsing and the
+`method` label it would have reported are unreachable. Where the two differ, as
+IBC's `{trace}` (EMPTY) and `{trace=**}` (DEFAULT latest) did, only the
+survivor's values ever apply.
+
+`check_internal_paths.sh` reports it as `AMBIGUOUS_REST_SHAPE` (a warning).
+Drop the shadowed name: two names for one pattern describe an api the router
+cannot reach, and the file should say what the router does.
+
 ### Root collection, or paths only?
 
 Two shapes, and the choice is a real one:

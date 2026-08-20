@@ -399,7 +399,7 @@ It exits 0 with `RESULT: PASS (no removed fields)` on a clean spec. On a non-zer
 bash .claude/skills/create-spec/scripts/check_internal_paths.sh <chain>.json
 ```
 
-`NAME_CARRIES_PATH` and `LABEL_AS_PATH` are errors — fix them the same way, via the Phase 6 fixer. `AMBIGUOUS_REST_NAME` is a warning that never blocks: a REST name declared under two paths is reachable under only one, which is sometimes the correct trade (TON accepts it for `/estimateFee` and `/runGetMethod`) — decide deliberately and say so in the PR. See `references/phase3.3-api-collections.md` → Step 3.3c.
+`NAME_CARRIES_PATH` and `LABEL_AS_PATH` are errors — fix them the same way, via the Phase 6 fixer. `AMBIGUOUS_REST_NAME` is a warning that never blocks: a REST name declared under two paths is reachable under only one, which is sometimes the correct trade (TON accepts it for `/estimateFee` and `/runGetMethod`) — decide deliberately and say so in the PR. `AMBIGUOUS_REST_SHAPE` is the other warning: two names that differ only inside their `{placeholders}` compile to one pattern, so the later one replaces the earlier at load — drop the shadowed name rather than accepting this one. See `references/phase3.3-api-collections.md` → Step 3.3c.
 
 Do not proceed to Phase 7.5 until BOTH `jq` exits 0 AND the guard passes. The canonical file structure (matching `iota.json` — exactly `{ "proposal": { "specs": [ … ] } }` with the mainnet/testnet entries and NO `title`/`description`/`deposit`) is produced and enforced inside spec-builder, not here.
 
