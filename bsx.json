@@ -1869,6 +1869,17 @@
                                 "function_tag": "UNSUBSCRIBE",
                                 "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"unsubscribe_newHead\",\"params\":[\"%s\"],\"id\":1}",
                                 "api_name": "unsubscribe_newHead"
+                            },
+                            {
+                                "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"chain_getBlockHash\",\"params\":[0],\"id\":1}",
+                                "function_tag": "GET_EARLIEST_BLOCK",
+                                "result_parsing": {
+                                    "parser_arg": [
+                                        "0"
+                                    ],
+                                    "parser_func": "PARSE_CANONICAL"
+                                },
+                                "api_name": "chain_getBlockHash"
                             }
                         ],
                         "verifications": [
