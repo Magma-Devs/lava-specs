@@ -287,7 +287,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "stateful": 0
+                                    "stateful": 1,
+                                    "hanging_api": true
                                 }
                             },
                             {
@@ -1669,7 +1670,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "stateful": 0
+                                    "stateful": 1,
+                                    "hanging_api": true
                                 }
                             },
                             {
@@ -2668,6 +2670,26 @@
                                         "0",
                                         "number"
                                     ],
+                                    "parser_func": "PARSE_CANONICAL",
+                                    "encoding": "hex"
+                                },
+                                "api_name": "eth_getBlockByNumber"
+                            },
+                            {
+                                "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"eth_blockNumber\",\"params\":[],\"id\":1}",
+                                "function_tag": "GET_BLOCKNUM",
+                                "result_parsing": {
+                                    "parser_arg": ["0"],
+                                    "parser_func": "PARSE_BY_ARG",
+                                    "encoding": "hex"
+                                },
+                                "api_name": "eth_blockNumber"
+                            },
+                            {
+                                "function_tag": "GET_BLOCK_BY_NUM",
+                                "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"eth_getBlockByNumber\",\"params\":[\"0x%x\",false],\"id\":1}",
+                                "result_parsing": {
+                                    "parser_arg": ["0", "hash"],
                                     "parser_func": "PARSE_CANONICAL",
                                     "encoding": "hex"
                                 },
