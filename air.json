@@ -94,7 +94,7 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "stateful": 0
+                                    "stateful": 1
                                 }
                             },
                             {
@@ -835,6 +835,21 @@
                                 }
                             },
                             {
+                                "name": "rpc_methods",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        ""
+                                    ],
+                                    "parser_func": "EMPTY"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "stateful": 0
+                                }
+                            },
+                            {
                                 "name": "state_call",
                                 "block_parsing": {
                                     "parser_arg": [
@@ -1388,7 +1403,7 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "stateful": 0
+                                    "stateful": 1
                                 }
                             },
                             {
