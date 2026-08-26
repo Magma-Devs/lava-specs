@@ -4,6 +4,7 @@ For the QA engineer picking up a chain spec and asking: *what was actually teste
 
 The master table in §3 lists **every check the pipeline runs**, in order. Everything else in this document supports reading it.
 
+One page shorter: [`SPEC_TESTS.md`](SPEC_TESTS.md) summarises what gets tested and what a failure does.
 Deeper mechanics: [`.claude/skills/create-spec/TESTING.md`](.claude/skills/create-spec/TESTING.md).
 
 ---
@@ -71,7 +72,7 @@ The PR **body** is the *input* (human brief, endpoint routing, known gotchas) �
 | 9 | archive ↔ pruning ↔ `GET_EARLIEST_BLOCK` triplet | 6 | All three present or all three absent, per entry | 3 booleans per entry | 🛑 any mixed row |
 | **Phase 6 — the 9 static gates (parallel subagents)** |
 | 10 | **methods-coverage** (`compare_spec_methods.sh`) | 6 | Every method research found is in the spec or its transitive imports | `PRESENT` / `MISSING` / `EXTRA IN SPEC` | ❗ on unjustified `MISSING`. `EXTRA` is informational |
-| 11 | parse-directive L1 — boot-critical presence (`check_directive_presence.sh`) | 6 | `GET_BLOCKNUM` **and** `GET_BLOCK_BY_NUM` exist across the candidate **plus all parents** (they're usually inherited) | `OK` / `FAIL missing:` | ❗ router cannot track the chain |
+| 11 | parse-directive L1 — boot-critical presence (`check_directive_presence.sh`) | 6 | `GET_BLOCKNUM` exists across the candidate **plus all parents** (it's usually inherited). `GET_BLOCK_BY_NUM` is **advisory** — absent, it prints `INFO` and passes, selecting head-only chain tracking (smart-router #245), the only correct modelling for a chain with no blocks (Canton) | `OK` (± an `INFO:` line) / `FAIL missing:` | ❗ no `GET_BLOCKNUM` → router cannot track the chain. ⚠️ an `INFO` line on `GET_BLOCK_BY_NUM` is still a defect for most chains — investigate |
 | 12 | parse-directive L1 — numeric placeholder | 6 | `GET_BLOCK_BY_NUM` template carries `%d`/`%x`/`0x%x` | OK / FAIL | ❗ can't be driven by block number |
 | 13 | parse-directive L1 — echoed-slot | 6 | `GET_BLOCK_BY_NUM` extracts a real block **identifier**, not the slot number it was called with | OK / FAIL | ❗ every provider "agrees" trivially — defeats data reliability |
 | 14 | parse-directive L1 — canonical matrix | 6 | Template, `parser_func`, `parser_arg` match the canonical for `(interface, family)` | OK / FAIL / SKIPPED | ❗ (SKIPPED when family unknown) |
