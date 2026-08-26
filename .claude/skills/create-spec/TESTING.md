@@ -11,6 +11,8 @@ Every check the `create-spec` pipeline performs, what it inspects, how it decide
 > **Derived from `main` at `119f1bb`.** One exception postdates that pin: the portability fixes to `compare_spec_methods.sh` and `test_run_stats.sh` recorded in Appendix B, described as they now stand. If the skill has moved on further, re-derive rather than trusting this file — its predecessor, `references/phase4-testing-and-validation.md`, went stale exactly this way.
 >
 > **Looking for the QA-facing version?** [`QA_GUIDE.md`](../../../QA_GUIDE.md) at the repo root covers where to find a given spec's test evidence, how to read the verdicts, and what to test by hand. This file is the mechanics underneath it.
+>
+> **Looking for the one-page version?** [`SPEC_TESTS.md`](../../../SPEC_TESTS.md) at the repo root lists what gets tested, in order, with the failure consequence for each — no mechanics.
 
 ---
 
