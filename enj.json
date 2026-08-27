@@ -137,7 +137,7 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "stateful": 0
+                  "stateful": 1
                 }
               },
               {
@@ -911,9 +911,10 @@
                 "name": "mmr_verifyProof",
                 "block_parsing": {
                   "parser_arg": [
-                    "0"
+                    "0",
+                    "blockHash"
                   ],
-                  "parser_func": "PARSE_BY_ARG"
+                  "parser_func": "PARSE_CANONICAL"
                 },
                 "compute_units": 20,
                 "enabled": true,
@@ -926,9 +927,10 @@
                 "name": "mmr_verifyProofStateless",
                 "block_parsing": {
                   "parser_arg": [
-                    "0"
+                    "1",
+                    "blockHash"
                   ],
-                  "parser_func": "PARSE_BY_ARG"
+                  "parser_func": "PARSE_CANONICAL"
                 },
                 "compute_units": 20,
                 "enabled": true,
@@ -1729,7 +1731,7 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "stateful": 0
+                  "stateful": 1
                 }
               },
               {
@@ -2032,6 +2034,21 @@
               "add_on": ""
             },
             "apis": [],
+            "parse_directives": [
+              {
+                "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"chain_getHeader\",\"params\":[\"0x735d8773c63e74ff8490fee5751ac07e15bfe2b3b5263be4d683c48dbdfbcd15\"],\"id\":1}",
+                "function_tag": "GET_EARLIEST_BLOCK",
+                "result_parsing": {
+                  "parser_arg": [
+                    "0",
+                    "number"
+                  ],
+                  "parser_func": "PARSE_CANONICAL",
+                  "encoding": "hex"
+                },
+                "api_name": "chain_getHeader"
+              }
+            ],
             "verifications": [
               {
                 "name": "chain-id",
