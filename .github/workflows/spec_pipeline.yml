@@ -224,6 +224,28 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.BOT_PAT || secrets.GITHUB_TOKEN }}
 
+      # Truncation detector, part 1 of 2. Records how many phase-report comments
+      # for the span's FINAL phase already exist, so the check at the end of the
+      # job can require a NEW one. A bare "does a Phase N comment exist" test
+      # would pass on any rerun of a PR that already carries one - exactly the
+      # case on PR #128, where a Phase 8 report from the first attempt survives
+      # every later attempt and would mask the truncation.
+      - name: Record phase-report baseline
+        id: baseline
+        if: steps.cmd.outputs.IS_COMMAND == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.BOT_PAT }}
+          REPO: ${{ github.repository }}
+          PR: ${{ steps.pr.outputs.number }}
+          END: ${{ steps.cmd.outputs.END_PHASE }}
+        run: |
+          set -euo pipefail
+          n=$(gh pr view "$PR" --repo "$REPO" --json comments \
+                --jq "[.comments[].body | split(\"\n\")[0]
+                       | select(startswith(\"**Phase ${END} \"))] | length" 2>/dev/null || echo 0)
+          echo "count=${n:-0}" >> "$GITHUB_OUTPUT"
+          echo "baseline: ${n:-0} existing report comment(s) for Phase ${END}"
+
       - name: Run pipeline phases
         id: run
         if: steps.cmd.outputs.IS_COMMAND == 'true'
@@ -294,6 +316,32 @@ jobs:
             - Only when the run span reaches Phase 11, after the verdict comment also
               post the closing Phase-12 summary checklist as a final PR comment. If
               the span ends before Phase 11, do NOT post a summary.
+
+      # Without these the agent's own record is unrecoverable. Five runs so far
+      # have ended early with a green check, `is_error: false`, and no way to see
+      # what the agent decided to stop for. create_spec.yml has carried both steps
+      # all along; spec_pipeline.yml did not, which is precisely why every
+      # truncation has been undiagnosable from outside.
+      - name: Redact secrets from transcript
+        if: always()
+        run: |
+          f="${{ steps.run.outputs.execution_file }}"
+          [ -f "$f" ] || { echo "no transcript to redact"; exit 0; }
+          perl -pi -e '
+            s/sk-ant-[a-z0-9]+-[A-Za-z0-9_-]+/sk-ant-REDACTED/g;
+            s/gh[posru]_[A-Za-z0-9]{20,}/ghx_REDACTED/g;
+            s/eyJ[A-Za-z0-9_-]+\.eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/JWT_REDACTED/g;
+          ' "$f"
+          echo "redaction pass complete"
+
+      - name: Upload transcript artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: spec-pipeline-transcript-pr${{ steps.pr.outputs.number }}-run${{ github.run_id }}
+          path: ${{ steps.run.outputs.execution_file }}
+          if-no-files-found: warn
+          retention-days: 14
 
       # Reintroduction guard for the smart-router#218 field cleanup. Runs AFTER the
       # Phase-10 fix pass (which edits the spec in the working tree) and BEFORE the
@@ -454,6 +502,41 @@ jobs:
           git push "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git" "HEAD:${HEAD}"
           sha="$(git rev-parse --short HEAD)"
           gh pr comment "$PR" --repo "$REPO" --body "📦 Committed pipeline fixes to \`${HEAD}\` (\`${sha}\`): \`${changed}\`— the branch now matches the spec that Phase 10b/11 verified."
+
+      # Truncation detector, part 2 of 2. The agent is told to run Phases
+      # START->END and post one report comment per phase. If no NEW report for the
+      # final phase appeared, the span did not complete - regardless of the
+      # action's own exit code, which has been `success` with `is_error: false` on
+      # every truncation observed. Failing here stops CI from reporting a
+      # truncated run as a good one, and lets "Report failure to PR" below post
+      # the retry command.
+      #
+      # Placed AFTER the fix-commit step on purpose: if the span died between
+      # Phase 10 and Phase 11, the fixes it did apply are still committed, and
+      # only the verdict is missing.
+      - name: Verify the run span completed
+        if: steps.cmd.outputs.IS_COMMAND == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.BOT_PAT }}
+          REPO: ${{ github.repository }}
+          PR: ${{ steps.pr.outputs.number }}
+          START: ${{ steps.cmd.outputs.START_PHASE }}
+          END: ${{ steps.cmd.outputs.END_PHASE }}
+          BEFORE: ${{ steps.baseline.outputs.count }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          after=$(gh pr view "$PR" --repo "$REPO" --json comments \
+                    --jq "[.comments[].body | split(\"\n\")[0]
+                           | select(startswith(\"**Phase ${END} \"))] | length" 2>/dev/null || echo 0)
+          before="${BEFORE:-0}"
+          if [ "${after:-0}" -gt "$before" ]; then
+            echo "span complete: Phase ${END} reported (${before} -> ${after})"
+            exit 0
+          fi
+          echo "::error::Run span ${START}->${END} ended before Phase ${END}: no new phase report was posted (count still ${before}). The action exited cleanly but the pipeline did not finish."
+          gh pr comment "$PR" --repo "$REPO" --body "$(printf '⚠️ **Pipeline run truncated** — the span was Phase %s → %s, but no Phase %s report was posted. The workflow step exited cleanly, so this is *not* a crash; the agent stopped early.\n\nThe agent transcript is attached to the [run](%s) as `spec-pipeline-transcript-pr%s-run%s` — that is the record needed to diagnose it.' "$START" "$END" "$END" "$RUN_URL" "$PR" "${GITHUB_RUN_ID}")" || true
+          exit 1
 
       - name: Report failure to PR
         if: failure() && steps.cmd.outputs.IS_COMMAND == 'true'
