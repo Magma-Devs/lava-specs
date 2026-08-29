@@ -2291,35 +2291,6 @@
             "extensions": []
           }
         ]
-      },
-      {
-        "index": "BNCT",
-        "name": "Bifrost Testnet",
-        "enabled": false,
-        "imports": [
-          "BNC"
-        ],
-        "block_distance_for_finalized_data": 2,
-        "blocks_in_finalization_proof": 1,
-        "average_block_time": 6000,
-        "allowed_block_lag_for_qos_sync": 2,
-        "api_collections": [
-          {
-            "enabled": true,
-            "collection_data": {
-              "api_interface": "jsonrpc",
-              "internal_path": "",
-              "type": "POST",
-              "add_on": ""
-            },
-            "apis": [],
-            "headers": [],
-            "inheritance_apis": [],
-            "parse_directives": [],
-            "verifications": [],
-            "extensions": []
-          }
-        ]
       }
     ]
   }
