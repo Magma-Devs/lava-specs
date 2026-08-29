@@ -287,7 +287,7 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "stateful": 0
+                                    "stateful": 1
                                 }
                             },
                             {
@@ -821,9 +821,9 @@
                                 "name": "childstate_getKeysPagedAt",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "3"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -1016,9 +1016,9 @@
                                 "name": "state_callAt",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "2"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -1076,9 +1076,9 @@
                                 "name": "state_getKeysPagedAt",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "3"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -1166,9 +1166,9 @@
                                 "name": "state_getStorageAt",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "1"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -1196,9 +1196,9 @@
                                 "name": "state_getStorageHashAt",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "1"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -1226,9 +1226,9 @@
                                 "name": "state_getStorageSizeAt",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "1"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -1256,9 +1256,9 @@
                                 "name": "state_queryStorageAt",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "1"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 40,
                                 "enabled": true,
@@ -1466,9 +1466,9 @@
                                 "name": "system_dryRunAt",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "1"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 40,
                                 "enabled": true,
@@ -1684,7 +1684,7 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "stateful": 0
+                                    "stateful": 1
                                 }
                             },
                             {
