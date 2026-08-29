@@ -2011,6 +2011,194 @@
                 }
               }
             ]
+          },
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "jsonrpc",
+              "internal_path": "",
+              "type": "POST",
+              "add_on": "archive-v1"
+            },
+            "apis": [
+              {
+                "name": "archive_v1_body",
+                "block_parsing": {
+                  "parser_arg": [
+                    "0"
+                  ],
+                  "parser_func": "PARSE_BY_ARG"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "stateful": 0
+                }
+              },
+              {
+                "name": "archive_v1_call",
+                "block_parsing": {
+                  "parser_arg": [
+                    "0"
+                  ],
+                  "parser_func": "PARSE_BY_ARG"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "stateful": 0
+                }
+              },
+              {
+                "name": "archive_v1_finalizedHeight",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "stateful": 0
+                }
+              },
+              {
+                "name": "archive_v1_genesisHash",
+                "block_parsing": {
+                  "parser_arg": [
+                    ""
+                  ],
+                  "parser_func": "EMPTY"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "stateful": 0
+                }
+              },
+              {
+                "name": "archive_v1_hashByHeight",
+                "block_parsing": {
+                  "parser_arg": [
+                    "0"
+                  ],
+                  "parser_func": "PARSE_BY_ARG"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "stateful": 0
+                }
+              },
+              {
+                "name": "archive_v1_header",
+                "block_parsing": {
+                  "parser_arg": [
+                    "0"
+                  ],
+                  "parser_func": "PARSE_BY_ARG"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "stateful": 0
+                }
+              },
+              {
+                "name": "archive_v1_stopStorage",
+                "block_parsing": {
+                  "parser_arg": [
+                    ""
+                  ],
+                  "parser_func": "EMPTY"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": false,
+                  "stateful": 0
+                }
+              },
+              {
+                "name": "archive_v1_storage",
+                "block_parsing": {
+                  "parser_arg": [
+                    "0"
+                  ],
+                  "parser_func": "PARSE_BY_ARG"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "stateful": 0
+                }
+              },
+              {
+                "name": "archive_v1_storageDiff",
+                "block_parsing": {
+                  "parser_arg": [
+                    "0"
+                  ],
+                  "parser_func": "PARSE_BY_ARG"
+                },
+                "compute_units": 40,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "stateful": 0
+                }
+              },
+              {
+                "name": "archive_v1_storageDiff_stopStorageDiff",
+                "block_parsing": {
+                  "parser_arg": [
+                    ""
+                  ],
+                  "parser_func": "EMPTY"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": false,
+                  "stateful": 0
+                }
+              }
+            ],
+            "headers": [],
+            "inheritance_apis": [],
+            "parse_directives": [],
+            "verifications": [
+              {
+                "name": "enabled",
+                "parse_directive": {
+                  "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"archive_v1_genesisHash\",\"params\":[],\"id\":1}",
+                  "function_tag": "VERIFICATION",
+                  "result_parsing": {},
+                  "parsers": [
+                    {
+                      "parse_path": ".result",
+                      "value": "*",
+                      "parse_type": "RESULT"
+                    }
+                  ],
+                  "api_name": "archive_v1_genesisHash"
+                },
+                "values": [
+                  {
+                    "expected_value": "*"
+                  }
+                ]
+              }
+            ],
+            "extensions": []
           }
         ]
       },
