@@ -107,7 +107,7 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "stateful": 0
+                  "stateful": 1
                 }
               },
               {
@@ -176,9 +176,9 @@
                 "name": "babe_epochAuthorship",
                 "block_parsing": {
                   "parser_arg": [
-                    "latest"
+                    ""
                   ],
-                  "parser_func": "DEFAULT"
+                  "parser_func": "EMPTY"
                 },
                 "compute_units": 10,
                 "enabled": true,
@@ -821,9 +821,9 @@
                 "name": "grandpa_roundState",
                 "block_parsing": {
                   "parser_arg": [
-                    "latest"
+                    ""
                   ],
-                  "parser_func": "DEFAULT"
+                  "parser_func": "EMPTY"
                 },
                 "compute_units": 10,
                 "enabled": true,
@@ -1408,16 +1408,17 @@
                 "name": "sync_state_genSyncSpec",
                 "block_parsing": {
                   "parser_arg": [
-                    ""
+                    "latest"
                   ],
-                  "parser_func": "EMPTY"
+                  "parser_func": "DEFAULT"
                 },
-                "compute_units": 60,
+                "compute_units": 10,
                 "enabled": true,
                 "category": {
-                  "deterministic": true,
+                  "deterministic": false,
                   "stateful": 0
-                }
+                },
+                "timeout_ms": 30000
               },
               {
                 "name": "system_accountNextIndex",
