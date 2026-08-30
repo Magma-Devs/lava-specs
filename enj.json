@@ -1993,7 +1993,7 @@
                 },
                 "values": [
                   {
-                    "latest_distance": 128
+                    "latest_distance": 200
                   },
                   {
                     "extension": "archive",
@@ -2007,7 +2007,7 @@
                 "name": "archive",
                 "cu_multiplier": 5,
                 "rule": {
-                  "block": 127
+                  "block": 200
                 }
               }
             ]
