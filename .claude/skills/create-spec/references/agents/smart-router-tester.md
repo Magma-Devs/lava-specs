@@ -140,15 +140,38 @@ If both lists are empty → record `ADDONS: none declared` and skip to Step 2.
 
 Record per pair: `SUPPORTED` | `UNSUPPORTED (error/code)` | `INCONCLUSIVE (timeout)`.
 
-**1c-iii. Update the config.** For every upstream, add the addons/extensions it supports to its `node-urls` entries in `/tmp/sr_<chain>.yml`:
+**1c-ii-b. Base-collection probe — for every upstream that passed at least one addon above.**
+
+An add-on usually **extends** the base collection: an archive node still answers everything a full node does, so it serves both. But some chains use an add-on as a **disjoint** surface — Acala serves Substrate in the base collection and EVM in an `evm` add-on, on separate infrastructure with no method in common. `lit.json` (Litentry/Heima) and `peaq.json` have the same shape.
+
+Nothing in the spec model distinguishes the two, so the router config has to say which it is. Issue the **base** collection's `GET_BLOCKNUM` template directly to the upstream:
+
+```bash
+# base collection = the one with add_on ""
+jq -r '[.. | objects | select(.collection_data?.add_on == "")
+        | .parse_directives[]? | select(.function_tag == "GET_BLOCKNUM")
+        | .function_template] | first' <chain>.json
+```
+
+- Answers normally → the upstream serves the base collection too. Ordinary add-on, nothing extra to record.
+- `-32601` → the upstream serves **only** its add-on. Record `STANDALONE` for that upstream.
+
+**1c-iii. Update the config.** For every upstream, add the addons/extensions it supports to its `node-urls` entries in `/tmp/sr_<chain>.yml`, plus `standalone-addons: true` for any upstream 1c-ii-b recorded as `STANDALONE`:
 
 ```yaml
     node-urls:
       - url: "<NODE_URL_1>"
         addons: [archive, debug]   # only what THIS upstream passed in 1c-ii
+      - url: "<NODE_URL_2>"
+        addons: [evm]
+        standalone-addons: true    # only when 1c-ii-b recorded STANDALONE
 ```
 
 Do NOT add an addon the upstream failed — its startup verification (severity `Fail`) would exclude that provider from serving everything. An addon supported by ZERO upstreams is `NOT_TESTABLE` — leave it out of the config and carry it to the coverage table with the per-upstream probe evidence.
+
+`standalone-addons: true` tells the router that url serves only the collections its `addons` name. **Omitting it on a disjoint add-on costs you the provider.** The router otherwise runs the base collection's verifications against that upstream too — for a disjoint surface that is a Substrate call to an EVM node — and a verification value with no `severity` defaults to `Fail`, so the provider is excluded at boot and every method of the add-on then fails `No Providers For Addon … No pairings available`. The flag also keeps base-collection traffic off that upstream at relay time, so a mixed deployment does not route Substrate requests to the EVM node.
+
+It needs a smart-router carrying MAG-3296. Against an older image the key is ignored rather than rejected (unknown config keys are dropped), and the provider is excluded exactly as before — so if a `STANDALONE` upstream still fails at boot, check the image before suspecting the spec.
 
 Re-validate the YAML after editing (same `python3 -c` check as Step 1b).
 
@@ -394,9 +417,11 @@ One row per addon/extension declared in the spec. Classifications:
 **TESTED_FAIL** — a supporting upstream exists but the boot verification or the router probe failed (spec/routing defect).
 **NOT_TESTABLE** — no provided upstream supports it (include the per-upstream probe evidence so a reviewer can supply a better node).
 
-| Name | Type | Upstreams supporting | Boot verification | Router probe | Classification |
-|---|---|---|---|---|---|
-| <archive/debug/trace/...> | <addon/extension> | <which of 1-3, or none> | <OK/FAIL/n-a> | <PASS/FAIL/—> | <TESTED_OK/TESTED_FAIL/NOT_TESTABLE> |
+| Name | Type | Upstreams supporting | Standalone | Boot verification | Router probe | Classification |
+|---|---|---|---|---|---|---|
+| <archive/debug/trace/...> | <addon/extension> | <which of 1-3, or none> | <which upstreams 1c-ii-b recorded STANDALONE, or —> | <OK/FAIL/n-a> | <PASS/FAIL/—> | <TESTED_OK/TESTED_FAIL/NOT_TESTABLE> |
+
+The **Standalone** column records 1c-ii-b: an upstream that serves this add-on but NOT the base collection, and therefore carries `standalone-addons: true` in the config. `—` for the ordinary case. It is worth reporting because it is the difference between a spec defect and a deployment note: a reviewer seeing a disjoint add-on knows the production router config needs that flag too, not just the pipeline's.
 
 | Method | Classification | Upstream notes | Notes |
 |---|---|---|---|
