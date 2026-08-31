@@ -7,8 +7,8 @@
                 "enabled": true,
                 "block_distance_for_finalized_data": 3,
                 "blocks_in_finalization_proof": 3,
-                "average_block_time": 1200,
-                "allowed_block_lag_for_qos_sync": 8,
+                "average_block_time": 600,
+                "allowed_block_lag_for_qos_sync": 17,
                 "api_collections": [
                     {
                         "enabled": true,
@@ -381,18 +381,26 @@
                                 "name": "next_light_client_block",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "0",
-                                        "block_id"
+                                        "latest"
                                     ],
-                                    "parser_func": "PARSE_CANONICAL",
-                                    "default_value": "latest"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
                                     "stateful": 0
-                                }
+                                },
+                                "parsers": [
+                                    {
+                                        "parse_path": ".params.last_block_hash",
+                                        "parse_type": "BLOCK_HASH"
+                                    },
+                                    {
+                                        "parse_path": ".params.[0]",
+                                        "parse_type": "BLOCK_HASH"
+                                    }
+                                ]
                             }
                         ],
                         "headers": [],
@@ -677,8 +685,8 @@
                 ],
                 "block_distance_for_finalized_data": 3,
                 "blocks_in_finalization_proof": 3,
-                "average_block_time": 1200,
-                "allowed_block_lag_for_qos_sync": 8,
+                "average_block_time": 600,
+                "allowed_block_lag_for_qos_sync": 17,
                 "api_collections": [
                     {
                         "enabled": true,
@@ -702,7 +710,7 @@
                                 ]
                             },
                             {
-                                "name": "pruning-archive",
+                                "name": "pruning-archive-10000000",
                                 "parse_directive": {
                                     "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"block\",\"params\":{\"block_id\":42376888},\"id\":1}",
                                     "function_tag": "VERIFICATION",
