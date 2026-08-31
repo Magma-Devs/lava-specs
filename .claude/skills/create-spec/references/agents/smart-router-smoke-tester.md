@@ -106,7 +106,7 @@ Then probe these exactly, in order:
 1. `GET_BLOCKNUM` parse directive — same call as Phase 8.
 2. `chain-id` verification — call the verification method and confirm the response matches the spec's `expected_value`.
 3. **5 sampled read methods** — deterministically the first 5 non-stateful, non-subscription APIs (alphabetical by name) from the largest collection.
-4. **One probe per addon/extension that was `TESTED_OK` in Phase 8** (read the "Addon & extension coverage" table in `<PHASE_8_REPORT_PATH>`): for an addon, the first method of its collection; for an extension, the same `lava-extension`-header call Phase 8 used. The Phase-8 config at `/tmp/sr_<chain>.yml` already carries the `addons:` entries — do not strip them when regenerating it. `NOT_TESTABLE` items stay unprobed (carry them forward unchanged).
+4. **One probe per addon/extension that was `TESTED_OK` in Phase 8** (read the "Addon & extension coverage" table in `<PHASE_8_REPORT_PATH>`): for an addon, the first method of its collection; for an extension, the same `lava-extension`-header call Phase 8 used. The Phase-8 config at `/tmp/sr_<chain>.yml` already carries the per-upstream `addons:` entries and any `standalone-addons: true` — do not strip either when regenerating it. Dropping `standalone-addons` on a chain whose add-on is a disjoint surface (Acala's `evm`, and the same shape in `lit.json` / `peaq.json`) excludes that provider at boot, which reads as a Phase-10b regression against a spec that is fine. `NOT_TESTABLE` items stay unprobed (carry them forward unchanged).
 
 Send every probe **through the router at `localhost:3360`** (subscriptions via `ws://localhost:3360`), exactly as Phase 8 does — NOT directly to the upstream `node-urls`.
 
