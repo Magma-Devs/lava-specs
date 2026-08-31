@@ -7,7 +7,7 @@
                 "enabled": true,
                 "block_distance_for_finalized_data": 3,
                 "blocks_in_finalization_proof": 1,
-                "average_block_time": 12700,
+                "average_block_time": 33985,
                 "allowed_block_lag_for_qos_sync": 1,
                 "imports": [],
                 "api_collections": [
