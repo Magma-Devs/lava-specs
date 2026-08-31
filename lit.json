@@ -194,7 +194,7 @@
                   "parser_func": "EMPTY"
                 },
                 "compute_units": 10,
-                "enabled": false,
+                "enabled": true,
                 "category": {
                   "deterministic": false,
                   "stateful": 0
@@ -209,7 +209,7 @@
                   "parser_func": "EMPTY"
                 },
                 "compute_units": 10,
-                "enabled": false,
+                "enabled": true,
                 "category": {
                   "deterministic": false,
                   "stateful": 0
@@ -224,7 +224,7 @@
                   "parser_func": "EMPTY"
                 },
                 "compute_units": 10,
-                "enabled": false,
+                "enabled": true,
                 "category": {
                   "deterministic": false,
                   "stateful": 0
@@ -269,7 +269,7 @@
                   "parser_func": "EMPTY"
                 },
                 "compute_units": 10,
-                "enabled": false,
+                "enabled": true,
                 "category": {
                   "deterministic": false,
                   "stateful": 0
@@ -901,7 +901,7 @@
                   "parser_func": "EMPTY"
                 },
                 "compute_units": 10,
-                "enabled": false,
+                "enabled": true,
                 "category": {
                   "deterministic": false,
                   "stateful": 0
@@ -916,7 +916,7 @@
                   "parser_func": "EMPTY"
                 },
                 "compute_units": 10,
-                "enabled": false,
+                "enabled": true,
                 "category": {
                   "deterministic": false,
                   "stateful": 0
@@ -1081,7 +1081,7 @@
                   "parser_func": "PARSE_BY_ARG"
                 },
                 "compute_units": 40,
-                "enabled": false,
+                "enabled": true,
                 "category": {
                   "deterministic": true,
                   "stateful": 0
@@ -1276,7 +1276,7 @@
                   "parser_func": "PARSE_BY_ARG"
                 },
                 "compute_units": 100,
-                "enabled": false,
+                "enabled": true,
                 "category": {
                   "deterministic": true,
                   "stateful": 0
@@ -1351,7 +1351,7 @@
                   "parser_func": "EMPTY"
                 },
                 "compute_units": 10,
-                "enabled": false,
+                "enabled": true,
                 "category": {
                   "deterministic": false,
                   "stateful": 0
@@ -1366,7 +1366,7 @@
                   "parser_func": "EMPTY"
                 },
                 "compute_units": 10,
-                "enabled": false,
+                "enabled": true,
                 "category": {
                   "deterministic": false,
                   "stateful": 0
@@ -1411,7 +1411,7 @@
                   "parser_func": "PARSE_BY_ARG"
                 },
                 "compute_units": 40,
-                "enabled": false,
+                "enabled": true,
                 "category": {
                   "deterministic": true,
                   "stateful": 0
@@ -1426,7 +1426,7 @@
                   "parser_func": "PARSE_BY_ARG"
                 },
                 "compute_units": 40,
-                "enabled": false,
+                "enabled": true,
                 "category": {
                   "deterministic": true,
                   "stateful": 0
@@ -1516,7 +1516,7 @@
                   "parser_func": "EMPTY"
                 },
                 "compute_units": 10,
-                "enabled": false,
+                "enabled": true,
                 "category": {
                   "deterministic": false,
                   "stateful": 0
@@ -1546,7 +1546,7 @@
                   "parser_func": "EMPTY"
                 },
                 "compute_units": 10,
-                "enabled": false,
+                "enabled": true,
                 "category": {
                   "deterministic": false,
                   "stateful": 0
@@ -1576,7 +1576,7 @@
                   "parser_func": "EMPTY"
                 },
                 "compute_units": 10,
-                "enabled": false,
+                "enabled": true,
                 "category": {
                   "deterministic": false,
                   "stateful": 0
