@@ -2132,10 +2132,10 @@
                   ],
                   "parser_func": "PARSE_BY_ARG"
                 },
-                "compute_units": 20,
+                "compute_units": 1000,
                 "enabled": true,
                 "category": {
-                  "deterministic": true,
+                  "deterministic": false,
                   "stateful": 0
                 }
               },
@@ -2147,10 +2147,10 @@
                   ],
                   "parser_func": "PARSE_BY_ARG"
                 },
-                "compute_units": 40,
+                "compute_units": 1000,
                 "enabled": true,
                 "category": {
-                  "deterministic": true,
+                  "deterministic": false,
                   "stateful": 0
                 }
               },
@@ -2172,7 +2172,26 @@
             ],
             "headers": [],
             "inheritance_apis": [],
-            "parse_directives": [],
+            "parse_directives": [
+              {
+                "function_tag": "SUBSCRIBE",
+                "api_name": "archive_v1_storage"
+              },
+              {
+                "function_tag": "SUBSCRIBE",
+                "api_name": "archive_v1_storageDiff"
+              },
+              {
+                "function_tag": "UNSUBSCRIBE",
+                "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"archive_v1_stopStorage\",\"params\":[\"%s\"],\"id\":1}",
+                "api_name": "archive_v1_stopStorage"
+              },
+              {
+                "function_tag": "UNSUBSCRIBE",
+                "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"archive_v1_storageDiff_stopStorageDiff\",\"params\":[\"%s\"],\"id\":1}",
+                "api_name": "archive_v1_storageDiff_stopStorageDiff"
+              }
+            ],
             "verifications": [
               {
                 "name": "enabled",
