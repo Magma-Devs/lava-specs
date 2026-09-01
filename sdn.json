@@ -1331,6 +1331,51 @@
                 }
               },
               {
+                "name": "system_dryRun",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 40,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "stateful": 0
+                }
+              },
+              {
+                "name": "system_dryRunAt",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 40,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "stateful": 0
+                }
+              },
+              {
+                "name": "system_health",
+                "block_parsing": {
+                  "parser_arg": [
+                    ""
+                  ],
+                  "parser_func": "EMPTY"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": false,
+                  "stateful": 0
+                }
+              },
+              {
                 "name": "system_name",
                 "block_parsing": {
                   "parser_arg": [
