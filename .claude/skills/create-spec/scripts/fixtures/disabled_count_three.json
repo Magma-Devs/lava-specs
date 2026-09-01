@@ -1,0 +1,17 @@
+{
+  "proposal": {
+    "specs": [
+      {
+        "index": "AAA",
+        "api_collections": [
+          { "apis": [
+            { "name": "a_one", "enabled": false },
+            { "name": "a_two", "enabled": true },
+            { "name": "a_three", "enabled": false },
+            { "name": "a_four", "enabled": false }
+          ] }
+        ]
+      }
+    ]
+  }
+}
