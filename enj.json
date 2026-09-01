@@ -300,7 +300,7 @@
                   ],
                   "parser_func": "PARSE_BY_ARG"
                 },
-                "compute_units": 20,
+                "compute_units": 10,
                 "enabled": true,
                 "category": {
                   "deterministic": true,
@@ -911,10 +911,9 @@
                 "name": "mmr_verifyProof",
                 "block_parsing": {
                   "parser_arg": [
-                    "0",
-                    "blockHash"
+                    ""
                   ],
-                  "parser_func": "PARSE_CANONICAL"
+                  "parser_func": "EMPTY"
                 },
                 "compute_units": 20,
                 "enabled": true,
@@ -927,10 +926,9 @@
                 "name": "mmr_verifyProofStateless",
                 "block_parsing": {
                   "parser_arg": [
-                    "1",
-                    "blockHash"
+                    ""
                   ],
-                  "parser_func": "PARSE_CANONICAL"
+                  "parser_func": "EMPTY"
                 },
                 "compute_units": 20,
                 "enabled": true,
