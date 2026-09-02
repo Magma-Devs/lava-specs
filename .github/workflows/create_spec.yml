@@ -309,6 +309,13 @@ jobs:
             | Testnet index | ${{ github.event.inputs.chain_testnet_index }} |
             | Spec file | <chain>.json |
 
+            <!-- Machine-readable; .claude/skills/create-spec/scripts/check_disabled_count.sh
+                 compares this against the file's actual `enabled: false` set. Count DISTINCT
+                 method names, and count them from the file you are shipping — not from what
+                 you intended to ship. It sits up here because the body is truncated at 63000
+                 chars from the end, which would eat a marker placed at the bottom. -->
+            <!-- disabled-count: <number of distinct methods that ship `enabled: false` in <chain>.json> -->
+
             ### Inputs provided
             ${{ github.event.inputs.additional_data }}
 

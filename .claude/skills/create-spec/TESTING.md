@@ -583,7 +583,7 @@ for t in .claude/skills/create-spec/scripts/test_*.sh; do
 done
 ```
 
-> **The suite requires bash ≥ 4.** Stock macOS `/bin/bash` is 3.2 and fails 5 of the 12 for reasons that have nothing to do with awk: `declare -A` in `compare_spec_methods.sh`, `compare_spec_directives.sh`, and `check_directive_presence.sh`, and the empty-array `"${arr[@]}"`-under-`set -u` expansion in `check_extensions.sh` and `check_method_schema.sh`. Run under Homebrew bash (or any bash ≥ 4.4) before concluding anything is broken.
+> **The suite requires bash ≥ 4.** Stock macOS `/bin/bash` is 3.2 and fails 5 of the 12 for reasons that have nothing to do with awk: `declare -A` in `compare_spec_methods.sh`, `compare_spec_directives.sh`, and `check_directive_presence.sh`, and the empty-array `"${arr[@]}"`-under-`set -u` expansion in `check_extensions.sh` and `check_method_schema.sh`. Run under Homebrew bash (or any bash ≥ 4.4) before concluding anything is broken. `check_disabled_count.sh` is the exception — it is deliberately bash-3.2-clean (it reads its rows through `while read` rather than `mapfile`), because it is the one guard a reviewer runs by hand against a PR rather than inside a phase.
 
 ### Suite status
 
@@ -603,6 +603,7 @@ All 12 pass, verified 2026-08-04 on darwin under both BSD awk (`version 20200816
 | `test_compare_spec_methods.sh` | `compare_spec_methods.sh` |
 | `test_compare_spec_directives.sh` | `compare_spec_directives.sh` |
 | `test_run_stats.sh` | `run_stats.sh` |
+| `test_check_disabled_count.sh` | `check_disabled_count.sh` |
 
 ### Fixed: two macOS portability defects (2026-08-04)
 

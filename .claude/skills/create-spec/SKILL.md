@@ -547,6 +547,22 @@ echo "jq exit: $?"
 
 If exit non-zero: outcome = `BROKEN_AFTER_FIX`. Present the snapshot path (`/tmp/spec_<chain>_pre_fix.json`), the `jq` error, and the fixer's diff to the user. STOP. Do not proceed to Phase 10b.
 
+Then re-count what the fixer actually disabled. This pass is where the disabled
+set changes, and it runs *after* the PR body was written — the #130 mechanism,
+where the body declared zero and this pass then introduced 13:
+
+```bash
+bash .claude/skills/create-spec/scripts/check_disabled_count.sh <chain>.json
+```
+
+The report-only form prints the set; it cannot assert here, because the body it
+would be checked against is not final until the PR is (the `spec_guards.yml`
+gate on `pull_request: edited` is the point that sees both halves settled). Use
+its distinct-method count as the value the PR body's `<!-- disabled-count: N -->`
+marker must carry, and confirm every listed method has a positive-evidence row
+in the Disabled-API Justifications ledger. If the count moved and the body is
+already posted, update the marker and the ledger comment before Phase 11.
+
 ## Phase 10b — Smoke regression test (delegated subagent)
 
 Same delegation pattern as Phase 8 — a single `general-purpose` subagent re-boots the dockerized smart-router against the FIXED spec on disk and re-probes a deterministic minimal set to detect regressions. The orchestrator does NOT run docker or compare classifications inline.
@@ -582,6 +598,15 @@ mv docs/<chain>/SPEC_REVIEW_GAPS_parallel_*.md docs/<chain>/_archive/ 2>/dev/nul
 mv docs/<chain>/SPEC_REVIEW_FIXES_*.md docs/<chain>/_archive/ 2>/dev/null || true
 rm -f docs/<chain>/SPEC_REVIEW_GAPS.md
 ```
+
+**Keep the body's `<!-- disabled-count: N -->` marker true.** It is the value
+`check_disabled_count.sh` compares against the file, so it is the claim under
+test — the surrounding prose is explanation. Recompute `N` from the file on disk
+(distinct method names with `enabled: false`, which the guard's report-only form
+prints) rather than from the ledger or from an earlier phase's summary, and
+correct the marker if Phase 10 moved it. When a body is revised in place, strike
+the old prose through (`~~…~~`) — the guard ignores struck spans — and update the
+marker to the new value rather than adding a second one.
 
 **Assemble the Disabled-API Justifications ledger** to hand the reviewer: in a CI run, read it from the PR's `Disabled-API Justifications` comment (`gh pr view "$PR_NUMBER" --json comments`), falling back to the disabled-API ledger carried in the PR body if that comment has not been posted yet (the original create_spec run emits the ledger into the PR body before any PR comment exists); in an interactive run, use the rows `spec-builder` (Phase 5) and the Phase-10 fixer produced this run. Substitute it for `[LEDGER]` in the prompt below (use `(none — no disabled APIs)` if nothing is disabled).
 
