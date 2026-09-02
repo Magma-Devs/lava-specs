@@ -21,12 +21,13 @@ means no recorded testing.
 | Phase | What runs | What it proves | If it fails |
 |---|---|---|---|
 | **6 pre-flight** | Orchestrator, inline | Live chain-id curl (mainnet **and** testnet); index/`name`/`enabled` sanity; archive ↔ pruning ↔ `GET_EARLIEST_BLOCK` triplet all-present-or-all-absent | Mixed triplet → **STOP** |
-| **6 gates** | 9 static gates, parallel subagents | The file is internally consistent and matches research (see below) | Any `FAIL` → **one** fixer pass, then straight on. Gates are **not** re-run — Phases 9/11 are the backstop |
+| **6 gates** | 9 static gates, parallel subagents | The file is internally consistent and matches research (see below) | Any `FAIL` → **one** fixer pass, then straight on. Only the four offline gates re-run (Phase 10a); the rest are backstopped by Phases 9/11 |
 | **7** | `jq` + removed-field guard | Valid JSON; none of the 15 fields deleted from the smart-router model (nine governance fields, `title`/`description`, `deposit`, `extra_compute_units`, `category.local`, `category.subscription`) | Either fails → fixer; **no progress** until both pass |
 | **7.5** | Endpoint discovery | A real validated upstream exists for every interface, subscription and addon the spec declares — *including inherited ones* | `NOT_TESTABLE` is a transparent gap, never a stop |
 | **8** | Dockerized smart-router boot + live probe (`smart-router:main`, `--use-static-spec`) | The spec actually works against real nodes | `BOOT_FAILED` → **STOP**. `PARSE`/`VERIFY`/`TESTNET_VERIFY: FAIL` → carried into 9/10 as CRITICAL |
 | **9** | 3 parallel reviewers | Three independent audits, each having read the probe report | Missing `TALLY` → abort |
 | **10** | Consolidate gaps → **one** fix pass | Dedup, drop MINOR, strip probe-only disable suggestions | `jq` broken after fix → **STOP** |
+| **10a** | Re-run the four offline gates (`method-schema`, `hanging_api`, `stateful`, `unused-fields`) + disabled-count | The **fixer** introduced nothing new. It is the likeliest source of these: told "a hanging API needs a `timeout_ms`", the natural answer is a flat `30000`, which on a CU-1000 method shortens the budget | Any `FAIL` → re-run the fixer on that item alone, before 10b |
 | **10b** | Smoke re-boot (`smart-router:latest`) + 7-item re-probe | The fix broke nothing | `REGRESSION`/`BOOT_FAILED` → **STOP** |
 | **11** | Final reviewer, clean context, prior reports archived | A fourth pass re-derived from the file alone | Any CRITICAL or MEDIUM → **CHANGES REQUESTED**, no retry loop |
 | **12** | Coverage checklist + run stats | Reporting only | No gate |
@@ -46,7 +47,7 @@ fires before any test runs.
 6. **cu-semantic** — hard rule: subscribe = exactly `1000` CU, unsubscribe = exactly `10`. Everything else is an advisory band (tx-submit 10–40, simulate 40–60, heavy 60–200, state-read 10–20) and never fails the gate. Uniform CU across methods is **not** a defect.
 7. **pruning** — `archive.rule.block` and `pruning.latest_distance` within 3× of researched retention (`unknown` → INFO + pass); archive-tier `expected_value` is a base-10 integer on the path the router `ParseInt`s (a `"*"` there excludes the archive provider at boot).
 8. **enabled** — advisory watch-list of still-enabled methods research called unsupported. **Always PASS**; never auto-disables.
-9. **method-schema** — per API: `enabled`, `compute_units`, `block_parsing`, `category` present; `parser_arg` all strings; no duplicate API names in a collection.
+9. **method-schema** — three scripts. **Structure:** per API, `enabled`, `compute_units`, `block_parsing`, `category` present; `parser_arg` all strings; no duplicate API names in a collection. **`hanging_api`:** the flag must not appear on a `SUBSCRIBE`-tagged API (the router's subscription path never reads it); a hanging API must carry an explicit `timeout_ms`; and that `timeout_ms` must be at least `max(1s, CU × 100ms)` — below that it *shortens* the relay budget, because it replaces the CU term rather than adding to it. **`stateful`:** a curated list of broadcast methods must be `1` and a curated list of simulate/encode/decode helpers must not be; disagreement with ≥90% of other specs declaring the same method is reported as `INFO` and never fails.
 
 ---
 
@@ -108,23 +109,23 @@ skip reads as a pass.
 
 | Not covered | Why |
 |---|---|
-| Stateful / broadcast methods | Always `SKIP` — probing would move funds. Test on a funded testnet if it matters. |
+| Stateful / broadcast methods | Always `SKIP` at probe time — sending one would move funds. Their *declaration* is checked (gate 9's `stateful` rules); their *behaviour* is not. Test on a funded testnet if it matters. |
 | gRPC through the router | The router's gRPC listener has no server reflection, so those probes go **direct to upstream**. Rows are labelled as such — they are not through-router coverage. |
 | Testnet method coverage | The testnet gets boot + verifications only. No method probe, ever. |
 | Compute units under load | Never benchmarked. CU is assigned by semantic band, not measurement. |
 | Per-API block parsing, fully | Existence-tested only; full validation needs production traffic. |
 
-Two checks **no validator covers** — they are the reviewer's job:
+Both of the `category` flag checks that used to be listed here as *"no validator covers these — they are
+the reviewer's job"* are now enforced by gate 9 and re-run in Phase 10a. Neither is a manual step any more.
 
-```bash
-# hanging_api without timeout_ms — output must be empty
-jq -r '.proposal.specs[].api_collections[].apis[]
-       | select(.category.hanging_api == true and (.timeout_ms // null) == null) | .name' <chain>.json
+What still needs a human on those two flags is narrow but real:
 
-# every stateful method — each should be a broadcast/submit call
-jq -r '.proposal.specs[].api_collections[].apis[]
-       | select(.category.stateful == 1) | .name' <chain>.json
-```
+- **`check_stateful.sh`'s `INFO` rows.** They fire when ≥90% of other specs disagree with the candidate on a
+  method that is on neither curated list. They are usually right, but consensus is not evidence — check the
+  chain's own docs before acting. 24 of 5,539 distinct method names in the catalogue genuinely disagree.
+- **A broadcast method the curated write list does not know.** A new chain family can introduce one under a
+  name nobody has seen. If it submits a transaction and is not on the list, only the consensus layer will
+  notice, and only once enough specs declare it.
 
 ---
 

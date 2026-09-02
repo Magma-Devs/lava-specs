@@ -30,8 +30,10 @@ Five kinds of checking, run in order, cheapest first:
    the earlier reports hidden so it can't be anchored by them. They check the same nine areas a human
    reviewer would, having read the live-test results.
 
-5. **Regression check** — after any fixes are applied, the router is booted again and a fixed sample
-   re-tested, to confirm the fix didn't break something that previously worked.
+5. **Regression check** — after any fixes are applied, the fast file-level checks from step 1 are re-run,
+   then the router is booted again and a fixed sample re-tested. Both halves matter: the fix pass is itself
+   a likely source of new defects, because it applies instructions field by field without seeing the
+   surrounding context.
 
 ## What stops the run
 
@@ -41,8 +43,9 @@ Five kinds of checking, run in order, cheapest first:
   passes.
 - **A regression after a fix stops the run** rather than shipping the fix.
 
-Deliberate limits worth knowing about: the structural checks in step 1 run once, followed by a single fix
-pass — they are not re-run, and the two review rounds are what catch anything the fixer missed.
+Deliberate limits worth knowing about: there is a single fix pass, not a loop. The cheap file-level checks
+from step 1 are re-run afterwards to catch anything the fix itself introduced, but the checks that need a
+live chain or a running router are not — the two review rounds are what catch those.
 
 **These stop the pipeline, not the merge button.** Two safety checks run as CI steps and fail the build,
 but the review verdict itself is posted to the pull request as a comment — acting on it is a human
