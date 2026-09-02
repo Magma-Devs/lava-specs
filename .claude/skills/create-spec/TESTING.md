@@ -254,7 +254,9 @@ Unlike `hanging_api` this cannot be settled from the router source — *"does th
 
 REST entries are keyed `"TYPE /path"` where the verb disambiguates: `GET /cosmos/tx/v1beta1/txs` is a query, `POST` to the same path is BroadcastTx. The verb resolves a name collision — it does **not** classify. Treating POST as "is a write" is precisely the bug that put four read endpoints on the write path in `cosmossdk.json`.
 
-Calibration over the 140-spec catalogue: **29 FAIL rows in 16 specs, 11 INFO rows** — every FAIL a genuine defect (the 10 specs with the watch pair at `0`, `babylon`/`kava`/`sei` on `decode/amino`, `monad`/`optimism` on `eth_sendTransaction`, and `cosmossdk`'s four REST reads).
+**These two scripts also run again in Phase 10a**, after the fixer. Gate 9 fires in Phase 6, *before* any fix is applied, so a defect the fixer introduces would otherwise ship unguarded — and the fixer is the step most likely to introduce exactly these, since it applies field-level instructions without surrounding context. `check_hanging_api.sh` rule 3 is the clearest case: told only *"a hanging API needs a `timeout_ms`"*, the natural response is a flat `30000`, which on a CU-1000 method shortens the budget rather than lengthening it.
+
+Calibration over the 140-spec catalogue: **29 FAIL rows in 16 specs, 11 INFO rows** — every FAIL a genuine defect (the 10 specs with the watch pair at `0`, `babylon`/`kava`/`sei` on `decode/amino`, `monad`/`optimism` on `eth_sendTransaction`, and `cosmossdk`'s four REST reads). Two of the 29 — `monad` and `optimism`'s `eth_sendTransaction` — are `enabled: false`, so they are latent rather than live; the other 27 are on enabled methods.
 
 **Scope.** Candidate file only, which is how the pipeline uses it. 152 APIs across ~30 established specs (`ethereum`, `cosmossdk`, `tendermint`, `solana`, `kusama` …) predate rule 2 and would fail if it were run over the whole repo; that is a separate cleanup, tracked in MAG-3389, not this gate's job.
 
@@ -629,11 +631,11 @@ for t in .claude/skills/create-spec/scripts/test_*.sh; do
 done
 ```
 
-> **The suite requires bash ≥ 4.** Stock macOS `/bin/bash` is 3.2 and fails 7 of the 16 for reasons that have nothing to do with awk: `declare -A` in `compare_spec_methods.sh`, `compare_spec_directives.sh`, `check_directive_presence.sh`, `check_hanging_api.sh` and `check_stateful.sh`, and the empty-array `"${arr[@]}"`-under-`set -u` expansion in `check_extensions.sh` and `check_method_schema.sh`. Run under Homebrew bash (or any bash ≥ 4.4) before concluding anything is broken. `check_disabled_count.sh` and `check_node_admin_rpcs.sh` are the exceptions — both are deliberately bash-3.2-clean (rows read through `while read` rather than `mapfile`; baseline membership matched with `grep -Fxq` against a temp file rather than a `declare -A` map), because they are the guards a reviewer runs by hand against a PR rather than inside a phase.
+> **The suite requires bash ≥ 4.** Stock macOS `/bin/bash` is 3.2 and fails 7 of the 19 for reasons that have nothing to do with awk: `declare -A` in `compare_spec_methods.sh`, `compare_spec_directives.sh`, `check_directive_presence.sh`, `check_hanging_api.sh` and `check_stateful.sh`, and the empty-array `"${arr[@]}"`-under-`set -u` expansion in `check_extensions.sh` and `check_method_schema.sh`. Run under Homebrew bash (or any bash ≥ 4.4) before concluding anything is broken. `check_disabled_count.sh` and `check_node_admin_rpcs.sh` are the exceptions — both are deliberately bash-3.2-clean (rows read through `while read` rather than `mapfile`; baseline membership matched with `grep -Fxq` against a temp file rather than a `declare -A` map), because they are the guards a reviewer runs by hand against a PR rather than inside a phase.
 
 ### Suite status
 
-All 16 pass, verified 2026-09-02 on darwin under both BSD awk (`version 20200816`) and GNU Awk 5.4.0.
+All 19 pass, verified 2026-10-05 on darwin under both BSD awk (`version 20200816`) and GNU Awk 5.4.0.
 
 | Test | Covers |
 |---|---|
@@ -641,9 +643,9 @@ All 16 pass, verified 2026-09-02 on darwin under both BSD awk (`version 20200816
 | `test_check_verifications.sh` | `check_verifications.sh` |
 | `test_check_extensions.sh` | `check_extensions.sh` |
 | `test_check_method_schema.sh` | `check_method_schema.sh` |
-| `test_check_node_admin_rpcs.sh` | `check_node_admin_rpcs.sh` |
 | `test_check_hanging_api.sh` | `check_hanging_api.sh` |
 | `test_check_stateful.sh` | `check_stateful.sh` |
+| `test_check_node_admin_rpcs.sh` | `check_node_admin_rpcs.sh` |
 | `test_check_pruning.sh` | `check_pruning.sh` |
 | `test_check_archive_value.sh` | `check_archive_value.sh` |
 | `test_check_directive_presence.sh` | `check_directive_presence.sh` |
@@ -654,6 +656,8 @@ All 16 pass, verified 2026-09-02 on darwin under both BSD awk (`version 20200816
 | `test_run_stats.sh` | `run_stats.sh` |
 | `test_check_disabled_count.sh` | `check_disabled_count.sh` |
 | `test_check_internal_paths.sh` | `check_internal_paths.sh` |
+| `test_check_collection_addition.sh` | `check_collection_addition.sh` |
+| `test_check_update_diff.sh` | `check_update_diff.sh` |
 
 ### Fixed: two macOS portability defects (2026-08-04)
 
