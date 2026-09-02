@@ -2153,15 +2153,21 @@
               {
                 "name": "pruning",
                 "parse_directive": {
-                  "function_tag": "GET_EARLIEST_BLOCK"
+                  "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"state_getRuntimeVersion\",\"params\":[\"0x6c51377632106ddba379416f2ef5e24450e90cee8c78a70daa262b2ae6f27e93\"],\"id\":1}",
+                  "function_tag": "VERIFICATION",
+                  "result_parsing": {
+                    "parser_arg": [
+                      "0",
+                      "specVersion"
+                    ],
+                    "parser_func": "PARSE_CANONICAL"
+                  },
+                  "api_name": "state_getRuntimeVersion"
                 },
                 "values": [
                   {
-                    "latest_distance": 128
-                  },
-                  {
                     "extension": "archive",
-                    "expected_value": "0x0"
+                    "expected_value": "9180"
                   }
                 ]
               }
