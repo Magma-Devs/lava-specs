@@ -2456,6 +2456,27 @@
                                         "expected_value": "0x2706"
                                     }
                                 ]
+                            },
+                            {
+                                "name": "pruning",
+                                "parse_directive": {
+                                    "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"state_getRuntimeVersion\",\"params\":[\"0x8c6bb781a945291bdd7c49d8e2c504d649b407faddd610b62f297eaa2032be53\"],\"id\":1}",
+                                    "function_tag": "VERIFICATION",
+                                    "result_parsing": {
+                                        "parser_arg": [
+                                            "0",
+                                            "specVersion"
+                                        ],
+                                        "parser_func": "PARSE_CANONICAL"
+                                    },
+                                    "api_name": "state_getRuntimeVersion"
+                                },
+                                "values": [
+                                    {
+                                        "extension": "archive",
+                                        "expected_value": "102"
+                                    }
+                                ]
                             }
                         ]
                     }
