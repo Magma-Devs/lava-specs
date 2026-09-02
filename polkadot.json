@@ -3283,6 +3283,27 @@
                     "expected_value": "0xe143f23803ac50e8f6f8e62695d1ce9e4e1d68aa36c1cd2cfd15340213f3423e"
                   }
                 ]
+              },
+              {
+                "name": "pruning",
+                "parse_directive": {
+                  "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"state_getRuntimeVersion\",\"params\":[\"0xe36333591b46e273c7186af4c94f1acad954a381f605088a8ca225d04a5e4d58\"],\"id\":1}",
+                  "function_tag": "VERIFICATION",
+                  "result_parsing": {
+                    "parser_arg": [
+                      "0",
+                      "specVersion"
+                    ],
+                    "parser_func": "PARSE_CANONICAL"
+                  },
+                  "api_name": "state_getRuntimeVersion"
+                },
+                "values": [
+                  {
+                    "extension": "archive",
+                    "expected_value": "9180"
+                  }
+                ]
               }
             ],
             "extensions": []
