@@ -287,8 +287,7 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "stateful": 1,
-                                    "hanging_api": true
+                                    "stateful": 1
                                 }
                             },
                             {
@@ -1670,8 +1669,7 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "stateful": 1,
-                                    "hanging_api": true
+                                    "stateful": 1
                                 }
                             },
                             {
