@@ -12,6 +12,20 @@
 #   stateful: 0 on a write  -> the broadcast goes to ONE provider. No
 #                              multi-provider redundancy on the path where it
 #                              matters most. (avt/bsx, MAG-3389.)
+#
+#     Scope caveat, verified: the per-relay effects above are UNARY-ONLY. Like
+#     GetRelayTimeout, GetStateful is unreachable from the subscription path --
+#     it appears in rpcsmartrouter_server.go, recovery_probe.go,
+#     unified_relay_state_machine.go and common.go, and in none of the
+#     subscription managers. So on a SUBSCRIBE-tagged method such as
+#     author_submitAndWatchExtrinsic, provider fan-out does NOT depend on this
+#     flag. What does still read it there is ApiHasStatefulCategory
+#     (base_chain_parser.go:549, via rpcsmartrouter_server.go:456): a lookup by
+#     method NAME, transport-independent, used by the cross-validation policy
+#     guard to reject an enabled per-method CV policy on a write. That is why
+#     the write list still FAILs on subscription methods rather than skipping
+#     them the way check_hanging_api.sh rule 1 does -- hanging_api has no
+#     equivalent name-keyed reader.
 #   stateful: 1 on a read   -> every read is fanned out to all providers, billed
 #                              accordingly, and loses cross-validation.
 #                              (cosmossdk's simulate/encode/decode, MAG-3389.)
@@ -151,12 +165,21 @@ while IFS=$'\t' read -r idx iface ctype name st; do
   [[ -z "$name" || "$name" == "null" ]] && continue
   ROW="$idx/$iface/$name"
   KEY="$name"
-  [[ "$iface" == "rest" && -n "$ctype" && "$ctype" != "-" ]] && KEY="$ctype $name"
+  if [[ "$iface" == "rest" ]]; then
+    if [[ -n "$ctype" && "$ctype" != "-" ]]; then
+      KEY="$ctype $name"
+    else
+      # No verb to key on, so a curated REST entry cannot match and the row would
+      # skip both lists in silence. Every rest collection in the catalogue
+      # currently carries a type; say so out loud if one ever does not.
+      INFO+=("$ROW|rest collection has no collection_data.type, so verb-keyed write/read rules cannot be applied to it — check this method's stateful by hand")
+    fi
+  fi
 
   # 1. curated write list
   if in_list "$KEY" "${WRITE_METHODS[@]}" || in_list "$name" "${WRITE_METHODS[@]}"; then
     if [[ "$st" != "1" ]]; then
-      FAIL+=("$ROW|broadcasts a transaction but stateful=${st}; must be 1, or the write goes to a single provider instead of all of them")
+      FAIL+=("$ROW|broadcasts a transaction but stateful=${st}; must be 1 — it gates write routing on the unary path (GetSessions / CONSISTENCY_SELECT_ALL_PROVIDERS) and the cross-validation policy guard (ApiHasStatefulCategory), a name lookup that applies on every transport including subscriptions")
     else
       PASS+=("$ROW|write, stateful=1")
     fi

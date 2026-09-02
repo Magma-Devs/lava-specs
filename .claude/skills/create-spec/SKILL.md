@@ -547,6 +547,26 @@ echo "jq exit: $?"
 
 If exit non-zero: outcome = `BROKEN_AFTER_FIX`. Present the snapshot path (`/tmp/spec_<chain>_pre_fix.json`), the `jq` error, and the fixer's diff to the user. STOP. Do not proceed to Phase 10b.
 
+### Phase 10a — re-run the offline static gates
+
+Valid JSON is not the same as a valid spec. The Phase 6 gates ran **before** the fixer, so any defect the fixer itself introduces is unguarded — and the fixer is exactly the step most likely to introduce these, because it applies field-level instructions without the surrounding context:
+
+- *"`hanging_api: true` needs a `timeout_ms`"* → a reflexive `timeout_ms: 30000` on a CU-1000 API **shortens** the relay budget, because `timeout_ms` replaces the CU term rather than adding to it. This exact mistake was made by hand while writing MAG-3389.
+- *"disable the methods that failed the probe"* → a disabled count that no longer matches the PR body's claim.
+- A `stateful` flipped on the wrong side of a fix.
+
+These four scripts are offline, take under a second each, and need no network:
+
+```bash
+for check in check_method_schema check_hanging_api check_stateful check_unused_fields; do
+  bash .claude/skills/create-spec/scripts/$check.sh <chain>.json \
+    || echo "POST-FIX GATE FAILED: $check"
+done
+bash .claude/skills/create-spec/scripts/check_disabled_count.sh <chain>.json --expect <N>
+```
+
+Any FAIL row here is a fixer-introduced regression, not an original defect. Feed it back as a CRITICAL item and re-run the fixer on that item alone — do not carry it into Phase 10b. `check_stateful.sh`'s `=== INFO ===` rows are advisory and never block.
+
 ## Phase 10b — Smoke regression test (delegated subagent)
 
 Same delegation pattern as Phase 8 — a single `general-purpose` subagent re-boots the dockerized smart-router against the FIXED spec on disk and re-probes a deterministic minimal set to detect regressions. The orchestrator does NOT run docker or compare classifications inline.
