@@ -251,7 +251,9 @@ Unlike `hanging_api` this cannot be settled from the router source — *"does th
 
 REST entries are keyed `"TYPE /path"` where the verb disambiguates: `GET /cosmos/tx/v1beta1/txs` is a query, `POST` to the same path is BroadcastTx. The verb resolves a name collision — it does **not** classify. Treating POST as "is a write" is precisely the bug that put four read endpoints on the write path in `cosmossdk.json`.
 
-Calibration over the 140-spec catalogue: **29 FAIL rows in 16 specs, 11 INFO rows** — every FAIL a genuine defect (the 10 specs with the watch pair at `0`, `babylon`/`kava`/`sei` on `decode/amino`, `monad`/`optimism` on `eth_sendTransaction`, and `cosmossdk`'s four REST reads).
+**These two scripts also run again in Phase 10a**, after the fixer. Gate 9 fires in Phase 6, *before* any fix is applied, so a defect the fixer introduces would otherwise ship unguarded — and the fixer is the step most likely to introduce exactly these, since it applies field-level instructions without surrounding context. `check_hanging_api.sh` rule 3 is the clearest case: told only *"a hanging API needs a `timeout_ms`"*, the natural response is a flat `30000`, which on a CU-1000 method shortens the budget rather than lengthening it.
+
+Calibration over the 140-spec catalogue: **29 FAIL rows in 16 specs, 11 INFO rows** — every FAIL a genuine defect (the 10 specs with the watch pair at `0`, `babylon`/`kava`/`sei` on `decode/amino`, `monad`/`optimism` on `eth_sendTransaction`, and `cosmossdk`'s four REST reads). Two of the 29 — `monad` and `optimism`'s `eth_sendTransaction` — are `enabled: false`, so they are latent rather than live; the other 27 are on enabled methods.
 
 **Scope.** Candidate file only, which is how the pipeline uses it. 152 APIs across ~30 established specs (`ethereum`, `cosmossdk`, `tendermint`, `solana`, `kusama` …) predate rule 2 and would fail if it were run over the whole repo; that is a separate cleanup, tracked in MAG-3389, not this gate's job.
 
