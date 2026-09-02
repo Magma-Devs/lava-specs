@@ -104,7 +104,7 @@ Then the archive triplet check (above), then the gates.
 
 ### The 9 gates
 
-Dispatched in a single message, all foreground, no isolation. "9 gates" is a count of subagents, not of checks — parse-directive runs 3 layers, pruning runs 2 scripts, cu-semantic runs 2 layers.
+Dispatched in a single message, all foreground, no isolation. "9 gates" is a count of subagents, not of checks — parse-directive runs 3 layers, pruning runs 2 scripts, method-schema runs 2 scripts, cu-semantic runs 2 layers.
 
 | # | Gate | Model | Backing check | Verdict |
 |---|---|---|---|---|
@@ -116,7 +116,7 @@ Dispatched in a single message, all foreground, no isolation. "9 gates" is a cou
 | 6 | `cu-semantic` | sonnet | Layer 0 mechanical + Layer 1 advisory | PASS / FAIL (Layer 0 only) |
 | 7 | `pruning` | haiku | `check_pruning.sh` + `check_archive_value.sh` | PASS / FAIL |
 | 8 | `enabled` | haiku | watch-list diff | **always PASS** |
-| 9 | `method-schema` | haiku | `check_method_schema.sh` | PASS / FAIL |
+| 9 | `method-schema` | haiku | `check_method_schema.sh` + `check_hanging_api.sh` | PASS / FAIL |
 
 Every validator prompt ends with "Do NOT modify the candidate spec" — gates observe, the fixer edits.
 
@@ -209,9 +209,34 @@ Lists methods that are still `enabled: true` despite research having *explicitly
 
 `RESULT` is **always PASS**. Watch-list rows do **not** feed the fixer — they are printed to the user and carried into Phase 8 as a probe watch-list. See invariant 1.
 
-#### 9. `method-schema` — `check_method_schema.sh`
+#### 9. `method-schema` — `check_method_schema.sh` + `check_hanging_api.sh`
 
-Per API: `enabled`, `compute_units`, `block_parsing`, `category` all present; when `block_parsing` exists, `parser_func` and `parser_arg` present and **every `parser_arg` element a string**. Plus: no duplicate API names within a collection.
+**`check_method_schema.sh`** — per API: `enabled`, `compute_units`, `block_parsing`, `category` all present; when `block_parsing` exists, `parser_func` and `parser_arg` present and **every `parser_arg` element a string**. Plus: no duplicate API names within a collection.
+
+**`check_hanging_api.sh`** — the three `category.hanging_api` rules. All three come from one function, `protocol/chainlib/common.go:575`:
+
+```go
+func GetRelayTimeout(chainMessage, averageBlockTime) time.Duration {
+    if chainMessage.TimeoutOverride() != 0 { return chainMessage.TimeoutOverride() }
+    extraRelayTimeout := 0
+    if IsHangingApi(chainMessage) { extraRelayTimeout = averageBlockTime * 2 }
+    relayTimeAddition := common.GetTimePerCu(GetComputeUnits(chainMessage))
+    if chainMessage.GetApi().TimeoutMs > 0 {
+        relayTimeAddition = time.Millisecond * time.Duration(chainMessage.GetApi().TimeoutMs)
+    }
+    return extraRelayTimeout + relayTimeAddition
+}
+```
+
+1. **`hanging_api` on a `SUBSCRIBE`-tagged API → FAIL.** The router never reads it. `consumer_websocket_manager.go:298` branches on the SUBSCRIBE function tag straight into `StartSubscription`; all four `GetRelayTimeout` call sites are on the unary path and neither subscription manager references it. A subscription's lifetime is its socket's — the WS manager's only timeouts are two hardcoded 10s constants for *unsubscribe* teardown. So on a SUBSCRIBE-tagged API, `hanging_api`, `compute_units` and `timeout_ms` are all dead inputs. SUBSCRIBE names are collected **inheritance-aware** (candidate + transitive parents through `imports`), because an L2 importing ETH1 has an empty `parse_directives` array of its own.
+
+2. **`hanging_api: true` with no `timeout_ms` → FAIL.** Automates the rule stated at `SKILL.md:263` and `agents/spec-builder.md:59`, which those docs previously flagged as having no validator coverage.
+
+3. **`timeout_ms` below `max(1s, CU × 100ms)` → FAIL.** `timeout_ms` **replaces** the CU term rather than adding to it, so a value under the CU-implied floor *shortens* the relay budget relative to setting nothing at all — the opposite of why anyone sets the field. Caught live on Acala: at CU 1000 the implied base is 100 000 ms, and a reflexive `timeout_ms: 30000` would have cut the budget from 124s to 54s (MAG-3389).
+
+Rule 1 short-circuits — a subscription is never judged on its timeout, since neither field is read.
+
+**Scope.** Candidate file only, which is how the pipeline uses it. 152 APIs across ~30 established specs (`ethereum`, `cosmossdk`, `tendermint`, `solana`, `kusama` …) predate rule 2 and would fail if it were run over the whole repo; that is a separate cleanup, tracked in MAG-3389, not this gate's job.
 
 ### Aggregation, severity routing, and the fixer
 
@@ -583,11 +608,11 @@ for t in .claude/skills/create-spec/scripts/test_*.sh; do
 done
 ```
 
-> **The suite requires bash ≥ 4.** Stock macOS `/bin/bash` is 3.2 and fails 5 of the 12 for reasons that have nothing to do with awk: `declare -A` in `compare_spec_methods.sh`, `compare_spec_directives.sh`, and `check_directive_presence.sh`, and the empty-array `"${arr[@]}"`-under-`set -u` expansion in `check_extensions.sh` and `check_method_schema.sh`. Run under Homebrew bash (or any bash ≥ 4.4) before concluding anything is broken.
+> **The suite requires bash ≥ 4.** Stock macOS `/bin/bash` is 3.2 and fails 6 of the 15 for reasons that have nothing to do with awk: `declare -A` in `compare_spec_methods.sh`, `compare_spec_directives.sh`, and `check_directive_presence.sh`, and `check_hanging_api.sh`, and the empty-array `"${arr[@]}"`-under-`set -u` expansion in `check_extensions.sh` and `check_method_schema.sh`. Run under Homebrew bash (or any bash ≥ 4.4) before concluding anything is broken.
 
 ### Suite status
 
-All 12 pass, verified 2026-08-04 on darwin under both BSD awk (`version 20200816`) and GNU Awk 5.4.0.
+All 15 pass, verified 2026-09-02 on darwin under both BSD awk (`version 20200816`) and GNU Awk 5.4.0.
 
 | Test | Covers |
 |---|---|
@@ -595,6 +620,7 @@ All 12 pass, verified 2026-08-04 on darwin under both BSD awk (`version 20200816
 | `test_check_verifications.sh` | `check_verifications.sh` |
 | `test_check_extensions.sh` | `check_extensions.sh` |
 | `test_check_method_schema.sh` | `check_method_schema.sh` |
+| `test_check_hanging_api.sh` | `check_hanging_api.sh` |
 | `test_check_pruning.sh` | `check_pruning.sh` |
 | `test_check_archive_value.sh` | `check_archive_value.sh` |
 | `test_check_directive_presence.sh` | `check_directive_presence.sh` |
@@ -603,6 +629,8 @@ All 12 pass, verified 2026-08-04 on darwin under both BSD awk (`version 20200816
 | `test_compare_spec_methods.sh` | `compare_spec_methods.sh` |
 | `test_compare_spec_directives.sh` | `compare_spec_directives.sh` |
 | `test_run_stats.sh` | `run_stats.sh` |
+| `test_check_disabled_count.sh` | `check_disabled_count.sh` |
+| `test_check_internal_paths.sh` | `check_internal_paths.sh` |
 
 ### Fixed: two macOS portability defects (2026-08-04)
 
