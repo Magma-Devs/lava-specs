@@ -1,0 +1,87 @@
+# Offline guards that compare a spec PR's FILE against what its BODY claims.
+#
+# Placement is the whole point. A post-Phase-10 gate inside spec_pipeline.yml
+# sees the final file but not the final body: the pipeline commits its Phase 10
+# fixes to the branch (spec_pipeline.yml "Committed pipeline fixes") and never
+# rewrites the body, and all three of #125 / #128 / #130 had their bodies edited
+# by hand afterwards. `pull_request` — including the `edited` type — is the only
+# point that sees both halves in their final state.
+#
+# This runs no model and pulls no image; it is jq + bash, so it is safe to fire
+# on `edited` without re-triggering the billed pipeline (spec_pipeline.yml keeps
+# its own `opened`-only trigger).
+name: "Spec guards (offline)"
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: spec-guards-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  guard-scripts-tests:
+    name: guard script self-tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run the guard test suites
+        run: |
+          rc=0
+          for t in .claude/skills/create-spec/scripts/test_*.sh; do
+            echo "::group::$t"
+            bash "$t" || { echo "::error file=$t::guard self-test failed"; rc=1; }
+            echo "::endgroup::"
+          done
+          exit $rc
+
+  disabled-count:
+    name: disabled set matches the body
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve the changed root specs
+        id: specs
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          # Specs live flat at the repo root as <chain>.json. Anything else in
+          # the PR (skill scripts, workflows, docs) is not a spec change.
+          git diff --name-only --diff-filter=d "$BASE" "$HEAD" \
+            | grep -E '^[^/]+\.json$' > /tmp/changed_specs.txt || true
+          n=$(wc -l < /tmp/changed_specs.txt | tr -d ' ')
+          echo "count=$n" >> "$GITHUB_OUTPUT"
+          echo "changed root specs ($n):"; cat /tmp/changed_specs.txt
+
+      - name: Fetch the PR body as merged authors see it
+        if: steps.specs.outputs.count != '0'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: gh pr view "$PR" --repo "$REPO" --json body --jq .body > /tmp/pr_body.md
+
+      - name: Check each changed spec against the body
+        if: steps.specs.outputs.count != '0'
+        run: |
+          G=.claude/skills/create-spec/scripts/check_disabled_count.sh
+          # The body carries ONE disabled claim, so it can only be asserted
+          # against one file. A multi-spec PR is not the pipeline's shape
+          # (create_spec.yml produces exactly one spec); report and warn rather
+          # than assert a claim against a file it was not written about.
+          if [ "${{ steps.specs.outputs.count }}" != "1" ]; then
+            echo "::warning::${{ steps.specs.outputs.count }} root specs changed — the body carries a single disabled claim, so this runs report-only. Split the PR to have the guard assert."
+            while IFS= read -r s; do bash "$G" "$s"; done < /tmp/changed_specs.txt
+            exit 0
+          fi
+          spec=$(cat /tmp/changed_specs.txt)
+          bash "$G" "$spec" --body /tmp/pr_body.md
