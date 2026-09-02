@@ -254,14 +254,14 @@ This phase runs 9 deterministic static-check gates in parallel and, on any failu
 
 ### Pre-flight checklist (informational; the gates below are authoritative)
 
-Walk this checklist to confirm the orchestrator's working state. The first five bullets surface as gate failures below; the last is NOT covered by any validator and must be hand-checked here:
+Walk this checklist to confirm the orchestrator's working state. All six now surface as gate failures below; walk them anyway to confirm the orchestrator agrees with what the gates will say:
 
 - `index` is uppercase, unique, matches the chain
 - `name`, `enabled` present at top level of each spec entry (no `min_stake_provider`/`shares` — the governance fields were removed from the model)
 - `chain-id` `expected_value` obtained from a **live curl** against the mainnet RPC (not converted from a docs decimal)
 - Testnet entry's `chain-id` `expected_value` obtained from a live curl against the testnet RPC
 - Every API with `category.hanging_api: true` has an explicit `timeout_ms`, that `timeout_ms` is at least `max(1s, compute_units × 100ms)`, and no `SUBSCRIBE`-tagged API sets `hanging_api` at all (all three are now enforced by `check_hanging_api.sh` inside the `method-schema` gate — see TESTING.md §9 for why the router makes each one a defect)
-- `category.stateful` is set only on broadcast / state-modifying methods (read methods must have `stateful: 0` or unset; no validator enforces direction — spot-check the spec's stateful methods against the chain's docs)
+- `category.stateful` is set only on broadcast / state-modifying methods, and every method that *does* broadcast has it (`check_stateful.sh` inside the `method-schema` gate enforces both directions against a curated list, and reports cross-spec disagreement as advisory INFO — read those INFO rows, they are not failures but they are usually right)
 
 For the chain-id curl step, run this for both mainnet and testnet:
 
