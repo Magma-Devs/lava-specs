@@ -104,7 +104,7 @@ Then the archive triplet check (above), then the gates.
 
 ### The 9 gates
 
-Dispatched in a single message, all foreground, no isolation. "9 gates" is a count of subagents, not of checks — parse-directive runs 3 layers, pruning runs 2 scripts, cu-semantic runs 2 layers.
+Dispatched in a single message, all foreground, no isolation. "9 gates" is a count of subagents, not of checks — parse-directive runs 3 layers, pruning runs 2 scripts, method-schema runs 3 scripts, cu-semantic runs 2 layers.
 
 | # | Gate | Model | Backing check | Verdict |
 |---|---|---|---|---|
@@ -116,7 +116,7 @@ Dispatched in a single message, all foreground, no isolation. "9 gates" is a cou
 | 6 | `cu-semantic` | sonnet | Layer 0 mechanical + Layer 1 advisory | PASS / FAIL (Layer 0 only) |
 | 7 | `pruning` | haiku | `check_pruning.sh` + `check_archive_value.sh` | PASS / FAIL |
 | 8 | `enabled` | haiku | watch-list diff | **always PASS** |
-| 9 | `method-schema` | haiku | `check_method_schema.sh` | PASS / FAIL |
+| 9 | `method-schema` | haiku | `check_method_schema.sh` + `check_hanging_api.sh` + `check_stateful.sh` | PASS / FAIL + ADVISORY |
 
 Every validator prompt ends with "Do NOT modify the candidate spec" — gates observe, the fixer edits.
 
@@ -209,19 +209,64 @@ Lists methods that are still `enabled: true` despite research having *explicitly
 
 `RESULT` is **always PASS**. Watch-list rows do **not** feed the fixer — they are printed to the user and carried into Phase 8 as a probe watch-list. See invariant 1.
 
-#### 9. `method-schema` — `check_method_schema.sh`
+#### 9. `method-schema` — `check_method_schema.sh` + `check_hanging_api.sh` + `check_stateful.sh`
 
-Per API: `enabled`, `compute_units`, `block_parsing`, `category` all present; when `block_parsing` exists, `parser_func` and `parser_arg` present and **every `parser_arg` element a string**. Plus: no duplicate API names within a collection.
+**`check_method_schema.sh`** — per API: `enabled`, `compute_units`, `block_parsing`, `category` all present; when `block_parsing` exists, `parser_func` and `parser_arg` present and **every `parser_arg` element a string**. Plus: no duplicate API names within a collection.
+
+**`check_hanging_api.sh`** — the three `category.hanging_api` rules. All three come from one function, `protocol/chainlib/common.go:575`:
+
+```go
+func GetRelayTimeout(chainMessage, averageBlockTime) time.Duration {
+    if chainMessage.TimeoutOverride() != 0 { return chainMessage.TimeoutOverride() }
+    extraRelayTimeout := 0
+    if IsHangingApi(chainMessage) { extraRelayTimeout = averageBlockTime * 2 }
+    relayTimeAddition := common.GetTimePerCu(GetComputeUnits(chainMessage))
+    if chainMessage.GetApi().TimeoutMs > 0 {
+        relayTimeAddition = time.Millisecond * time.Duration(chainMessage.GetApi().TimeoutMs)
+    }
+    return extraRelayTimeout + relayTimeAddition
+}
+```
+
+1. **`hanging_api` on a `SUBSCRIBE`-tagged API → FAIL.** The router never reads it. `consumer_websocket_manager.go:298` branches on the SUBSCRIBE function tag straight into `StartSubscription`; all four `GetRelayTimeout` call sites are on the unary path and neither subscription manager references it. A subscription's lifetime is its socket's — the WS manager's only timeouts are two hardcoded 10s constants for *unsubscribe* teardown. So on a SUBSCRIBE-tagged API, `hanging_api`, `compute_units` and `timeout_ms` are all dead inputs. SUBSCRIBE names are collected **inheritance-aware** (candidate + transitive parents through `imports`), because an L2 importing ETH1 has an empty `parse_directives` array of its own.
+
+2. **`hanging_api: true` with no `timeout_ms` → FAIL.** Automates the rule stated at `SKILL.md:263` and `agents/spec-builder.md:59`, which those docs previously flagged as having no validator coverage.
+
+3. **`timeout_ms` below `max(1s, CU × 100ms)` → FAIL.** `timeout_ms` **replaces** the CU term rather than adding to it, so a value under the CU-implied floor *shortens* the relay budget relative to setting nothing at all — the opposite of why anyone sets the field. Caught live on Acala: at CU 1000 the implied base is 100 000 ms, and a reflexive `timeout_ms: 30000` would have cut the budget from 124s to 54s (MAG-3389).
+
+Rule 1 short-circuits — a subscription is never judged on its timeout, since neither field is read.
+
+**`check_stateful.sh`** — direction check for `category.stateful`. The flag is a routing instruction, not a label: it maps to `CONSISTENCY_SELECT_ALL_PROVIDERS`, and the router acts on it in four places (`rpcsmartrouter_server.go:3336`, `:3585`, `:3835`, `:4735`) — the call is fanned out to **every** provider and excluded from cross-validation (`cross_validation_policy.go:422`) and the recovery probe (`recovery_probe.go:112-133`). Both directions fail silently:
+
+| Mistake | Consequence |
+|---|---|
+| `stateful: 0` on a write | the broadcast reaches one provider; no redundancy where it matters most |
+| `stateful: 1` on a read | every call fanned out to all providers, billed accordingly, cross-validation lost |
+
+Unlike `hanging_api` this cannot be settled from the router source — *"does this method change chain state"* is chain knowledge. Nor by vote: `author_submitAndWatchExtrinsic` splits **10 specs at `0` against 11 at `1`**, `kusama.json` and `polkadot.json` on opposite sides, so a majority rule yields no answer exactly where one is needed. Hence three layers of decreasing confidence:
+
+1. **Curated write list → FAIL.** Methods that unambiguously broadcast. Curated rather than voted, so it still fires when the whole catalogue agrees and is wrong.
+2. **Curated read list → FAIL.** Simulation and codec helpers that change nothing. `eth_fillTransaction` is on it by name — SPEC_GUIDE.md and phase3.2 both call it the classic trap, a `*_fill*`/`*_prepare*` helper whose argument shape looks like a transaction.
+3. **Cross-spec consensus → INFO, never FAIL.** Fires when ≥ 90% of the *other* specs declaring a name disagree with the candidate, and at least 4 declare it. Advisory because 24 of 5,539 distinct method names in the catalogue genuinely disagree.
+
+REST entries are keyed `"TYPE /path"` where the verb disambiguates: `GET /cosmos/tx/v1beta1/txs` is a query, `POST` to the same path is BroadcastTx. The verb resolves a name collision — it does **not** classify. Treating POST as "is a write" is precisely the bug that put four read endpoints on the write path in `cosmossdk.json`.
+
+**These two scripts also run again in Phase 10a**, after the fixer. Gate 9 fires in Phase 6, *before* any fix is applied, so a defect the fixer introduces would otherwise ship unguarded — and the fixer is the step most likely to introduce exactly these, since it applies field-level instructions without surrounding context. `check_hanging_api.sh` rule 3 is the clearest case: told only *"a hanging API needs a `timeout_ms`"*, the natural response is a flat `30000`, which on a CU-1000 method shortens the budget rather than lengthening it.
+
+Calibration over the 140-spec catalogue: **29 FAIL rows in 16 specs, 11 INFO rows** — every FAIL a genuine defect (the 10 specs with the watch pair at `0`, `babylon`/`kava`/`sei` on `decode/amino`, `monad`/`optimism` on `eth_sendTransaction`, and `cosmossdk`'s four REST reads). Two of the 29 — `monad` and `optimism`'s `eth_sendTransaction` — are `enabled: false`, so they are latent rather than live; the other 27 are on enabled methods.
+
+**Scope.** Candidate file only, which is how the pipeline uses it. 152 APIs across ~30 established specs (`ethereum`, `cosmossdk`, `tendermint`, `solana`, `kusama` …) predate rule 2 and would fail if it were run over the whole repo; that is a separate cleanup, tracked in MAG-3389, not this gate's job.
 
 ### Aggregation, severity routing, and the fixer
 
-The orchestrator parses each subagent's last `RESULT:` line. Three gates emit ADVISORY output alongside it:
+The orchestrator parses each subagent's last `RESULT:` line. Four gates emit ADVISORY output alongside it:
 
 | Gate | Advisory output | Feeds the fixer? |
 |---|---|---|
 | `cu-semantic` | Layer 1 out-of-band CU rows | **Yes**, as suggestions — apply only if clearly correct |
 | `enabled` | WATCH-LIST rows | **No** — never auto-disable |
 | `pruning` | `INFO: retention unknown` | No — treated as PASS, printed to user |
+| `method-schema` | `check_stateful.sh` consensus rows | No — treated as PASS, printed to user; verify against the chain's docs before acting |
 
 **All 9 PASS** → one-line summary, proceed to Phase 7.
 
@@ -583,11 +628,11 @@ for t in .claude/skills/create-spec/scripts/test_*.sh; do
 done
 ```
 
-> **The suite requires bash ≥ 4.** Stock macOS `/bin/bash` is 3.2 and fails 5 of the 12 for reasons that have nothing to do with awk: `declare -A` in `compare_spec_methods.sh`, `compare_spec_directives.sh`, and `check_directive_presence.sh`, and the empty-array `"${arr[@]}"`-under-`set -u` expansion in `check_extensions.sh` and `check_method_schema.sh`. Run under Homebrew bash (or any bash ≥ 4.4) before concluding anything is broken. `check_disabled_count.sh` is the exception — it is deliberately bash-3.2-clean (it reads its rows through `while read` rather than `mapfile`), because it is the one guard a reviewer runs by hand against a PR rather than inside a phase.
+> **The suite requires bash ≥ 4.** Stock macOS `/bin/bash` is 3.2 and fails 7 of the 16 for reasons that have nothing to do with awk: `declare -A` in `compare_spec_methods.sh`, `compare_spec_directives.sh`, `check_directive_presence.sh`, `check_hanging_api.sh` and `check_stateful.sh`, and the empty-array `"${arr[@]}"`-under-`set -u` expansion in `check_extensions.sh` and `check_method_schema.sh`. Run under Homebrew bash (or any bash ≥ 4.4) before concluding anything is broken. `check_disabled_count.sh` is the exception — it is deliberately bash-3.2-clean (it reads its rows through `while read` rather than `mapfile`), because it is the one guard a reviewer runs by hand against a PR rather than inside a phase.
 
 ### Suite status
 
-All 12 pass, verified 2026-08-04 on darwin under both BSD awk (`version 20200816`) and GNU Awk 5.4.0.
+All 16 pass, verified 2026-09-02 on darwin under both BSD awk (`version 20200816`) and GNU Awk 5.4.0.
 
 | Test | Covers |
 |---|---|
@@ -595,6 +640,8 @@ All 12 pass, verified 2026-08-04 on darwin under both BSD awk (`version 20200816
 | `test_check_verifications.sh` | `check_verifications.sh` |
 | `test_check_extensions.sh` | `check_extensions.sh` |
 | `test_check_method_schema.sh` | `check_method_schema.sh` |
+| `test_check_hanging_api.sh` | `check_hanging_api.sh` |
+| `test_check_stateful.sh` | `check_stateful.sh` |
 | `test_check_pruning.sh` | `check_pruning.sh` |
 | `test_check_archive_value.sh` | `check_archive_value.sh` |
 | `test_check_directive_presence.sh` | `check_directive_presence.sh` |
@@ -604,6 +651,7 @@ All 12 pass, verified 2026-08-04 on darwin under both BSD awk (`version 20200816
 | `test_compare_spec_directives.sh` | `compare_spec_directives.sh` |
 | `test_run_stats.sh` | `run_stats.sh` |
 | `test_check_disabled_count.sh` | `check_disabled_count.sh` |
+| `test_check_internal_paths.sh` | `check_internal_paths.sh` |
 
 ### Fixed: two macOS portability defects (2026-08-04)
 

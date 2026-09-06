@@ -254,14 +254,14 @@ This phase runs 9 deterministic static-check gates in parallel and, on any failu
 
 ### Pre-flight checklist (informational; the gates below are authoritative)
 
-Walk this checklist to confirm the orchestrator's working state. The first four bullets surface as gate failures below; the last two are NOT covered by any validator and must be hand-checked here:
+Walk this checklist to confirm the orchestrator's working state. All six now surface as gate failures below; walk them anyway to confirm the orchestrator agrees with what the gates will say:
 
 - `index` is uppercase, unique, matches the chain
 - `name`, `enabled` present at top level of each spec entry (no `min_stake_provider`/`shares` — the governance fields were removed from the model)
 - `chain-id` `expected_value` obtained from a **live curl** against the mainnet RPC (not converted from a docs decimal)
 - Testnet entry's `chain-id` `expected_value` obtained from a live curl against the testnet RPC
-- Every API with `category.hanging_api: true` has an explicit `timeout_ms` (no validator covers this — confirm by running `jq -r '.proposal.specs[].api_collections[].apis[] | select(.category.hanging_api == true and (.timeout_ms // null) == null) | .name' <chain>.json` and confirming the output is empty)
-- `category.stateful` is set only on broadcast / state-modifying methods (read methods must have `stateful: 0` or unset; no validator enforces direction — spot-check the spec's stateful methods against the chain's docs)
+- Every API with `category.hanging_api: true` has an explicit `timeout_ms`, that `timeout_ms` is at least `max(1s, compute_units × 100ms)`, and no `SUBSCRIBE`-tagged API sets `hanging_api` at all (all three are now enforced by `check_hanging_api.sh` inside the `method-schema` gate — see TESTING.md §9 for why the router makes each one a defect)
+- `category.stateful` is set only on broadcast / state-modifying methods, and every method that *does* broadcast has it (`check_stateful.sh` inside the `method-schema` gate enforces both directions against a curated list, and reports cross-spec disagreement as advisory INFO — read those INFO rows, they are not failures but they are usually right)
 
 For the chain-id curl step, run this for both mainnet and testnet:
 
@@ -547,6 +547,26 @@ echo "jq exit: $?"
 
 If exit non-zero: outcome = `BROKEN_AFTER_FIX`. Present the snapshot path (`/tmp/spec_<chain>_pre_fix.json`), the `jq` error, and the fixer's diff to the user. STOP. Do not proceed to Phase 10b.
 
+### Phase 10a — re-run the offline static gates
+
+Valid JSON is not the same as a valid spec. The Phase 6 gates ran **before** the fixer, so any defect the fixer itself introduces is unguarded — and the fixer is exactly the step most likely to introduce these, because it applies field-level instructions without the surrounding context:
+
+- *"`hanging_api: true` needs a `timeout_ms`"* → a reflexive `timeout_ms: 30000` on a CU-1000 API **shortens** the relay budget, because `timeout_ms` replaces the CU term rather than adding to it. This exact mistake was made by hand while writing MAG-3389.
+- *"disable the methods that failed the probe"* → a disabled count that no longer matches the PR body's claim.
+- A `stateful` flipped on the wrong side of a fix.
+
+These four scripts are offline, take under a second each, and need no network:
+
+```bash
+for check in check_method_schema check_hanging_api check_stateful check_unused_fields; do
+  bash .claude/skills/create-spec/scripts/$check.sh <chain>.json \
+    || echo "POST-FIX GATE FAILED: $check"
+done
+bash .claude/skills/create-spec/scripts/check_disabled_count.sh <chain>.json --expect <N>
+```
+
+Any FAIL row here is a fixer-introduced regression, not an original defect. Feed it back as a CRITICAL item and re-run the fixer on that item alone — do not carry it into Phase 10b. `check_stateful.sh`'s `=== INFO ===` rows are advisory and never block.
+
 Then re-count what the fixer actually disabled. This pass is where the disabled
 set changes, and it runs *after* the PR body was written — the #130 mechanism,
 where the body declared zero and this pass then introduced 13:
@@ -559,9 +579,10 @@ The report-only form prints the set; it cannot assert here, because the body it
 would be checked against is not final until the PR is (the `spec_guards.yml`
 gate on `pull_request: edited` is the point that sees both halves settled). Use
 its distinct-method count as the value the PR body's `<!-- disabled-count: N -->`
-marker must carry, and confirm every listed method has a positive-evidence row
-in the Disabled-API Justifications ledger. If the count moved and the body is
-already posted, update the marker and the ledger comment before Phase 11.
+marker must carry — and as the `<N>` for the `--expect` form above — and confirm
+every listed method has a positive-evidence row in the Disabled-API
+Justifications ledger. If the count moved and the body is already posted, update
+the marker and the ledger comment before Phase 11.
 
 ## Phase 10b — Smoke regression test (delegated subagent)
 
