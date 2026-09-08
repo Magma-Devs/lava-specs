@@ -1,0 +1,3 @@
+{"proposal":{"specs":[{"index":"FAKEBASE","imports":[],"api_collections":[{"enabled":true,"collection_data":{"api_interface":"jsonrpc","internal_path":"","type":"POST","add_on":""},"apis":[
+{"name":"fake_a","enabled":true,"compute_units":10,"block_parsing":{"parser_arg":["latest"],"parser_func":"DEFAULT"},"category":{"deterministic":true,"stateful":0}},
+{"name":"fake_b","enabled":true,"compute_units":10,"block_parsing":{"parser_arg":["latest"],"parser_func":"DEFAULT"},"category":{"deterministic":true,"stateful":0}}]}]}]}}

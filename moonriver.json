@@ -2128,21 +2128,6 @@
                   "deterministic": true,
                   "stateful": 0
                 }
-              },
-              {
-                "name": "debug_traceCall",
-                "block_parsing": {
-                  "parser_arg": [
-                    "1"
-                  ],
-                  "parser_func": "PARSE_BY_ARG"
-                },
-                "compute_units": 100,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "stateful": 0
-                }
               }
             ],
             "headers": [],
@@ -2179,33 +2164,7 @@
               "type": "POST",
               "add_on": "trace"
             },
-            "apis": [
-              {
-                "name": "trace_filter",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 200,
-                "enabled": true,
-                "category": {
-                  "deterministic": false,
-                  "stateful": 0
-                },
-                "parsers": [
-                  {
-                    "parse_path": ".params.[0].fromBlock",
-                    "parse_type": "BLOCK_EARLIEST"
-                  },
-                  {
-                    "parse_path": ".params.[0].toBlock",
-                    "parse_type": "BLOCK_LATEST"
-                  }
-                ]
-              }
-            ],
+            "apis": [],
             "headers": [],
             "inheritance_apis": [],
             "parse_directives": [],

@@ -587,7 +587,7 @@ done
 
 ### Suite status
 
-All 12 pass, verified 2026-08-04 on darwin under both BSD awk (`version 20200816`) and GNU Awk 5.4.0.
+All 13 pass, verified 2026-09-08 (the 13th added that day) on darwin under both BSD awk (`version 20200816`) and GNU Awk 5.4.0.
 
 | Test | Covers |
 |---|---|
@@ -604,6 +604,36 @@ All 12 pass, verified 2026-08-04 on darwin under both BSD awk (`version 20200816
 | `test_compare_spec_directives.sh` | `compare_spec_directives.sh` |
 | `test_run_stats.sh` | `run_stats.sh` |
 | `test_check_disabled_count.sh` | `check_disabled_count.sh` |
+| `test_check_parent_duplication.sh` | `check_parent_duplication.sh` |
+
+### `check_parent_duplication.sh` — the spec must not retype a surface it can inherit
+
+Added 2026-09-08 after the TRAC audit. Two failures, both of which shipped:
+
+- **UNIMPORTED** — the spec declares ≥ 10 methods that a *base* spec owns while
+  its import closure never reaches that base. A base is derived, not listed:
+  any index ≥ 3 distinct specs import (ETH1 has 64 importers, COSMOSSDK50 11,
+  BTC 8; a chain spec with only a testnet child has 1 and is correctly ignored).
+  This is exactly what TRAC/HYDRATION/BITTENSOR/LIT did — 47 ETH1 methods copied
+  into an `add_on: "evm"` collection, 14 already drifted from ETH1.
+- **REDUNDANT** — the spec imports a parent and then re-declares a method that
+  parent already supplies in the same collection with a **byte-identical**
+  definition: dead weight that reads as a decision. Caught 8 in MOONBEAM/PEAQ,
+  1 in BCH. An override that actually changes `compute_units`, `category` or
+  `block_parsing` is NOT flagged — MOONRIVER prices `debug_traceBlockByNumber`
+  at 200 CU and parses `debug_traceTransaction` by `params[0]`, and nothing in
+  the file distinguishes that from drift. Neither is an `"enabled": false`
+  re-declaration, the documented positive-evidence disable.
+
+Deliberate exceptions live in `spec-inheritance-exceptions.txt` beside the specs
+(`<INDEX> <RULE> <token>  # why`), so an exception is reviewed as a diff line.
+The repo currently has exactly one: Acala serves its EVM from a different
+host, and since `add_on` is part of the collection key, ETH1's `add_on: ""`
+collection can never merge into an `add_on: "evm"` one — the duplication there
+is forced by the merge rules.
+
+Wired into `spec_guards.yml` as the `parent-duplication` job; it asserts against
+the file alone, so it runs on every changed spec including multi-spec PRs.
 
 ### Fixed: two macOS portability defects (2026-08-04)
 

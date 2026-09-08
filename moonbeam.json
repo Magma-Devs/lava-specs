@@ -23,66 +23,6 @@
                         },
                         "apis": [
                             {
-                                "name": "eth_getProof",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "2"
-                                    ],
-                                    "parser_func": "PARSE_BY_ARG"
-                                },
-                                "compute_units": 20,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
-                                }
-                            },
-                            {
-                                "name": "eth_createAccessList",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
-                                }
-                            },
-                            {
-                                "name": "eth_sign",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        ""
-                                    ],
-                                    "parser_func": "EMPTY"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
-                                }
-                            },
-                            {
-                                "name": "eth_signTransaction",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
-                                }
-                            },
-                            {
                                 "name": "eth_pendingTransactions",
                                 "block_parsing": {
                                     "parser_arg": [

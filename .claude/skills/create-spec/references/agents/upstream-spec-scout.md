@@ -45,9 +45,29 @@ Classify the chain into an ecosystem category and map to import candidates:
 | **Bitcoin-like** | UTXO model, getblock* RPC methods | BTC | Bitcoin, Litecoin, Doge |
 | **Bitcoin + Extensions** | Bitcoin base with custom methods | BTC + custom add-ons | Stacks (custom methods on Bitcoin) |
 | **Solana** | Solana RPC with getTokenAccounts, getSignaturesForAddress | SOLANA | Solana mainnet-beta |
-| **Standalone** | Unique architecture, no obvious base | None | Polkadot (no direct reuse) |
+| **Substrate / Polkadot** | `system_*`, `chain_*`, `state_*`, `author_*` JSON-RPC | None yet — no SUBSTRATE base spec exists, so the surface is declared in full | Polkadot, Kusama, Polymesh |
+| **Substrate + EVM (Frontier)** | Substrate JSON-RPC **and** `eth_*` on the SAME url | **ETH1** — plus the chain's own Substrate methods in the same base collection | Moonbeam, Astar, peaq, Shiden, Bifrost, NeuroWeb, Hydration, Bittensor, Heima |
+| **Substrate + detached EVM** | `eth_*` answers `-32601` on the Substrate url; EVM is a separate host | None — keep EVM in an `evm` add-on, and ledger it | Acala (`eth-rpc-adapter`) |
+| **Standalone** | Unique architecture, no obvious base | None | Fuel, Mina |
 
 **Task:** Determine which ecosystem the chain belongs to and identify 1-3 import candidates.
+
+> **A chain can be in two rows at once, and the last three rows are decided by a
+> probe, never by the chain's own docs.** A Polkadot parachain with an EVM pallet
+> is Substrate AND EVM; classifying it as one ecosystem and stopping is what
+> produced two incompatible families for the same chain class — on 2026-08-27 the
+> pipeline emitted `imports: ["ETH1"]` for peaq and Shiden and `imports: []` plus
+> an `evm` add-on for NeuroWeb, same day, same skill version. Curl both surfaces
+> against ONE url before you classify:
+>
+> ```bash
+> curl -sX POST $RPC -d '{"jsonrpc":"2.0","method":"system_chain","params":[],"id":1}'
+> curl -sX POST $RPC -d '{"jsonrpc":"2.0","method":"eth_chainId","params":[],"id":1}'
+> ```
+>
+> Both answer → **Substrate + EVM**, import ETH1. `eth_chainId` is `-32601` →
+> **detached EVM**, keep the add-on. Full rule and the traps it creates:
+> `references/phase3.1-inheritance.md`.
 
 ### Step 3: Find Closest Matches
 

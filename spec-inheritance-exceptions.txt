@@ -1,0 +1,17 @@
+# Deliberate exceptions to check_parent_duplication.sh.
+# Format: <INDEX> <REDUNDANT|UNIMPORTED> <method-or-base-index>  # why
+#
+# Anything listed here must be backed by evidence in the PR that added the line.
+# An unexplained entry is a bug someone silenced, not an exception.
+#
+# Note what does NOT need a line here: an override that actually changes
+# compute_units, category or block_parsing is a decision, and the guard does not
+# flag it. Only a byte-identical copy of an inherited method does.
+
+# ---- UNIMPORTED ----
+# Acala serves its EVM on a SEPARATE host: eth-rpc-acala.aca-api.network answers
+# eth_chainId 0x313, while the Substrate RPC (acala-rpc-0.aca-api.network) answers
+# -32601 for it. ETH1's add_on:"" collection can never merge into an add_on:"evm"
+# collection, so the duplication here is forced by the merge rules, not a mistake.
+# Probed 2026-09-08.
+ACA UNIMPORTED ETH1  # EVM lives on a different host (eth-rpc-adapter), not the substrate RPC

@@ -85,3 +85,39 @@ jobs:
           fi
           spec=$(cat /tmp/changed_specs.txt)
           bash "$G" "$spec" --body /tmp/pr_body.md
+
+  parent-duplication:
+    name: no retyped parent surface
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve the changed root specs
+        id: specs
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          git diff --name-only --diff-filter=d "$BASE" "$HEAD" \
+            | grep -E '^[^/]+\.json$' > /tmp/dup_specs.txt || true
+          n=$(wc -l < /tmp/dup_specs.txt | tr -d ' ')
+          echo "count=$n" >> "$GITHUB_OUTPUT"
+          echo "changed root specs ($n):"; cat /tmp/dup_specs.txt
+
+      # Unlike disabled-count this asserts against the FILE alone, so it runs on
+      # every changed spec and a multi-spec PR is fine. The exception ledger
+      # (spec-inheritance-exceptions.txt) is checked in, so a deliberate
+      # duplication is reviewed as a diff line rather than argued in a comment.
+      - name: Check each changed spec against its imports
+        if: steps.specs.outputs.count != '0'
+        run: |
+          G=.claude/skills/create-spec/scripts/check_parent_duplication.sh
+          rc=0
+          while IFS= read -r s; do
+            echo "::group::$s"
+            bash "$G" "$s" || { echo "::error file=$s::spec retypes a surface it should inherit — import the base, or add a justified line to spec-inheritance-exceptions.txt"; rc=1; }
+            echo "::endgroup::"
+          done < /tmp/dup_specs.txt
+          exit $rc

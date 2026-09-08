@@ -205,21 +205,6 @@
                                 }
                             },
                             {
-                                "name": "trace_filter",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 200,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": false,
-                                    "stateful": 0
-                                }
-                            },
-                            {
                                 "name": "trace_transaction",
                                 "block_parsing": {
                                     "parser_arg": [

@@ -3,9 +3,77 @@
 **Objective**: Decide if the spec should inherit from existing specs
 
 **Decision Tree**:
-- EVM-compatible chain? → Consider inheriting from `ETH1`
-- Cosmos SDK chain? → Consider inheriting from `COSMOSSDK` or specific version
-- Specialized version of existing chain? → Inherit from parent
+- EVM-compatible chain? → inherit from `ETH1` unless the endpoint probe below says otherwise
+- Cosmos SDK chain? → inherit from `COSMOSSDK` or the specific version
+- Specialized version of existing chain? → inherit from parent
+
+### The endpoint probe (RUN IT — do not decide from the chain's marketing)
+
+"Consider inheriting" is what let TRAC, HYDRATION, BITTENSOR and LIT ship with
+47 ETH1 methods retyped by hand into an `add_on: "evm"` collection — 14 of them
+already drifted from ETH1's `block_parsing`/`compute_units`, and every consumer
+forced to request an add-on for methods the endpoint serves unconditionally.
+
+For any chain that speaks more than one RPC dialect (Substrate + Frontier EVM,
+Cosmos + Ethermint, anything with a compatibility layer), the question is not
+"does it support EVM" — it is **which host answers**. Probe both surfaces
+against the SAME public URL:
+
+```bash
+U=<the chain's public RPC>
+curl -sX POST $U -H 'content-type: application/json' \
+  -d '{"jsonrpc":"2.0","method":"system_chain","params":[],"id":1}'   # substrate side
+curl -sX POST $U -H 'content-type: application/json' \
+  -d '{"jsonrpc":"2.0","method":"eth_chainId","params":[],"id":1}'    # EVM side
+```
+
+| Probe result | Shape | Precedent |
+|---|---|---|
+| **Both answer on one URL** | `imports: ["ETH1"]`, everything in the base collection (`add_on: ""`). No `evm` add-on. | MOONBEAM, MOONRIVER, PEAQ, ASTAR, SDN, BNC, TRAC, HYDRATION, BITTENSOR, LIT |
+| **`eth_chainId` returns `-32601`, EVM is a different host** | keep the `evm` add-on and its own methods, do NOT import ETH1, and record the probe output in the PR body + `spec-inheritance-exceptions.txt` | ACA (Acala: `eth-rpc-acala.aca-api.network` vs `acala-rpc-0.aca-api.network`) |
+
+`add_on` is part of the collection key, so **ETH1's `add_on: ""` collection can
+never merge into your `add_on: "evm"` collection** — choosing the add-on is
+choosing permanent duplication. That is only correct when the two surfaces
+genuinely are two endpoints.
+
+Also probe height parity before merging into the base collection:
+`chain_getHeader.number` vs `eth_blockNumber`. On Frontier they are equal, which
+is why the base `GET_BLOCKNUM` can stay Substrate. (It does stay:
+`ParseDirective.Differeniator()` is the bare function tag for everything except
+SUBSCRIBE/UNSUBSCRIBE, and the child's directive wins over the parent's.)
+
+**What the merge gives you for free when you import ETH1:**
+- ETH1's `debug`, `trace` and `bundler` add-on collections, appended whole (+26–31 methods)
+- `eth_subscribe`/`eth_unsubscribe` SUBSCRIBE directives *alongside* the Substrate
+  ones — those two tags key on `tag + api_name`, so nothing is displaced
+- ETH1's `pruning` verification and `archive` extension
+
+**What importing does NOT do: check that the parent's methods actually work.**
+ETH1's base collection arrives whole, including methods a Frontier parachain
+never implements. The hand-rolled `evm` collections were *right* to omit
+`eth_getProof`, `eth_createAccessList`, `eth_sign`, `eth_signTransaction`,
+`rpc_modules`, `eth_getCompilers` and `eth_compileLLL` — a naive import
+re-advertises all seven. After adding an import, probe **every** method the
+parent supplies against the live endpoint and declare `"enabled": false` for each
+`-32601`. That probe also catches methods the chain-specific copy wrongly
+enabled: BITTENSOR had `eth_sendTransaction` on, and it is not served.
+
+**What you must set yourself:**
+- the base collection's `chain-id` verification. Verifications key on `name`, so
+  a collection holds exactly ONE `chain-id`; put the **EVM** chain id there
+  (`eth_chainId`), matching MOONBEAM/MOONRIVER/PEAQ. Omit it and the spec
+  silently inherits ETH1's `0x1` (MAG-3354).
+- every testnet's `chain-id` value. A testnet whose `chain-id` has an empty
+  `parse_directive` adopts the parent's template while keeping its own value — so
+  a testnet still holding a Substrate genesis hash will compare an `eth_chainId`
+  result against a 32-byte hash and can never pass.
+
+Guard: `scripts/check_parent_duplication.sh <spec.json>` fails on the
+retyped-base case, and on re-declaring a method byte-identically to the parent
+that already supplies it. A real override — different `compute_units`,
+`category` or `block_parsing` — is a decision and is not flagged. Deliberate
+exceptions go in `spec-inheritance-exceptions.txt` with a reason.
 
 **If Inheriting**:
 ```json

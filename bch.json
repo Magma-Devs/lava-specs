@@ -251,21 +251,6 @@
                                 }
                             },
                             {
-                                "name": "getnetworkhashps",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
-                                }
-                            },
-                            {
                                 "name": "getblockfilter",
                                 "enabled": false,
                                 "block_parsing": {
@@ -317,7 +302,7 @@
                                 "name": "bd_getbalanceatheight",
                                 "block_parsing": {
                                     "parser_arg": [
-                                    "latest"
+                                        "latest"
                                     ],
                                     "parser_func": "DEFAULT"
                                 },

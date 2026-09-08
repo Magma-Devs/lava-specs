@@ -142,7 +142,9 @@ Record per pair: `SUPPORTED` | `UNSUPPORTED (error/code)` | `INCONCLUSIVE (timeo
 
 **1c-ii-b. Base-collection probe — for every upstream that passed at least one addon above.**
 
-An add-on usually **extends** the base collection: an archive node still answers everything a full node does, so it serves both. But some chains use an add-on as a **disjoint** surface — Acala serves Substrate in the base collection and EVM in an `evm` add-on, on separate infrastructure with no method in common. `lit.json` (Litentry/Heima) and `peaq.json` have the same shape.
+An add-on usually **extends** the base collection: an archive node still answers everything a full node does, so it serves both. But an add-on can be a **disjoint** surface — Acala serves Substrate in the base collection and EVM in an `evm` add-on, on separate infrastructure with no method in common (`acala-rpc-0.aca-api.network` answers `-32601` for `eth_chainId`; `eth-rpc-acala.aca-api.network` answers `-32601` for `system_chain`).
+
+**ACA is the only spec in the catalog with that shape — do not generalise it to other parachains.** This paragraph previously named `lit.json` and `peaq.json` as the same shape; both were wrong. peaq never had an `evm` add-on at all (`imports: ["ETH1"]` since it was added), and Heima's single url `rpc.litentry-parachain.litentry.io` answers `system_chain` AND `eth_chainId` — probed 2026-09-08, along with NeuroWeb, Hydration and Bittensor, all of which have since been converted to `imports: ["ETH1"]`. Decide disjoint-vs-extending by probing the upstream, never from a list of chain names.
 
 Nothing in the spec model distinguishes the two, so the router config has to say which it is. Issue the **base** collection's `GET_BLOCKNUM` template directly to the upstream:
 

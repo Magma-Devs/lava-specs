@@ -1,0 +1,2 @@
+PDUNIMP UNIMPORTED FAKEBASE  # fixture: the base RPC lives on a different host
+PDREDUN REDUNDANT fake_a     # fixture: parent parses this method wrongly
