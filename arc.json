@@ -27,6 +27,14 @@
                         "parse_directives": [],
                         "verifications": [
                             {
+                                "name": "chain-id",
+                                "values": [
+                                    {
+                                        "expected_value": "0x13b2"
+                                    }
+                                ]
+                            },
+                            {
                                 "name": "pruning",
                                 "parse_directive": {
                                     "function_tag": "GET_EARLIEST_BLOCK"
