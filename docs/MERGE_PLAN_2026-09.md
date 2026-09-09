@@ -82,6 +82,17 @@ are in `docs/SPEC_INHERITANCE_AUDIT_2026-09.md` and
 `docs/FLAGGED_IMPORTS_AUDIT_2026-09.md`; paste the relevant one into each body so
 the fixer and the reviewer see the same ledger.
 
+## What the merged tree was verified against
+
+Everything above was checked on a scratch branch with all five merged:
+
+| check | result |
+|---|---|
+| `check_parent_duplication.sh` over all 141 files | **only CANTO and VECHAIN fail** — the two blocked specs, deliberately unledgered |
+| 15 guard self-tests | all pass |
+| catalog through the real chain merge (`scripts/specmergecheck/`) | `loaded 271 indices from 141 files, expanded 271 indices, 0 failed` |
+| SUBSTRATE refactor, before vs after, through the real merge | `46332 definitions across 269 indices, 0 changed` |
+
 ## After the last merge
 
 Re-run the two checks that back these claims:

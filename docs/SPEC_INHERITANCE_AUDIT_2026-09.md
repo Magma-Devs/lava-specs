@@ -347,6 +347,24 @@ checked 45933 (spec, collection, method) definitions across 270 indices
 PURE REFACTOR — every effective definition byte-identical
 ```
 
+That check uses this repo's own resolver, which is a reimplementation of
+`CombineCollections`. For a change this size the reimplementation is the thing
+under test, so the same comparison was re-run through **the chain's own code** —
+`types.DoExpandSpec` in `github.com/lavanet/lava`, the path the chain and the
+router use — via `scripts/specmergecheck/`:
+
+```
+REAL lava merge (types.DoExpandSpec / CombineCollections)
+  indices compared : 269
+  definitions      : 46332
+  new index        : ['SUBSTRATE']
+  changed          : 0
+```
+
+The whole catalog also expands cleanly through it — `loaded 271 indices from 141
+files, expanded 271 indices, 0 failed` — which exercises the two-parent
+`["SUBSTRATE", "ETH1"]` chains rather than only reasoning about them.
+
 ## What is deliberately NOT in this change
 
 **The block_parsing values in `substrate.json` are the observed majority, not

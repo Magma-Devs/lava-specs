@@ -635,6 +635,17 @@ is forced by the merge rules.
 Wired into `spec_guards.yml` as the `parent-duplication` job; it asserts against
 the file alone, so it runs on every changed spec including multi-spec PRs.
 
+### `specmergecheck/` — resolve through the REAL merge, not a reimplementation
+
+Every other check here resolves `imports` with jq or bash. `scripts/specmergecheck/`
+is a small Go program that runs the catalog through `types.DoExpandSpec` in the
+lava chain module itself and dumps each resolved method's full definition, so a
+refactor's "nothing changed" claim can be proved against the code the chain and
+the router actually run. Reach for it when a change deletes or moves many entries
+and rests on the merge behaving a particular way — the SUBSTRATE base spec was
+verified this way at **46332 definitions across 269 indices, 0 changed**. See its
+README for the two-tree diff recipe.
+
 ### Fixed: two macOS portability defects (2026-08-04)
 
 Both were found by running this suite on darwin; both were invisible on CI's Linux runner.
