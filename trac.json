@@ -191,21 +191,6 @@
                                 }
                             },
                             {
-                                "name": "eth_feeHistory",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "1"
-                                    ],
-                                    "parser_func": "PARSE_BY_ARG"
-                                },
-                                "compute_units": 20,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
-                                }
-                            },
-                            {
                                 "name": "eth_getCompilers",
                                 "block_parsing": {
                                     "parser_arg": [
