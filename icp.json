@@ -334,19 +334,6 @@
                   "parser_func": "PARSE_CANONICAL"
                 },
                 "api_name": "/block"
-              },
-              {
-                "function_tag": "GET_EARLIEST_BLOCK",
-                "function_template": "{\"network_identifier\":{\"blockchain\":\"Internet Computer\",\"network\":\"00000000000000020101\"}}",
-                "result_parsing": {
-                  "parser_arg": [
-                    "0",
-                    "genesis_block_identifier",
-                    "index"
-                  ],
-                  "parser_func": "PARSE_CANONICAL"
-                },
-                "api_name": "/network/status"
               }
             ],
             "verifications": [
@@ -375,7 +362,7 @@
               {
                 "name": "pruning",
                 "parse_directive": {
-                  "function_tag": "GET_EARLIEST_BLOCK"
+                  "function_tag": "GET_BLOCK_BY_NUM"
                 },
                 "values": [
                   {
@@ -383,7 +370,7 @@
                   },
                   {
                     "extension": "archive",
-                    "expected_value": "0"
+                    "expected_value": "1"
                   }
                 ]
               }
