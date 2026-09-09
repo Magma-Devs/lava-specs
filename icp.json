@@ -1,0 +1,424 @@
+{
+  "proposal": {
+    "specs": [
+      {
+        "index": "ICP",
+        "name": "Internet Computer Mainnet",
+        "enabled": true,
+        "imports": [],
+        "average_block_time": 6472,
+        "allowed_block_lag_for_qos_sync": 20,
+        "block_distance_for_finalized_data": 1,
+        "blocks_in_finalization_proof": 1,
+        "api_collections": [
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "rest",
+              "internal_path": "",
+              "type": "POST",
+              "add_on": ""
+            },
+            "apis": [
+              {
+                "name": "/network/list",
+                "block_parsing": {
+                  "parser_arg": [
+                    ""
+                  ],
+                  "parser_func": "EMPTY"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "stateful": 0
+                }
+              },
+              {
+                "name": "/network/status",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": false,
+                  "stateful": 0
+                }
+              },
+              {
+                "name": "/network/options",
+                "block_parsing": {
+                  "parser_arg": [
+                    ""
+                  ],
+                  "parser_func": "EMPTY"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": false,
+                  "stateful": 0
+                }
+              },
+              {
+                "name": "/block",
+                "block_parsing": {
+                  "parser_arg": [
+                    "0",
+                    "block_identifier",
+                    "index"
+                  ],
+                  "parser_func": "PARSE_CANONICAL"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "stateful": 0
+                }
+              },
+              {
+                "name": "/block/transaction",
+                "block_parsing": {
+                  "parser_arg": [
+                    "0",
+                    "block_identifier",
+                    "index"
+                  ],
+                  "parser_func": "PARSE_CANONICAL"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "stateful": 0
+                }
+              },
+              {
+                "name": "/account/balance",
+                "block_parsing": {
+                  "parser_arg": [
+                    "0",
+                    "block_identifier",
+                    "index"
+                  ],
+                  "parser_func": "PARSE_CANONICAL"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "stateful": 0
+                }
+              },
+              {
+                "name": "/mempool",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": false,
+                  "stateful": 0
+                }
+              },
+              {
+                "name": "/mempool/transaction",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": false,
+                  "stateful": 0
+                }
+              },
+              {
+                "name": "/search/transactions",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 80,
+                "timeout_ms": 30000,
+                "enabled": true,
+                "category": {
+                  "deterministic": false,
+                  "stateful": 0
+                }
+              },
+              {
+                "name": "/call",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 80,
+                "timeout_ms": 30000,
+                "enabled": true,
+                "category": {
+                  "deterministic": false,
+                  "stateful": 0
+                }
+              },
+              {
+                "name": "/construction/derive",
+                "block_parsing": {
+                  "parser_arg": [
+                    ""
+                  ],
+                  "parser_func": "EMPTY"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "stateful": 0
+                }
+              },
+              {
+                "name": "/construction/preprocess",
+                "block_parsing": {
+                  "parser_arg": [
+                    ""
+                  ],
+                  "parser_func": "EMPTY"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "stateful": 0
+                }
+              },
+              {
+                "name": "/construction/metadata",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": false,
+                  "stateful": 0
+                }
+              },
+              {
+                "name": "/construction/payloads",
+                "block_parsing": {
+                  "parser_arg": [
+                    ""
+                  ],
+                  "parser_func": "EMPTY"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "stateful": 0
+                }
+              },
+              {
+                "name": "/construction/parse",
+                "block_parsing": {
+                  "parser_arg": [
+                    ""
+                  ],
+                  "parser_func": "EMPTY"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "stateful": 0
+                }
+              },
+              {
+                "name": "/construction/combine",
+                "block_parsing": {
+                  "parser_arg": [
+                    ""
+                  ],
+                  "parser_func": "EMPTY"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "stateful": 0
+                }
+              },
+              {
+                "name": "/construction/hash",
+                "block_parsing": {
+                  "parser_arg": [
+                    ""
+                  ],
+                  "parser_func": "EMPTY"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "stateful": 0
+                }
+              },
+              {
+                "name": "/construction/submit",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "timeout_ms": 30000,
+                "category": {
+                  "deterministic": false,
+                  "stateful": 1,
+                  "hanging_api": true
+                }
+              }
+            ],
+            "headers": [
+              {
+                "name": "content-type",
+                "kind": "pass_override",
+                "value": "application/json"
+              }
+            ],
+            "inheritance_apis": [],
+            "parse_directives": [
+              {
+                "function_tag": "GET_BLOCKNUM",
+                "function_template": "{\"network_identifier\":{\"blockchain\":\"Internet Computer\",\"network\":\"00000000000000020101\"}}",
+                "result_parsing": {
+                  "parser_arg": [
+                    "0",
+                    "current_block_identifier",
+                    "index"
+                  ],
+                  "parser_func": "PARSE_CANONICAL"
+                },
+                "api_name": "/network/status"
+              },
+              {
+                "function_tag": "GET_BLOCK_BY_NUM",
+                "function_template": "{\"network_identifier\":{\"blockchain\":\"Internet Computer\",\"network\":\"00000000000000020101\"},\"block_identifier\":{\"index\":%d}}",
+                "result_parsing": {
+                  "parser_arg": [
+                    "0",
+                    "block",
+                    "block_identifier",
+                    "hash"
+                  ],
+                  "parser_func": "PARSE_CANONICAL"
+                },
+                "api_name": "/block"
+              }
+            ],
+            "verifications": [
+              {
+                "name": "chain-id",
+                "parse_directive": {
+                  "function_tag": "VERIFICATION",
+                  "function_template": "{}",
+                  "result_parsing": {
+                    "parser_arg": [
+                      "0",
+                      "network_identifiers",
+                      "0",
+                      "network"
+                    ],
+                    "parser_func": "PARSE_CANONICAL"
+                  },
+                  "api_name": "/network/list"
+                },
+                "values": [
+                  {
+                    "expected_value": "00000000000000020101"
+                  }
+                ]
+              },
+              {
+                "name": "pruning",
+                "parse_directive": {
+                  "function_tag": "GET_BLOCK_BY_NUM"
+                },
+                "values": [
+                  {
+                    "latest_distance": 29509
+                  },
+                  {
+                    "extension": "archive",
+                    "expected_value": "1"
+                  }
+                ]
+              }
+            ],
+            "extensions": [
+              {
+                "name": "archive",
+                "cu_multiplier": 5,
+                "rule": {
+                  "block": 29509
+                }
+              }
+            ]
+          },
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "rest",
+              "internal_path": "",
+              "type": "GET",
+              "add_on": ""
+            },
+            "apis": [
+              {
+                "name": "/status",
+                "block_parsing": {
+                  "parser_arg": [
+                    ""
+                  ],
+                  "parser_func": "EMPTY"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": false,
+                  "stateful": 0
+                }
+              }
+            ],
+            "headers": [],
+            "inheritance_apis": [],
+            "parse_directives": [],
+            "verifications": []
+          }
+        ]
+      }
+    ]
+  }
+}
