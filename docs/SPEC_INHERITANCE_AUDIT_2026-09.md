@@ -219,12 +219,8 @@ TRAC/BITTENSOR/LIT it had shipped a byte-identical copy of ETH1's wrong
    window (2025-09-18) and Canto's Cosmos/EVM split needs its own probe, so it
    is flagged rather than changed.
 
-6. **There is no shared Substrate base spec.** Ten pure-Substrate specs (AVT,
-   BSX, ENJ, ENJIN, KUSAMA, KUSAMAASSETHUB, POLKADOT, POLKADOTASSETHUB,
-   POLYMESH, XRT) each retype 115–143 Substrate methods with `imports: []`,
-   because there is no `SUBSTRATE` analogue of `COSMOSSDK`/`TENDERMINT` to
-   import. This is the same class of problem one level up and the largest
-   remaining duplication in the repo.
+6. ~~**There is no shared Substrate base spec.**~~ **Fixed** — see
+   "The SUBSTRATE base spec" below.
 
 ## Audits that came back clean
 
@@ -302,3 +298,79 @@ changes:
 Whole-repo run of the new guard (270 indices): **5 findings — CANTO, THORCHAIN,
 HYPERLIQUID, TRX, VECHAIN**, all of them items 2, 4 and 5 above, all
 pre-existing, none in a file this PR touches.
+
+
+---
+
+# The SUBSTRATE base spec
+
+The finding above was the largest duplication left in the repo: **21 specs each
+retyped the Substrate JSON-RPC surface** because no `SUBSTRATE` analogue of
+`COSMOSSDK`/`TENDERMINT` existed to import.
+
+`substrate.json` now holds the **79 methods present in all 21**, shaped like the
+other library specs (`COSMOSWASM`, `IBC`): `enabled: false`, one
+`jsonrpc/POST` collection, **no `parse_directives` and no `verifications`**. That
+last part is deliberate — a library spec that carried a `GET_BLOCKNUM` or a
+`chain-id` would collide with `ETH1` on the ten chains that import both, and
+among two parents the winner is registration order, which is not something a
+spec author can see.
+
+## Result
+
+**1338 duplicated method entries deleted; 321 kept as deliberate overrides.**
+
+| spec | deleted | kept | imports |
+|---|---|---|---|
+| MOONRIVER | 77 | 2 | `SUBSTRATE`, `ETH1` |
+| BSX | 76 | 3 | `SUBSTRATE` |
+| ASTAR, AVT, ENJ, ENJIN, HYDRATION, KUSAMA, POLKADOTASSETHUB, POLYMESH, SDN, XRT | 75 | 4 | |
+| POLKADOT | 71 | 8 | `SUBSTRATE` |
+| ACA | 70 | 9 | `SUBSTRATE` |
+| BNC, KUSAMAASSETHUB, TRAC | 68 | 11 | |
+| LIT | 44 | 35 | `SUBSTRATE`, `ETH1` |
+| BITTENSOR | 22 | 57 | `SUBSTRATE`, `ETH1` |
+| MOONBEAM, PEAQ | 12 | 67 | `SUBSTRATE`, `ETH1` |
+
+## This is a pure refactor, and that is verified
+
+An entry was deleted **only** where it is byte-identical to the base. Everything
+else stayed as an override — including the `enabled: false` disables on
+`state_getPairs` and `state_traceBlock` that eight specs carry.
+
+Verification resolved the full import closure for **all 270 indices** in the
+catalog, before and after, and compared each method's **entire definition**, not
+just its presence:
+
+```
+checked 45933 (spec, collection, method) definitions across 270 indices
+PURE REFACTOR — every effective definition byte-identical
+```
+
+## What is deliberately NOT in this change
+
+**The block_parsing values in `substrate.json` are the observed majority, not
+verified values.** Of the 79 methods, only 4 have a definition all 21 specs
+agree on. The rest disagree, and the disagreement is not cosmetic:
+
+| methods | disagree between |
+|---|---|
+| 18 | `EMPTY` vs `DEFAULT ["latest"]` |
+| 12 | `PARSE_BY_ARG ["1"]` vs `DEFAULT ["latest"]` |
+| 11 | `EMPTY` vs `PARSE_BY_ARG ["0"]` vs `DEFAULT ["latest"]` |
+| 8 | `PARSE_BY_ARG ["2"]` vs `DEFAULT ["latest"]` |
+
+`PARSE_BY_ARG ["N"]` means "the block argument is at params[N]". For any given
+method there is exactly one right answer, so **some of these specs are simply
+wrong** — the same defect class as `eth_feeHistory` in `ethereum.json`, at
+roughly 47 methods instead of one.
+
+Fixing that is a separate job with its own evidence requirement: each method's
+real parameter index checked against the Substrate RPC signature. It is not done
+here, because bundling it would mean one change that both restructures 21 files
+and silently alters routing on ~47 methods — and a diff that size cannot be
+reviewed for a wrong parameter index.
+
+Because every child keeps an override wherever it differs, **nothing resolves to
+an unverified base value today**. When the correctness pass happens it changes
+one place instead of 21.

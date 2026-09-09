@@ -9,7 +9,9 @@
         "blocks_in_finalization_proof": 1,
         "average_block_time": 2448,
         "allowed_block_lag_for_qos_sync": 5,
-        "imports": [],
+        "imports": [
+          "SUBSTRATE"
+        ],
         "api_collections": [
           {
             "enabled": true,
@@ -20,21 +22,6 @@
               "add_on": ""
             },
             "apis": [
-              {
-                "name": "account_nextIndex",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "stateful": 0
-                }
-              },
               {
                 "name": "archive_v1_body",
                 "block_parsing": {
@@ -231,21 +218,6 @@
                 }
               },
               {
-                "name": "author_pendingExtrinsics",
-                "block_parsing": {
-                  "parser_arg": [
-                    ""
-                  ],
-                  "parser_func": "EMPTY"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": false,
-                  "stateful": 0
-                }
-              },
-              {
                 "name": "author_removeExtrinsic",
                 "block_parsing": {
                   "parser_arg": [
@@ -306,598 +278,12 @@
                 }
               },
               {
-                "name": "author_submitExtrinsic",
-                "block_parsing": {
-                  "parser_func": "EMPTY",
-                  "parser_arg": [
-                    ""
-                  ]
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": false,
-                  "stateful": 1,
-                  "hanging_api": true
-                }
-              },
-              {
-                "name": "author_unwatchExtrinsic",
-                "block_parsing": {
-                  "parser_arg": [
-                    ""
-                  ],
-                  "parser_func": "EMPTY"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": false,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "chainHead_v1_body",
-                "block_parsing": {
-                  "parser_arg": [
-                    "1"
-                  ],
-                  "parser_func": "PARSE_BY_ARG"
-                },
-                "compute_units": 20,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "chainHead_v1_call",
-                "block_parsing": {
-                  "parser_arg": [
-                    "1"
-                  ],
-                  "parser_func": "PARSE_BY_ARG"
-                },
-                "compute_units": 20,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "chainHead_v1_continue",
-                "block_parsing": {
-                  "parser_arg": [
-                    ""
-                  ],
-                  "parser_func": "EMPTY"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": false,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "chainHead_v1_follow",
-                "block_parsing": {
-                  "parser_arg": [
-                    ""
-                  ],
-                  "parser_func": "EMPTY"
-                },
-                "compute_units": 1000,
-                "enabled": true,
-                "category": {
-                  "deterministic": false,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "chainHead_v1_header",
-                "block_parsing": {
-                  "parser_arg": [
-                    "1"
-                  ],
-                  "parser_func": "PARSE_BY_ARG"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "chainHead_v1_stopOperation",
-                "block_parsing": {
-                  "parser_arg": [
-                    ""
-                  ],
-                  "parser_func": "EMPTY"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": false,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "chainHead_v1_storage",
-                "block_parsing": {
-                  "parser_arg": [
-                    "1"
-                  ],
-                  "parser_func": "PARSE_BY_ARG"
-                },
-                "compute_units": 20,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "chainHead_v1_unfollow",
-                "block_parsing": {
-                  "parser_arg": [
-                    ""
-                  ],
-                  "parser_func": "EMPTY"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": false,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "chainHead_v1_unpin",
-                "block_parsing": {
-                  "parser_arg": [
-                    ""
-                  ],
-                  "parser_func": "EMPTY"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": false,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "chainSpec_v1_chainName",
-                "block_parsing": {
-                  "parser_arg": [
-                    ""
-                  ],
-                  "parser_func": "EMPTY"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "chainSpec_v1_genesisHash",
-                "block_parsing": {
-                  "parser_arg": [
-                    ""
-                  ],
-                  "parser_func": "EMPTY"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "chainSpec_v1_properties",
-                "block_parsing": {
-                  "parser_arg": [
-                    ""
-                  ],
-                  "parser_func": "EMPTY"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "chain_getBlock",
-                "block_parsing": {
-                  "parser_arg": [
-                    "0"
-                  ],
-                  "parser_func": "PARSE_BY_ARG"
-                },
-                "compute_units": 20,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "chain_getBlockHash",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "chain_getFinalisedHead",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "chain_getFinalizedHead",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "chain_getHead",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "chain_getHeader",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "chain_getRuntimeVersion",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "chain_subscribeAllHeads",
-                "block_parsing": {
-                  "parser_arg": [
-                    ""
-                  ],
-                  "parser_func": "EMPTY"
-                },
-                "compute_units": 1000,
-                "enabled": true,
-                "category": {
-                  "deterministic": false,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "chain_subscribeFinalisedHeads",
-                "block_parsing": {
-                  "parser_arg": [
-                    ""
-                  ],
-                  "parser_func": "EMPTY"
-                },
-                "compute_units": 1000,
-                "enabled": true,
-                "category": {
-                  "deterministic": false,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "chain_subscribeFinalizedHeads",
-                "block_parsing": {
-                  "parser_arg": [
-                    ""
-                  ],
-                  "parser_func": "EMPTY"
-                },
-                "compute_units": 1000,
-                "enabled": true,
-                "category": {
-                  "deterministic": false,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "chain_subscribeNewHead",
-                "block_parsing": {
-                  "parser_arg": [
-                    ""
-                  ],
-                  "parser_func": "EMPTY"
-                },
-                "compute_units": 1000,
-                "enabled": true,
-                "category": {
-                  "deterministic": false,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "chain_subscribeNewHeads",
-                "block_parsing": {
-                  "parser_arg": [
-                    ""
-                  ],
-                  "parser_func": "EMPTY"
-                },
-                "compute_units": 1000,
-                "enabled": true,
-                "category": {
-                  "deterministic": false,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "chain_subscribeRuntimeVersion",
-                "block_parsing": {
-                  "parser_arg": [
-                    ""
-                  ],
-                  "parser_func": "EMPTY"
-                },
-                "compute_units": 1000,
-                "enabled": true,
-                "category": {
-                  "deterministic": false,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "chain_unsubscribeAllHeads",
-                "block_parsing": {
-                  "parser_arg": [
-                    ""
-                  ],
-                  "parser_func": "EMPTY"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": false,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "chain_unsubscribeFinalisedHeads",
-                "block_parsing": {
-                  "parser_arg": [
-                    ""
-                  ],
-                  "parser_func": "EMPTY"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": false,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "chain_unsubscribeFinalizedHeads",
-                "block_parsing": {
-                  "parser_arg": [
-                    ""
-                  ],
-                  "parser_func": "EMPTY"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": false,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "chain_unsubscribeNewHead",
-                "block_parsing": {
-                  "parser_arg": [
-                    ""
-                  ],
-                  "parser_func": "EMPTY"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": false,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "chain_unsubscribeNewHeads",
-                "block_parsing": {
-                  "parser_arg": [
-                    ""
-                  ],
-                  "parser_func": "EMPTY"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": false,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "chain_unsubscribeRuntimeVersion",
-                "block_parsing": {
-                  "parser_arg": [
-                    ""
-                  ],
-                  "parser_func": "EMPTY"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": false,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "childstate_getKeys",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 20,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "childstate_getKeysPaged",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 20,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "stateful": 0
-                }
-              },
-              {
                 "name": "childstate_getKeysPagedAt",
                 "block_parsing": {
                   "parser_arg": [
                     "3"
                   ],
                   "parser_func": "PARSE_BY_ARG"
-                },
-                "compute_units": 20,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "childstate_getStorage",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 20,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "childstate_getStorageEntries",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 20,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "childstate_getStorageHash",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 20,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "childstate_getStorageSize",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
                 },
                 "compute_units": 20,
                 "enabled": true,
@@ -967,117 +353,12 @@
                 }
               },
               {
-                "name": "payment_queryFeeDetails",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "payment_queryInfo",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "rpc_methods",
-                "block_parsing": {
-                  "parser_arg": [
-                    ""
-                  ],
-                  "parser_func": "EMPTY"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": false,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "state_call",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 20,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "stateful": 0
-                }
-              },
-              {
                 "name": "state_callAt",
                 "block_parsing": {
                   "parser_arg": [
                     "2"
                   ],
                   "parser_func": "PARSE_BY_ARG"
-                },
-                "compute_units": 20,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "state_getChildReadProof",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 20,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "state_getKeys",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 20,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "state_getKeysPaged",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
                 },
                 "compute_units": 20,
                 "enabled": true,
@@ -1102,21 +383,6 @@
                 }
               },
               {
-                "name": "state_getMetadata",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 20,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "stateful": 0
-                }
-              },
-              {
                 "name": "state_getPairs",
                 "block_parsing": {
                   "parser_arg": [
@@ -1132,72 +398,12 @@
                 }
               },
               {
-                "name": "state_getReadProof",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 20,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "state_getRuntimeVersion",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "state_getStorage",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 20,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "stateful": 0
-                }
-              },
-              {
                 "name": "state_getStorageAt",
                 "block_parsing": {
                   "parser_arg": [
                     "1"
                   ],
                   "parser_func": "PARSE_BY_ARG"
-                },
-                "compute_units": 20,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "state_getStorageHash",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
                 },
                 "compute_units": 20,
                 "enabled": true,
@@ -1222,21 +428,6 @@
                 }
               },
               {
-                "name": "state_getStorageSize",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 20,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "stateful": 0
-                }
-              },
-              {
                 "name": "state_getStorageSizeAt",
                 "block_parsing": {
                   "parser_arg": [
@@ -1245,21 +436,6 @@
                   "parser_func": "PARSE_BY_ARG"
                 },
                 "compute_units": 20,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "state_queryStorage",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 40,
                 "enabled": true,
                 "category": {
                   "deterministic": true,
@@ -1278,36 +454,6 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "state_subscribeRuntimeVersion",
-                "block_parsing": {
-                  "parser_arg": [
-                    ""
-                  ],
-                  "parser_func": "EMPTY"
-                },
-                "compute_units": 1000,
-                "enabled": true,
-                "category": {
-                  "deterministic": false,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "state_subscribeStorage",
-                "block_parsing": {
-                  "parser_arg": [
-                    ""
-                  ],
-                  "parser_func": "EMPTY"
-                },
-                "compute_units": 1000,
-                "enabled": true,
-                "category": {
-                  "deterministic": false,
                   "stateful": 0
                 }
               },
@@ -1342,36 +488,6 @@
                 }
               },
               {
-                "name": "state_unsubscribeRuntimeVersion",
-                "block_parsing": {
-                  "parser_arg": [
-                    ""
-                  ],
-                  "parser_func": "EMPTY"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": false,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "state_unsubscribeStorage",
-                "block_parsing": {
-                  "parser_arg": [
-                    ""
-                  ],
-                  "parser_func": "EMPTY"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": false,
-                  "stateful": 0
-                }
-              },
-              {
                 "name": "subscribe_newHead",
                 "block_parsing": {
                   "parser_arg": [
@@ -1383,21 +499,6 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "system_accountNextIndex",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
                   "stateful": 0
                 }
               },
@@ -1429,36 +530,6 @@
                 "category": {
                   "deterministic": false,
                   "stateful": 1
-                }
-              },
-              {
-                "name": "system_chain",
-                "block_parsing": {
-                  "parser_arg": [
-                    ""
-                  ],
-                  "parser_func": "EMPTY"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "system_chainType",
-                "block_parsing": {
-                  "parser_arg": [
-                    ""
-                  ],
-                  "parser_func": "EMPTY"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
-                  "stateful": 0
                 }
               },
               {
@@ -1537,21 +608,6 @@
                 }
               },
               {
-                "name": "system_name",
-                "block_parsing": {
-                  "parser_arg": [
-                    ""
-                  ],
-                  "parser_func": "EMPTY"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": false,
-                  "stateful": 0
-                }
-              },
-              {
                 "name": "system_nodeRoles",
                 "block_parsing": {
                   "parser_arg": [
@@ -1578,21 +634,6 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "system_properties",
-                "block_parsing": {
-                  "parser_arg": [
-                    ""
-                  ],
-                  "parser_func": "EMPTY"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": true,
                   "stateful": 0
                 }
               },
@@ -1672,21 +713,6 @@
                 }
               },
               {
-                "name": "system_version",
-                "block_parsing": {
-                  "parser_arg": [
-                    ""
-                  ],
-                  "parser_func": "EMPTY"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": false,
-                  "stateful": 0
-                }
-              },
-              {
                 "name": "transactionWatch_v1_submitAndWatch",
                 "block_parsing": {
                   "parser_arg": [
@@ -1695,52 +721,6 @@
                   "parser_func": "EMPTY"
                 },
                 "compute_units": 1000,
-                "enabled": true,
-                "category": {
-                  "deterministic": false,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "transactionWatch_v1_unwatch",
-                "block_parsing": {
-                  "parser_arg": [
-                    ""
-                  ],
-                  "parser_func": "EMPTY"
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": false,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "transaction_v1_broadcast",
-                "block_parsing": {
-                  "parser_func": "EMPTY",
-                  "parser_arg": [
-                    ""
-                  ]
-                },
-                "compute_units": 10,
-                "enabled": true,
-                "category": {
-                  "deterministic": false,
-                  "stateful": 1,
-                  "hanging_api": true
-                }
-              },
-              {
-                "name": "transaction_v1_stop",
-                "block_parsing": {
-                  "parser_arg": [
-                    ""
-                  ],
-                  "parser_func": "EMPTY"
-                },
-                "compute_units": 10,
                 "enabled": true,
                 "category": {
                   "deterministic": false,

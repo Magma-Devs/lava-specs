@@ -6,6 +6,7 @@
                 "name": "peaq mainnet",
                 "enabled": true,
                 "imports": [
+                    "SUBSTRATE",
                     "ETH1"
                 ],
                 "block_distance_for_finalized_data": 50,
@@ -640,36 +641,6 @@
                                 }
                             },
                             {
-                                "name": "chainHead_v1_body",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "1"
-                                    ],
-                                    "parser_func": "PARSE_BY_ARG"
-                                },
-                                "compute_units": 20,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
-                                }
-                            },
-                            {
-                                "name": "chainHead_v1_call",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "1"
-                                    ],
-                                    "parser_func": "PARSE_BY_ARG"
-                                },
-                                "compute_units": 20,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
-                                }
-                            },
-                            {
                                 "name": "chainHead_v1_continue",
                                 "block_parsing": {
                                     "parser_arg": [
@@ -730,21 +701,6 @@
                                 }
                             },
                             {
-                                "name": "chainHead_v1_storage",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "1"
-                                    ],
-                                    "parser_func": "PARSE_BY_ARG"
-                                },
-                                "compute_units": 20,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
-                                }
-                            },
-                            {
                                 "name": "chainHead_v1_unfollow",
                                 "block_parsing": {
                                     "parser_arg": [
@@ -771,66 +727,6 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "stateful": 0
-                                }
-                            },
-                            {
-                                "name": "chainSpec_v1_chainName",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        ""
-                                    ],
-                                    "parser_func": "EMPTY"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
-                                }
-                            },
-                            {
-                                "name": "chainSpec_v1_genesisHash",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        ""
-                                    ],
-                                    "parser_func": "EMPTY"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
-                                }
-                            },
-                            {
-                                "name": "chainSpec_v1_properties",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        ""
-                                    ],
-                                    "parser_func": "EMPTY"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
-                                }
-                            },
-                            {
-                                "name": "chain_getBlock",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "0"
-                                    ],
-                                    "parser_func": "PARSE_BY_ARG"
-                                },
-                                "compute_units": 20,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": true,
                                     "stateful": 0
                                 }
                             },
@@ -903,21 +799,6 @@
                                     "parser_func": "PARSE_BY_ARG"
                                 },
                                 "compute_units": 20,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
-                                }
-                            },
-                            {
-                                "name": "chain_getRuntimeVersion",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 10,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
@@ -1393,21 +1274,6 @@
                                 }
                             },
                             {
-                                "name": "state_traceBlock",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "0"
-                                    ],
-                                    "parser_func": "PARSE_BY_ARG"
-                                },
-                                "compute_units": 100,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
-                                }
-                            },
-                            {
                                 "name": "system_accountNextIndex",
                                 "block_parsing": {
                                     "parser_arg": [
@@ -1450,36 +1316,6 @@
                                 "category": {
                                     "deterministic": false,
                                     "stateful": 1
-                                }
-                            },
-                            {
-                                "name": "system_chain",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        ""
-                                    ],
-                                    "parser_func": "EMPTY"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
-                                }
-                            },
-                            {
-                                "name": "system_chainType",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        ""
-                                    ],
-                                    "parser_func": "EMPTY"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
                                 }
                             },
                             {
@@ -1599,21 +1435,6 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "stateful": 0
-                                }
-                            },
-                            {
-                                "name": "system_properties",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        ""
-                                    ],
-                                    "parser_func": "EMPTY"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": true,
                                     "stateful": 0
                                 }
                             },
