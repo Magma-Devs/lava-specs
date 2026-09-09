@@ -1,18 +1,37 @@
 # Merge plan for the inheritance-audit branches
 
-Five branches. **Merge order matters** — one pair has a real dependency and one
-pair conflicts. Everything below was verified on a scratch branch that merged all
-five together; the merged tree is what a reviewer will actually see.
+Four independent branches plus a verified integration of them. **Order matters** —
+one pair has a real dependency and one pair conflicts. Every figure below was
+measured on the fully integrated tree, which is the state that will actually
+ship.
 
-| order | branch | touches | why here |
-|---|---|---|---|
-| 1 | `fix/eth1-feehistory-block-parsing` | `ethereum.json`, `hyperliquid.json`, `moonbeam.json`, `peaq.json` | must precede #2 and #5 — they depend on ETH1 being correct |
-| 2 | `fix/substrate-evm-eth1-inheritance` | 11 specs + tooling + CI guard | the trust-repair deliverable |
-| 3 | `fix/substrate-base-spec` | `substrate.json` + 21 specs | stacked on #2 |
-| 4 | `fix/audit-flagged-imports` | `tron.json`, `hyperliquid.json` | independent |
-| 5 | `fix/feehistory-overrides-followup` | 4 specs + ledger | **only valid after #1 and #2** |
+There are two ways to land this. Pick one.
+
+### Option A — four reviewable PRs, in this order
+
+| order | branch | commits | files | why here |
+|---|---|---|---|---|
+| 1 | `fix/eth1-feehistory-block-parsing` | 1 | 4 | must precede #2 and the follow-up — both depend on ETH1 being correct |
+| 2 | `fix/substrate-evm-eth1-inheritance` | 1 | 26 | the trust-repair deliverable |
+| 3 | `fix/substrate-base-spec` | 2 | 41 | stacked on #2 |
+| 4 | `fix/audit-flagged-imports` | 1 | 3 | independent |
+
+Then cherry-pick the two follow-up commits from the integration branch —
+`19e3723` (drop the redundant `eth_feeHistory` overrides + ledger lines) and
+`6e31f54` (the real-merge verification harness and this plan). Neither is valid
+before #1 and #2 are both in.
+
+### Option B — one branch, already integrated and verified
+
+`integration/inheritance-audit` **is** all four merged in the order above, with
+both conflicts resolved and the two follow-up commits on top: 8 commits, 62
+files. This is the tree every result in this document was measured on. Merging
+it lands everything at once and skips the per-PR review granularity.
 
 ## Two conflicts, both already resolved and verified
+
+These are already resolved on `integration/inheritance-audit`; they matter only
+for Option A.
 
 **`moonbeam.json` / `peaq.json` between #1 and #2.** Both delete
 `eth_createAccessList` — #1 because it became a stale override once ETH1 was
@@ -22,13 +41,13 @@ superset); it also deletes `eth_getProof`, `eth_sign`, `eth_signTransaction`.
 **`hyperliquid.json` between #1 and #4** auto-merges cleanly (#1 edits
 `eth_feeHistory`, #4 appends `eth_sendRawTransaction`).
 
-## Why #5 cannot merge earlier
+## Why the follow-up cannot merge earlier
 
 TRAC, HYDRATION, BITTENSOR and LIT carry an `eth_feeHistory` override. Before #1,
 that override is the *correct* value and ETH1's is wrong — deleting it would be a
 regression. After #1, the override differs from ETH1 only in `compute_units`
 (20 vs 10, with no evidence for 20) and in BITTENSOR's case
-`category.deterministic`. #5 deletes all four so they inherit, and drops the four
+`category.deterministic`. The follow-up commit deletes all four so they inherit, and drops the four
 now-obsolete `REDUNDANT` lines from `spec-inheritance-exceptions.txt`.
 
 ## Before opening any of these: two CI hazards
@@ -75,6 +94,9 @@ Counts, read from the files on the merged tree:
 | #4 | `tron.json` | 5 | 4 new + `eth_sendRawTransaction`, already disabled |
 | #1,#3,#4 | `hyperliquid.json`, `substrate.json`, `moonbeam.json`, `peaq.json` | 0 | no disables |
 
+Under Option B the same counts apply; the body carries one marker per changed
+spec file.
+
 The seven common to #2 are `eth_compileLLL`, `eth_createAccessList`,
 `eth_getCompilers`, `eth_getProof`, `eth_sign`, `eth_signTransaction`,
 `rpc_modules` — each probed on the chain's live endpoint. The evidence tables
@@ -84,7 +106,7 @@ the fixer and the reviewer see the same ledger.
 
 ## What the merged tree was verified against
 
-Everything above was checked on a scratch branch with all five merged:
+Everything above was measured on `integration/inheritance-audit`:
 
 | check | result |
 |---|---|
@@ -107,8 +129,8 @@ for t in .claude/skills/create-spec/scripts/test_*.sh; do bash "$t"; done
 
 Expected: **5 UNIMPORTED findings and nothing else** — CANTO and VECHAIN (both
 blocked on unreachable endpoints, deliberately unledgered so they keep failing)
-and HYPERLIQUID, TRX, THORCHAIN (audited, ledgered, so they pass once #4 and #5
-are in). All 15 guard self-tests pass.
+and HYPERLIQUID, TRX, THORCHAIN (audited, ledgered, so they pass once #4 and the
+follow-up are in). All 15 guard self-tests pass.
 
 ## Still open after all five
 
