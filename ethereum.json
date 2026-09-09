@@ -113,9 +113,9 @@
                                 "name": "eth_createAccessList",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "latest"
+                                        "1"
                                     ],
-                                    "parser_func": "DEFAULT"
+                                    "parser_func": "PARSE_BY_ARG"
                                 },
                                 "compute_units": 10,
                                 "enabled": true,
@@ -143,9 +143,9 @@
                                 "name": "eth_feeHistory",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "latest"
+                                        "1"
                                     ],
-                                    "parser_func": "DEFAULT"
+                                    "parser_func": "PARSE_BY_ARG"
                                 },
                                 "compute_units": 10,
                                 "enabled": true,

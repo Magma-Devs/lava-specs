@@ -38,21 +38,6 @@
                                 }
                             },
                             {
-                                "name": "eth_createAccessList",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
-                                }
-                            },
-                            {
                                 "name": "eth_sign",
                                 "block_parsing": {
                                     "parser_arg": [
