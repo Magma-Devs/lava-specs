@@ -2478,7 +2478,7 @@
                                     "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 10,
-                                "enabled": true,
+                                "enabled": false,
                                 "category": {
                                     "deterministic": true,
                                     "stateful": 0
@@ -2493,7 +2493,7 @@
                                     "parser_func": "PARSE_BY_ARG"
                                 },
                                 "compute_units": 20,
-                                "enabled": true,
+                                "enabled": false,
                                 "category": {
                                     "deterministic": true,
                                     "stateful": 0
@@ -2508,7 +2508,7 @@
                                     "parser_func": "PARSE_BY_ARG"
                                 },
                                 "compute_units": 20,
-                                "enabled": true,
+                                "enabled": false,
                                 "category": {
                                     "deterministic": true,
                                     "stateful": 0
@@ -2523,7 +2523,7 @@
                                     "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 10,
-                                "enabled": true,
+                                "enabled": false,
                                 "category": {
                                     "deterministic": false,
                                     "stateful": 0
@@ -2543,6 +2543,36 @@
                                     "deterministic": false,
                                     "stateful": 1,
                                     "hanging_api": true
+                                }
+                            },
+                            {
+                                "name": "eth_hashrate",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "stateful": 0
+                                }
+                            },
+                            {
+                                "name": "eth_mining",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        ""
+                                    ],
+                                    "parser_func": "EMPTY"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "stateful": 0
                                 }
                             }
                         ],
