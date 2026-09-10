@@ -1006,7 +1006,7 @@
                                     ],
                                     "parser_func": "PARSE_CANONICAL"
                                 },
-                                "api_name": "/block_identifier/{block_identifier}"
+                                "api_name": "/block_identifier/current"
                             },
                             {
                                 "function_tag": "GET_BLOCK_BY_NUM",
