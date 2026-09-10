@@ -943,7 +943,7 @@
                                 "compute_units": 10,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": false,
+                                    "deterministic": true,
                                     "stateful": 0
                                 }
                             },
@@ -958,7 +958,7 @@
                                 "compute_units": 10,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": false,
+                                    "deterministic": true,
                                     "stateful": 0
                                 }
                             },
@@ -1056,6 +1056,26 @@
                                         "expected_value": "bitcoin"
                                     }
                                 ]
+                            },
+                            {
+                                "name": "network",
+                                "parse_directive": {
+                                    "function_template": "/",
+                                    "function_tag": "VERIFICATION",
+                                    "result_parsing": {
+                                        "parser_arg": [
+                                            "0",
+                                            "network"
+                                        ],
+                                        "parser_func": "PARSE_CANONICAL"
+                                    },
+                                    "api_name": "/"
+                                },
+                                "values": [
+                                    {
+                                        "expected_value": "mainnet"
+                                    }
+                                ]
                             }
                         ],
                         "extensions": []
@@ -1134,6 +1154,30 @@
                                 ]
                             }
                         ]
+                    },
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "rest",
+                            "internal_path": "",
+                            "type": "GET",
+                            "add_on": ""
+                        },
+                        "apis": [],
+                        "headers": [],
+                        "inheritance_apis": [],
+                        "parse_directives": [],
+                        "verifications": [
+                            {
+                                "name": "network",
+                                "values": [
+                                    {
+                                        "expected_value": "testnet"
+                                    }
+                                ]
+                            }
+                        ],
+                        "extensions": []
                     }
                 ]
             },
@@ -1171,6 +1215,30 @@
                                 ]
                             }
                         ]
+                    },
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "rest",
+                            "internal_path": "",
+                            "type": "GET",
+                            "add_on": ""
+                        },
+                        "apis": [],
+                        "headers": [],
+                        "inheritance_apis": [],
+                        "parse_directives": [],
+                        "verifications": [
+                            {
+                                "name": "network",
+                                "values": [
+                                    {
+                                        "expected_value": "testnet4"
+                                    }
+                                ]
+                            }
+                        ],
+                        "extensions": []
                     }
                 ]
             },
