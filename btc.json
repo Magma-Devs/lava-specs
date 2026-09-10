@@ -783,6 +783,21 @@
                         },
                         "apis": [
                             {
+                                "name": "/",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "stateful": 0
+                                }
+                            },
+                            {
                                 "name": "/account/{address}",
                                 "block_parsing": {
                                     "parser_arg": [
@@ -828,7 +843,7 @@
                                 }
                             },
                             {
-                                "name": "/accounts",
+                                "name": "/accounts/",
                                 "block_parsing": {
                                     "parser_arg": [
                                         "latest"
@@ -1021,7 +1036,28 @@
                                 "api_name": "/block_identifier/{block_identifier}"
                             }
                         ],
-                        "verifications": [],
+                        "verifications": [
+                            {
+                                "name": "chain-id",
+                                "parse_directive": {
+                                    "function_template": "/",
+                                    "function_tag": "VERIFICATION",
+                                    "result_parsing": {
+                                        "parser_arg": [
+                                            "0",
+                                            "handle"
+                                        ],
+                                        "parser_func": "PARSE_CANONICAL"
+                                    },
+                                    "api_name": "/"
+                                },
+                                "values": [
+                                    {
+                                        "expected_value": "bitcoin"
+                                    }
+                                ]
+                            }
+                        ],
                         "extensions": []
                     },
                     {
@@ -1033,21 +1069,6 @@
                             "add_on": ""
                         },
                         "apis": [
-                            {
-                                "name": "/tx/create",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
-                                }
-                            },
                             {
                                 "name": "/tx/send",
                                 "block_parsing": {
@@ -1187,6 +1208,36 @@
                                 ]
                             }
                         ]
+                    },
+                    {
+                        "enabled": false,
+                        "collection_data": {
+                            "api_interface": "rest",
+                            "internal_path": "",
+                            "type": "GET",
+                            "add_on": ""
+                        },
+                        "apis": [],
+                        "headers": [],
+                        "inheritance_apis": [],
+                        "parse_directives": [],
+                        "verifications": [],
+                        "extensions": []
+                    },
+                    {
+                        "enabled": false,
+                        "collection_data": {
+                            "api_interface": "rest",
+                            "internal_path": "",
+                            "type": "POST",
+                            "add_on": ""
+                        },
+                        "apis": [],
+                        "headers": [],
+                        "inheritance_apis": [],
+                        "parse_directives": [],
+                        "verifications": [],
+                        "extensions": []
                     }
                 ]
             }
