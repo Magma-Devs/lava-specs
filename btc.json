@@ -1090,6 +1090,21 @@
                         },
                         "apis": [
                             {
+                                "name": "/tx/create",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "stateful": 0
+                                }
+                            },
+                            {
                                 "name": "/tx/send",
                                 "block_parsing": {
                                     "parser_arg": [
