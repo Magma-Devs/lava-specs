@@ -29,7 +29,21 @@ reconstruct context from committed state and run Phase N → end.
    date +%s > /tmp/create_spec_run_start.epoch
    ```
 1. Read the committed spec: `cat <chain>.json` (filename = mainnet index lowercased).
-   Derive `<chain>`, `<INDEX>`, `<INTERFACE>` from it — do NOT re-derive from research.
+   Derive `<chain>`, `<INDEX>`, and the spec's **full interface list** from it — do NOT
+   re-derive from research. The list is plural on purpose:
+
+   ```bash
+   jq -r --arg i "<INDEX>" '[.proposal.specs[] | select(.index==$i)
+       | .api_collections[] | select(.enabled != false)
+       | .collection_data.api_interface] | unique | .[]' <chain>.json
+   ```
+
+   The first row is `<INTERFACE>`; every other row belongs in `<EXTRA_INTERFACES>` and
+   must be passed to the Phase 8 subagent alongside it (see SKILL.md Phase 8 inputs).
+   Reading only the first row is how a multi-interface spec gets a green Phase 8 that
+   probed one interface and never touched the others (MAG-3639) — the cosmos family
+   (rest + grpc + tendermintrpc) and every chain pairing `jsonrpc` with `rest` are
+   affected. Resolve through `imports` when the chain's own collections come back short.
    Then run the removed-field guard as a hard gate before any phase work — a resumed
    spec MUST NOT contain any of the 15 fields removed from the model:
    ```bash

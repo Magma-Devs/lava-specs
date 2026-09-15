@@ -46,6 +46,16 @@ on:
         required: false
         type: boolean
         default: false
+      add_collection:
+        description: "Add-collection mode: add api_collections (e.g. a REST interface alongside jsonrpc) to specs that already exist in <chain>.json. Changes no spec-level field and no pre-existing collection. Mutually exclusive with add_testnet."
+        required: false
+        type: boolean
+        default: false
+      collection_indexes:
+        description: "Add-collection mode only: comma-separated spec indexes allowed to gain collections (e.g. 'BTC,BTCT,BTCT4'). Anything landing elsewhere fails the guard."
+        required: false
+        type: string
+        default: ""
       show_full_output:
         description: "Stream ALL Claude messages live (watch phase progress / detect a stall). WARNING: dumps tool results to the PUBLIC run log — may expose URLs/keys."
         required: false
@@ -85,6 +95,19 @@ jobs:
           REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
+          # The two existing-file modes are mutually exclusive and mean opposite things
+          # to the guards: add-testnet asserts exactly one spec index was ADDED and no
+          # spec changed; add-collection asserts NO index was added and only collections
+          # moved. Both set at once would run one prompt block and then be judged by the
+          # other's guard, so refuse it here rather than fail confusingly 20 minutes in.
+          if [ "${{ inputs.add_testnet }}" = "true" ] && [ "${{ inputs.add_collection }}" = "true" ]; then
+            echo "::error::add_testnet and add_collection are mutually exclusive — pick one."
+            exit 1
+          fi
+          if [ "${{ inputs.add_collection }}" = "true" ] && [ -z "${{ inputs.collection_indexes }}" ]; then
+            echo "::error::add_collection requires collection_indexes (e.g. 'BTC,BTCT') — without it the guard cannot tell an intended addition from a stray one."
+            exit 1
+          fi
           if [ -z "${GH_TOKEN:-}" ]; then
             echo "::error::BOT_PAT secret is empty/unset. Store a classic PAT with scopes: repo + workflow + read:packages."
             exit 1
@@ -170,9 +193,10 @@ jobs:
           IDX: ${{ github.event.inputs.chain_mainnet_index }}
           INDEX_LOWER: ${{ steps.branch.outputs.index_lower }}
           ADD_TESTNET: ${{ inputs.add_testnet }}
+          ADD_COLLECTION: ${{ inputs.add_collection }}
         run: |
           set -euo pipefail
-          if [ "$ADD_TESTNET" = "true" ]; then
+          if [ "$ADD_TESTNET" = "true" ] || [ "$ADD_COLLECTION" = "true" ]; then
             matches=""
             for f in ./*.json; do
               if jq -e --arg i "$IDX" 'any((.proposal.specs // [])[]?; .index == $i)' "$f" >/dev/null 2>&1; then
@@ -182,10 +206,10 @@ jobs:
             # shellcheck disable=SC2086
             set -- $matches
             if [ "$#" -eq 0 ]; then
-              echo "::error::add-testnet: no root *.json defines mainnet index '$IDX' — it must already exist on main." >&2
+              echo "::error::add-testnet/add-collection: no root *.json defines mainnet index '$IDX' — it must already exist on main." >&2
               exit 1
             elif [ "$#" -gt 1 ]; then
-              echo "::error::add-testnet: mainnet index '$IDX' found in multiple files: $matches" >&2
+              echo "::error::add-testnet/add-collection: mainnet index '$IDX' found in multiple files: $matches" >&2
               exit 1
             fi
             spec="$1"
@@ -230,7 +254,7 @@ jobs:
             --dangerously-skip-permissions
             --max-turns 1000
           prompt: |
-            MODE: ${{ inputs.add_testnet == true && 'ADD_TESTNET' || 'NEW_CHAIN' }}
+            MODE: ${{ inputs.add_testnet == true && 'ADD_TESTNET' || (inputs.add_collection == true && 'ADD_COLLECTION' || 'NEW_CHAIN') }}
 
             Inputs (do NOT ask me for these — use exactly these values):
             - Chain name: ${{ github.event.inputs.chain_name }}
@@ -261,6 +285,37 @@ jobs:
               and fill the ENDPOINTS block with the TESTNET url(s) ONLY — leave `mainnet:` blank so
               the pipeline probes only the new testnet.
             STOP once both guards pass and pr_body.md is written.
+
+            ═══ IF MODE IS ADD_COLLECTION — follow ONLY this block; IGNORE the others ═══
+            Run the /create-spec skill in ADD-COLLECTION mode (see SKILL.md "Phase 1B —
+            Add-collection mode"), fully unattended. The target spec file is
+            `${{ steps.spec.outputs.spec }}` (already resolved by the mainnet index it contains
+            and checked out — it may be a legacy name such as ethereum.json, NOT <index>.json).
+            Add the api_collections described in "Additional data" to the spec indexes listed in
+            "Collection indexes": ${{ inputs.collection_indexes }}. Run Phase 1B steps B1–B5 only
+            — do NOT run Phases 2–7 and do NOT dispatch spec-builder.
+            - Change NO spec-level field and NO pre-existing collection. Append with a surgical
+              `jq '.proposal.specs |= map(if .index == "<INDEX>" then .api_collections += $c[0] else . end)'`
+              write per index; never re-emit or reformat the file body.
+            - A new interface needs its OWN parse directives — the tracker polls the collection
+              that holds them and does not inherit another interface's. Put them in the base
+              (`add_on: ""`) collection unless the surface is genuinely opt-in.
+            - Credentials for the upstream belong in the provider's node-url config, never in
+              the spec. Do not add an auth header on the strength of a 401 alone.
+            - Before finishing you MUST run and PASS all three guards on ${{ steps.spec.outputs.spec }}:
+                git show HEAD:${{ steps.spec.outputs.spec }} > /tmp/base_spec.json
+                bash .claude/skills/create-spec/scripts/check_collection_addition.sh /tmp/base_spec.json ${{ steps.spec.outputs.spec }} "${{ inputs.collection_indexes }}"
+                bash .claude/skills/create-spec/scripts/check_unused_fields.sh ${{ steps.spec.outputs.spec }}
+                bash .claude/skills/create-spec/scripts/check_internal_paths.sh ${{ steps.spec.outputs.spec }}
+              Fix until all three pass. (A CI step re-runs the addition guard and fails the run —
+              no PR — if any pre-existing spec or collection drifted.)
+            - Do NOT run git. Do NOT run Phase 8+ (spec_pipeline.yml probes after the PR opens).
+            - Write pr_body.md at the repo root from the template below, but title it
+              "## Add collections: ${{ github.event.inputs.chain_name }}", and fill the ENDPOINTS
+              block with endpoints for the NEW interface. Name the pre-existing interfaces in the
+              body so the pipeline probes both — a chain that now serves two interfaces and is
+              probed on one is a silent gap.
+            STOP once all three guards pass and pr_body.md is written.
 
             ═══ IF MODE IS NEW_CHAIN — follow this block ═══
             Run the /create-spec skill end-to-end for a new chain, fully unattended.
@@ -395,6 +450,26 @@ jobs:
           set -euo pipefail
           git show HEAD:"$SPEC" > /tmp/base_spec.json
           bash .claude/skills/create-spec/scripts/check_preservation.sh /tmp/base_spec.json "$SPEC" "$TESTNET_INDEX"
+
+      # Add-collection safety net, the analogue of the preservation guard above and
+      # NOT interchangeable with it: an add-collection run adds no spec index and DOES
+      # modify a pre-existing spec, so check_preservation.sh would reject it outright.
+      # This one asserts the complementary shape — collections may be added to the
+      # named indexes and nothing else may move: no spec entry added or removed, every
+      # spec-level field and every pre-existing collection canonical-identical, envelope
+      # unchanged. It also fails a no-op, because "nothing was added" means the mode was
+      # dispatched by mistake. Base = the file at the branch point; the agent's append is
+      # still uncommitted in the working tree here.
+      - name: Guard — collection addition (add-collection only)
+        if: ${{ inputs.add_collection == true }}
+        env:
+          SPEC: ${{ steps.verify.outputs.spec }}
+          INDEXES: ${{ inputs.collection_indexes }}
+        run: |
+          set -euo pipefail
+          git show HEAD:"$SPEC" > /tmp/base_spec.json
+          bash .claude/skills/create-spec/scripts/check_collection_addition.sh \
+               /tmp/base_spec.json "$SPEC" "$INDEXES"
 
       - name: Commit and push spec
         env:
