@@ -334,8 +334,20 @@ jobs:
           ' "$f"
           echo "redaction pass complete"
 
+      # continue-on-error because this artifact is diagnostic, not load-bearing, and
+      # it sits BEFORE the guards and the fix commit. Without it, a transient upload
+      # error marks the job failed, and every later step — whose `if:` is implicitly
+      # ANDed with success() — is skipped, including "Commit spec fixes to PR branch".
+      # That is not hypothetical: on PR #145 run 34839154144 the upload died with
+      # `Failed to FinalizeArtifact: ... ECONNRESET` after Phase 10 had applied a real
+      # fix and Phase 11 had approved it. Steps 16-19 were skipped, the fix was
+      # discarded with the runner, and the PR kept displaying the approval for a spec
+      # state that never reached the branch — the failure looks like success (MAG-3637).
+      # The step still shows as failed in the run UI, so a lost transcript stays visible;
+      # it just can no longer destroy the work it was only meant to document.
       - name: Upload transcript artifact
         if: always()
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: spec-pipeline-transcript-pr${{ steps.pr.outputs.number }}-run${{ github.run_id }}
@@ -556,4 +568,16 @@ jobs:
             11) cmd='/rerun-final' ;;
             *)  cmd="/rerun-from $START" ;;
           esac
-          gh pr comment "$PR" --repo "$REPO" --body "$(printf '**Spec pipeline failed** (started at Phase %s). See the [run log](%s).\n\nRetry by commenting:\n`%s`\n\nTo also re-run every later phase on top of the fix, use `/rerun-from %s` instead.' "$START" "$RUN_URL" "$cmd" "$START")"
+          # Say so when the run dies holding uncommitted spec edits. The commit step is
+          # gated on success(), so any earlier failure skips it and the Phase 10 fixes
+          # go down with the runner — while the PR still shows Phase 10's "fix applied"
+          # and Phase 11's verdict. Reporting only "the pipeline failed" leaves a reader
+          # to infer the branch matches those comments, which is exactly backwards
+          # (MAG-3637). Reads the working tree, so it reports what would have been
+          # committed, not what the PR file list claims.
+          pending=""
+          dirty="$(git status --porcelain -- ':(glob)*.json' 2>/dev/null | awk '{print $NF}' | paste -sd' ' - || true)"
+          if [ -n "$dirty" ]; then
+            pending="$(printf '\n\n⚠️ **This run ended holding uncommitted spec changes:** `%s`. They were NOT pushed — the commit step is skipped when an earlier step fails, so they were discarded with the runner. Any phase comment above describing a fix as applied does **not** reflect the branch. Re-run to regenerate them.' "$dirty")"
+          fi
+          gh pr comment "$PR" --repo "$REPO" --body "$(printf '**Spec pipeline failed** (started at Phase %s). See the [run log](%s).\n\nRetry by commenting:\n`%s`\n\nTo also re-run every later phase on top of the fix, use `/rerun-from %s` instead.%s' "$START" "$RUN_URL" "$cmd" "$START" "$pending")"
