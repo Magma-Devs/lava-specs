@@ -88,6 +88,7 @@ for f in ./*.json; do jq -e --arg i "<MAINNET_INDEX>" 'any((.proposal.specs // [
 - If a file is found (`<SPEC_FILE>`), that chain already exists — ask the user which mode they want, operating on `<SPEC_FILE>`; do not overwrite or edit existing entries without explicit confirmation:
   - **add-testnet** — append ONE new testnet entry that imports the existing mainnet, changing NO existing spec. This is the right choice for the common "add chain X's testnet Y" task (e.g. the MAG-2430 rows). It runs the short **Phase 1A — Add-testnet mode** below and SKIPS Phases 2–7 entirely. Choose this unless the user explicitly wants to regenerate the mainnet — regenerating an existing spec is what silently drifted the mainnet on PR #80.
   - **update** — re-research the chain, ADD everything the spec is missing (methods, collections, addons, directives, verifications) and CORRECT values research proves wrong, changing nothing else. This is the right choice for "X is missing methods" / "bring X up to date" / "refresh X". It runs **Phase 1B — Update mode** below and SKIPS Phases 2 and 4–5 (Phase 3's research fan-out and Phase 6's static gates both still run). Choose this over base/adapt whenever the spec is structurally sound and merely incomplete — regenerating a sound spec to add a method is what drifted the mainnet on PR #80.
+  - **add-collection** — add one or more `api_collections` (typically a new `api_interface`, e.g. REST alongside an existing jsonrpc) to specs that already exist, changing no spec-level field and no pre-existing collection. This is the right choice for "serve chain X over interface Y too". It runs **Phase 1C — Add-collection mode** below and SKIPS Phases 2–7. Neither of the other existing-file modes can do this: add-testnet's guard rejects it (no index is added, and a pre-existing spec IS modified), and regenerating drops sibling entries — on `btc.json`, whose four entries include BTCT4 and BTCS, a regeneration to the canonical 2-entry shape would delete two live testnets.
   - **base / adapt** — use the existing file as a starting point and regenerate (runs the full Phases 2–7 pipeline). Reach for this only when the spec is structurally wrong — a wrong parent, the wrong interface, a collection layout that cannot be amended.
   - **scratch** — overwrite and regenerate from nothing.
 - If no file matches, this is a new chain — proceed to Phase 2 (the new file will be named `<index-lowercased>.json`).
@@ -174,6 +175,49 @@ The shape of the mode, in brief — the reference file is authoritative:
 - **B7** Hand off to **Phase 7.5 → 8 → 9 → 10 → 10b → 11 → 12**, probing added/modified methods first, and **re-running the B6b guard after Phase 10** — any fix that pass applies is itself a change to a pre-existing entry and must be appended to the plan with its evidence.
 
 Update mode's PR amends a file others depend on. Write `pr_body.md` from the template in the reference — it leads with the added/corrected/reported tables, not prose. In CI (`create_spec.yml` with `mode: update`) stop there; the workflow commits and opens the PR. Interactively, print the git commands for the user (the skill still runs no git itself) and tell them the PR will start the billed spec pipeline.
+## Phase 1C — Add-collection mode (add api_collections to existing specs)
+
+Run this ONLY when the Phase 1 gate selected **add-collection**. It adds collections and is *structurally incapable* of altering any spec-level field or any pre-existing collection. **Do NOT dispatch `spec-builder` and do NOT run Phases 2–7** — those re-synthesise and re-emit the whole file, which is how PR #80 silently drifted `average_block_time` 200→35 and a parse arg `block_height`→`block_hash`. When C4 passes, jump straight to **Phase 7.5 → 8**.
+
+### C1 — Inputs
+- **Target spec file** `<SPEC_FILE>` — resolved in Phase 1 by the index it CONTAINS, never assumed to be `<index>.json` (~26% of the catalog uses a legacy name).
+- **Target indexes** — which spec entries gain collections. Usually the mainnet plus whichever testnets need their own identity override; the rest inherit.
+- **New interface** and its endpoint(s). If the upstream needs a credential, it belongs in the provider's node-url config (`auth-config.auth-headers`), never in the spec.
+
+### C2 — Research the new surface only
+Resolve the api list, parse directives and verifications for the new collections ONLY. Do not re-research anything the file already has. Read `references/phase3.3-api-collections.md` (collection shape, REST pattern rules) and `references/phase3.4-parse-directives-and-extensions.md`.
+
+Two rules that only bite on a second interface:
+- **Parse directives live in the collection whose upstream can answer them**, and the tracker polls that collection's node-url. A new interface needs its OWN `GET_BLOCKNUM` / `GET_BLOCK_BY_NUM` — it does not inherit the other interface's.
+- **`add_on` is part of the collection key.** Putting the new collection behind an add-on means a provider that does not declare it serves the interface with no height tracking at all. Use `add_on: ""` unless the surface really is opt-in.
+
+### C3 — Append surgically, never re-emit
+Write each new collection to its own file, then append with a single `jq` write per target index:
+
+```bash
+jq --indent 4 --slurpfile c /tmp/<chain>_new_collections.json \
+   '.proposal.specs |= map(if .index == "<INDEX>" then .api_collections += $c[0] else . end)' \
+   <SPEC_FILE> > <SPEC_FILE>.new
+# root spec files carry no trailing newline — match that convention:
+printf '%s' "$(cat <SPEC_FILE>.new)" > <SPEC_FILE> && rm -f <SPEC_FILE>.new
+```
+
+Do NOT round-trip the file through a formatter. A whole-file rewrite re-indents lines you did not touch, which turns a purely additive diff into one a reviewer has to audit.
+
+### C4 — Guards (both must pass before you finish)
+
+```bash
+git show HEAD:<SPEC_FILE> > /tmp/base_spec.json
+bash .claude/skills/create-spec/scripts/check_collection_addition.sh \
+     /tmp/base_spec.json <SPEC_FILE> "<INDEX>[,<INDEX>...]"
+bash .claude/skills/create-spec/scripts/check_unused_fields.sh <SPEC_FILE>
+bash .claude/skills/create-spec/scripts/check_internal_paths.sh <SPEC_FILE>   # REST especially
+```
+
+`check_collection_addition.sh` is what makes drift impossible here, and it is a different shape from `check_preservation.sh` — neither substitutes for the other. It FAILS unless the only change is added collections: no spec entry added or removed, every spec-level field canonical-identical, every pre-existing collection canonical-identical, envelope unchanged. It also fails a no-op, because "nothing was added" means the mode was invoked by mistake. If any guard fails, STOP and fix the block; do NOT proceed with a modified file.
+
+### C5 — Test the new interface, then hand off
+Proceed to **Phase 7.5 → 8** with endpoints for the NEW interface. Pass it as `<INTERFACE>` and the chain's pre-existing interfaces as `<EXTRA_INTERFACES>` so the boot exercises both — a spec that now serves two interfaces and is probed on one is exactly the blind spot MAG-3639 describes. The pre-existing collections are byte-for-byte unchanged, so a regression there would be a router finding, not a spec change.
 
 ## Phase 2 — Gather inputs
 
@@ -441,7 +485,16 @@ This phase boots the candidate spec inside a dockerized **smart-router** (`ghcr.
 **Inputs to gather before dispatch** (from earlier phases — do NOT re-research). The per-interface endpoints come from the **Phase 7.5 keyed candidate list** (validated-OK entries), NOT from a flat URL list:
 - `<chain>` — lowercased chain name (filename stem, e.g., `iota`)
 - `<INDEX>` — spec index UPPERCASE (e.g., `IOTA`) — must match the spec's `proposal.specs[].index`
-- `<INTERFACE>` — `jsonrpc` | `rest` | `grpc` | `tendermintrpc` (the spec's `api_collections[].collection_data.api_interface`)
+- `<INTERFACE>` — the spec's PRIMARY api_interface, and `<EXTRA_INTERFACES>` — every other one it declares. Derive both mechanically from the resolved spec rather than by eye; a spec whose second interface is never named here is a spec whose second interface never gets probed:
+
+  ```bash
+  # every distinct api_interface in the chain's own collections, primary first
+  jq -r --arg i "<INDEX>" '[.proposal.specs[] | select(.index==$i)
+      | .api_collections[] | select(.enabled != false)
+      | .collection_data.api_interface] | unique | .[]' <chain>.json
+  ```
+
+  Collections reached through `imports` count too — resolve the closure when the chain's own list looks short (a testnet importing its mainnet usually declares none of its own). `<INTERFACE>` is the first row, `<EXTRA_INTERFACES>` is the rest, each paired with its own validated urls and transport. **Both must be passed to the subagent.** If the jq above returns more than one row and you dispatch with an empty `<EXTRA_INTERFACES>`, Phase 8 will probe one interface, report green, and say nothing whatsoever about the others — which is how ~30 multi-interface specs in the catalog went unprobed on their second and third interfaces (MAG-3639). A disabled collection (`enabled: false`) is excluded above on purpose: it is not served, so there is nothing to probe.
 - The validated endpoints for each interface from Phase 7.5, **with their transport** preserved (e.g. gRPC `grpcs://` vs `grpc://`+insecure). At least one usable upstream is required to boot.
 - The validated **subscription (ws)** endpoint for any interface whose Phase-7.5 row is a subscription requirement. The smart-router excludes any provider that lacks a ws upstream for a subscription-enabled chain, and refuses to boot once all providers are excluded (`all static providers failed verification — cannot serve endpoint`).
 - For multi-interface chains (Cosmos), pass one `(INTERFACE, validated-urls, transport)` block per interface from the candidate list.
@@ -496,25 +549,21 @@ Dispatch THREE Agent subagents in parallel via a SINGLE message, each with `suba
 
 > You are reviewing a Lava blockchain spec. Your reviewer index is **N** (used in the output filename below).
 >
-> Run the `/review-spec` skill on `<chain>.json`. Pass through `$ARGUMENTS[1]` (API docs path, may be empty) and `$ARGUMENTS[2]` (credentials path, may be empty).
+> Run the `/review-spec` skill on `<chain>.json`. Pass through `$ARGUMENTS[1]` (API docs path, may be empty) and `$ARGUMENTS[2]` (credentials path, may be empty), and pass `docs/<chain>/SPEC_REVIEW_GAPS_parallel_N.md` as `$ARGUMENTS[3]` — your own output path. Write there directly; do NOT write the shared `SPEC_REVIEW_GAPS.md` and rename afterwards.
 >
 > Before running `/review-spec`, read `docs/<chain>/METHOD_PROBE_REPORT.md` if it exists and incorporate the probe findings into your review (especially any FAIL or WARN classifications).
 >
 > The following are settled, skill-mandated decisions — do NOT report them as findings: (a) the canonical spec shape is `{ "proposal": { "specs": [ … ] } }` — the absence of `title`/`description`/`deposit` and of the nine governance fields (`min_stake_provider`, `shares`, `contributor`, …) is CORRECT (they were removed from the model); do NOT flag any of them as missing; (b) `blocks_in_finalization_proof` is finality-typed — `3` probabilistic (PoW/slow PoS), `1` fast/instant finality (BFT, Tendermint/Cosmos, instant-settlement L2s), fallback `max(ceil(1000 / average_block_time), 3)` only when the finality model is unclear; (c) a method/addon/collection must NOT be flagged for disabling because a probe returned `-32601`/errors on the provided nodes — free-tier limitation; disabling requires positive evidence (docs explicitly state unsupported/removed, or the chain's node-client implementation lacks it, with URL).
 >
-> `/review-spec` writes its report to the hard-coded path `docs/<chain>/SPEC_REVIEW_GAPS.md`. **As the LAST step of your work — immediately after `/review-spec` returns** — rename that file to a unique numbered path so the other parallel reviewers do not clobber it:
+> Confirm your report landed at your own path, and that you did not write the shared one:
 >
 > ```bash
-> mv -n docs/<chain>/SPEC_REVIEW_GAPS.md docs/<chain>/SPEC_REVIEW_GAPS_parallel_N.md
+> test -f docs/<chain>/SPEC_REVIEW_GAPS_parallel_N.md && echo "WROTE_OK" || echo "WROTE_FAIL"
 > ```
 >
-> Use `mv -n` (no clobber) — if the destination already exists, the move fails rather than overwriting another reviewer's work. After the `mv`, verify it succeeded:
+> On `WROTE_FAIL`, re-run `/review-spec` once with the same `$ARGUMENTS[3]`.
 >
-> ```bash
-> test -f docs/<chain>/SPEC_REVIEW_GAPS_parallel_N.md && echo "RENAMED_OK" || echo "RENAMED_FAIL"
-> ```
->
-> If the rename failed (destination already existed OR source didn't exist because another reviewer's parallel write clobbered yours), retry your `/review-spec` invocation once. Then attempt the rename again.
+> **Do not reintroduce a write-then-rename step here.** It was the previous shape and it loses reports: every reviewer wrote `SPEC_REVIEW_GAPS.md` and renamed afterwards, so the last writer won the shared file and an earlier reviewer's report was already gone by the time any `mv` ran. `mv -n` guards the rename, not the write, so it cannot detect that. On the MAG-3586 run this silently replaced reviewer 2's report with reviewer 3's content under reviewer 2's filename; it was caught only because reviewer 3 recognised its own self-label in the file. Passing a distinct `$ARGUMENTS[3]` per reviewer removes the shared resource rather than guarding it (MAG-3639).
 >
 > Return ONLY (do NOT paste the report body — it is on disk at the path below, and pasting it into your response defeats the Phase 10 consolidation by loading all three reports into the orchestrator's context):
 > 1. The single line `REPORT: docs/<chain>/SPEC_REVIEW_GAPS_parallel_N.md`.
@@ -529,7 +578,9 @@ After all three subagents return, in the primary working tree:
    ```bash
    ls -la docs/<chain>/SPEC_REVIEW_GAPS_parallel_{1,2,3}.md
    ```
-   If any are missing, the race-condition rename failed for that reviewer. Re-dispatch JUST the missing reviewer index and wait for it to complete (sequential at this point — collision risk is gone because only one reviewer is running).
+   Each reviewer writes its own path, so a missing file means that reviewer failed outright rather than that it lost a race. Re-dispatch JUST the missing index and wait for it.
+
+   Also check the files are not duplicates of each other — three genuinely independent reviews should not agree verbatim. `md5 docs/<chain>/SPEC_REVIEW_GAPS_parallel_*.md` (or `md5sum`) catching two identical digests means a reviewer wrote a path that was not its own, which would be the old shared-path failure returning in a new form.
 3. The reports are now on disk at their numbered paths; no further extraction needed.
 
 **Sanity check after collection:** if any reviewer reports CRITICAL findings whose `evidence_line_number` exceeds the actual line count of `<chain>.json`, that reviewer reviewed stale state — likely because the candidate file was modified after the reviewer started. Note the discrepancy to the user and either re-dispatch that one reviewer, or treat its findings as advisory rather than authoritative. Verify with:
@@ -649,11 +700,7 @@ Dispatch ONE Agent subagent with `subagent_type: general-purpose`, `model: "sonn
 >
 > [LEDGER]
 >
-> `/review-spec` writes its report to `docs/<chain>/SPEC_REVIEW_GAPS.md`. After it returns, rename to a final-pass-specific path:
->
-> ```bash
-> mv docs/<chain>/SPEC_REVIEW_GAPS.md docs/<chain>/SPEC_REVIEW_GAPS_final.md
-> ```
+> Pass `docs/<chain>/SPEC_REVIEW_GAPS_final.md` as `$ARGUMENTS[3]` so the report is written straight to its final path. No rename step — see the Phase 9 note on why write-then-rename loses reports.
 >
 > Return:
 > 1. The FULL contents of `docs/<chain>/SPEC_REVIEW_GAPS_final.md` as the body of your response.
