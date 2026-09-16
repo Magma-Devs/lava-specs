@@ -69,6 +69,10 @@ PLAN=${3:-}
 [[ -r "$JQPROG" ]] || { echo "missing leaf program: $JQPROG" >&2; exit 2; }
 for f in "$BASE" "$CAND"; do
   [[ -r "$f" ]] || { echo "cannot read: $f" >&2; echo "RESULT: FAIL (unreadable: $f)"; exit 2; }
+  # An empty file is checked before jq runs: jq's exit code for zero input is
+  # version-dependent (1.6 reports success, 1.7 reports no-output), so only an
+  # explicit test refuses a truncated-to-nothing spec on every runner.
+  [[ -s "$f" ]] || { echo "INVALID_JSON | $f (empty)" >&2; echo "RESULT: FAIL (empty file: $f)"; exit 2; }
   # Fail closed on unparseable input — a malformed candidate must never pass.
   jq empty "$f" 2>/dev/null || { echo "INVALID_JSON | $f" >&2; echo "RESULT: FAIL (invalid JSON: $f)"; exit 2; }
 done

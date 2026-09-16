@@ -76,4 +76,13 @@ rm -f "$BAD"
 [ "$RC" -eq 2 ] || fail "invalid: exit=$RC want 2 ($OUT)"
 echo "invalid: OK"
 
+# 10) empty candidate — fail closed: exit 2. jq's exit code for zero input is
+#     version-dependent, so a zero-byte spec must be refused before jq sees it.
+EMPTY="$(mktemp)"; : > "$EMPTY"
+set +e; OUT="$("$SCRIPT" "$BASE" "$EMPTY" MAINT2 2>&1)"; RC=$?; set -e
+rm -f "$EMPTY"
+[ "$RC" -eq 2 ] || fail "empty: exit=$RC want 2 ($OUT)"
+echo "$OUT" | grep -q "RESULT: FAIL" || fail "empty: did not fail closed ($OUT)"
+echo "empty: OK"
+
 echo "ALL TESTS PASSED"
