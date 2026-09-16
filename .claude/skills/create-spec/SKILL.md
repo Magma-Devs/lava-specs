@@ -1,6 +1,6 @@
 ---
 name: create-spec
-description: "Use when the user asks to add support for a new blockchain, create or build a Lava chain spec, or onboard a chain to Lava."
+description: "Use when the user asks to add support for a new blockchain, create or build a Lava chain spec, or onboard a chain to Lava. Also use to UPDATE a chain already in the catalog — add the methods/addons/directives its spec is missing and correct values that drifted — and to open the PR that amends it."
 ---
 
 # Create Spec — Lava Chain Specification
@@ -19,6 +19,7 @@ This skill is cost-optimized as a **hybrid**: the orchestrator (you) is now a th
 |---|---|---|---|
 | Orchestrator (routing, gate judgment) | all | *(inherits session)* | Thin conductor — holds pointers + verdicts, not artifacts. Can run on **sonnet** (or **haiku** for cheap runs); the expensive correctness work is isolated in spec-builder |
 | **Spec-builder (synthesis + inheritance + write)** | 4–5 | `opus` | The one correctness-critical role — derives params, applies the method-union/CU/parse rules, writes the spec. Run it at the top tier; bump to **opus** even when the session is cheaper |
+| **Spec-updater (surgical edits in update mode)** | 1B | `opus` | Same correctness weight as spec-builder — it edits a spec already in production. Top tier |
 | Research agents | 3 | `sonnet` | Web search + extraction; token-heavy, so the cheaper tier matters most here |
 | Static validators | 6 | `haiku` | Deterministic-leaning, several jq-backed. **Bump `cu-semantic` / `parse-directive` / `methods-coverage` to `sonnet`** if they emit false PASSes on complex chains |
 | Reviewers (`/review-spec`) | 9, 11 | `sonnet` | Judgment-heavy safety net; **bump to `opus`** if reviews miss issues on hard chains |
@@ -86,7 +87,8 @@ for f in ./*.json; do jq -e --arg i "<MAINNET_INDEX>" 'any((.proposal.specs // [
 
 - If a file is found (`<SPEC_FILE>`), that chain already exists — ask the user which mode they want, operating on `<SPEC_FILE>`; do not overwrite or edit existing entries without explicit confirmation:
   - **add-testnet** — append ONE new testnet entry that imports the existing mainnet, changing NO existing spec. This is the right choice for the common "add chain X's testnet Y" task (e.g. the MAG-2430 rows). It runs the short **Phase 1A — Add-testnet mode** below and SKIPS Phases 2–7 entirely. Choose this unless the user explicitly wants to regenerate the mainnet — regenerating an existing spec is what silently drifted the mainnet on PR #80.
-  - **base / adapt** — use the existing file as a starting point and regenerate (runs the full Phases 2–7 pipeline).
+  - **update** — re-research the chain, ADD everything the spec is missing (methods, collections, addons, directives, verifications) and CORRECT values research proves wrong, changing nothing else. This is the right choice for "X is missing methods" / "bring X up to date" / "refresh X". It runs **Phase 1B — Update mode** below and SKIPS Phases 2 and 4–5 (Phase 3's research fan-out and Phase 6's static gates both still run). Choose this over base/adapt whenever the spec is structurally sound and merely incomplete — regenerating a sound spec to add a method is what drifted the mainnet on PR #80.
+  - **base / adapt** — use the existing file as a starting point and regenerate (runs the full Phases 2–7 pipeline). Reach for this only when the spec is structurally wrong — a wrong parent, the wrong interface, a collection layout that cannot be amended.
   - **scratch** — overwrite and regenerate from nothing.
 - If no file matches, this is a new chain — proceed to Phase 2 (the new file will be named `<index-lowercased>.json`).
 
@@ -151,6 +153,27 @@ bash .claude/skills/create-spec/scripts/check_preservation.sh /tmp/base_spec.jso
 
 ### A5 — Test the testnet only, then hand off
 Proceed to **Phase 7.5 → 8** with **testnet endpoints only** (leave the mainnet endpoint list blank) so the smart-router boot/probe (Phase 8) and the Phase 9/11 reviews exercise ONLY the new testnet — the mainnet is byte-for-byte unchanged and needs no re-probe. In the PR body's machine-readable `<!-- ENDPOINTS -->` block, fill `testnet:` and leave `mainnet:` blank. Record the `TESTNET_VERIFY:` verdict as usual (a wrong testnet chain-id is a CRITICAL defect). Skip Phase 10's mainnet-oriented fixes unless a testnet defect is found.
+
+## Phase 1B — Update mode (amend an existing spec)
+
+Run this ONLY when the Phase 1 gate selected **update**. It re-researches the chain, diffs the findings against the committed spec, adds what is missing, and corrects what research proves wrong — while a mechanical guard makes every other change impossible.
+
+**Read the contract fully before doing anything else** (full-read, observe `END-OF-PHASE1B-UPDATE-SENTINEL`):
+
+- `.claude/skills/create-spec/references/phase1b-update.md`
+
+The shape of the mode, in brief — the reference file is authoritative:
+
+- **B1** Resolve `<SPEC_FILE>` (already done in Phase 1) and snapshot the committed file to `/tmp/<chain>_base.json`. Refuse to continue if the working tree already has uncommitted edits to it.
+- **B2** Run **Phase 3 exactly as written** — the same five research agents. Do NOT tell them what the spec already contains: a researcher shown the current method list confirms it instead of enumerating the chain. The diff is mechanical and comes afterwards.
+- **B3** Diff: `scripts/compare_spec_methods.sh <SPEC_FILE> /tmp/<chain>_methods.txt` for methods (MISSING = the additions; own-index EXTRA = report-only), plus the structural jq scans in the reference for collections, addons, the archive/pruning/GET_EARLIEST_BLOCK triplet and hanging-api timeouts.
+- **B4** Triage every intended change into `/tmp/update_plan.tsv` — `ACTION<TAB>TARGET<TAB>FIELD<TAB>NOTE<TAB>EVIDENCE`. Additions are open-ended; **corrections are limited to the field table in the reference**, and each needs a source. Removals and renames are not expressible.
+- **B5** Dispatch ONE `spec-updater` subagent (`general-purpose`, `model: "opus"`, no isolation) after reading `references/agents/spec-updater.md` fully (observe `END-OF-SPEC-UPDATER-SENTINEL`). It performs surgical `jq` writes only and returns a per-row ledger. Hold the path, never the spec body.
+- **B6** Run **Phase 6's nine static gates** against the updated file exactly as written — they are what catches a badly-shaped new method (CU out of band, a missing parse directive, a broken schema). Their fixer edits pre-existing entries like any other change, so **append every fix it makes to the plan, with its evidence**, before the guard runs. Findings the gates raise against entries this run did not touch are pre-existing: fix them under a plan row, or report them — either is fine, silently leaving them is also fine, but do not let them fail the run.
+- **B6b** Then gate on all of: `jq empty`, `check_unused_fields.sh`, **`check_update_diff.sh <base> <SPEC_FILE> <plan>`**, and `check_internal_paths.sh` when the spec sets `internal_path`. The third is the one that matters — it fails unless every difference between base and candidate is declared in the plan AND every declared change landed. Deletion fails unconditionally and cannot be declared.
+- **B7** Hand off to **Phase 7.5 → 8 → 9 → 10 → 10b → 11 → 12**, probing added/modified methods first, and **re-running the B6b guard after Phase 10** — any fix that pass applies is itself a change to a pre-existing entry and must be appended to the plan with its evidence.
+
+Update mode's PR amends a file others depend on. Write `pr_body.md` from the template in the reference — it leads with the added/corrected/reported tables, not prose. In CI (`create_spec.yml` with `mode: update`) stop there; the workflow commits and opens the PR. Interactively, print the git commands for the user (the skill still runs no git itself) and tell them the PR will start the billed spec pipeline.
 
 ## Phase 2 — Gather inputs
 
@@ -701,6 +724,6 @@ After printing, terminate the skill. The user takes it from here (manual git ope
 - Writing anywhere other than the single `<chain>.json` at the repo root — do not create subdirectories for specs
 - Creating `docs/<chain>/` documentation files beyond the probe and review reports the skill emits during its own run — in particular, disabled-API justifications go to the **Disabled-API Justifications** PR comment (Phase 5), never a `docs/` file (which is gitignored and never committed)
 - Creating governance proposal JSONs or `PROPOSAL_DESCRIPTION.md`
-- Any git operations: `git add`, `git commit`, `git push`, `git checkout`, `glab mr create`. User handles all git manually.
+- Any git operations: `git add`, `git commit`, `git push`, `git checkout`, `glab mr create`. User handles all git manually. This holds in update mode too: it writes `pr_body.md` and prints the branch/commit/PR commands, but the commands are the user's to run (in CI, `create_spec.yml` runs them).
 
 If the user asks for any of these, surface the limitation and confirm scope before continuing.
