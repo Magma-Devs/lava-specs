@@ -144,4 +144,13 @@ run "$F/update_base.json" "$F/update_added.json" "$TDIR/emitted.tsv"
 [ "$RC" -eq 0 ] || fail "emit-roundtrip: expected PASS, got rc=$RC ($OUT)"
 echo "emit-roundtrip: OK"
 
+# 15. An empty candidate is refused before jq sees it: jq's exit code for zero
+#     input is version-dependent (1.6 succeeds, 1.7 reports no output), so without
+#     an explicit test a truncated-to-nothing spec reads as "everything removed".
+: > "$TDIR/empty.json"
+run "$F/update_base.json" "$TDIR/empty.json" "$TDIR/empty.tsv"
+[ "$RC" -eq 2 ] || fail "empty-json: expected rc=2, got $RC"
+echo "$OUT" | grep -q "RESULT: FAIL" || fail "empty-json: did not fail closed"
+echo "empty-json: OK"
+
 echo "ALL TESTS PASSED"

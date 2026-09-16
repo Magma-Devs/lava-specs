@@ -51,10 +51,12 @@ ALLOWED=${3:-}
 
 for f in "$BASE" "$CAND"; do
   [[ -r "$f" ]] || { echo "cannot read: $f" >&2; echo "RESULT: FAIL (unreadable: $f)"; exit 2; }
-  # `jq empty` exits 0 on an EMPTY file (no input is not invalid input), so an empty
-  # or truncated candidate would sail past and then read as "every collection removed".
-  # Requiring a top-level object fails closed on empty, truncated, array and scalar
-  # inputs alike — a guard that cannot parse its input must never report PASS.
+  # An empty file is checked before jq runs: jq's exit code for zero input is
+  # version-dependent (1.6 reports success, 1.7 reports no-output), so only an
+  # explicit test refuses a truncated-to-nothing spec on every runner.
+  [[ -s "$f" ]] || { echo "INVALID_JSON | $f (empty)" >&2; echo "RESULT: FAIL (empty file: $f)"; exit 2; }
+  # Requiring a top-level object fails closed on truncated, array and scalar inputs
+  # alike — a guard that cannot parse its input must never report PASS.
   jq -e 'type == "object"' "$f" >/dev/null 2>&1 || {
     echo "INVALID_JSON | $f" >&2; echo "RESULT: FAIL (not a JSON object: $f)"; exit 2; }
 done
