@@ -322,8 +322,14 @@ jobs:
       # what the agent decided to stop for. create_spec.yml has carried both steps
       # all along; spec_pipeline.yml did not, which is precisely why every
       # truncation has been undiagnosable from outside.
+      # continue-on-error for the same reason as the upload below: this step is
+      # diagnostic and sits BEFORE the guards and the fix commit. The default shell
+      # is `bash -e {0}`, so a perl failure (unwritable transcript, disk full — this
+      # job also pulls the smart-router image) would fail the step and skip the
+      # commit exactly as the ECONNRESET did. Same door, one step earlier.
       - name: Redact secrets from transcript
         if: always()
+        continue-on-error: true
         run: |
           f="${{ steps.run.outputs.execution_file }}"
           [ -f "$f" ] || { echo "no transcript to redact"; exit 0; }
