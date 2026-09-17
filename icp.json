@@ -73,7 +73,8 @@
                     "block_identifier",
                     "index"
                   ],
-                  "parser_func": "PARSE_CANONICAL"
+                  "parser_func": "PARSE_CANONICAL",
+                  "default_value": "latest"
                 },
                 "compute_units": 20,
                 "enabled": true,
@@ -107,7 +108,8 @@
                     "block_identifier",
                     "index"
                   ],
-                  "parser_func": "PARSE_CANONICAL"
+                  "parser_func": "PARSE_CANONICAL",
+                  "default_value": "latest"
                 },
                 "compute_units": 20,
                 "enabled": true,
