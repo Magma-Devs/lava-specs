@@ -2644,7 +2644,7 @@
                                 "compute_units": 10,
                                 "category": {
                                     "deterministic": true,
-                                    "stateful": 1,
+                                    "stateful": 0,
                                     "hanging_api": false
                                 },
                                 "block_parsing": {
