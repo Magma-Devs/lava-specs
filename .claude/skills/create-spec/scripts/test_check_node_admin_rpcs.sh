@@ -69,6 +69,25 @@ new_rows "$OUT" | grep -q 'setban' || fail "baselined: setban should still be NE
 echo "$OUT" | grep -q '=== KNOWN' || fail "baselined: missing KNOWN section"
 echo "baselined: OK (2 known, 2 new, exit 1)"
 
+# --- a stale baseline row fails: the ledger cleans itself ---
+# node_admin_good.json has parkblock DISABLED, so a baseline row naming it
+# describes an exposure that no longer exists. Left in place it would silently
+# re-permit the method if the fix were reverted.
+set +e; OUT=$("$SCRIPT" "$FIX/node_admin_good.json" --baseline "$FIX/node_admin_baseline_stale.txt"); RC=$?; set -e
+[ "$RC" -eq 1 ] || fail "stale: exit=$RC, want 1"
+echo "$OUT" | grep -q '=== STALE BASELINE ROWS' || fail "stale: missing STALE section"
+echo "$OUT" | grep -q 'node_admin_good.json GOODCHAIN jsonrpc parkblock' || fail "stale: row not named"
+echo "stale: OK (untagged stale row fails)"
+
+# --- ...except a TEMPORARY row, which is expected to go stale ---
+# Reported loudly, but does not fail: the merge that makes it stale is usually
+# someone else's and should not turn their CI red.
+set +e; OUT=$("$SCRIPT" "$FIX/node_admin_good.json" --baseline "$FIX/node_admin_baseline_stale_temp.txt"); RC=$?; set -e
+[ "$RC" -eq 0 ] || fail "stale-temp: exit=$RC, want 0"
+echo "$OUT" | grep -q '=== STALE, TEMPORARY' || fail "stale-temp: missing STALE/TEMPORARY section"
+echo "$OUT" | grep -q '=== STALE BASELINE ROWS' && fail "stale-temp: must not report as a hard stale row"
+echo "stale-temp: OK (reported, does not fail)"
+
 # --- the real baseline must make the shipped catalogue clean ---
 # If this fails, the guard cannot be wired as a hard gate without breaking
 # unrelated PRs — which is the whole reason the baseline exists.

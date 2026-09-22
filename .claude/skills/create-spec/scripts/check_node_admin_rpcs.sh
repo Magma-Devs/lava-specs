@@ -92,13 +92,18 @@ NODE_ADMIN_PREFIX_RE='^personal_'
 # map: stock macOS bash is 3.2, which has no associative arrays, and this guard
 # is one a reviewer runs by hand against a PR (same reasoning as
 # check_disabled_count.sh — see TESTING.md).
+#
+# A row may carry a trailing ` TEMPORARY` token, meaning "expected to go stale,
+# the fix is in flight on another branch". It is stripped for matching.
 BASE_ROWS="$(mktemp)"
-trap 'rm -f "$BASE_ROWS"' EXIT
+SEEN_ROWS="$(mktemp)"
+trap 'rm -f "$BASE_ROWS" "$SEEN_ROWS"' EXIT
 if [[ -n "$BASELINE" && -r "$BASELINE" ]]; then
   while read -r line; do
     line="${line%%#*}"
     line="$(echo "$line" | xargs || true)"
     [[ -z "$line" ]] && continue
+    line="${line% TEMPORARY}"
     echo "$line" >> "$BASE_ROWS"
   done < "$BASELINE"
 fi
@@ -123,6 +128,7 @@ while IFS=$'\t' read -r idx iface name addon; do
     continue
   fi
   key="$SPEC_BASE $idx $iface $name"
+  echo "$key" >> "$SEEN_ROWS"   # everything actually exposed, for the stale check
   if grep -Fxq "$key" "$BASE_ROWS" 2>/dev/null; then
     KNOWN+=("$key")
   else
@@ -146,6 +152,52 @@ if [[ ${#KNOWN[@]} -gt 0 ]]; then
   echo "=== KNOWN (on the baseline: pre-existing, ticketed, still wrong) ==="
   printf '%s\n' "${KNOWN[@]}"
   echo
+fi
+
+# A baseline row for a method that is no longer exposed is STALE, and a stale row
+# is not harmless: it silently re-permits the exposure if the fix is ever
+# reverted. So the ledger cleans itself — a stale row fails, and the fix is to
+# delete it.
+#
+# The exception is a row tagged TEMPORARY, which exists precisely because it is
+# expected to go stale (a fix in flight on another branch). Those report and do
+# not fail, because the merge that makes them stale is usually someone else's and
+# should not turn their CI red.
+STALE=()
+STALE_TEMP=()
+while read -r line; do
+  raw="${line%%#*}"
+  raw="$(echo "$raw" | xargs || true)"
+  [[ -z "$raw" ]] && continue
+  temp=0
+  if [[ "$raw" == *" TEMPORARY" ]]; then
+    temp=1
+    raw="${raw% TEMPORARY}"
+  fi
+  # Only rows about THIS spec can be judged from this invocation.
+  [[ "$raw" == "$SPEC_BASE "* ]] || continue
+  if ! grep -Fxq "$raw" "$SEEN_ROWS" 2>/dev/null; then
+    if [[ $temp -eq 1 ]]; then STALE_TEMP+=("$raw"); else STALE+=("$raw"); fi
+  fi
+done < "${BASELINE:-/dev/null}"
+
+if [[ ${#STALE_TEMP[@]} -gt 0 ]]; then
+  echo "=== STALE, TEMPORARY (the in-flight fix landed — delete these rows now) ==="
+  printf '%s\n' "${STALE_TEMP[@]}"
+  echo
+fi
+
+if [[ ${#STALE[@]} -gt 0 ]]; then
+  echo "=== STALE BASELINE ROWS ==="
+  printf '%s\n' "${STALE[@]}"
+  cat <<EOF
+
+FAIL: ${#STALE[@]} baseline row(s) name a method that $SPEC_BASE no longer serves
+enabled from a base collection. The exposure is fixed, so the row is dead weight
+— and worse than dead: it would silently re-permit the method if the fix were
+reverted. Delete these rows from $(basename -- "${BASELINE:-node_admin_baseline.txt}").
+EOF
+  exit 1
 fi
 
 echo "=== NEW NODE-ADMIN EXPOSURE ==="

@@ -5,7 +5,14 @@
 # Adding a row for a NEW exposure defeats the guard — resolve it instead
 # (disable, or gate behind an add_on). See check_node_admin_rpcs.sh.
 #
-# Format: <spec-file> <INDEX> <interface> <method>
+# Format: <spec-file> <INDEX> <interface> <method> [TEMPORARY]
+#
+# A row whose method is no longer exposed is STALE and FAILS the guard — delete
+# it. That is deliberate: a stale row would silently re-permit the method if the
+# fix were ever reverted, so the ledger cleans itself. The `TEMPORARY` token is
+# the one exception, for a fix already in flight on another branch: a stale
+# TEMPORARY row is reported loudly but does not fail, so the merge that makes it
+# stale does not turn someone else's CI red.
 #
 # Established by sweeping the catalogue at the time the guard was written
 # (MAG-3644 item 4). Everything else the sweep found — `debug_setHead` on
@@ -68,12 +75,15 @@ zcash.json ZCASH jsonrpc setgenerate
 # permanently, rejecting the honest longer chain with `bad-header-finalization`
 # and banning the peers offering it.
 #
-# TEMPORARY. The fix is PR #152, which sets all three `enabled: false`; this
-# guard branches from `main`, where they are still enabled, so without these
-# rows the guard's own CI fails on state it is not responsible for.
-# DELETE THESE THREE ROWS once #152 merges — the catalogue self-test in
-# test_check_node_admin_rpcs.sh keeps passing either way, and leaving them
-# would mask a regression if the fix were ever reverted.
-bch.json BCH jsonrpc finalizeblock
-bch.json BCH jsonrpc parkblock
-bch.json BCH jsonrpc unparkblock
+# The fix is PR #152, which sets all three `enabled: false`. This guard branches
+# from `main`, where they are still enabled, so without these rows the guard's
+# own CI fails on state it is not responsible for.
+#
+# Tagged TEMPORARY, which is machine-readable, not a comment: once #152 merges
+# the guard reports them under "STALE, TEMPORARY (the in-flight fix landed —
+# delete these rows now)" and does NOT fail. An untagged row that goes stale
+# DOES fail, because a stale row would silently re-permit the method if the fix
+# were reverted. Delete these three on #152's merge.
+bch.json BCH jsonrpc finalizeblock TEMPORARY
+bch.json BCH jsonrpc parkblock TEMPORARY
+bch.json BCH jsonrpc unparkblock TEMPORARY
