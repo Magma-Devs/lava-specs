@@ -547,7 +547,23 @@ jobs:
             exit 0
           fi
           echo "::error::Run span ${START}->${END} ended before Phase ${END}: no new phase report was posted (count still ${before}). The action exited cleanly but the pipeline did not finish."
-          gh pr comment "$PR" --repo "$REPO" --body "$(printf '⚠️ **Pipeline run truncated** — the span was Phase %s → %s, but no Phase %s report was posted. The workflow step exited cleanly, so this is *not* a crash; the agent stopped early.\n\nThe agent transcript is attached to the [run](%s) as `spec-pipeline-transcript-pr%s-run%s` — that is the record needed to diagnose it.' "$START" "$END" "$END" "$RUN_URL" "$PR" "${GITHUB_RUN_ID}")" || true
+
+          # Pull the agent's LAST message out of the transcript and put it in the
+          # comment. "The agent stopped early" is true of every truncation and
+          # diagnoses none of them; the final message usually names the reason
+          # outright. On PR #152 it read "Standing by for Phase 8 to complete." —
+          # which is the whole diagnosis (the orchestrator was waiting on a
+          # subagent that had already returned, MAG-3810) and it cost two runs and
+          # an artifact download to find. Surface it in the thread instead.
+          tail_msg=""
+          tf="${{ steps.run.outputs.execution_file }}"
+          if [ -f "$tf" ]; then
+            tail_msg="$(python3 .github/scripts/transcript_tail.py "$tf" 2>/dev/null || true)"
+          fi
+
+          body="$(printf '⚠️ **Pipeline run truncated** — the span was Phase %s → %s, but no Phase %s report was posted. The workflow step exited cleanly, so this is *not* a crash; the agent stopped early.\n\n%s\n\nThe agent transcript is attached to the [run](%s) as `spec-pipeline-transcript-pr%s-run%s`.\n\nIf the message above is a wait or standby line, the agent was waiting on a subagent that had already returned — that is MAG-3810, and re-running reproduces it rather than fixing it.' \
+            "$START" "$END" "$END" "${tail_msg:-_(no transcript available to quote)_}" "$RUN_URL" "$PR" "${GITHUB_RUN_ID}")"
+          gh pr comment "$PR" --repo "$REPO" --body "$body" || true
           exit 1
 
       - name: Report failure to PR
