@@ -99,7 +99,7 @@
                                 "compute_units": 10,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
+                                    "deterministic": false,
                                     "stateful": 0
                                 }
                             },
@@ -216,8 +216,8 @@
                                 "compute_units": 10,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
+                                    "deterministic": false,
+                                    "stateful": 1
                                 }
                             },
                             {
@@ -231,8 +231,8 @@
                                 "compute_units": 10,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
+                                    "deterministic": false,
+                                    "stateful": 1
                                 }
                             },
                             {
