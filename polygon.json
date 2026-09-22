@@ -8,9 +8,9 @@
                 "imports": [
                     "ETH1"
                 ],
-                "block_distance_for_finalized_data": 10,
+                "block_distance_for_finalized_data": 429,
                 "blocks_in_finalization_proof": 3,
-                "average_block_time": 2000,
+                "average_block_time": 1750,
                 "allowed_block_lag_for_qos_sync": 5,
                 "api_collections": [
                     {
@@ -287,9 +287,9 @@
                 "imports": [
                     "POLYGON"
                 ],
-                "block_distance_for_finalized_data": 10,
+                "block_distance_for_finalized_data": 450,
                 "blocks_in_finalization_proof": 3,
-                "average_block_time": 2000,
+                "average_block_time": 1750,
                 "allowed_block_lag_for_qos_sync": 5,
                 "api_collections": [
                     {
