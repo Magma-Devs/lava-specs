@@ -40,6 +40,43 @@ jobs:
           done
           exit $rc
 
+  node-admin-rpcs:
+    name: no new node-admin RPCs at baseline
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Scoped to the specs this PR actually changes, the same way disabled-count
+      # resolves them. A catalogue-wide assertion would make every spec PR
+      # responsible for pre-existing exposure in files it never touched; the
+      # baseline carries that debt instead, and its own self-test in
+      # test_check_node_admin_rpcs.sh keeps the catalogue honest.
+      - name: Resolve the changed root specs
+        id: specs
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          git diff --name-only --diff-filter=d "$BASE" "$HEAD" \
+            | grep -E '^[^/]+\.json$' > /tmp/changed_specs.txt || true
+          n=$(wc -l < /tmp/changed_specs.txt | tr -d ' ')
+          echo "count=$n" >> "$GITHUB_OUTPUT"
+          echo "changed root specs ($n):"; cat /tmp/changed_specs.txt
+
+      - name: Check each changed spec for node-operator controls
+        if: steps.specs.outputs.count != '0'
+        run: |
+          G=.claude/skills/create-spec/scripts/check_node_admin_rpcs.sh
+          rc=0
+          while IFS= read -r s; do
+            echo "::group::$s"
+            bash "$G" "$s" || { echo "::error file=$s::serves a node-operator control from a base collection"; rc=1; }
+            echo "::endgroup::"
+          done < /tmp/changed_specs.txt
+          exit $rc
+
   disabled-count:
     name: disabled set matches the body
     runs-on: ubuntu-latest
