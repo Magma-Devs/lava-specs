@@ -52,7 +52,12 @@ def main() -> int:
 
     result = last.get("result")
     if isinstance(result, str) and result.strip():
-        quoted = result.strip()[:MAX_QUOTE]
+        full = result.strip()
+        quoted = full[:MAX_QUOTE]
+        # Say so when the quote is cut, or a reader takes a truncated closing
+        # message for the whole one and reasons from half a sentence.
+        if len(full) > MAX_QUOTE:
+            quoted += " […truncated, see the transcript artifact]"
         # Every line needs the "> " marker or Markdown ends the blockquote at
         # the first newline and the rest reads as body text.
         body = "\n".join("> " + ln for ln in quoted.splitlines())
@@ -71,15 +76,16 @@ def main() -> int:
     # `completed == spawned` with `failed: 0`, which is the tell for MAG-3810.
     stats = last.get("subagent_stats")
     if isinstance(stats, dict):
-        spawned = stats.get("spawned")
-        completed = stats.get("completed")
-        failed = stats.get("failed")
-        if spawned is not None:
-            out.append(
-                "Subagents: `spawned {} · completed {} · failed {}`".format(
-                    spawned, completed, failed
-                )
-            )
+        # Only the fields that are actually present — printing `completed None`
+        # reads as a real value and invites the wrong conclusion about a run
+        # where the count simply was not recorded.
+        parts = [
+            "{} {}".format(k, stats[k])
+            for k in ("spawned", "completed", "failed")
+            if stats.get(k) is not None
+        ]
+        if parts:
+            out.append("Subagents: `" + " · ".join(parts) + "`")
 
     if out:
         print("\n\n".join(out))
