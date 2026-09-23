@@ -9,7 +9,7 @@
                     "BTC"
                 ],
                 "block_distance_for_finalized_data": 15,
-                "blocks_in_finalization_proof": 1,
+                "blocks_in_finalization_proof": 3,
                 "average_block_time": 600000,
                 "allowed_block_lag_for_qos_sync": 1,
                 "api_collections": [
@@ -33,7 +33,7 @@
                                 "compute_units": 10,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
+                                    "deterministic": false,
                                     "stateful": 0
                                 }
                             },
@@ -48,7 +48,7 @@
                                 "compute_units": 10,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
+                                    "deterministic": false,
                                     "stateful": 0
                                 }
                             },
@@ -63,7 +63,7 @@
                                 "compute_units": 10,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
+                                    "deterministic": false,
                                     "stateful": 0
                                 }
                             },
@@ -186,7 +186,7 @@
                                 "compute_units": 10,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
+                                    "deterministic": false,
                                     "stateful": 0
                                 }
                             },
@@ -201,7 +201,7 @@
                                 "compute_units": 10,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
+                                    "deterministic": false,
                                     "stateful": 0
                                 }
                             },
@@ -246,7 +246,7 @@
                                 "compute_units": 10,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
+                                    "deterministic": false,
                                     "stateful": 0
                                 }
                             },
@@ -509,9 +509,9 @@
                     "BCH"
                 ],
                 "block_distance_for_finalized_data": 15,
-                "blocks_in_finalization_proof": 1,
+                "blocks_in_finalization_proof": 3,
                 "average_block_time": 600000,
-                "allowed_block_lag_for_qos_sync": 5,
+                "allowed_block_lag_for_qos_sync": 1,
                 "api_collections": [
                     {
                         "enabled": true,
