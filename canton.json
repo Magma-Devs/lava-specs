@@ -991,6 +991,307 @@
                         "parse_directives": [],
                         "verifications": [],
                         "extensions": []
+                    },
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "rest",
+                            "internal_path": "",
+                            "type": "GET",
+                            "add_on": "scan-proxy"
+                        },
+                        "apis": [
+                            {
+                                "name": "/v0/scan-proxy/amulet-rules",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0
+                                }
+                            },
+                            {
+                                "name": "/v0/scan-proxy/ans-entries",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0
+                                }
+                            },
+                            {
+                                "name": "/v0/scan-proxy/ans-entries/by-name/{name}",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0
+                                }
+                            },
+                            {
+                                "name": "/v0/scan-proxy/ans-entries/by-party/{party}",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0
+                                }
+                            },
+                            {
+                                "name": "/v0/scan-proxy/dso",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 20,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "stateful": 0
+                                }
+                            },
+                            {
+                                "name": "/v0/scan-proxy/dso-party-id",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0
+                                }
+                            },
+                            {
+                                "name": "/v0/scan-proxy/featured-apps/{provider_party_id}",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0
+                                }
+                            },
+                            {
+                                "name": "/v0/scan-proxy/open-and-issuing-mining-rounds",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "stateful": 0
+                                }
+                            },
+                            {
+                                "name": "/v0/scan-proxy/transfer-command-counter/{party}",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "stateful": 0
+                                }
+                            },
+                            {
+                                "name": "/v0/scan-proxy/transfer-command/status",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "stateful": 0
+                                }
+                            },
+                            {
+                                "name": "/v0/scan-proxy/transfer-preapprovals/by-party/{party}",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0
+                                }
+                            },
+                            {
+                                "name": "/v0/scan-proxy/unclaimed-development-fund-coupons",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "stateful": 0
+                                }
+                            }
+                        ],
+                        "headers": [],
+                        "inheritance_apis": [],
+                        "parse_directives": [],
+                        "verifications": [
+                            {
+                                "name": "chain-id",
+                                "parse_directive": {
+                                    "function_template": "/v0/scan-proxy/dso-party-id",
+                                    "function_tag": "VERIFICATION",
+                                    "result_parsing": {
+                                        "parser_arg": [
+                                            "0",
+                                            "dso_party_id"
+                                        ],
+                                        "parser_func": "PARSE_CANONICAL"
+                                    },
+                                    "api_name": "/v0/scan-proxy/dso-party-id"
+                                },
+                                "values": [
+                                    {
+                                        "expected_value": "DSO::1220b1431ef217342db44d516bb9befde802be7d8899637d290895fa58880f19accc"
+                                    }
+                                ]
+                            }
+                        ],
+                        "extensions": []
+                    },
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "rest",
+                            "internal_path": "",
+                            "type": "POST",
+                            "add_on": "scan-proxy"
+                        },
+                        "apis": [
+                            {
+                                "name": "/v0/scan-proxy/ans-rules",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "stateful": 0
+                                }
+                            },
+                            {
+                                "name": "/v0/scan-proxy/holdings/summary",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "stateful": 0
+                                }
+                            },
+                            {
+                                "name": "/v1/scan-proxy/holdings/summary",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "stateful": 0
+                                }
+                            }
+                        ],
+                        "headers": [],
+                        "inheritance_apis": [],
+                        "parse_directives": [],
+                        "verifications": [
+                            {
+                                "name": "enabled",
+                                "parse_directive": {
+                                    "function_template": "{}",
+                                    "function_tag": "VERIFICATION",
+                                    "result_parsing": {
+                                        "parser_arg": [
+                                            "0",
+                                            "ans_rules_update",
+                                            "contract",
+                                            "template_id"
+                                        ],
+                                        "parser_func": "PARSE_CANONICAL"
+                                    },
+                                    "api_name": "/v0/scan-proxy/ans-rules"
+                                },
+                                "values": [
+                                    {
+                                        "expected_value": "*"
+                                    }
+                                ]
+                            }
+                        ],
+                        "extensions": []
                     }
                 ]
             },
