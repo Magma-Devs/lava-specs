@@ -324,6 +324,19 @@ jobs:
       # truncation has been undiagnosable from outside.
       - name: Redact secrets from transcript
         if: always()
+        env:
+          # The keyed node URLs a /rerun-* comment may reference as use=NAME.
+          # They are secrets with no recognisable shape — they are just URLs —
+          # so a pattern cannot catch them; only their literal values can.
+          # Scrubbed HERE rather than at each consumer because this step edits
+          # $execution_file in place and everything downstream reads that one
+          # file: the uploaded artifact AND the truncation comment. On a public
+          # repo the artifact is the larger exposure (anyone with the run URL can
+          # download it) and it was never scrubbed for these.
+          PAID_RPC_1: ${{ secrets.PAID_RPC_1 }}
+          PAID_RPC_2: ${{ secrets.PAID_RPC_2 }}
+          PAID_RPC_3: ${{ secrets.PAID_RPC_3 }}
+          PAID_WS_1:  ${{ secrets.PAID_WS_1 }}
         run: |
           f="${{ steps.run.outputs.execution_file }}"
           [ -f "$f" ] || { echo "no transcript to redact"; exit 0; }
@@ -331,6 +344,24 @@ jobs:
             s/sk-ant-[a-z0-9]+-[A-Za-z0-9_-]+/sk-ant-REDACTED/g;
             s/gh[posru]_[A-Za-z0-9]{20,}/ghx_REDACTED/g;
             s/eyJ[A-Za-z0-9_-]+\.eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/JWT_REDACTED/g;
+          ' "$f"
+          # Literal replacement via index(), never a regex: these values are URLs
+          # full of regex metacharacters, and a value that failed to compile as a
+          # pattern would silently scrub nothing.
+          PAID_RPC_1="$PAID_RPC_1" PAID_RPC_2="$PAID_RPC_2" \
+          PAID_RPC_3="$PAID_RPC_3" PAID_WS_1="$PAID_WS_1" \
+          perl -i -pe '
+            BEGIN {
+              @S = grep { defined $_ && length $_ >= 8 }
+                   @ENV{qw(PAID_RPC_1 PAID_RPC_2 PAID_RPC_3 PAID_WS_1)};
+            }
+            for my $s (@S) {
+              my $i = 0;
+              while (($i = index($_, $s, $i)) >= 0) {
+                substr($_, $i, length($s)) = "PAID_NODE_URL_REDACTED";
+                $i += length("PAID_NODE_URL_REDACTED");
+              }
+            }
           ' "$f"
           echo "redaction pass complete"
 
@@ -536,6 +567,12 @@ jobs:
           END: ${{ steps.cmd.outputs.END_PHASE }}
           BEFORE: ${{ steps.baseline.outputs.count }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          # For the belt-and-braces scrub below. Actions masking covers logs, not
+          # a body posted through the API with `gh pr comment`.
+          PAID_RPC_1: ${{ secrets.PAID_RPC_1 }}
+          PAID_RPC_2: ${{ secrets.PAID_RPC_2 }}
+          PAID_RPC_3: ${{ secrets.PAID_RPC_3 }}
+          PAID_WS_1:  ${{ secrets.PAID_WS_1 }}
         run: |
           set -euo pipefail
           after=$(gh pr view "$PR" --repo "$REPO" --json comments \
@@ -547,7 +584,52 @@ jobs:
             exit 0
           fi
           echo "::error::Run span ${START}->${END} ended before Phase ${END}: no new phase report was posted (count still ${before}). The action exited cleanly but the pipeline did not finish."
-          gh pr comment "$PR" --repo "$REPO" --body "$(printf '⚠️ **Pipeline run truncated** — the span was Phase %s → %s, but no Phase %s report was posted. The workflow step exited cleanly, so this is *not* a crash; the agent stopped early.\n\nThe agent transcript is attached to the [run](%s) as `spec-pipeline-transcript-pr%s-run%s` — that is the record needed to diagnose it.' "$START" "$END" "$END" "$RUN_URL" "$PR" "${GITHUB_RUN_ID}")" || true
+
+          # Pull the agent's LAST message out of the transcript and put it in the
+          # comment. "The agent stopped early" is true of every truncation and
+          # diagnoses none of them; the final message usually names the reason
+          # outright. On PR #152 it read "Standing by for Phase 8 to complete." —
+          # which is the whole diagnosis (the orchestrator was waiting on a
+          # subagent that had already returned, MAG-3810) and it cost two runs and
+          # an artifact download to find. Surface it in the thread instead.
+          tail_msg=""
+          tf="${{ steps.run.outputs.execution_file }}"
+          X=".github/scripts/transcript_tail.py"
+          if [ ! -f "$tf" ]; then
+            # Distinguish this from "extraction failed": they call for different
+            # next steps, and a single vague fallback made a wrong assumption
+            # about the script's availability invisible.
+            tail_msg="_(no transcript was produced for this run)_"
+          else
+            # `Checkout PR branch` checks out the SPEC branch, so this script is
+            # absent from every spec branch cut before it landed — including the
+            # PR this was written for. A /rerun-* comment runs the workflow from
+            # the default branch, so the step exists while the file does not.
+            # Fall back to reading it out of the default branch (the checkout
+            # uses fetch-depth: 0, so origin/<default> is present).
+            if [ -f "$X" ]; then
+              tail_msg="$(python3 "$X" "$tf" 2>/dev/null || true)"
+            else
+              tail_msg="$(git show "origin/${{ github.event.repository.default_branch }}:$X" 2>/dev/null \
+                          | python3 - "$tf" 2>/dev/null || true)"
+            fi
+            [ -n "$tail_msg" ] || tail_msg="_(transcript present, but its closing message could not be extracted)_"
+          fi
+
+          # Belt and braces. The transcript was scrubbed in place by "Redact
+          # secrets from transcript", which is where these are actually handled;
+          # this repeats it so a future edit that reorders or skips that step
+          # cannot turn this into a leak. `if` rather than `[ -n "$s" ] && ...`
+          # on purpose: under `set -e` a trailing false test as the loop's last
+          # command kills the step before the comment is ever posted, and an
+          # unset PAID_WS_1 is entirely normal.
+          for s in "$PAID_RPC_1" "$PAID_RPC_2" "$PAID_RPC_3" "$PAID_WS_1"; do
+            if [ -n "$s" ]; then tail_msg="${tail_msg//"$s"/PAID_NODE_URL_REDACTED}"; fi
+          done
+
+          body="$(printf '⚠️ **Pipeline run truncated** — the span was Phase %s → %s, but no Phase %s report was posted. The workflow step exited cleanly, so this is *not* a crash; the agent stopped early.\n\n%s\n\nThe agent transcript is attached to the [run](%s) as `spec-pipeline-transcript-pr%s-run%s`.\n\nIf the message above is a wait or standby line, the agent was waiting on a subagent that had already returned (MAG-3810). **Rebase this branch onto `main` before retrying** — the retry command below reproduces the hang on a branch that predates the fix.' \
+            "$START" "$END" "$END" "$tail_msg" "$RUN_URL" "$PR" "${GITHUB_RUN_ID}")"
+          gh pr comment "$PR" --repo "$REPO" --body "$body" || true
           exit 1
 
       - name: Report failure to PR
