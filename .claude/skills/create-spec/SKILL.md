@@ -33,7 +33,7 @@ To run the whole skill on one tier, ignore the per-role values and set every dis
 Your (the orchestrator's) context is the single most expensive resource in this skill: it persists across all 12 phases and is re-sent every turn, so anything you pull into it is paid for dozens of times over. A subagent's context, by contrast, dies when it returns. So **keep large/transient artifacts OUT of your context — push the work into subagents and hold only pointers + short verdicts.** Rules:
 
 - **Return contract.** Every subagent you dispatch returns at most a short verdict block + a file path — never pasted file contents or long logs. When you need detail, read the file from disk on demand with a *targeted* read (`jq`, `sed -n 'A,Bp'`, `grep`), never a whole-file slurp. Tell each subagent this explicitly if its prompt doesn't already.
-- **A returned subagent is finished. Never wait for one.** Every Agent call in this skill is **foreground**: when control comes back to you, that subagent has already exited and will never write another byte. So if a file it was supposed to produce is not on disk at that moment, **it is not coming** — and waiting for it is an infinite wait dressed up as patience. Do NOT arm a `Monitor`, poll with `test -f`, `sleep`, run filler `Bash` calls (`echo waiting`), or emit a "standing by" line for **any** artifact of a subagent that has returned. A missing artifact is a **failure to report**, not a race to wait out. This is not hypothetical: on PR #152 the Phase 8 tester returned normally (`subagent_stats: spawned 2, completed 2, failed 0`), never wrote its report, and the orchestrator armed two Monitors on the missing file, cycled `echo waiting` / `echo idle` / `echo standby`, and ended its turn with *"Standing by for Phase 8 to complete."* The run exited `subtype: success` with no Phase 11 report — a failure that looks exactly like success from every angle except the truncation guard (MAG-3810).
+- **A returned subagent is finished. Never wait for one.** Every Agent call in this skill is **foreground**: when control comes back to you, that subagent has already exited and will never write another byte. So if a file it was supposed to produce is not on disk at that moment, **it is not coming** — waiting for it is an infinite wait dressed up as patience. Do NOT arm a `Monitor`, poll with `test -f`, `sleep`, run filler `Bash` calls (`echo waiting`), or emit a "standing by" line for **any** artifact of a subagent that has returned. A missing artifact is a **failure to report**, not a race to wait out. (This has already cost two runs — see the Phase 8 incident, MAG-3810.)
 - **The spec body stays on disk.** After Phase 7 writes `<chain>.json`, hold its **path**, not its body. Do NOT `cat`/`Read` the whole file or print line-numbered dumps of it into your context. Inspect specific fields with `jq`; route any step that needs to read/edit the full spec (validation, probe, fix) through a subagent that reads from disk and returns a short result.
 - **Never read smart-router source.** Debugging a boot/probe failure by reading the router's routing/parser/validation code is a permanent context leak. That troubleshooting belongs entirely inside the Phase 8 subagent (which reads that source in its disposable context and returns a one-line diagnosis). If a boot fails and you need more, re-dispatch a subagent — do not read router source yourself.
 - **Subagents read their own reference guides.** Where a subagent needs a `references/*.md` guide, pass it the guide **path** and let it read it, rather than full-reading the guide into your context to brief it. In particular the `spec-builder` subagent reads all the synthesis guides (`phase2`, `phase3.1–3.4`, `appendix`, `pitfalls`) itself — you no longer read them. Read into your own context only what your own routing decisions genuinely need.
@@ -548,24 +548,37 @@ test -s "docs/<chain>/METHOD_PROBE_REPORT.md" && echo REPORT_OK || echo REPORT_M
 
 Run it **once**, immediately after the Agent call returns. Not in a loop, not under `until`, not inside a `Monitor`. One check, then branch.
 
-On `REPORT_MISSING`, emit a single explicit failure line and STOP:
+On `REPORT_MISSING`, in this order:
+
+**(a) Decide whether to re-dispatch — once, and only with a cause.** If the return summary named something diagnosable (a rate limit, a specific upstream, a teardown error), re-dispatch the tester **one** time with that symptom stated in the prompt, then run the `test -s` check again. If the return was uninformative, skip straight to (b): two runs of PR #152 produced the identical outcome, so a bare retry of an identical dispatch buys nothing.
+
+**(b) If the report is still missing, report the failure and STOP.** Phase 9 cannot run — the reviewers read that report.
 
 ```
 PHASE 8 FAILED — the smart-router-tester subagent returned without writing
 docs/<chain>/METHOD_PROBE_REPORT.md. Its return summary was: <paste the summary>.
-Phase 9 cannot run: the reviewers read that report. Not retrying in-process —
-re-dispatch via /rerun-from 8.
+<one line: re-dispatched once and it recurred | return carried no diagnosable cause>
+Phase 9 cannot run: the reviewers read that report.
 ```
 
-> ⛔ **Do not "wait for Phase 8 to finish."** Phase 8 finished — that is what the
-> return means. Arming a `Monitor` on the report path, polling with `test -f` in
-> an `until` loop, running filler `Bash` calls, or ending your turn with a
-> standby message all produce the same outcome: the run exits `subtype: success`
-> with no Phase 11 report, and the only thing that notices is the truncation
-> guard. A missing report is something you **report**, never something you wait
-> out (MAG-3810).
+**In CI, post it — do not just print it.** `references/phase-entrypoints.md` requires a comment naming the failure and the exact retry command:
 
-Re-dispatching the subagent once, with the missing-report symptom stated in the prompt, is acceptable **if** the first return carried a diagnosable cause. Silently retrying the identical dispatch is not — two runs of PR #152 produced the identical outcome, so a bare retry buys nothing.
+```bash
+gh pr comment "$PR_NUMBER" --body "**Phase 8 — FAILED** … Retry with \`/rerun-from 8\`."
+```
+
+**In an interactive session** there is no PR and `/rerun-*` means nothing: present the failure to the user and stop. Do not invent a retry mechanism.
+
+> ⛔ **Do not "wait for Phase 8 to finish."** Phase 8 finished — that is what the
+> return means. This is the failure that cost two runs of PR #152: the tester
+> returned normally (`subagent_stats: spawned 2, completed 2, failed 0`), never
+> wrote its report, and the orchestrator armed two Monitors on the missing file,
+> cycled `echo waiting` / `echo idle` / `echo standby`, and ended its turn with
+> *"Standing by for Phase 8 to complete."* The run exited `subtype: success`
+> with no Phase 11 report — a failure indistinguishable from success except to
+> the truncation guard. Arming a `Monitor`, polling under `until`, running
+> filler `Bash`, or closing with a standby message all reach that same end
+> (MAG-3810).
 
 ## Phase 9 — Parallel reviewers (3 fresh subagents, immediate-rename for collision)
 
