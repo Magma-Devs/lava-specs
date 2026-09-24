@@ -1,0 +1,5 @@
+# Test baseline. Covers only two of node_admin_bad.json's four findings, so the
+# guard must still fail on the other two — a baseline that swallowed everything
+# would pass silently and prove nothing.
+node_admin_bad.json BADCHAIN jsonrpc finalizeblock
+node_admin_bad.json BADCHAIN jsonrpc parkblock

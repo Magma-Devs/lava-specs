@@ -1,0 +1,2 @@
+# Same stale row, tagged TEMPORARY -> reported, must NOT fail.
+node_admin_good.json GOODCHAIN jsonrpc parkblock TEMPORARY

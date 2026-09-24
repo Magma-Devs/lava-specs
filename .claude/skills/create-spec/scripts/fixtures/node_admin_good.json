@@ -1,0 +1,63 @@
+{
+  "proposal": {
+    "specs": [
+      {
+        "index": "GOODCHAIN",
+        "api_collections": [
+          {
+            "collection_data": {"api_interface": "jsonrpc", "add_on": ""},
+            "apis": [
+              {
+                "name": "getblockcount",
+                "enabled": true,
+                "compute_units": 10,
+                "block_parsing": {"parser_func": "EMPTY", "parser_arg": [""]},
+                "category": {"deterministic": true, "stateful": 0}
+              },
+              {
+                "name": "sendrawtransaction",
+                "enabled": true,
+                "compute_units": 10,
+                "block_parsing": {"parser_func": "DEFAULT", "parser_arg": ["latest"]},
+                "category": {"deterministic": false, "stateful": 1}
+              },
+              {
+                "name": "submitblock",
+                "enabled": true,
+                "compute_units": 10,
+                "block_parsing": {"parser_func": "DEFAULT", "parser_arg": ["latest"]},
+                "category": {"deterministic": false, "stateful": 1}
+              },
+              {
+                "name": "parkblock",
+                "enabled": false,
+                "compute_units": 10,
+                "block_parsing": {"parser_func": "DEFAULT", "parser_arg": ["latest"]},
+                "category": {"deterministic": false, "stateful": 1}
+              },
+              {
+                "name": "finalizeblock",
+                "enabled": false,
+                "compute_units": 10,
+                "block_parsing": {"parser_func": "DEFAULT", "parser_arg": ["latest"]},
+                "category": {"deterministic": false, "stateful": 1}
+              }
+            ]
+          },
+          {
+            "collection_data": {"api_interface": "jsonrpc", "add_on": "debug"},
+            "apis": [
+              {
+                "name": "debug_setHead",
+                "enabled": true,
+                "compute_units": 10,
+                "block_parsing": {"parser_func": "DEFAULT", "parser_arg": ["0"]},
+                "category": {"deterministic": false, "stateful": 1}
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

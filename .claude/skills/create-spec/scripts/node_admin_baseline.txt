@@ -1,0 +1,89 @@
+# Node-admin RPCs already served from a base collection on `main`.
+#
+# A row here is a DEBT RECORD, not an exemption: it says "known, ticketed, not a
+# regression introduced by this PR". Fixing the spec is what removes the row.
+# Adding a row for a NEW exposure defeats the guard — resolve it instead
+# (disable, or gate behind an add_on). See check_node_admin_rpcs.sh.
+#
+# Format: <spec-file> <INDEX> <interface> <method> [TEMPORARY]
+#
+# A row whose method is no longer exposed is STALE and FAILS the guard — delete
+# it. That is deliberate: a stale row would silently re-permit the method if the
+# fix were ever reverted, so the ledger cleans itself. The `TEMPORARY` token is
+# the one exception, for a fix already in flight on another branch: a stale
+# TEMPORARY row is reported loudly but does not fail, so the merge that makes it
+# stale does not turn someone else's CI red.
+#
+# Established by sweeping the catalogue at the time the guard was written
+# (MAG-3644 item 4). Everything else the sweep found — `debug_setHead` on
+# codex / etc / flare / ink / race / xdc — sits behind the `debug` add-on and is
+# therefore out of scope by design, not baselined.
+
+# ---------------------------------------------------------------------------
+# etc.json — ETC's base jsonrpc collection carries the whole geth operator
+# surface: peering, lifecycle, mining, and the entire `personal_` key namespace
+# (unlockAccount, importRawKey, newAccount, sendTransaction, signTransaction).
+# That is key material and signing on the PROVIDER'S node, offered as ordinary
+# priced relays with no opt-in boundary — a worse class than the stalled tip
+# MAG-3644 was opened for. Tracked separately: MAG-3808.
+#
+# Note for whoever picks that up: geth deprecated `personal_` and most gateway
+# upstreams answer -32601, so probes will look clean. Per the free-tier rule
+# that is not evidence of safety — the evidence is what the methods do on a node
+# that implements them.
+etc.json ETC jsonrpc admin_addPeer
+etc.json ETC jsonrpc admin_addTrustedPeer
+etc.json ETC jsonrpc admin_removePeer
+etc.json ETC jsonrpc admin_removeTrustedPeer
+etc.json ETC jsonrpc admin_startHTTP
+etc.json ETC jsonrpc admin_startRPC
+etc.json ETC jsonrpc admin_startWS
+etc.json ETC jsonrpc admin_stopHTTP
+etc.json ETC jsonrpc admin_stopRPC
+etc.json ETC jsonrpc admin_stopWS
+etc.json ETC jsonrpc miner_setEtherbase
+etc.json ETC jsonrpc miner_setExtra
+etc.json ETC jsonrpc miner_setGasPrice
+etc.json ETC jsonrpc miner_setRecommitInterval
+etc.json ETC jsonrpc miner_start
+etc.json ETC jsonrpc miner_stop
+etc.json ETC jsonrpc personal_deriveAccount
+etc.json ETC jsonrpc personal_ecRecover
+etc.json ETC jsonrpc personal_importRawKey
+etc.json ETC jsonrpc personal_initializeWallet
+etc.json ETC jsonrpc personal_listAccounts
+etc.json ETC jsonrpc personal_listWallets
+etc.json ETC jsonrpc personal_lockAccount
+etc.json ETC jsonrpc personal_newAccount
+etc.json ETC jsonrpc personal_openWallet
+etc.json ETC jsonrpc personal_sendTransaction
+etc.json ETC jsonrpc personal_sign
+etc.json ETC jsonrpc personal_signTransaction
+etc.json ETC jsonrpc personal_unlockAccount
+etc.json ETC jsonrpc personal_unpair
+
+# ---------------------------------------------------------------------------
+# zcash.json — `generate` and `setgenerate` are regtest block fabrication and
+# the mining on/off switch. Harmless on regtest, which is not what a mainnet
+# spec serves. Tracked with the ETC cleanup (MAG-3808).
+zcash.json ZCASH jsonrpc generate
+zcash.json ZCASH jsonrpc setgenerate
+
+# ---------------------------------------------------------------------------
+# bch.json — the exposure MAG-3644 was opened for. Reproduced on BCHN 29.1.0:
+# one `finalizeblock` call strands a provider on its finalized branch
+# permanently, rejecting the honest longer chain with `bad-header-finalization`
+# and banning the peers offering it.
+#
+# The fix is PR #152, which sets all three `enabled: false`. This guard branches
+# from `main`, where they are still enabled, so without these rows the guard's
+# own CI fails on state it is not responsible for.
+#
+# Tagged TEMPORARY, which is machine-readable, not a comment: once #152 merges
+# the guard reports them under "STALE, TEMPORARY (the in-flight fix landed —
+# delete these rows now)" and does NOT fail. An untagged row that goes stale
+# DOES fail, because a stale row would silently re-permit the method if the fix
+# were reverted. Delete these three on #152's merge.
+bch.json BCH jsonrpc finalizeblock TEMPORARY
+bch.json BCH jsonrpc parkblock TEMPORARY
+bch.json BCH jsonrpc unparkblock TEMPORARY

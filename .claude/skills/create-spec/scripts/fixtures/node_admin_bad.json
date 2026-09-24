@@ -1,0 +1,51 @@
+{
+  "proposal": {
+    "specs": [
+      {
+        "index": "BADCHAIN",
+        "api_collections": [
+          {
+            "collection_data": {"api_interface": "jsonrpc", "add_on": ""},
+            "apis": [
+              {
+                "name": "getblockcount",
+                "enabled": true,
+                "compute_units": 10,
+                "block_parsing": {"parser_func": "EMPTY", "parser_arg": [""]},
+                "category": {"deterministic": true, "stateful": 0}
+              },
+              {
+                "name": "finalizeblock",
+                "enabled": true,
+                "compute_units": 10,
+                "block_parsing": {"parser_func": "DEFAULT", "parser_arg": ["latest"]},
+                "category": {"deterministic": false, "stateful": 1}
+              },
+              {
+                "name": "parkblock",
+                "enabled": true,
+                "compute_units": 10,
+                "block_parsing": {"parser_func": "DEFAULT", "parser_arg": ["latest"]},
+                "category": {"deterministic": false, "stateful": 1}
+              },
+              {
+                "name": "setban",
+                "enabled": true,
+                "compute_units": 10,
+                "block_parsing": {"parser_func": "EMPTY", "parser_arg": [""]},
+                "category": {"deterministic": false, "stateful": 1}
+              },
+              {
+                "name": "personal_unlockAccount",
+                "enabled": true,
+                "compute_units": 10,
+                "block_parsing": {"parser_func": "EMPTY", "parser_arg": [""]},
+                "category": {"deterministic": false, "stateful": 1}
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
