@@ -2211,8 +2211,7 @@
                 "compute_units": 1000,
                 "category": {
                   "deterministic": false,
-                  "stateful": 0,
-                  "hanging_api": true
+                  "stateful": 0
                 },
                 "block_parsing": {
                   "parser_arg": [
