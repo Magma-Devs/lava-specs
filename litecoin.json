@@ -9,7 +9,7 @@
                     "BTC"
                 ],
                 "block_distance_for_finalized_data": 13,
-                "blocks_in_finalization_proof": 1,
+                "blocks_in_finalization_proof": 3,
                 "average_block_time": 150000,
                 "allowed_block_lag_for_qos_sync": 1,
                 "api_collections": [
@@ -85,7 +85,7 @@
                     "LTC"
                 ],
                 "block_distance_for_finalized_data": 13,
-                "blocks_in_finalization_proof": 1,
+                "blocks_in_finalization_proof": 3,
                 "average_block_time": 2000,
                 "allowed_block_lag_for_qos_sync": 5,
                 "api_collections": [
