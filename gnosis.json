@@ -1294,36 +1294,6 @@
                 }
               },
               {
-                "name": "debug_standardTraceBadBlockToFile",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 200,
-                "enabled": true,
-                "category": {
-                  "deterministic": false,
-                  "stateful": 0
-                }
-              },
-              {
-                "name": "debug_standardTraceBlockToFile",
-                "block_parsing": {
-                  "parser_arg": [
-                    "latest"
-                  ],
-                  "parser_func": "DEFAULT"
-                },
-                "compute_units": 200,
-                "enabled": true,
-                "category": {
-                  "deterministic": false,
-                  "stateful": 0
-                }
-              },
-              {
                 "name": "debug_storageRangeAt",
                 "block_parsing": {
                   "parser_arg": [
