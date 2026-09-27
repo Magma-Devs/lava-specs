@@ -68,22 +68,3 @@ etc.json ETC jsonrpc personal_unpair
 # spec serves. Tracked with the ETC cleanup (MAG-3808).
 zcash.json ZCASH jsonrpc generate
 zcash.json ZCASH jsonrpc setgenerate
-
-# ---------------------------------------------------------------------------
-# bch.json — the exposure MAG-3644 was opened for. Reproduced on BCHN 29.1.0:
-# one `finalizeblock` call strands a provider on its finalized branch
-# permanently, rejecting the honest longer chain with `bad-header-finalization`
-# and banning the peers offering it.
-#
-# The fix is PR #152, which sets all three `enabled: false`. This guard branches
-# from `main`, where they are still enabled, so without these rows the guard's
-# own CI fails on state it is not responsible for.
-#
-# Tagged TEMPORARY, which is machine-readable, not a comment: once #152 merges
-# the guard reports them under "STALE, TEMPORARY (the in-flight fix landed —
-# delete these rows now)" and does NOT fail. An untagged row that goes stale
-# DOES fail, because a stale row would silently re-permit the method if the fix
-# were reverted. Delete these three on #152's merge.
-bch.json BCH jsonrpc finalizeblock TEMPORARY
-bch.json BCH jsonrpc parkblock TEMPORARY
-bch.json BCH jsonrpc unparkblock TEMPORARY
