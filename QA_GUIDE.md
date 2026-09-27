@@ -59,9 +59,10 @@ The PR **body** is the *input* (human brief, endpoint routing, known gotchas) �
 
 | # | Test | Phase | What it proves | Verdict | If it fails |
 |---|---|---|---|---|---|
-| **CI guards — run outside the 12 phases, both fail closed** |
+| **CI guards — run outside the 12 phases, all fail closed** |
 | 1 | Removed-field guard (`check_unused_fields.sh`) | CI + 7 | None of the 15 fields deleted from the smart-router model are present (governance fields, `title`/`description`, `deposit`, `extra_compute_units`, `category.local`, `category.subscription`) | `RESULT: PASS` / one `REMOVED_FIELD \| path` line per offender | ❗ fixer deletes each field, both checks re-run |
 | 2 | Preservation guard (`check_preservation.sh`) | CI (add-testnet PRs) | A testnet-only PR changed **nothing** in any pre-existing spec — `jq -S` canonical compare, catches value drift, field add/remove, array reorder | pass / fail | 🛑 ⚠️ **self-skips with `::notice::` if not on the branch — a skip reads as a pass** |
+| 2b | Collection-addition guard (`check_collection_addition.sh`) | CI (add-collection PRs) | The Phase-10 fix pass changed nothing but the collections the PR added — no pre-existing collection (e.g. the jsonrpc beside a new rest), no spec-level field | pass / fail | 🛑 ⚠️ **self-skips with `::notice::` if not on the branch — a skip reads as a pass** |
 | **Phase 6 — inline pre-flight (orchestrator, before the gates)** |
 | 3 | Index sanity | 6 | `index` uppercase, unique, matches the chain | manual | ❗ |
 | 4 | Required entry fields | 6 | `name`, `enabled` present per spec entry | manual | ❗ |

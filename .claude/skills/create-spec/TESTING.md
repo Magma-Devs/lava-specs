@@ -38,16 +38,17 @@ Phases 1–5 (pre-flight, input gathering, research fan-out, synthesis, inherita
 
 ### CI-level guards (outside the 12 phases)
 
-Two guards run as `spec_pipeline.yml` steps rather than skill phases. Both **fail closed** — if `gh pr view` cannot list the PR's files, the step errors rather than reporting a clean pass.
+Three guards run as `spec_pipeline.yml` steps rather than skill phases. All three **fail closed** — if `gh pr view` cannot list the PR's files, the step errors rather than reporting a clean pass.
 
 | Guard | Script | What it catches |
 |---|---|---|
 | **Reject removed spec fields** | `check_unused_fields.sh` | Any of the 15 fields deleted from the smart-router model (smart-router#218): the nine governance fields, `proposal.title`/`description`, top-level `deposit`, `extra_compute_units`, `category.local`, `category.subscription`. Strict by default (exit 1, printing each offender's exact JSON path); `--warn` reports but exits 0, for deliberately exercising a legacy fixture. Fails closed on unparseable JSON, so a corrupt spec cannot read as clean |
 | **Preservation** (add-testnet PRs) | `check_preservation.sh` | Semantic drift in any *pre-existing* spec entry. Compares `jq -S` canonical form, so it is immune to whitespace and key order but catches every value change, field add/remove, and array reorder |
+| **Collection addition** (add-collection PRs) | `check_collection_addition.sh` | Any change outside the collections the PR added: a pre-existing collection (e.g. the jsonrpc beside a new rest), a spec-level field, or a collection appearing under an index the PR did not target. Edits *inside* the added collections pass. "As opened" is the PR's first commit and the base is its merge-base with main, so drift an earlier fix pass already committed still fails |
 
-The second exists because the first is not enough: `check_unused_fields.sh` only sees removed field *names*. PR #80 regenerated a mainnet whose `average_block_time` drifted 200 → 35 and whose parser arg changed `block_height` → `block_hash` — both passed the removed-field guard cleanly.
+The second exists because the first is not enough: `check_unused_fields.sh` only sees removed field *names*. PR #80 regenerated a mainnet whose `average_block_time` drifted 200 → 35 and whose parser arg changed `block_height` → `block_hash` — both passed the removed-field guard cleanly. The third is the second's counterpart for add-collection PRs, which add no spec index and so read as N/A to the preservation guard.
 
-⚠️ **The preservation guard self-skips.** If `check_preservation.sh` is not on the PR branch, the step logs `::notice:: … skipping` and exits 0. In a CI log a skip is easy to mistake for a pass.
+⚠️ **The preservation and collection-addition guards self-skip.** If the guard's script is not on the PR branch, the step logs `::notice:: … skipping` and exits 0. In a CI log a skip is easy to mistake for a pass.
 
 ---
 
