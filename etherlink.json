@@ -936,7 +936,7 @@
         ],
         "block_distance_for_finalized_data": 8,
         "blocks_in_finalization_proof": 1,
-        "average_block_time": 4000,
+        "average_block_time": 4600,
         "allowed_block_lag_for_qos_sync": 3,
         "api_collections": [
           {
