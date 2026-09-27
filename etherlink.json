@@ -10,8 +10,8 @@
         ],
         "block_distance_for_finalized_data": 25,
         "blocks_in_finalization_proof": 1,
-        "average_block_time": 1200,
-        "allowed_block_lag_for_qos_sync": 9,
+        "average_block_time": 1350,
+        "allowed_block_lag_for_qos_sync": 8,
         "api_collections": [
           {
             "enabled": true,
@@ -526,14 +526,14 @@
                 "name": "tez_getSequencerKeyChangeCounter",
                 "block_parsing": {
                   "parser_arg": [
-                    "latest"
+                    "0"
                   ],
-                  "parser_func": "DEFAULT"
+                  "parser_func": "PARSE_BY_ARG"
                 },
                 "compute_units": 10,
                 "enabled": true,
                 "category": {
-                  "deterministic": false,
+                  "deterministic": true,
                   "stateful": 0
                 }
               },
@@ -556,14 +556,14 @@
                 "name": "tez_kernelRootHash",
                 "block_parsing": {
                   "parser_arg": [
-                    "latest"
+                    "0"
                   ],
-                  "parser_func": "DEFAULT"
+                  "parser_func": "PARSE_BY_ARG"
                 },
                 "compute_units": 10,
                 "enabled": true,
                 "category": {
-                  "deterministic": false,
+                  "deterministic": true,
                   "stateful": 0
                 }
               },
@@ -571,14 +571,14 @@
                 "name": "tez_kernelVersion",
                 "block_parsing": {
                   "parser_arg": [
-                    "latest"
+                    "0"
                   ],
-                  "parser_func": "DEFAULT"
+                  "parser_func": "PARSE_BY_ARG"
                 },
                 "compute_units": 10,
                 "enabled": true,
                 "category": {
-                  "deterministic": false,
+                  "deterministic": true,
                   "stateful": 0
                 }
               },
