@@ -246,11 +246,33 @@ jobs:
           echo "count=${n:-0}" >> "$GITHUB_OUTPUT"
           echo "baseline: ${n:-0} existing report comment(s) for Phase ${END}"
 
+      # Pin the Claude Code CLI. claude-code-action@v1 otherwise installs the
+      # newest CLI on every run, and from 2.1.281 an Agent call that leaves
+      # run_in_background unset starts in the background. The skills dispatch
+      # researchers/validators that way, so the orchestrator ends its turn with
+      # agents still pending and the job exits "success" with no spec
+      # (create_spec runs 36295082608 Etherlink, 36296043796 Conflux eSpace).
+      # 2.1.278 is the last version seen running every subagent in the
+      # foreground. Bump deliberately, after checking subagent_stats in a
+      # test run's transcript.
+      - name: Install pinned Claude Code CLI
+        if: steps.cmd.outputs.IS_COMMAND == 'true'
+        id: claude_cli
+        env:
+          CLAUDE_CODE_VERSION: "2.1.278"
+        run: |
+          set -euo pipefail
+          npm install -g "@anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}"
+          bin="$(command -v claude)"
+          "$bin" --version
+          echo "path=$bin" >> "$GITHUB_OUTPUT"
+
       - name: Run pipeline phases
         id: run
         if: steps.cmd.outputs.IS_COMMAND == 'true'
         uses: anthropics/claude-code-action@v1
         with:
+          path_to_claude_code_executable: ${{ steps.claude_cli.outputs.path }}
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ secrets.BOT_PAT }}
           show_full_output: false
