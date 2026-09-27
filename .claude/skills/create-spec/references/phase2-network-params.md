@@ -28,6 +28,29 @@
    - Fallback (only when the finality model can't be confidently classified): `max(ceil(1000 / average_block_time), 3)` — floors at 3, never falls back to 1
    - The gate (`check_network_params.sh`) accepts any of `{1, 3, fallback}`; it cannot infer the finality class, so it does not pin one value.
 
+   > ⚠️ **Do not copy this value from a UTXO neighbour — several shipped with `1`
+   > by inheritance, not by decision (MAG-3638).** `btc.json`, `bch.json`,
+   > `doge.json` and `litecoin.json` all arrived in the initial import commit
+   > carrying `blocks_in_finalization_proof: 1`, and upstream `lavanet/lava`
+   > carries the same values *including the same self-contradiction* — `BTC=1`
+   > while its own `BTCT=3`, identical block time, identical finality. A
+   > deliberate convention does not contradict itself inside one file, so this
+   > was inherited drift. All of them are now `3`.
+   >
+   > **The thing to actually check is the consensus mechanism, not the family.**
+   > "UTXO" and "PoW" are not the question — *can the chain reorg away from a
+   > recent block?* Two chains in this family answer differently:
+   >
+   > | chain | finality | value |
+   > |---|---|---|
+   > | BTC, BCH, DOGE, LTC | Nakamoto PoW — probabilistic, always reorgable | `3` |
+   > | **DASH** | PoW **+ ChainLocks**: LLMQ masternode quorums sign the first-seen block, so a confirmed block cannot be reorged | **`1` — correct, deliberately left alone** |
+   >
+   > Dash is the case that proves the rule is about the mechanism. It looks like
+   > a Bitcoin fork and fails a family-shaped sweep, but ChainLocks give it real
+   > near-instant finality, so `1` is right for it and changing it would be the
+   > actual error.
+
 4. **`allowed_block_lag_for_qos_sync`**
    - Formula: `max(ceil(10000 / average_block_time), 1)` — i.e. tolerate ~10 seconds of block-lag
    - Examples: Polygon=5 (`ceil(10000/2000)=5`), Cosmos Hub=2 (`ceil(10000/6500)=2`), Ethereum=1 (`ceil(10000/13000)=ceil(0.77)=1`)
