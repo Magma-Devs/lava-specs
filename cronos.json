@@ -8,7 +8,7 @@
                 "imports": [
                     "ETH1"
                 ],
-                "block_distance_for_finalized_data": 0,
+                "block_distance_for_finalized_data": 50,
                 "blocks_in_finalization_proof": 1,
                 "average_block_time": 500,
                 "allowed_block_lag_for_qos_sync": 20,
@@ -150,7 +150,7 @@
                 "imports": [
                     "CRONOS"
                 ],
-                "block_distance_for_finalized_data": 0,
+                "block_distance_for_finalized_data": 50,
                 "blocks_in_finalization_proof": 1,
                 "average_block_time": 500,
                 "allowed_block_lag_for_qos_sync": 20,
