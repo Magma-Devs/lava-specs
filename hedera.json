@@ -358,8 +358,7 @@
                                 "category": {
                                     "deterministic": false,
                                     "stateful": 0
-                                },
-                                "timeout_ms": 60000
+                                }
                             },
                             {
                                 "name": "/api/v1/contracts/results",
@@ -389,8 +388,7 @@
                                 "category": {
                                     "deterministic": false,
                                     "stateful": 0
-                                },
-                                "timeout_ms": 60000
+                                }
                             },
                             {
                                 "name": "/api/v1/contracts/results/{transactionIdOrHash}",
@@ -435,8 +433,7 @@
                                 "category": {
                                     "deterministic": true,
                                     "stateful": 0
-                                },
-                                "timeout_ms": 60000
+                                }
                             },
                             {
                                 "name": "/api/v1/network/exchangerate",
@@ -739,12 +736,7 @@
                                 }
                             }
                         ],
-                        "headers": [
-                            {
-                                "name": "Accept-Encoding",
-                                "kind": "pass_send"
-                            }
-                        ],
+                        "headers": [],
                         "inheritance_apis": [],
                         "parse_directives": [
                             {
@@ -811,11 +803,9 @@
                                 "name": "/api/v1/contracts/call",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "block",
-                                        "=",
                                         "latest"
                                     ],
-                                    "parser_func": "PARSE_DICTIONARY_OR_ORDERED"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 50,
                                 "enabled": true,
@@ -1210,8 +1200,7 @@
                                 "category": {
                                     "deterministic": false,
                                     "stateful": 0
-                                },
-                                "timeout_ms": 60000
+                                }
                             },
                             {
                                 "name": "/api/v1/contracts/results",
@@ -1241,8 +1230,7 @@
                                 "category": {
                                     "deterministic": false,
                                     "stateful": 0
-                                },
-                                "timeout_ms": 60000
+                                }
                             },
                             {
                                 "name": "/api/v1/contracts/results/{transactionIdOrHash}",
@@ -1287,8 +1275,7 @@
                                 "category": {
                                     "deterministic": true,
                                     "stateful": 0
-                                },
-                                "timeout_ms": 60000
+                                }
                             },
                             {
                                 "name": "/api/v1/network/exchangerate",
@@ -1591,12 +1578,7 @@
                                 }
                             }
                         ],
-                        "headers": [
-                            {
-                                "name": "Accept-Encoding",
-                                "kind": "pass_send"
-                            }
-                        ],
+                        "headers": [],
                         "inheritance_apis": [],
                         "parse_directives": [
                             {
@@ -1642,11 +1624,9 @@
                                 "name": "/api/v1/contracts/call",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "block",
-                                        "=",
                                         "latest"
                                     ],
-                                    "parser_func": "PARSE_DICTIONARY_OR_ORDERED"
+                                    "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 50,
                                 "enabled": true,
