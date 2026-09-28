@@ -773,8 +773,8 @@
                                 "compute_units": 10,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
+                                    "deterministic": false,
+                                    "stateful": 1
                                 }
                             },
                             {
@@ -1285,13 +1285,14 @@
                                         "parser_arg": [
                                             "0"
                                         ],
-                                        "parser_func": "PARSE_CANONICAL"
+                                        "parser_func": "PARSE_BY_ARG"
                                     },
                                     "api_name": "getGenesisHash"
                                 },
                                 "values": [
                                     {
-                                        "expected_value": "4uhcVJyU9pJkvQyS88uRDiswHXSCkY3zQawwpjk2NsNY"
+                                        "expected_value": "4uhcVJyU9pJkvQyS88uRDiswHXSCkY3zQawwpjk2NsNY",
+                                        "severity": "Warning"
                                     }
                                 ]
                             }
@@ -1334,13 +1335,14 @@
                                         "parser_arg": [
                                             "0"
                                         ],
-                                        "parser_func": "PARSE_CANONICAL"
+                                        "parser_func": "PARSE_BY_ARG"
                                     },
                                     "api_name": "getGenesisHash"
                                 },
                                 "values": [
                                     {
-                                        "expected_value": "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG"
+                                        "expected_value": "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG",
+                                        "severity": "Warning"
                                     }
                                 ]
                             }
