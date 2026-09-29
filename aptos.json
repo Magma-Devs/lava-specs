@@ -361,7 +361,7 @@
                                 "result_parsing": {
                                     "parser_arg": [
                                         "0",
-                                        "block_height"
+                                        "block_hash"
                                     ],
                                     "parser_func": "PARSE_CANONICAL",
                                     "encoding": "hex"

@@ -29,6 +29,8 @@ OUT=$(printf 'eth_blockNumber\neth_notARealMethod\n' | "$SCRIPT" "$SPEC" -)
 [ "$(sec "$OUT" '=== PRESENT')" -eq 1 ]        || fail "diff: PRESENT != 1"
 [ "$(sec "$OUT" '=== MISSING')" -eq 1 ]        || fail "diff: MISSING != 1"
 [ "$(sec "$OUT" '=== EXTRA IN SPEC')" -eq 1 ]  || fail "diff: EXTRA != 1"
+echo "$OUT" | awk 'index($0,"=== EXTRA IN SPEC")==1{f=1;next} /^=== /{f=0} f && NF' \
+  | grep -q $'^jsonrpc\teth_getBalance\tTESTMETHODS$' || fail "diff: EXTRA row lacks interface/source columns"
 echo "diff: OK"
 
 # Case 3: comments and blank lines in the wanted list are ignored

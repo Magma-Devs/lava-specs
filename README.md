@@ -37,7 +37,7 @@ Four skills build and maintain chain specs. Each is a slash command in Claude Co
 
 | Command | Does | Output |
 |---|---|---|
-| `/create-spec` | Onboards a new chain: research → synthesize → validate → boot/probe → review. 12-phase pipeline. | `<chain>.json` at repo root |
+| `/create-spec` | Onboards a new chain: research → synthesize → validate → boot/probe → review. 12-phase pipeline. Also **updates** a chain already in the catalog — adds the methods/addons/directives its spec is missing and corrects drifted values. | `<chain>.json` at repo root |
 | `/review-spec` | Audits an existing spec: params, API coverage, block parsing, parse directives. | review report (no edits) |
 | `/testing-chain-specs-locally` | Boots a spec PR through the local smart-router binary against real endpoints; reports PASS/FAIL per interface. | run verdict + optional PR comment |
 | `/eval-spec` | Tunes `/create-spec` itself: generates a batch, scores vs ground truth, edits the skill, loops. | tuned `create-spec/` + scores |
@@ -60,7 +60,33 @@ Four skills build and maintain chain specs. Each is a slash command in Claude Co
   #            name   mainnet   testnet  [+ free-text: docs/RPC URLs, inheritance hints]
   ```
 - Asks you for: chain name, mainnet index, testnet index (required); docs URL, RPC URLs, inheritance hint (optional — it researches these if omitted).
-- If `<chain>.json` exists it asks: use as base / adapt / scratch.
+- If a spec for that mainnet index already exists it asks which mode to run — it finds the file by the index it CONTAINS, so a legacy name (`ETH1` lives in `ethereum.json`) resolves correctly:
+
+  | Mode | Touches | Use when |
+  |---|---|---|
+  | add-testnet | appends ONE testnet entry | "add chain X's testnet Y" |
+  | **update** | **adds what is missing, corrects what drifted** | **"X is missing methods", "refresh X"** |
+  | base / adapt | regenerates everything | the spec is structurally wrong |
+  | scratch | overwrites | starting over |
+
+### Update mode
+
+Re-researches the chain blind to the current spec (an agent shown the existing
+method list confirms it instead of enumerating the chain), diffs the findings
+with `scripts/compare_spec_methods.sh`, then adds every missing method,
+collection, addon, directive and verification, and corrects values research
+proves wrong.
+
+Every intended change is written to a plan first, and
+`scripts/check_update_diff.sh` fails the run unless the file matches the plan
+exactly — an undeclared value change, the drift that PR #80 shipped, cannot
+reach a PR. **Deletion is never in scope**: a removed api, field or spec entry
+fails the guard unconditionally and cannot be declared. Methods the docs no
+longer list are reported, never removed.
+
+Run it unattended from the Actions tab — **Create Spec → mode: `update`** — and
+the workflow commits, opens the PR, and `spec_pipeline.yml` boots the router and
+reviews it automatically.
 
 **Rerun / resume:**
 - Full rerun: just `/create-spec` again (overwrite only on your confirmation).

@@ -11,6 +11,8 @@ Every check the `create-spec` pipeline performs, what it inspects, how it decide
 > **Derived from `main` at `119f1bb`.** One exception postdates that pin: the portability fixes to `compare_spec_methods.sh` and `test_run_stats.sh` recorded in Appendix B, described as they now stand. If the skill has moved on further, re-derive rather than trusting this file — its predecessor, `references/phase4-testing-and-validation.md`, went stale exactly this way.
 >
 > **Looking for the QA-facing version?** [`QA_GUIDE.md`](../../../QA_GUIDE.md) at the repo root covers where to find a given spec's test evidence, how to read the verdicts, and what to test by hand. This file is the mechanics underneath it.
+>
+> **Looking for the one-page version?** [`SPEC_TESTS.md`](../../../SPEC_TESTS.md) at the repo root lists what gets tested, in order, with the failure consequence for each — no mechanics.
 
 ---
 
@@ -117,6 +119,7 @@ Dispatched in a single message, all foreground, no isolation. "9 gates" is a cou
 | 7 | `pruning` | haiku | `check_pruning.sh` + `check_archive_value.sh` | PASS / FAIL |
 | 8 | `enabled` | haiku | watch-list diff | **always PASS** |
 | 9 | `method-schema` | haiku | `check_method_schema.sh` | PASS / FAIL |
+| 10 | `node-admin-rpcs` | haiku | `check_node_admin_rpcs.sh` | PASS / FAIL |
 
 Every validator prompt ends with "Do NOT modify the candidate spec" — gates observe, the fixer edits.
 
@@ -583,7 +586,7 @@ for t in .claude/skills/create-spec/scripts/test_*.sh; do
 done
 ```
 
-> **The suite requires bash ≥ 4.** Stock macOS `/bin/bash` is 3.2 and fails 5 of the 12 for reasons that have nothing to do with awk: `declare -A` in `compare_spec_methods.sh`, `compare_spec_directives.sh`, and `check_directive_presence.sh`, and the empty-array `"${arr[@]}"`-under-`set -u` expansion in `check_extensions.sh` and `check_method_schema.sh`. Run under Homebrew bash (or any bash ≥ 4.4) before concluding anything is broken.
+> **The suite requires bash ≥ 4.** Stock macOS `/bin/bash` is 3.2 and fails 5 of the 12 for reasons that have nothing to do with awk: `declare -A` in `compare_spec_methods.sh`, `compare_spec_directives.sh`, and `check_directive_presence.sh`, and the empty-array `"${arr[@]}"`-under-`set -u` expansion in `check_extensions.sh` and `check_method_schema.sh`. Run under Homebrew bash (or any bash ≥ 4.4) before concluding anything is broken. `check_disabled_count.sh` and `check_node_admin_rpcs.sh` are the exceptions — both are deliberately bash-3.2-clean (rows read through `while read` rather than `mapfile`; baseline membership matched with `grep -Fxq` against a temp file rather than a `declare -A` map), because they are the guards a reviewer runs by hand against a PR rather than inside a phase.
 
 ### Suite status
 
@@ -595,6 +598,7 @@ All 12 pass, verified 2026-08-04 on darwin under both BSD awk (`version 20200816
 | `test_check_verifications.sh` | `check_verifications.sh` |
 | `test_check_extensions.sh` | `check_extensions.sh` |
 | `test_check_method_schema.sh` | `check_method_schema.sh` |
+| `test_check_node_admin_rpcs.sh` | `check_node_admin_rpcs.sh` |
 | `test_check_pruning.sh` | `check_pruning.sh` |
 | `test_check_archive_value.sh` | `check_archive_value.sh` |
 | `test_check_directive_presence.sh` | `check_directive_presence.sh` |
@@ -603,6 +607,7 @@ All 12 pass, verified 2026-08-04 on darwin under both BSD awk (`version 20200816
 | `test_compare_spec_methods.sh` | `compare_spec_methods.sh` |
 | `test_compare_spec_directives.sh` | `compare_spec_directives.sh` |
 | `test_run_stats.sh` | `run_stats.sh` |
+| `test_check_disabled_count.sh` | `check_disabled_count.sh` |
 
 ### Fixed: two macOS portability defects (2026-08-04)
 

@@ -1,0 +1,3 @@
+# A row for a method node_admin_good.json does NOT serve enabled at base.
+# Untagged -> must FAIL the guard as stale.
+node_admin_good.json GOODCHAIN jsonrpc parkblock

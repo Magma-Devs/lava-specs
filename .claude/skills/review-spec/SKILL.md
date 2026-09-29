@@ -31,6 +31,10 @@ For existing spec patterns, reference:
 - `$ARGUMENTS[0]` — Path to the spec JSON file (required)
 - `$ARGUMENTS[1]` — Path to the API documentation (OpenAPI YAML/JSON, optional)
 - `$ARGUMENTS[2]` — Path to credentials file for live testing (optional)
+- `$ARGUMENTS[3]` — Path to write the gap report to (optional; defaults to
+  `docs/<CHAIN_NAME>/SPEC_REVIEW_GAPS.md`). Pass an explicit path whenever more than
+  one review runs at a time — concurrent reviewers sharing the default path overwrite
+  each other's reports (see below).
 
 ## Workflow
 
@@ -173,7 +177,16 @@ Produce a gap report in markdown with:
 - **Impact**: explain what breaks or degrades if the gap is not fixed
 - **Cleanup findings**: every removed field reported by the Phase 0 guard, with the JSON path of each occurrence
 
-Save the report to `docs/<CHAIN_NAME>/SPEC_REVIEW_GAPS.md`.
+Save the report to `$ARGUMENTS[3]` when it was given, otherwise to
+`docs/<CHAIN_NAME>/SPEC_REVIEW_GAPS.md`. Create the parent directory if needed.
+
+**Why the path is a parameter.** Several reviewers are routinely run in parallel over
+one spec (create-spec Phase 9 dispatches three). When they all write the default path
+and rename afterwards, the write — not the rename — is the race: the last writer wins
+the shared file and the first reviewer's report is gone before any `mv` runs, so a
+no-clobber `mv -n` cannot save it. It has already cost a lost report. Writing straight
+to a distinct path per reviewer removes the shared resource instead of guarding it
+(MAG-3639).
 
 After the report, summarize:
 - Total number of endpoints reviewed

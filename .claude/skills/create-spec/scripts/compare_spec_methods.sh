@@ -5,6 +5,12 @@
 #   spec-methods-diff <spec.json> <methods-file>
 #   spec-methods-diff <spec.json> -          # read methods from stdin
 #
+# All three sections carry the source index, so a caller can tell a method the
+# candidate spec declares itself from one it merely inherits. Update mode relies
+# on that: an EXTRA row sourced from a PARENT index is normal inheritance, while
+# an EXTRA row sourced from the candidate's own index is a method the chain's
+# docs no longer list — worth a look, never an automatic removal.
+#
 # Walks .imports[] transitively. This repo is flat: every spec is a *.json at
 # the repo root. Parent specs are resolved by CONTENT, not filename — every
 # *.json beside the candidate is scanned and imports are matched to whichever
@@ -119,6 +125,7 @@ awk -F'\t' -v wantedfile="$WANTED_FILE" '
       if (line != "") w[++n] = line
     close(wantedfile)
   }
+  $2 == "" { next }        # a trailing newline arrives as one empty record
   {
     key = $2
     if (key in ifaces) {
@@ -145,9 +152,9 @@ awk -F'\t' -v wantedfile="$WANTED_FILE" '
     }
 
     print ""
-    print "=== EXTRA IN SPEC (not in your list) ==="
+    print "=== EXTRA IN SPEC (interface<TAB>method<TAB>source-index) ==="
     for (m in spec_methods)
-      if (!(m in wanted_set)) print m | "sort -u"
+      if (!(m in wanted_set)) print ifaces[m] "\t" m "\t" sources[m] | "sort -u"
   }
 ' <<< "$SPEC_TRIPLES"
 
