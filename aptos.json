@@ -525,7 +525,12 @@
                                 }
                             }
                         ],
-                        "headers": [],
+                        "headers": [
+                            {
+                                "name": "content-type",
+                                "kind": "pass_send"
+                            }
+                        ],
                         "inheritance_apis": [],
                         "parse_directives": []
                     }
