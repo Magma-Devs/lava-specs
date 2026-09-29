@@ -267,6 +267,38 @@ jobs:
           "$bin" --version
           echo "path=$bin" >> "$GITHUB_OUTPUT"
 
+      # The add-collection guard's first half, BEFORE the agent: classify the PR
+      # and record the head the agent starts from (check_add_collection_pr.sh
+      # holds the rule and why). When the PR is an add-collection PR its
+      # PROMPT_RULE goes into the prompt below, so the fixer is told the rule
+      # rather than meeting it as a refused commit after a full 8 -> 11 run. The
+      # script is read from main, never from the checkout: a spec branch cut
+      # before it landed has none, and nothing the agent writes reaches the copy
+      # that runs.
+      - name: Classify the PR for the add-collection guard
+        id: addcoll
+        if: steps.cmd.outputs.IS_COMMAND == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.BOT_PAT }}
+          REPO: ${{ github.repository }}
+          PR: ${{ steps.pr.outputs.number }}
+          HEAD_REF_NAME: ${{ steps.pr.outputs.head }}
+        run: |
+          set -euo pipefail
+          git fetch --quiet origin main || { echo "::error::could not fetch origin/main — cannot classify the PR for the add-collection guard."; exit 1; }
+          G="$RUNNER_TEMP/addcoll-classify"; mkdir -p "$G"
+          for s in check_add_collection_pr.sh check_collection_addition.sh; do
+            git show "origin/main:.claude/skills/create-spec/scripts/$s" > "$G/$s" 2>/dev/null || true
+          done
+          if [ ! -s "$G/check_add_collection_pr.sh" ]; then
+            echo "::notice::check_add_collection_pr.sh is not on main — add-collection guard off."
+            echo "ENFORCE=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          # The title marks an update-mode PR, whose first commit can look like an addition.
+          PR_TITLE="$(gh pr view "$PR" --repo "$REPO" --json title --jq .title 2>/dev/null || true)"
+          BASE_REF=origin/main PR_TITLE="$PR_TITLE" bash "$G/check_add_collection_pr.sh" classify >> "$GITHUB_OUTPUT"
+
       - name: Run pipeline phases
         id: run
         if: steps.cmd.outputs.IS_COMMAND == 'true'
@@ -331,6 +363,7 @@ jobs:
               IFF it carries a FUNCTION_TAG_SUBSCRIBE parse directive, never
               category.subscription. A CI guard fails this run if the fixed spec
               carries any of these fields.
+            ${{ steps.addcoll.outputs.PROMPT_RULE }}
             - Do NOT run git yourself. The Phase-10 fix pass edits the spec in the
               working tree and LEAVES it there (uncommitted) — a workflow step after
               this run commits and pushes that edit to the PR branch. The branch is
@@ -534,6 +567,39 @@ jobs:
             exit 1
           fi
           echo "Preservation OK — only '$NEW_INDEX' in '$TARGET' changed; no other catalog file touched."
+
+      # The add-collection guard's second half: AFTER the Phase-10 fix pass,
+      # BEFORE the commit. It judges exactly what the commit step would push —
+      # every commit since the head the classify step recorded, the working tree,
+      # untracked root JSON — and refuses it when the fix pass changed anything
+      # outside the rule. Changes already committed are reported, not refused.
+      # Neither this nor the add-testnet guard above substitutes for the other:
+      # an add-collection PR adds no spec index and DOES modify a pre-existing
+      # spec. Without it the fixer could rewrite collections the PR never touched:
+      # the Phase-9 reviewers read the whole spec, so on a chain that gains REST
+      # beside jsonrpc they can flag jsonrpc gaps (MAG-3906, Hedera).
+      - name: Guard — collection addition (add-collection PRs)
+        if: steps.cmd.outputs.IS_COMMAND == 'true'
+        env:
+          ENFORCE: ${{ steps.addcoll.outputs.ENFORCE }}
+          REASON: ${{ steps.addcoll.outputs.REASON }}
+          BASE: ${{ steps.addcoll.outputs.BASE }}
+          START: ${{ steps.addcoll.outputs.START }}
+          ALLOWED_INDEXES: ${{ steps.addcoll.outputs.ALLOWED_INDEXES }}
+          ADDED_IFACES: ${{ steps.addcoll.outputs.ADDED_IFACES }}
+        run: |
+          set -euo pipefail
+          if [ "${ENFORCE:-}" != "true" ]; then
+            echo "::notice::add-collection guard N/A for this PR: ${REASON:-see the classify step}."
+            exit 0
+          fi
+          # From main again, not the classify step's copy: the agent ran in between.
+          git fetch --quiet origin main || { echo "::error::could not fetch origin/main — cannot run the add-collection guard."; exit 1; }
+          G="$RUNNER_TEMP/addcoll-enforce"; mkdir -p "$G"
+          for s in check_add_collection_pr.sh check_collection_addition.sh; do
+            git show "origin/main:.claude/skills/create-spec/scripts/$s" > "$G/$s"
+          done
+          bash "$G/check_add_collection_pr.sh" enforce
 
       # Persist the Phase-10 fix pass. The skill never runs git itself (SKILL.md:
       # "User handles all git manually") and the prompt forbids the agent from
