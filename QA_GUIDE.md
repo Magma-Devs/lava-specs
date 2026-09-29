@@ -62,7 +62,7 @@ The PR **body** is the *input* (human brief, endpoint routing, known gotchas) �
 | **CI guards — run outside the 12 phases, all fail closed** |
 | 1 | Removed-field guard (`check_unused_fields.sh`) | CI + 7 | None of the 15 fields deleted from the smart-router model are present (governance fields, `title`/`description`, `deposit`, `extra_compute_units`, `category.local`, `category.subscription`) | `RESULT: PASS` / one `REMOVED_FIELD \| path` line per offender | ❗ fixer deletes each field, both checks re-run |
 | 2 | Preservation guard (`check_preservation.sh`) | CI (add-testnet PRs) | A testnet-only PR changed **nothing** in any pre-existing spec — `jq -S` canonical compare, catches value drift, field add/remove, array reorder | pass / fail | 🛑 ⚠️ **self-skips with `::notice::` if not on the branch — a skip reads as a pass** |
-| 2b | Collection-addition guard (`check_collection_addition.sh`) | CI (add-collection PRs) | The Phase-10 fix pass changed nothing but the collections the PR added — no pre-existing collection (e.g. the jsonrpc beside a new rest), no spec-level field | pass / fail | 🛑 ⚠️ **self-skips with `::notice::` if not on the branch — a skip reads as a pass** |
+| 2b | Collection-addition guard (`check_add_collection_pr.sh`) | CI (add-collection PRs) | The Phase-10 fix pass changed only collections of an interface the PR's first commit added, not on main, under a targeted index or one importing it. No spec-level field, no collection on main (e.g. the jsonrpc beside a new rest), no other interface, no other spec | `ENFORCING …` then `OK` / refused, or `N/A — <reason>` | 🛑 ⚠️ **N/A logs a `::notice::` and exits 0 — an N/A reads as a pass** |
 | **Phase 6 — inline pre-flight (orchestrator, before the gates)** |
 | 3 | Index sanity | 6 | `index` uppercase, unique, matches the chain | manual | ❗ |
 | 4 | Required entry fields | 6 | `name`, `enabled` present per spec entry | manual | ❗ |
@@ -149,6 +149,7 @@ Disabling requires *positive* evidence — official docs saying removed, or the 
 | `BLOCK_TIME_MISMATCH` on **mainnet** | Should be impossible — an input was wrong |
 | Phase 10 "resolved *against* the reviewers" | A human overrode a reviewer's CRITICAL |
 | Add-testnet PR with no preservation-guard line in the log | #2 may have self-skipped |
+| Add-collection PR whose classify step logged `N/A`, not `ENFORCING` | #2b did not guard the fix pass — read the reason |
 | **No bot comments at all** | Spec predates the pipeline — see §6 |
 
 Two checks you can run on any spec right now — these are tests #7 and #8, which nothing automates:

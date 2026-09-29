@@ -267,6 +267,38 @@ jobs:
           "$bin" --version
           echo "path=$bin" >> "$GITHUB_OUTPUT"
 
+      # The add-collection guard's first half, BEFORE the agent: classify the PR
+      # and record the head the agent starts from (check_add_collection_pr.sh
+      # holds the rule and why). When the PR is an add-collection PR its
+      # PROMPT_RULE goes into the prompt below, so the fixer is told the rule
+      # rather than meeting it as a refused commit after a full 8 -> 11 run. The
+      # script is read from main, never from the checkout: a spec branch cut
+      # before it landed has none, and nothing the agent writes reaches the copy
+      # that runs.
+      - name: Classify the PR for the add-collection guard
+        id: addcoll
+        if: steps.cmd.outputs.IS_COMMAND == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.BOT_PAT }}
+          REPO: ${{ github.repository }}
+          PR: ${{ steps.pr.outputs.number }}
+          HEAD_REF_NAME: ${{ steps.pr.outputs.head }}
+        run: |
+          set -euo pipefail
+          git fetch --quiet origin main || { echo "::error::could not fetch origin/main — cannot classify the PR for the add-collection guard."; exit 1; }
+          G="$RUNNER_TEMP/addcoll-classify"; mkdir -p "$G"
+          for s in check_add_collection_pr.sh check_collection_addition.sh; do
+            git show "origin/main:.claude/skills/create-spec/scripts/$s" > "$G/$s" 2>/dev/null || true
+          done
+          if [ ! -s "$G/check_add_collection_pr.sh" ]; then
+            echo "::notice::check_add_collection_pr.sh is not on main — add-collection guard off."
+            echo "ENFORCE=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          # The title marks an update-mode PR, whose first commit can look like an addition.
+          PR_TITLE="$(gh pr view "$PR" --repo "$REPO" --json title --jq .title 2>/dev/null || true)"
+          BASE_REF=origin/main PR_TITLE="$PR_TITLE" bash "$G/check_add_collection_pr.sh" classify >> "$GITHUB_OUTPUT"
+
       - name: Run pipeline phases
         id: run
         if: steps.cmd.outputs.IS_COMMAND == 'true'
@@ -331,6 +363,7 @@ jobs:
               IFF it carries a FUNCTION_TAG_SUBSCRIBE parse directive, never
               category.subscription. A CI guard fails this run if the fixed spec
               carries any of these fields.
+            ${{ steps.addcoll.outputs.PROMPT_RULE }}
             - Do NOT run git yourself. The Phase-10 fix pass edits the spec in the
               working tree and LEAVES it there (uncommitted) — a workflow step after
               this run commits and pushes that edit to the PR branch. The branch is
@@ -535,99 +568,38 @@ jobs:
           fi
           echo "Preservation OK — only '$NEW_INDEX' in '$TARGET' changed; no other catalog file touched."
 
-      # Add-collection guard, the post-PR half of create_spec.yml's "Guard —
-      # collection addition". Runs AFTER the Phase-10 fix pass and BEFORE the
-      # commit, beside the add-testnet guard above, and neither substitutes for the
-      # other: an add-collection PR adds no spec index and DOES modify a
-      # pre-existing spec, so the add-testnet guard reports it N/A. Without this
-      # step the fix pass could rewrite collections the PR never touched — the
-      # Phase-9 reviewers read the whole spec, so on a chain that gains REST beside
-      # jsonrpc they can flag jsonrpc gaps, and nothing stopped the fixer from
-      # "fixing" them (MAG-3906, Hedera).
-      #
-      # Fires ONLY when the PR's first commit was a clean collection addition to
-      # one catalog file that already exists on main. New-chain, add-testnet,
-      # update and multi-file PRs are N/A. Edits INSIDE the added collections stay
-      # allowed — Phase 8 probing is what finds a wrong path or directive there.
-      # Two anchors differ from the add-testnet guard on purpose:
-      #   - "as opened" is the FIRST commit, not HEAD. Judged from HEAD, drift an
-      #     earlier fix pass already committed makes the PR look mixed and switches
-      #     the guard off for every later rerun.
-      #   - base is the merge-base, not main's tip. A later merge to main that
-      #     touched the same file would otherwise read as this PR's own drift.
+      # The add-collection guard's second half: AFTER the Phase-10 fix pass,
+      # BEFORE the commit. It judges exactly what the commit step would push —
+      # every commit since the head the classify step recorded, the working tree,
+      # untracked root JSON — and refuses it when the fix pass changed anything
+      # outside the rule. Changes already committed are reported, not refused.
+      # Neither this nor the add-testnet guard above substitutes for the other:
+      # an add-collection PR adds no spec index and DOES modify a pre-existing
+      # spec. Without it the fixer could rewrite collections the PR never touched:
+      # the Phase-9 reviewers read the whole spec, so on a chain that gains REST
+      # beside jsonrpc they can flag jsonrpc gaps (MAG-3906, Hedera).
       - name: Guard — collection addition (add-collection PRs)
         if: steps.cmd.outputs.IS_COMMAND == 'true'
         env:
-          GH_TOKEN: ${{ secrets.BOT_PAT }}
-          REPO: ${{ github.repository }}
-          PR: ${{ steps.pr.outputs.number }}
+          ENFORCE: ${{ steps.addcoll.outputs.ENFORCE }}
+          REASON: ${{ steps.addcoll.outputs.REASON }}
+          BASE: ${{ steps.addcoll.outputs.BASE }}
+          START: ${{ steps.addcoll.outputs.START }}
+          ALLOWED_INDEXES: ${{ steps.addcoll.outputs.ALLOWED_INDEXES }}
+          ADDED_IFACES: ${{ steps.addcoll.outputs.ADDED_IFACES }}
         run: |
           set -euo pipefail
-          SCRIPT=.claude/skills/create-spec/scripts/check_collection_addition.sh
-          if [ ! -f "$SCRIPT" ]; then
-            echo "::notice::check_collection_addition.sh not on this branch — skipping add-collection guard."
+          if [ "${ENFORCE:-}" != "true" ]; then
+            echo "::notice::add-collection guard N/A for this PR: ${REASON:-see the classify step}."
             exit 0
           fi
-          if ! files_json="$(gh pr view "$PR" --repo "$REPO" --json files 2>/dev/null)"; then
-            echo "::error::could not list PR files (gh pr view) — cannot verify the collection addition."
-            exit 1
-          fi
-          git fetch --quiet origin main || { echo "::error::could not fetch origin/main — cannot verify the collection addition."; exit 1; }
-          BASE="$(git merge-base FETCH_HEAD HEAD)"
-          # No `| head -1`: under pipefail a SIGPIPE'd rev-list would kill the step.
-          FIRST="$(git rev-list --reverse --first-parent "$BASE"..HEAD)"
-          FIRST="${FIRST%%$'\n'*}"
-          if [ -z "$FIRST" ]; then
-            echo "Branch has no commits past main — add-collection guard N/A."; exit 0
-          fi
-
-          # --- Eligibility: exactly one root spec file, already on main, and the
-          # PR's first commit only ADDED collections to it.
-          prfiles=()
-          while IFS= read -r s; do
-            [ -n "$s" ] && prfiles+=("$s")
-          done < <(printf '%s' "$files_json" | jq -r '.files[].path | select(test("^[^/]+\\.json$"))')
-          if [ "${#prfiles[@]}" -ne 1 ]; then
-            echo "PR changes ${#prfiles[@]} root spec file(s), not exactly one — add-collection guard N/A."; exit 0
-          fi
-          TARGET="${prfiles[0]}"
-          if ! git show "$FIRST^:$TARGET" > /tmp/cg_before.json 2>/dev/null; then
-            echo "  $TARGET: new on main (new-chain PR) — add-collection guard N/A."; exit 0
-          fi
-          git show "$FIRST:$TARGET" > /tmp/cg_opened.json 2>/dev/null || { echo "  $TARGET: not in the PR's first commit — N/A."; exit 0; }
-          # The indexes that gained collections. Derived, because the pipeline never
-          # sees create_spec's collection_indexes input. Reused for enforcement, so a
-          # collection landing under any OTHER index after the fix pass fails.
-          INDEXES="$(jq -rn --slurpfile b /tmp/cg_before.json --slurpfile o /tmp/cg_opened.json '
-              ($b[0].proposal.specs // [] | map({key: .index, value: [.api_collections[]?.collection_data]}) | from_entries) as $known
-              | $o[0].proposal.specs[]?
-              | select(.index as $i | $known | has($i))
-              | select(([.api_collections[]?.collection_data] - $known[.index]) | length > 0)
-              | .index' 2>/dev/null | paste -sd, - || true)"
-          if [ -z "$INDEXES" ] || ! bash "$SCRIPT" /tmp/cg_before.json /tmp/cg_opened.json "$INDEXES" >/dev/null 2>&1; then
-            echo "  $TARGET: the PR's first commit is not a clean collection addition — add-collection guard N/A."; exit 0
-          fi
-          echo "Add-collection PR: target='$TARGET' indexes='$INDEXES' — enforcing through the fix pass."
-
-          # --- Enforcement on what the commit step will stage: every root JSON,
-          # including NEW files, which `git add :(glob)*.json` picks up and
-          # `git diff` never lists.
-          strayed=0
-          while IFS= read -r f; do
-            [ -z "$f" ] && continue
-            if [ "$f" != "$TARGET" ]; then
-              echo "::error::fix pass changed '$f', outside this add-collection PR's target '$TARGET'. Refusing to commit."
-              strayed=1
-            fi
-          done < <(git status --porcelain -- ':(glob)*.json' | awk '{print $NF}')
-          [ "$strayed" -eq 0 ] || exit 1
-
-          git show "$BASE:$TARGET" > /tmp/cg_base.json
-          if ! bash "$SCRIPT" /tmp/cg_base.json "$TARGET" "$INDEXES"; then
-            echo "::error::'$TARGET' changed outside the collections this PR added (indexes: $INDEXES). An add-collection PR may edit only its own new collections — never a pre-existing collection or a spec-level field. The drift may already be committed on the branch: git diff $BASE HEAD -- $TARGET. Refusing to commit."
-            exit 1
-          fi
-          echo "Collection addition OK — '$TARGET' differs from main only by the collections this PR added."
+          # From main again, not the classify step's copy: the agent ran in between.
+          git fetch --quiet origin main || { echo "::error::could not fetch origin/main — cannot run the add-collection guard."; exit 1; }
+          G="$RUNNER_TEMP/addcoll-enforce"; mkdir -p "$G"
+          for s in check_add_collection_pr.sh check_collection_addition.sh; do
+            git show "origin/main:.claude/skills/create-spec/scripts/$s" > "$G/$s"
+          done
+          bash "$G/check_add_collection_pr.sh" enforce
 
       # Persist the Phase-10 fix pass. The skill never runs git itself (SKILL.md:
       # "User handles all git manually") and the prompt forbids the agent from
