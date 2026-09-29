@@ -158,9 +158,12 @@
                                 "name": "starknet_getClass",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "latest"
+                                        "block_number",
+                                        ":",
+                                        "0"
                                     ],
-                                    "parser_func": "DEFAULT"
+                                    "parser_func": "PARSE_DICTIONARY_OR_ORDERED",
+                                    "default_value": "latest"
                                 },
                                 "compute_units": 10,
                                 "enabled": true,
@@ -501,7 +504,7 @@
                                     ],
                                     "parser_func": "DEFAULT"
                                 },
-                                "compute_units": 20,
+                                "compute_units": 10,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
@@ -792,6 +795,18 @@
                             "type": "POST",
                             "add_on": ""
                         },
+                        "apis": [
+                            {
+                                "name": "starknet_subscribeNewTransactions",
+                                "compute_units": 1000,
+                                "enabled": false
+                            },
+                            {
+                                "name": "starknet_subscribeNewTransactionReceipts",
+                                "compute_units": 1000,
+                                "enabled": false
+                            }
+                        ],
                         "inheritance_apis": [
                             {
                                 "api_interface": "jsonrpc",
@@ -1207,9 +1222,12 @@
                                 "name": "starknet_getClass",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "latest"
+                                        "block_number",
+                                        ":",
+                                        "0"
                                     ],
-                                    "parser_func": "DEFAULT"
+                                    "parser_func": "PARSE_DICTIONARY_OR_ORDERED",
+                                    "default_value": "latest"
                                 },
                                 "compute_units": 10,
                                 "enabled": true,
@@ -1550,7 +1568,7 @@
                                     ],
                                     "parser_func": "DEFAULT"
                                 },
-                                "compute_units": 20,
+                                "compute_units": 10,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
@@ -1841,6 +1859,18 @@
                             "type": "POST",
                             "add_on": ""
                         },
+                        "apis": [
+                            {
+                                "name": "starknet_subscribeNewTransactions",
+                                "compute_units": 1000,
+                                "enabled": false
+                            },
+                            {
+                                "name": "starknet_subscribeNewTransactionReceipts",
+                                "compute_units": 1000,
+                                "enabled": false
+                            }
+                        ],
                         "inheritance_apis": [
                             {
                                 "api_interface": "jsonrpc",
