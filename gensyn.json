@@ -130,36 +130,6 @@
                                 }
                             },
                             {
-                                "name": "eth_submitHashrate",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        ""
-                                    ],
-                                    "parser_func": "EMPTY"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": false,
-                                    "stateful": 0
-                                }
-                            },
-                            {
-                                "name": "eth_submitWork",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        ""
-                                    ],
-                                    "parser_func": "EMPTY"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": false,
-                                    "stateful": 0
-                                }
-                            },
-                            {
                                 "name": "optimism_outputAtBlock",
                                 "block_parsing": {
                                     "parser_arg": [
@@ -309,15 +279,21 @@
                             {
                                 "name": "pruning",
                                 "parse_directive": {
-                                    "function_tag": "GET_EARLIEST_BLOCK"
+                                    "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"eth_getBalance\",\"params\":[\"0x4200000000000000000000000000000000000011\",\"0x989680\"],\"id\":1}",
+                                    "function_tag": "VERIFICATION",
+                                    "result_parsing": {
+                                        "parser_arg": [
+                                            "0"
+                                        ],
+                                        "parser_func": "PARSE_BY_ARG",
+                                        "encoding": "hex"
+                                    },
+                                    "api_name": "eth_getBalance"
                                 },
                                 "values": [
                                     {
-                                        "latest_distance": 10064
-                                    },
-                                    {
                                         "extension": "archive",
-                                        "expected_value": "0x0"
+                                        "expected_value": "0xa76cbf2b5a2233c"
                                     }
                                 ]
                             }
@@ -383,21 +359,6 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
-                                    "stateful": 0
-                                }
-                            },
-                            {
-                                "name": "debug_clearTxpool",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        ""
-                                    ],
-                                    "parser_func": "EMPTY"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": false,
                                     "stateful": 0
                                 }
                             },
@@ -689,13 +650,22 @@
                         "verifications": [
                             {
                                 "name": "pruning",
+                                "parse_directive": {
+                                    "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"eth_getBalance\",\"params\":[\"0x4200000000000000000000000000000000000011\",\"0x989680\"],\"id\":1}",
+                                    "function_tag": "VERIFICATION",
+                                    "result_parsing": {
+                                        "parser_arg": [
+                                            "0"
+                                        ],
+                                        "parser_func": "PARSE_BY_ARG",
+                                        "encoding": "hex"
+                                    },
+                                    "api_name": "eth_getBalance"
+                                },
                                 "values": [
                                     {
-                                        "latest_distance": 10064
-                                    },
-                                    {
                                         "extension": "archive",
-                                        "expected_value": "0x0"
+                                        "expected_value": "0xa76cbf2b5a2233c"
                                     }
                                 ]
                             }
@@ -742,6 +712,64 @@
                                 "values": [
                                     {
                                         "expected_value": "0xa7675"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "pruning",
+                                "parse_directive": {
+                                    "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"eth_getBalance\",\"params\":[\"0x4200000000000000000000000000000000000011\",\"0x989680\"],\"id\":1}",
+                                    "function_tag": "VERIFICATION",
+                                    "result_parsing": {
+                                        "parser_arg": [
+                                            "0"
+                                        ],
+                                        "parser_func": "PARSE_BY_ARG",
+                                        "encoding": "hex"
+                                    },
+                                    "api_name": "eth_getBalance"
+                                },
+                                "values": [
+                                    {
+                                        "extension": "archive",
+                                        "expected_value": "0x824ed0d21a3bc7fc"
+                                    }
+                                ]
+                            }
+                        ],
+                        "extensions": []
+                    },
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "jsonrpc",
+                            "internal_path": "",
+                            "type": "POST",
+                            "add_on": "trace"
+                        },
+                        "apis": [],
+                        "headers": [],
+                        "inheritance_apis": [],
+                        "parse_directives": [],
+                        "verifications": [
+                            {
+                                "name": "pruning",
+                                "parse_directive": {
+                                    "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"eth_getBalance\",\"params\":[\"0x4200000000000000000000000000000000000011\",\"0x989680\"],\"id\":1}",
+                                    "function_tag": "VERIFICATION",
+                                    "result_parsing": {
+                                        "parser_arg": [
+                                            "0"
+                                        ],
+                                        "parser_func": "PARSE_BY_ARG",
+                                        "encoding": "hex"
+                                    },
+                                    "api_name": "eth_getBalance"
+                                },
+                                "values": [
+                                    {
+                                        "extension": "archive",
+                                        "expected_value": "0x824ed0d21a3bc7fc"
                                     }
                                 ]
                             }
