@@ -2554,7 +2554,7 @@
                 "enabled": true,
                 "category": {
                   "deterministic": true,
-                  "stateful": 1
+                  "stateful": 0
                 }
               }
             ],
