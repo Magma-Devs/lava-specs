@@ -150,6 +150,7 @@
                                 },
                                 "compute_units": 10,
                                 "enabled": true,
+                                "timeout_ms": 30000,
                                 "category": {
                                     "deterministic": false,
                                     "stateful": 1,
@@ -1516,6 +1517,7 @@
                                 },
                                 "compute_units": 10,
                                 "enabled": true,
+                                "timeout_ms": 30000,
                                 "category": {
                                     "deterministic": false,
                                     "stateful": 1,
@@ -2274,6 +2276,7 @@
                                 },
                                 "compute_units": 10,
                                 "enabled": true,
+                                "timeout_ms": 30000,
                                 "category": {
                                     "deterministic": false,
                                     "stateful": 1,
@@ -2290,6 +2293,7 @@
                                 },
                                 "compute_units": 10,
                                 "enabled": true,
+                                "timeout_ms": 30000,
                                 "category": {
                                     "deterministic": false,
                                     "stateful": 1,

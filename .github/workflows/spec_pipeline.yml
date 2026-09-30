@@ -246,11 +246,33 @@ jobs:
           echo "count=${n:-0}" >> "$GITHUB_OUTPUT"
           echo "baseline: ${n:-0} existing report comment(s) for Phase ${END}"
 
+      # Pin the Claude Code CLI. claude-code-action@v1 otherwise installs the
+      # newest CLI on every run, and from 2.1.281 an Agent call that leaves
+      # run_in_background unset starts in the background. The skills dispatch
+      # researchers/validators that way, so the orchestrator ends its turn with
+      # agents still pending and the job exits "success" with no spec
+      # (create_spec runs 36295082608 Etherlink, 36296043796 Conflux eSpace).
+      # 2.1.278 is the last version seen running every subagent in the
+      # foreground. Bump deliberately, after checking subagent_stats in a
+      # test run's transcript.
+      - name: Install pinned Claude Code CLI
+        if: steps.cmd.outputs.IS_COMMAND == 'true'
+        id: claude_cli
+        env:
+          CLAUDE_CODE_VERSION: "2.1.278"
+        run: |
+          set -euo pipefail
+          npm install -g "@anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}"
+          bin="$(command -v claude)"
+          "$bin" --version
+          echo "path=$bin" >> "$GITHUB_OUTPUT"
+
       - name: Run pipeline phases
         id: run
         if: steps.cmd.outputs.IS_COMMAND == 'true'
         uses: anthropics/claude-code-action@v1
         with:
+          path_to_claude_code_executable: ${{ steps.claude_cli.outputs.path }}
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ secrets.BOT_PAT }}
           show_full_output: false
@@ -324,6 +346,19 @@ jobs:
       # truncation has been undiagnosable from outside.
       - name: Redact secrets from transcript
         if: always()
+        env:
+          # The keyed node URLs a /rerun-* comment may reference as use=NAME.
+          # They are secrets with no recognisable shape — they are just URLs —
+          # so a pattern cannot catch them; only their literal values can.
+          # Scrubbed HERE rather than at each consumer because this step edits
+          # $execution_file in place and everything downstream reads that one
+          # file: the uploaded artifact AND the truncation comment. On a public
+          # repo the artifact is the larger exposure (anyone with the run URL can
+          # download it) and it was never scrubbed for these.
+          PAID_RPC_1: ${{ secrets.PAID_RPC_1 }}
+          PAID_RPC_2: ${{ secrets.PAID_RPC_2 }}
+          PAID_RPC_3: ${{ secrets.PAID_RPC_3 }}
+          PAID_WS_1:  ${{ secrets.PAID_WS_1 }}
         run: |
           f="${{ steps.run.outputs.execution_file }}"
           [ -f "$f" ] || { echo "no transcript to redact"; exit 0; }
@@ -332,10 +367,40 @@ jobs:
             s/gh[posru]_[A-Za-z0-9]{20,}/ghx_REDACTED/g;
             s/eyJ[A-Za-z0-9_-]+\.eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/JWT_REDACTED/g;
           ' "$f"
+          # Literal replacement via index(), never a regex: these values are URLs
+          # full of regex metacharacters, and a value that failed to compile as a
+          # pattern would silently scrub nothing.
+          PAID_RPC_1="$PAID_RPC_1" PAID_RPC_2="$PAID_RPC_2" \
+          PAID_RPC_3="$PAID_RPC_3" PAID_WS_1="$PAID_WS_1" \
+          perl -i -pe '
+            BEGIN {
+              @S = grep { defined $_ && length $_ >= 8 }
+                   @ENV{qw(PAID_RPC_1 PAID_RPC_2 PAID_RPC_3 PAID_WS_1)};
+            }
+            for my $s (@S) {
+              my $i = 0;
+              while (($i = index($_, $s, $i)) >= 0) {
+                substr($_, $i, length($s)) = "PAID_NODE_URL_REDACTED";
+                $i += length("PAID_NODE_URL_REDACTED");
+              }
+            }
+          ' "$f"
           echo "redaction pass complete"
 
+      # continue-on-error because this artifact is diagnostic, not load-bearing, and
+      # it sits BEFORE the guards and the fix commit. Without it, a transient upload
+      # error marks the job failed, and every later step — whose `if:` is implicitly
+      # ANDed with success() — is skipped, including "Commit spec fixes to PR branch".
+      # That is not hypothetical: on PR #145 run 34839154144 the upload died with
+      # `Failed to FinalizeArtifact: ... ECONNRESET` after Phase 10 had applied a real
+      # fix and Phase 11 had approved it. Steps 16-19 were skipped, the fix was
+      # discarded with the runner, and the PR kept displaying the approval for a spec
+      # state that never reached the branch — the failure looks like success (MAG-3637).
+      # The step still shows as failed in the run UI, so a lost transcript stays visible;
+      # it just can no longer destroy the work it was only meant to document.
       - name: Upload transcript artifact
         if: always()
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: spec-pipeline-transcript-pr${{ steps.pr.outputs.number }}-run${{ github.run_id }}
@@ -524,6 +589,12 @@ jobs:
           END: ${{ steps.cmd.outputs.END_PHASE }}
           BEFORE: ${{ steps.baseline.outputs.count }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          # For the belt-and-braces scrub below. Actions masking covers logs, not
+          # a body posted through the API with `gh pr comment`.
+          PAID_RPC_1: ${{ secrets.PAID_RPC_1 }}
+          PAID_RPC_2: ${{ secrets.PAID_RPC_2 }}
+          PAID_RPC_3: ${{ secrets.PAID_RPC_3 }}
+          PAID_WS_1:  ${{ secrets.PAID_WS_1 }}
         run: |
           set -euo pipefail
           after=$(gh pr view "$PR" --repo "$REPO" --json comments \
@@ -535,7 +606,52 @@ jobs:
             exit 0
           fi
           echo "::error::Run span ${START}->${END} ended before Phase ${END}: no new phase report was posted (count still ${before}). The action exited cleanly but the pipeline did not finish."
-          gh pr comment "$PR" --repo "$REPO" --body "$(printf '⚠️ **Pipeline run truncated** — the span was Phase %s → %s, but no Phase %s report was posted. The workflow step exited cleanly, so this is *not* a crash; the agent stopped early.\n\nThe agent transcript is attached to the [run](%s) as `spec-pipeline-transcript-pr%s-run%s` — that is the record needed to diagnose it.' "$START" "$END" "$END" "$RUN_URL" "$PR" "${GITHUB_RUN_ID}")" || true
+
+          # Pull the agent's LAST message out of the transcript and put it in the
+          # comment. "The agent stopped early" is true of every truncation and
+          # diagnoses none of them; the final message usually names the reason
+          # outright. On PR #152 it read "Standing by for Phase 8 to complete." —
+          # which is the whole diagnosis (the orchestrator was waiting on a
+          # subagent that had already returned, MAG-3810) and it cost two runs and
+          # an artifact download to find. Surface it in the thread instead.
+          tail_msg=""
+          tf="${{ steps.run.outputs.execution_file }}"
+          X=".github/scripts/transcript_tail.py"
+          if [ ! -f "$tf" ]; then
+            # Distinguish this from "extraction failed": they call for different
+            # next steps, and a single vague fallback made a wrong assumption
+            # about the script's availability invisible.
+            tail_msg="_(no transcript was produced for this run)_"
+          else
+            # `Checkout PR branch` checks out the SPEC branch, so this script is
+            # absent from every spec branch cut before it landed — including the
+            # PR this was written for. A /rerun-* comment runs the workflow from
+            # the default branch, so the step exists while the file does not.
+            # Fall back to reading it out of the default branch (the checkout
+            # uses fetch-depth: 0, so origin/<default> is present).
+            if [ -f "$X" ]; then
+              tail_msg="$(python3 "$X" "$tf" 2>/dev/null || true)"
+            else
+              tail_msg="$(git show "origin/${{ github.event.repository.default_branch }}:$X" 2>/dev/null \
+                          | python3 - "$tf" 2>/dev/null || true)"
+            fi
+            [ -n "$tail_msg" ] || tail_msg="_(transcript present, but its closing message could not be extracted)_"
+          fi
+
+          # Belt and braces. The transcript was scrubbed in place by "Redact
+          # secrets from transcript", which is where these are actually handled;
+          # this repeats it so a future edit that reorders or skips that step
+          # cannot turn this into a leak. `if` rather than `[ -n "$s" ] && ...`
+          # on purpose: under `set -e` a trailing false test as the loop's last
+          # command kills the step before the comment is ever posted, and an
+          # unset PAID_WS_1 is entirely normal.
+          for s in "$PAID_RPC_1" "$PAID_RPC_2" "$PAID_RPC_3" "$PAID_WS_1"; do
+            if [ -n "$s" ]; then tail_msg="${tail_msg//"$s"/PAID_NODE_URL_REDACTED}"; fi
+          done
+
+          body="$(printf '⚠️ **Pipeline run truncated** — the span was Phase %s → %s, but no Phase %s report was posted. The workflow step exited cleanly, so this is *not* a crash; the agent stopped early.\n\n%s\n\nThe agent transcript is attached to the [run](%s) as `spec-pipeline-transcript-pr%s-run%s`.\n\nIf the message above is a wait or standby line, the agent was waiting on a subagent that had already returned (MAG-3810). **Rebase this branch onto `main` before retrying** — the retry command below reproduces the hang on a branch that predates the fix.' \
+            "$START" "$END" "$END" "$tail_msg" "$RUN_URL" "$PR" "${GITHUB_RUN_ID}")"
+          gh pr comment "$PR" --repo "$REPO" --body "$body" || true
           exit 1
 
       - name: Report failure to PR
@@ -556,4 +672,16 @@ jobs:
             11) cmd='/rerun-final' ;;
             *)  cmd="/rerun-from $START" ;;
           esac
-          gh pr comment "$PR" --repo "$REPO" --body "$(printf '**Spec pipeline failed** (started at Phase %s). See the [run log](%s).\n\nRetry by commenting:\n`%s`\n\nTo also re-run every later phase on top of the fix, use `/rerun-from %s` instead.' "$START" "$RUN_URL" "$cmd" "$START")"
+          # Say so when the run dies holding uncommitted spec edits. The commit step is
+          # gated on success(), so any earlier failure skips it and the Phase 10 fixes
+          # go down with the runner — while the PR still shows Phase 10's "fix applied"
+          # and Phase 11's verdict. Reporting only "the pipeline failed" leaves a reader
+          # to infer the branch matches those comments, which is exactly backwards
+          # (MAG-3637). Reads the working tree, so it reports what would have been
+          # committed, not what the PR file list claims.
+          pending=""
+          dirty="$(git status --porcelain -- ':(glob)*.json' 2>/dev/null | awk '{print $NF}' | paste -sd' ' - || true)"
+          if [ -n "$dirty" ]; then
+            pending="$(printf '\n\n⚠️ **This run ended holding uncommitted spec changes:** `%s`. They were NOT pushed — the commit step is skipped when an earlier step fails, so they were discarded with the runner. Any phase comment above describing a fix as applied does **not** reflect the branch. Re-run to regenerate them.' "$dirty")"
+          fi
+          gh pr comment "$PR" --repo "$REPO" --body "$(printf '**Spec pipeline failed** (started at Phase %s). See the [run log](%s).\n\nRetry by commenting:\n`%s`\n\nTo also re-run every later phase on top of the fix, use `/rerun-from %s` instead.%s' "$START" "$RUN_URL" "$cmd" "$START" "$pending")"

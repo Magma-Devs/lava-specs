@@ -217,6 +217,80 @@ When `hanging_api: true`, the relay timeout is computed as `max(1s, CU * 100ms) 
 
 Examples: `eth_sendTransaction` (waits for confirmation), `eth_sendRawTransactionSync` on Monad, `broadcast_tx_commit` on Cosmos, Bitcoin's `sendrawtransaction`.
 
+### 3.5 Node-operator controls must never ship enabled in a base collection
+
+> ⛔ **Before enabling a method, ask what it acts on: the chain, or the node?**
+> A method that mutates the *node* — its view of consensus, its peers, its
+> mining, its keys — is an operator control, not a relay. Never `enabled: true`
+> in a collection with `add_on: ""`.
+
+The distinction is not "does it write". `sendrawtransaction` writes, and it is a
+perfectly good relay: it submits to the *chain*, every node converges, and the
+effect is the caller's own. An operator control changes one node's behaviour and
+leaves it changed — so the damage is never scoped to the caller. The provider
+then serves the mutated state to **every consumer paired with it**, and the
+chain-tracker sees a provider that has stopped behaving.
+
+`add_on: ""` is what makes it baseline: there is no opt-in boundary a provider
+can decline, and importing specs inherit the whole collection through
+`CombineCollections`. A method behind a *named* add-on is a different situation —
+the provider chose to serve it.
+
+**The classes, and why each one bites:**
+
+| class | examples | what a consumer gets |
+|---|---|---|
+| consensus view | `finalizeblock`, `parkblock`, `invalidateblock`, `reconsiderblock`, `preciousblock`, `debug_setHead` | moves or pins the provider's idea of the real chain |
+| peering | `addnode`, `disconnectnode`, `setban`, `admin_addPeer`, `admin_removePeer` | isolates the node so its tip goes stale — no consensus tampering needed |
+| lifecycle | `stop`, `admin_stopHTTP`, `admin_stopWS`, `admin_stopRPC` | turns off the surface the provider is paid to serve |
+| mining | `miner_start`, `miner_stop`, `miner_setEtherbase` | redirects rewards, or halts block production |
+| keys | the whole `personal_*` namespace | accounts and signing **on the provider's node** |
+| regtest mining | `generate`, `generatetoaddress`, `setgenerate` | fabricates blocks; harmless on regtest, which is not what a mainnet spec serves |
+
+**Worked example — measured, not argued.** `bch.json` served BCHN's
+`parkblock` / `unparkblock` / `finalizeblock` from `BCH`'s base collection,
+enabled, at 10 CU (MAG-3644). Reproduced on BCHN 29.1.0 with two peered regtest
+nodes:
+
+- `parkblock` on the tip does **nothing** — the node logs `Unpark chain up to
+  block … as it has accumulated enough PoW` and carries on. Auto-unparking makes
+  it self-healing on the most-work chain.
+- `finalizeblock` on the tip **strands the node permanently.** The provider held
+  at height 11 while the network reached 20, rejecting every honest header with
+  `bad-header-finalization (code 259)` — and scoring its peers as misbehaving
+  until it banned them. One unauthenticated relay call, and the provider
+  partitions itself from the network until an operator intervenes.
+
+Two lessons. First, the severity lives in the *mechanism*, so check it rather
+than reasoning from the method name — the obvious-looking candidate was the
+harmless one. Second, this reached `main` and two review passes missed it; it
+was only caught when a reviewer was bumped to `opus`. Do not rely on review.
+
+**Do not use a probe to decide this.** A vendor gateway (Tatum, Blockdaemon)
+whitelists methods and answers `-32601`, and geth has deprecated `personal_*`
+entirely — so a probe looks clean while a self-hosted node serves the method
+happily. Per the free-tier rule a gateway's `-32601` is not evidence for
+disabling, and the converse holds too: it is not evidence of safety. The
+evidence is what the method does on a node that implements it.
+
+**The gate:**
+
+```bash
+bash .claude/skills/create-spec/scripts/check_node_admin_rpcs.sh <chain>.json
+```
+
+Runs per changed spec in `spec_guards.yml`. Resolve a finding by **disabling**
+(`enabled: false` plus a positive-evidence row in the PR body's justification
+table) or by **gating** it behind a named `add_on`. A third option,
+`node_admin_baseline.txt`, exists only for pre-existing exposure being fixed
+under its own ticket — a row there is a debt record, and adding one for a new
+finding defeats the gate.
+
+Deliberately **out of scope**: `submitblock` / `submitblocklight`. Block
+submission changes *chain* state, not the node's view of it, and is arguably
+legitimate for a mining consumer. Its `stateful` / `deterministic` typing is a
+separate question, handled by the method-schema gate.
+
 ### 4. Optional Advanced Configuration
 
 **Timeout for slow operations**:
