@@ -6,7 +6,7 @@
                 "name": "Aptos Mainnet",
                 "enabled": true,
                 "block_distance_for_finalized_data": 0,
-                "blocks_in_finalization_proof": 5,
+                "blocks_in_finalization_proof": 1,
                 "average_block_time": 200,
                 "allowed_block_lag_for_qos_sync": 50,
                 "api_collections": [
@@ -225,7 +225,7 @@
                                     "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 10,
-                                "enabled": true,
+                                "enabled": false,
                                 "category": {
                                     "deterministic": true,
                                     "stateful": 0
@@ -273,21 +273,6 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
-                                    "stateful": 0
-                                }
-                            },
-                            {
-                                "name": "/transactions/encode_submission",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": false,
                                     "stateful": 0
                                 }
                             },
@@ -435,6 +420,21 @@
                         },
                         "apis": [
                             {
+                                "name": "/transactions/encode_submission",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "stateful": 0
+                                }
+                            },
+                            {
                                 "name": "/transactions/simulate",
                                 "block_parsing": {
                                     "parser_arg": [
@@ -476,11 +476,13 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "stateful": 0
-                                }
+                                    "stateful": 1,
+                                    "hanging_api": true
+                                },
+                                "timeout_ms": 10000
                             },
                             {
-                                "name": "/tables/table_handle/raw_item",
+                                "name": "/tables/{table_handle}/raw_item",
                                 "block_parsing": {
                                     "parser_arg": [
                                         "latest"
@@ -521,11 +523,18 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "stateful": 0
-                                }
+                                    "stateful": 1,
+                                    "hanging_api": true
+                                },
+                                "timeout_ms": 10000
                             }
                         ],
-                        "headers": [],
+                        "headers": [
+                            {
+                                "name": "content-type",
+                                "kind": "pass_send"
+                            }
+                        ],
                         "inheritance_apis": [],
                         "parse_directives": []
                     }
@@ -541,7 +550,7 @@
                 "block_distance_for_finalized_data": 0,
                 "blocks_in_finalization_proof": 1,
                 "average_block_time": 95,
-                "allowed_block_lag_for_qos_sync": 105,
+                "allowed_block_lag_for_qos_sync": 106,
                 "api_collections": [
                     {
                         "enabled": true,
