@@ -1372,7 +1372,7 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "stateful": 1
+                                    "stateful": 0
                                 },
                                 "parsers": [
                                     {
@@ -1393,7 +1393,7 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "stateful": 1
+                                    "stateful": 0
                                 }
                             },
                             {
