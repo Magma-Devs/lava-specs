@@ -1445,7 +1445,7 @@
                                 "block_parsing": {
                                     "parser_arg": [
                                         "sequenceNumber",
-                                        "="
+                                        ":"
                                     ],
                                     "parser_func": "PARSE_DICTIONARY",
                                     "default_value": "latest"
@@ -1522,7 +1522,7 @@
                                 "block_parsing": {
                                     "parser_arg": [
                                         "atCheckpoint",
-                                        "="
+                                        ":"
                                     ],
                                     "parser_func": "PARSE_DICTIONARY",
                                     "default_value": "latest"
@@ -1539,7 +1539,7 @@
                                 "block_parsing": {
                                     "parser_arg": [
                                         "atCheckpoint",
-                                        "="
+                                        ":"
                                     ],
                                     "parser_func": "PARSE_DICTIONARY",
                                     "default_value": "latest"
@@ -1556,7 +1556,7 @@
                                 "block_parsing": {
                                     "parser_arg": [
                                         "atCheckpoint",
-                                        "="
+                                        ":"
                                     ],
                                     "parser_func": "PARSE_DICTIONARY",
                                     "default_value": "latest"
@@ -1910,7 +1910,8 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
-                                    "stateful": 1
+                                    "stateful": 1,
+                                    "hanging_api": true
                                 },
                                 "timeout_ms": 74000
                             }
