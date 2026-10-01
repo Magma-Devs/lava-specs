@@ -6,7 +6,7 @@
                 "name": "Aptos Mainnet",
                 "enabled": true,
                 "block_distance_for_finalized_data": 0,
-                "blocks_in_finalization_proof": 1,
+                "blocks_in_finalization_proof": 5,
                 "average_block_time": 200,
                 "allowed_block_lag_for_qos_sync": 50,
                 "api_collections": [
@@ -478,8 +478,7 @@
                                     "deterministic": false,
                                     "stateful": 1,
                                     "hanging_api": true
-                                },
-                                "timeout_ms": 10000
+                                }
                             },
                             {
                                 "name": "/tables/{table_handle}/raw_item",
@@ -525,8 +524,7 @@
                                     "deterministic": false,
                                     "stateful": 1,
                                     "hanging_api": true
-                                },
-                                "timeout_ms": 10000
+                                }
                             }
                         ],
                         "headers": [
@@ -550,7 +548,7 @@
                 "block_distance_for_finalized_data": 0,
                 "blocks_in_finalization_proof": 1,
                 "average_block_time": 95,
-                "allowed_block_lag_for_qos_sync": 106,
+                "allowed_block_lag_for_qos_sync": 105,
                 "api_collections": [
                     {
                         "enabled": true,
