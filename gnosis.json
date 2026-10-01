@@ -1484,7 +1484,15 @@
                 ]
               }
             ],
-            "extensions": []
+            "extensions": [
+              {
+                "name": "archive",
+                "cu_multiplier": 5,
+                "rule": {
+                  "block": 128
+                }
+              }
+            ]
           },
           {
             "enabled": true,
@@ -1671,7 +1679,15 @@
                 ]
               }
             ],
-            "extensions": []
+            "extensions": [
+              {
+                "name": "archive",
+                "cu_multiplier": 5,
+                "rule": {
+                  "block": 128
+                }
+              }
+            ]
           },
           {
             "enabled": true,
