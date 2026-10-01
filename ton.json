@@ -1406,13 +1406,7 @@
                                 "category": {
                                     "deterministic": false,
                                     "stateful": 0
-                                },
-                                "parsers": [
-                                    {
-                                        "parse_path": ".params.seqno",
-                                        "parse_type": "BLOCK_LATEST"
-                                    }
-                                ]
+                                }
                             },
                             {
                                 "name": "/estimateFee",
