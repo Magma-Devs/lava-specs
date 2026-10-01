@@ -368,6 +368,27 @@
                                 }
                             },
                             {
+                                "name": "/shards",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0
+                                },
+                                "parsers": [
+                                    {
+                                        "parse_path": ".params.seqno",
+                                        "parse_type": "BLOCK_LATEST"
+                                    }
+                                ]
+                            },
+                            {
                                 "name": "/tryLocateResultTx",
                                 "block_parsing": {
                                     "parser_arg": [
