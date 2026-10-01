@@ -62,7 +62,13 @@
                                 "category": {
                                     "deterministic": true,
                                     "stateful": 0
-                                }
+                                },
+                                "parsers": [
+                                    {
+                                        "parse_path": ".params.seqno",
+                                        "parse_type": "BLOCK_LATEST"
+                                    }
+                                ]
                             },
                             {
                                 "name": "/getAddressState",
@@ -77,7 +83,13 @@
                                 "category": {
                                     "deterministic": true,
                                     "stateful": 0
-                                }
+                                },
+                                "parsers": [
+                                    {
+                                        "parse_path": ".params.seqno",
+                                        "parse_type": "BLOCK_LATEST"
+                                    }
+                                ]
                             },
                             {
                                 "name": "/getTokenData",
@@ -206,7 +218,13 @@
                                 "category": {
                                     "deterministic": true,
                                     "stateful": 0
-                                }
+                                },
+                                "parsers": [
+                                    {
+                                        "parse_path": ".params.seqno",
+                                        "parse_type": "BLOCK_LATEST"
+                                    }
+                                ]
                             },
                             {
                                 "name": "/getBlockTransactionsExt",
@@ -242,91 +260,16 @@
                                 "category": {
                                     "deterministic": true,
                                     "stateful": 0
-                                }
-                            },
-                            {
-                                "name": "/getExtendedAddressInformation",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
-                                }
-                            },
-                            {
-                                "name": "/getMasterchainBlockSignatures",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
-                                }
-                            },
-                            {
-                                "name": "/getTransactions",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
                                 },
                                 "parsers": [
                                     {
-                                        "parse_path": ".params.address",
-                                        "parse_type": "BLOCK_HASH"
+                                        "parse_path": ".params.seqno",
+                                        "parse_type": "BLOCK_LATEST"
                                     }
                                 ]
                             },
                             {
-                                "name": "/getWalletInformation",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
-                                }
-                            },
-                            {
-                                "name": "/packAddress",
-                                "block_parsing": {
-                                    "parser_arg": [
-                                        "latest"
-                                    ],
-                                    "parser_func": "DEFAULT"
-                                },
-                                "compute_units": 10,
-                                "enabled": true,
-                                "category": {
-                                    "deterministic": true,
-                                    "stateful": 0
-                                }
-                            },
-                            {
-                                "name": "/shards",
+                                "name": "/getExtendedAddressInformation",
                                 "block_parsing": {
                                     "parser_arg": [
                                         "latest"
@@ -345,6 +288,84 @@
                                         "parse_type": "BLOCK_LATEST"
                                     }
                                 ]
+                            },
+                            {
+                                "name": "/getMasterchainBlockSignatures",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0
+                                },
+                                "parsers": [
+                                    {
+                                        "parse_path": ".params.seqno",
+                                        "parse_type": "BLOCK_LATEST"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "/getTransactions",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0
+                                },
+                                "parsers": [
+                                    {
+                                        "parse_path": ".params.hash",
+                                        "parse_type": "BLOCK_HASH"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "/getWalletInformation",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0
+                                },
+                                "parsers": [
+                                    {
+                                        "parse_path": ".params.seqno",
+                                        "parse_type": "BLOCK_LATEST"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "/packAddress",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0
+                                }
                             },
                             {
                                 "name": "/tryLocateResultTx",
@@ -434,7 +455,13 @@
                                 "category": {
                                     "deterministic": true,
                                     "stateful": 0
-                                }
+                                },
+                                "parsers": [
+                                    {
+                                        "parse_path": ".params.seqno",
+                                        "parse_type": "BLOCK_LATEST"
+                                    }
+                                ]
                             },
                             {
                                 "name": "/getBlock",
@@ -521,7 +548,13 @@
                                 "category": {
                                     "deterministic": true,
                                     "stateful": 0
-                                }
+                                },
+                                "parsers": [
+                                    {
+                                        "parse_path": ".params.seqno",
+                                        "parse_type": "BLOCK_LATEST"
+                                    }
+                                ]
                             },
                             {
                                 "name": "/getShards",
@@ -606,7 +639,7 @@
                                         ],
                                         "parser_func": "PARSE_CANONICAL"
                                     },
-                                    "api_name": "/v2/getMasterchainInfo"
+                                    "api_name": "/getMasterchainInfo"
                                 },
                                 "values": [
                                     {
