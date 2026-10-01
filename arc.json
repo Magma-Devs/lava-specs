@@ -21,7 +21,25 @@
                             "type": "POST",
                             "add_on": ""
                         },
-                        "apis": [],
+                        "apis": [
+                            {
+                                "name": "eth_sendRawTransactionSync",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 100,
+                                "timeout_ms": 10000,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "stateful": 1,
+                                    "hanging_api": true
+                                }
+                            }
+                        ],
                         "headers": [],
                         "inheritance_apis": [],
                         "parse_directives": [],
