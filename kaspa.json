@@ -510,17 +510,22 @@
                             {
                                 "name": "pruning",
                                 "parse_directive": {
-                                    "function_tag": "GET_EARLIEST_BLOCK"
+                                    "function_template": "/blocks/866ccfa89bce41f737f59ab09c4c1f610bc5055b4b3f772a2fe4d803f06853f4",
+                                    "function_tag": "VERIFICATION",
+                                    "result_parsing": {
+                                        "parser_arg": [
+                                            "0",
+                                            "verboseData",
+                                            "hash"
+                                        ],
+                                        "parser_func": "PARSE_CANONICAL"
+                                    },
+                                    "api_name": "/blocks/{blockId}"
                                 },
                                 "values": [
                                     {
-                                        "latest_distance": 1080000,
-                                        "severity": "Warning"
-                                    },
-                                    {
                                         "extension": "archive",
-                                        "expected_value": "1",
-                                        "severity": "Warning"
+                                        "expected_value": "866ccfa89bce41f737f59ab09c4c1f610bc5055b4b3f772a2fe4d803f06853f4"
                                     }
                                 ]
                             }
