@@ -40,10 +40,10 @@
                             {
                                 "name": "eth_getProposerByTxHash",
                                 "block_parsing": {
+                                    "parser_func": "DEFAULT",
                                     "parser_arg": [
-                                        "0"
-                                    ],
-                                    "parser_func": "PARSE_BY_ARG"
+                                        "latest"
+                                    ]
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
