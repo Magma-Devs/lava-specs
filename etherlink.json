@@ -8,10 +8,10 @@
         "imports": [
           "ETH1"
         ],
-        "block_distance_for_finalized_data": 25,
+        "block_distance_for_finalized_data": 50,
         "blocks_in_finalization_proof": 1,
-        "average_block_time": 1350,
-        "allowed_block_lag_for_qos_sync": 8,
+        "average_block_time": 1100,
+        "allowed_block_lag_for_qos_sync": 10,
         "api_collections": [
           {
             "enabled": true,
@@ -718,7 +718,7 @@
                 },
                 "values": [
                   {
-                    "latest_distance": 72000
+                    "latest_distance": 14000
                   },
                   {
                     "extension": "archive",
@@ -732,7 +732,7 @@
                 "name": "archive",
                 "cu_multiplier": 5,
                 "rule": {
-                  "block": 72000
+                  "block": 14000
                 }
               }
             ]
@@ -896,7 +896,7 @@
                 "name": "archive",
                 "cu_multiplier": 5,
                 "rule": {
-                  "block": 72000
+                  "block": 14000
                 }
               }
             ]
@@ -936,8 +936,8 @@
         ],
         "block_distance_for_finalized_data": 8,
         "blocks_in_finalization_proof": 1,
-        "average_block_time": 4600,
-        "allowed_block_lag_for_qos_sync": 3,
+        "average_block_time": 5000,
+        "allowed_block_lag_for_qos_sync": 2,
         "api_collections": [
           {
             "enabled": true,
