@@ -1027,7 +1027,7 @@
                                 "compute_units": 10,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
+                                    "deterministic": false,
                                     "stateful": 0
                                 }
                             },
@@ -1069,7 +1069,7 @@
                                     ],
                                     "parser_func": "DEFAULT"
                                 },
-                                "compute_units": 20,
+                                "compute_units": 60,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
@@ -1080,9 +1080,9 @@
                                 "name": "/v0/scan-proxy/dso-party-id",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "latest"
+                                        ""
                                     ],
-                                    "parser_func": "DEFAULT"
+                                    "parser_func": "EMPTY"
                                 },
                                 "compute_units": 10,
                                 "enabled": true,
@@ -1241,10 +1241,10 @@
                                     ],
                                     "parser_func": "DEFAULT"
                                 },
-                                "compute_units": 10,
+                                "compute_units": 60,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": false,
+                                    "deterministic": true,
                                     "stateful": 0
                                 }
                             },
@@ -1256,10 +1256,10 @@
                                     ],
                                     "parser_func": "DEFAULT"
                                 },
-                                "compute_units": 10,
+                                "compute_units": 60,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": false,
+                                    "deterministic": true,
                                     "stateful": 0
                                 }
                             }
@@ -1314,6 +1314,30 @@
                             "internal_path": "",
                             "type": "GET",
                             "add_on": ""
+                        },
+                        "apis": [],
+                        "headers": [],
+                        "inheritance_apis": [],
+                        "parse_directives": [],
+                        "verifications": [
+                            {
+                                "name": "chain-id",
+                                "values": [
+                                    {
+                                        "expected_value": "DSO::1220f22a8b8f2d813c25b9a684dc4dd52b532a0174d8e73a13cdf2baabfff7518337"
+                                    }
+                                ]
+                            }
+                        ],
+                        "extensions": []
+                    },
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "rest",
+                            "internal_path": "",
+                            "type": "GET",
+                            "add_on": "scan-proxy"
                         },
                         "apis": [],
                         "headers": [],
