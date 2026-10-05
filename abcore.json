@@ -156,6 +156,51 @@
                   "deterministic": true,
                   "stateful": 0
                 }
+              },
+              {
+                "name": "eth_getRawTransactionByHash",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 20,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "stateful": 0
+                }
+              },
+              {
+                "name": "eth_getRawTransactionByBlockHashAndIndex",
+                "block_parsing": {
+                  "parser_arg": [
+                    "latest"
+                  ],
+                  "parser_func": "DEFAULT"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "stateful": 0
+                }
+              },
+              {
+                "name": "eth_getRawTransactionByBlockNumberAndIndex",
+                "block_parsing": {
+                  "parser_arg": [
+                    "0"
+                  ],
+                  "parser_func": "PARSE_BY_ARG"
+                },
+                "compute_units": 10,
+                "enabled": true,
+                "category": {
+                  "deterministic": true,
+                  "stateful": 0
+                }
               }
             ],
             "headers": [],
