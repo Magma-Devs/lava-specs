@@ -5,7 +5,7 @@
                 "index": "SONGBIRD",
                 "name": "Songbird Canary-Network",
                 "enabled": true,
-                "block_distance_for_finalized_data": 60,
+                "block_distance_for_finalized_data": 1,
                 "blocks_in_finalization_proof": 1,
                 "average_block_time": 1040,
                 "allowed_block_lag_for_qos_sync": 9,
@@ -338,7 +338,7 @@
                                 "name": "archive",
                                 "cu_multiplier": 5,
                                 "rule": {
-                                    "block": 16
+                                    "block": 48000
                                 }
                             }
                         ]
@@ -481,7 +481,7 @@
                                 "name": "archive",
                                 "cu_multiplier": 5,
                                 "rule": {
-                                    "block": 16
+                                    "block": 48000
                                 }
                             }
                         ]
@@ -495,7 +495,7 @@
                 "imports": [
                     "SONGBIRD"
                 ],
-                "block_distance_for_finalized_data": 60,
+                "block_distance_for_finalized_data": 1,
                 "blocks_in_finalization_proof": 1,
                 "average_block_time": 3343,
                 "allowed_block_lag_for_qos_sync": 4,
