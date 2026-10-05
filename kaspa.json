@@ -490,7 +490,7 @@
                             {
                                 "name": "chain-id",
                                 "parse_directive": {
-                                    "function_template": "/info/network",
+                                    "function_template": "/info/blockdag",
                                     "function_tag": "VERIFICATION",
                                     "result_parsing": {
                                         "parser_arg": [
@@ -499,7 +499,7 @@
                                         ],
                                         "parser_func": "PARSE_CANONICAL"
                                     },
-                                    "api_name": "/info/network"
+                                    "api_name": "/info/blockdag"
                                 },
                                 "values": [
                                     {
@@ -514,11 +514,13 @@
                                 },
                                 "values": [
                                     {
-                                        "latest_distance": 1080000
+                                        "latest_distance": 1080000,
+                                        "severity": "Warning"
                                     },
                                     {
                                         "extension": "archive",
-                                        "expected_value": "1"
+                                        "expected_value": "1",
+                                        "severity": "Warning"
                                     }
                                 ]
                             }
@@ -661,7 +663,15 @@
                         "inheritance_apis": [],
                         "parse_directives": [],
                         "verifications": [],
-                        "extensions": []
+                        "extensions": [
+                            {
+                                "name": "archive",
+                                "cu_multiplier": 5,
+                                "rule": {
+                                    "block": 1080000
+                                }
+                            }
+                        ]
                     },
                     {
                         "enabled": true,
@@ -893,8 +903,9 @@
                                     ],
                                     "parser_func": "DEFAULT"
                                 },
-                                "compute_units": 60,
+                                "compute_units": 1000,
                                 "enabled": true,
+                                "timeout_ms": 60000,
                                 "category": {
                                     "deterministic": false,
                                     "stateful": 0
