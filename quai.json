@@ -1943,7 +1943,7 @@
                                     ],
                                     "parser_func": "DEFAULT"
                                 },
-                                "compute_units": 200,
+                                "compute_units": 5000,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
@@ -1958,7 +1958,7 @@
                                     ],
                                     "parser_func": "DEFAULT"
                                 },
-                                "compute_units": 100,
+                                "compute_units": 10,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
@@ -1973,7 +1973,7 @@
                                     ],
                                     "parser_func": "DEFAULT"
                                 },
-                                "compute_units": 100,
+                                "compute_units": 10,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
