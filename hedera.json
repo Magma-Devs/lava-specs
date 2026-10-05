@@ -1608,7 +1608,29 @@
                                 "api_name": "/api/v1/blocks/{hashOrNumber}"
                             }
                         ],
-                        "verifications": [],
+                        "verifications": [
+                            {
+                                "name": "chain-id",
+                                "parse_directive": {
+                                    "function_template": "/api/v1/blocks/0",
+                                    "function_tag": "VERIFICATION",
+                                    "result_parsing": {
+                                        "parser_arg": [
+                                            "0",
+                                            "hash"
+                                        ],
+                                        "parser_func": "PARSE_CANONICAL"
+                                    },
+                                    "api_name": "/api/v1/blocks/{hashOrNumber}"
+                                },
+                                "values": [
+                                    {
+                                        "expected_value": "0x5699954170cc8177692691d15368cad54f1e7a90c9e16b782f989de1b8d193583ed6ea19eb3290f59b85891eb23e8883",
+                                        "severity": "Warning"
+                                    }
+                                ]
+                            }
+                        ],
                         "extensions": []
                     },
                     {
