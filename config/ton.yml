@@ -1,0 +1,35 @@
+# Smart Router — TON. ONE config, BOTH networks (MAG-4180: v3 GET /events).
+#   TON  listener :3364  ->  https://toncenter.com/api
+#   TONT listener :3365  ->  https://testnet.toncenter.com/api
+# Each node url is the API root: the router expands an unpinned url per internal
+# path, so one url serves the spec's /v2 and /v3 collections as <root>/v2 and <root>/v3.
+# Clients send the BARE api name (/getMasterchainInfo, /events) — never /v2 or /v3.
+#
+# Run (from the repo root; keyless toncenter allows ~1 rps per IP, hence the gentle flags):
+#   OTEL_SDK_DISABLED=TRUE "${SMARTROUTER_BIN:-../smart-router/build/smartrouter}" config/ton.yml \
+#     --use-static-spec "$PWD/" --chain-tracker-poll-divisor 0.25 --set-relay-retry-limit 0 --min-relay-timeout 15s
+# Health (router stopped, 5-min cooldown first):
+#   OTEL_SDK_DISABLED=TRUE "${SMARTROUTER_BIN:-../smart-router/build/smartrouter}" health config/ton.yml --use-static-spec "$PWD/"
+metrics-listen-address: "0.0.0.0:7781"
+
+endpoints:
+  - listen-address: "0.0.0.0:3364"
+    network-address: "0.0.0.0:3364"
+    chain-id: "TON"
+    api-interface: "rest"
+  - listen-address: "0.0.0.0:3365"
+    network-address: "0.0.0.0:3365"
+    chain-id: "TONT"
+    api-interface: "rest"
+
+direct-rpc:
+  - name: "ton-mainnet"
+    chain-id: "TON"
+    api-interface: "rest"
+    node-urls:
+      - url: "https://toncenter.com/api"
+  - name: "ton-testnet"
+    chain-id: "TONT"
+    api-interface: "rest"
+    node-urls:
+      - url: "https://testnet.toncenter.com/api"
