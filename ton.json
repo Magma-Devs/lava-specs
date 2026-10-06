@@ -1384,6 +1384,51 @@
                                     "deterministic": false,
                                     "stateful": 0
                                 }
+                            },
+                            {
+                                "name": "/account",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0
+                                }
+                            },
+                            {
+                                "name": "/wallet",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0
+                                }
+                            },
+                            {
+                                "name": "/balanceChanges",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0
+                                }
                             }
                         ],
                         "headers": [],
@@ -1592,6 +1637,21 @@
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
+                                    "stateful": 0
+                                }
+                            },
+                            {
+                                "name": "/decode",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
                                     "stateful": 0
                                 }
                             }
