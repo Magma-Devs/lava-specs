@@ -10,8 +10,8 @@
                 ],
                 "block_distance_for_finalized_data": 10,
                 "blocks_in_finalization_proof": 3,
-                "average_block_time": 2000,
-                "allowed_block_lag_for_qos_sync": 5,
+                "average_block_time": 1500,
+                "allowed_block_lag_for_qos_sync": 7,
                 "api_collections": [
                     {
                         "enabled": true,
@@ -289,8 +289,8 @@
                 ],
                 "block_distance_for_finalized_data": 10,
                 "blocks_in_finalization_proof": 3,
-                "average_block_time": 2000,
-                "allowed_block_lag_for_qos_sync": 5,
+                "average_block_time": 1000,
+                "allowed_block_lag_for_qos_sync": 10,
                 "api_collections": [
                     {
                         "enabled": true,
