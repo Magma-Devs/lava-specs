@@ -677,7 +677,7 @@
                             {
                                 "name": "enabled",
                                 "parse_directive": {
-                                    "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"searchlogs\",\"params\":[0,\"latest\"],\"id\":1}",
+                                    "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"searchlogs\",\"params\":[1,1],\"id\":1}",
                                     "function_tag": "VERIFICATION",
                                     "result_parsing": {
                                         "parser_arg": [
@@ -820,7 +820,7 @@
                             {
                                 "name": "enabled",
                                 "parse_directive": {
-                                    "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"getaddressbalance\",\"params\":[{\"addresses\":[\"QD1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XX\"]}],\"id\":1}",
+                                    "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"getblockhashes\",\"params\":[1,0],\"id\":1}",
                                     "function_tag": "VERIFICATION",
                                     "result_parsing": {
                                         "parser_arg": [
@@ -828,7 +828,7 @@
                                         ],
                                         "parser_func": "PARSE_BY_ARG"
                                     },
-                                    "api_name": "getaddressbalance"
+                                    "api_name": "getblockhashes"
                                 },
                                 "values": [
                                     {
