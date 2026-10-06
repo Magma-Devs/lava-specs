@@ -832,7 +832,7 @@
                                 "compute_units": 20,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
+                                    "deterministic": false,
                                     "stateful": 0
                                 }
                             },
