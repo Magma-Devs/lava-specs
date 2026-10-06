@@ -816,6 +816,21 @@
                                 }
                             },
                             {
+                                "name": "/events",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": true,
+                                    "stateful": 0
+                                }
+                            },
+                            {
                                 "name": "/addressInformation",
                                 "block_parsing": {
                                     "parser_arg": [
