@@ -5,7 +5,7 @@
                 "index": "ETH1",
                 "name": "Ethereum Mainnet",
                 "enabled": true,
-                "block_distance_for_finalized_data": 8,
+                "block_distance_for_finalized_data": 30,
                 "blocks_in_finalization_proof": 3,
                 "average_block_time": 13000,
                 "allowed_block_lag_for_qos_sync": 2,
@@ -1496,7 +1496,7 @@
                 "imports": [
                     "ETH1"
                 ],
-                "block_distance_for_finalized_data": 7,
+                "block_distance_for_finalized_data": 30,
                 "blocks_in_finalization_proof": 3,
                 "average_block_time": 13000,
                 "allowed_block_lag_for_qos_sync": 2,
@@ -1533,7 +1533,7 @@
                 "imports": [
                     "ETH1"
                 ],
-                "block_distance_for_finalized_data": 7,
+                "block_distance_for_finalized_data": 30,
                 "blocks_in_finalization_proof": 3,
                 "average_block_time": 13000,
                 "allowed_block_lag_for_qos_sync": 2,
@@ -1570,7 +1570,7 @@
                 "imports": [
                     "ETH1"
                 ],
-                "block_distance_for_finalized_data": 7,
+                "block_distance_for_finalized_data": 30,
                 "blocks_in_finalization_proof": 3,
                 "average_block_time": 13000,
                 "allowed_block_lag_for_qos_sync": 2,

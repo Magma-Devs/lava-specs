@@ -6,7 +6,7 @@
                 "name": "Hyperliquid Mainnet",
                 "enabled": true,
                 "imports": [],
-                "block_distance_for_finalized_data": 0,
+                "block_distance_for_finalized_data": 50,
                 "blocks_in_finalization_proof": 1,
                 "average_block_time": 1000,
                 "allowed_block_lag_for_qos_sync": 5,
@@ -510,7 +510,7 @@
                 "imports": [
                     "HYPERLIQUID"
                 ],
-                "block_distance_for_finalized_data": 0,
+                "block_distance_for_finalized_data": 50,
                 "blocks_in_finalization_proof": 1,
                 "average_block_time": 1000,
                 "allowed_block_lag_for_qos_sync": 5,
