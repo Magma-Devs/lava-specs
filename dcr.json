@@ -375,7 +375,7 @@
                                 "compute_units": 10,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
+                                    "deterministic": false,
                                     "stateful": 0
                                 }
                             },
