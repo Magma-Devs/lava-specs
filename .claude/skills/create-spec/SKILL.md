@@ -374,6 +374,7 @@ Read each validator agent prompt fully (full-read with sentinel verification) be
 
 Gather inputs:
 - `<spec_path>` — `<chain>.json`
+- `<base_spec_path>` — in update, add-testnet and add-collection mode, the same file as it is on main: `git show origin/main:<chain>.json > /tmp/spec_<chain>_base.json` (fallback `git show HEAD:<chain>.json` locally), and pass that path. For a new chain, leave it empty. `check_hanging_api.sh` and `check_stateful.sh` use it to report rows the established spec already fails as pre-existing INFO, so an update is never failed, or sent to the fixer, over methods it did not touch.
 - `<chain>` — lowercased chain name (filename stem)
 - `<INDEX>` — spec index UPPERCASE
 - `<api_interface>` — from the spec's primary `api_collections[].collection_data.api_interface`
@@ -679,14 +680,19 @@ Valid JSON is not the same as a valid spec. The Phase 6 gates ran **before** the
 These four scripts are offline, take under a second each, and need no network:
 
 ```bash
-for check in check_method_schema check_hanging_api check_stateful check_unused_fields; do
-  bash .claude/skills/create-spec/scripts/$check.sh <chain>.json \
-    || echo "POST-FIX GATE FAILED: $check"
+S=.claude/skills/create-spec/scripts
+for check in check_method_schema check_unused_fields; do
+  bash $S/$check.sh <chain>.json || echo "POST-FIX GATE FAILED: $check"
 done
-bash .claude/skills/create-spec/scripts/check_disabled_count.sh <chain>.json --expect <N>
+# Judged against the pre-fix snapshot: a row the spec already failed before the
+# fixer ran is reported as pre-existing INFO, not as a regression.
+for check in check_hanging_api check_stateful; do
+  bash $S/$check.sh --base /tmp/spec_<chain>_pre_fix.json <chain>.json || echo "POST-FIX GATE FAILED: $check"
+done
+bash $S/check_disabled_count.sh <chain>.json --expect <N>
 ```
 
-Any FAIL row here is a fixer-introduced regression, not an original defect. Feed it back as a CRITICAL item and re-run the fixer on that item alone — do not carry it into Phase 10b. `check_stateful.sh`'s `=== INFO ===` rows are advisory and never block.
+Any FAIL row here is a fixer-introduced regression, not an original defect: `--base` has already moved every row the pre-fix file failed identically under `=== INFO ===`, so what is left under FAIL is new or changed by the fixer. Feed it back as a CRITICAL item and re-run the fixer on that item alone — do not carry it into Phase 10b. `=== INFO ===` rows (pre-existing rows, and `check_stateful.sh`'s consensus rows) are advisory and never block.
 
 Then re-count what the fixer actually disabled. This pass is where the disabled
 set changes, and it runs *after* the PR body was written — the #130 mechanism,
