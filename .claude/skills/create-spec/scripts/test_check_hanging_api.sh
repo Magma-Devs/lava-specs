@@ -93,4 +93,59 @@ spec none.json NONE '[]' "$nodir" "$(api eth_call 10 0 false)"
 bash "$SCRIPT" "$T/none.json" >/dev/null 2>&1 || fail "none: expected exit 0"
 echo "no-hanging-apis: OK"
 
+# 10. base mode. A row the base already fails identically moves to INFO and
+#     the run passes; a new or changed failing row still FAILs.
+mkdir -p "$T/base"
+spec upd.json UPD '[]' "$nodir" "$(api eth_sendRawTransaction 10 0 true),$(api author_submitAndWatchExtrinsic 1000 120000 true)"
+cp "$T/upd.json" "$T/base/upd.json"
+OUT=$(bash "$SCRIPT" --base "$T/base/upd.json" "$T/upd.json" 2>&1) || fail "base, unchanged failing row: expected exit 0: $OUT"
+grep -q "eth_sendRawTransaction.*pre-existing" <<<"$OUT" || fail "base, unchanged failing row: no pre-existing INFO row: $OUT"
+echo "base-pre-existing-row: OK"
+
+spec upd.json UPD '[]' "$nodir" "$(api eth_sendRawTransaction 10 0 true),$(api author_submitAndWatchExtrinsic 1000 30000 true)"
+OUT=$(bash "$SCRIPT" --base "$T/base/upd.json" "$T/upd.json" 2>&1 || true)
+sed -n '/=== FAIL ===/,$p' <<<"$OUT" | grep -q "UPD/jsonrpc/author_submitAndWatchExtrinsic|timeout_ms 30000ms" \
+  || fail "base, passing row changed to failing: expected FAIL: $OUT"
+sed -n '/=== FAIL ===/,$p' <<<"$OUT" | grep -q "eth_sendRawTransaction" && fail "base: the untouched row FAILs too"
+echo "base-changed-row-fails: OK"
+
+spec upd.json UPD '[]' "$nodir" "$(api eth_sendRawTransaction 10 500 true),$(api author_submitAndWatchExtrinsic 1000 120000 true)"
+OUT=$(bash "$SCRIPT" --base "$T/base/upd.json" "$T/upd.json" 2>&1 || true)
+sed -n '/=== FAIL ===/,$p' <<<"$OUT" | grep -q "eth_sendRawTransaction|timeout_ms 500ms" \
+  || fail "base, failing row edited but still failing: expected FAIL: $OUT"
+echo "base-edited-failing-row-fails: OK"
+
+spec upd.json UPD '[]' "$nodir" "$(api eth_sendRawTransaction 10 0 true),$(api author_submitAndWatchExtrinsic 1000 120000 true),$(api newmethod 10 0 true)"
+if bash "$SCRIPT" --base "$T/base/upd.json" "$T/upd.json" >/dev/null 2>&1; then fail "base, new failing row: expected non-zero exit"; fi
+echo "base-new-row-fails: OK"
+
+# no base: the established row is judged, as before
+cp "$T/base/upd.json" "$T/upd.json"
+if bash "$SCRIPT" "$T/upd.json" >/dev/null 2>&1; then fail "no base: the established failing row must still FAIL"; fi
+echo "no-base-unchanged: OK"
+
+# the base sits outside the repo dir; its inherited SUBSCRIBE directive must
+# still resolve through the candidate's siblings, or rule 1 and rule 2 rows
+# would differ and a pre-existing row would read as new.
+cp "$T/ichild.json" "$T/base/ichild.json"
+OUT=$(bash "$SCRIPT" --base "$T/base/ichild.json" "$T/ichild.json" 2>&1) || fail "base outside the repo: expected exit 0: $OUT"
+grep -q "SUBSCRIBE-tagged API.*pre-existing" <<<"$OUT" || fail "base outside the repo: inherited directive not resolved: $OUT"
+echo "base-resolves-imports-in-context: OK"
+
+# the base is judged by its OWN imports: here the candidate newly imports the
+# parent that tags the method SUBSCRIBE, so its rule-1 row is new, not inherited
+# from a base that never imported it.
+spec ichild2.json ICHILD2 '["IPARENT"]' "$nodir" "$(api chain_subscribeNewHead 1000 120000 true)"
+spec base/ichild2.json ICHILD2 '[]' "$nodir" "$(api chain_subscribeNewHead 1000 120000 true)"
+if bash "$SCRIPT" --base "$T/base/ichild2.json" "$T/ichild2.json" >/dev/null 2>&1; then
+  fail "base with different imports: the new rule-1 row must FAIL"
+fi
+rm -f "$T/ichild2.json"
+echo "base-judged-by-its-own-imports: OK"
+
+echo '{' > "$T/base/broken.json"
+set +e; bash "$SCRIPT" --base "$T/base/broken.json" "$T/upd.json" >/dev/null 2>&1; rc=$?; set -e
+[ "$rc" -eq 2 ] || fail "unreadable base: expected exit 2, got $rc"
+echo "base-unreadable: OK"
+
 echo "ALL TESTS PASSED"

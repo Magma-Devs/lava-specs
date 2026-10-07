@@ -54,17 +54,35 @@
 # endpoints on the write path in cosmossdk.json — the verb disambiguates a name
 # collision here, it does not classify.
 #
-# Usage: check_stateful.sh <spec.json>
-# Prints "=== PASS ===" / "=== INFO ===" / "=== FAIL ==="; exit 1 on any FAIL row.
+# Base mode (--base <file>): established specs already carry some FAIL rows
+# (monad and optimism declare eth_sendTransaction at 0), and an update,
+# add-testnet or add-collection run must not fail on rows it never touched.
+# With a base — the same file on origin/main, or Phase 10a's pre-fix snapshot —
+# a FAIL row the base already fails with the identical text moves to INFO as
+# pre-existing; only new or changed rows FAIL. Without a base (a new chain)
+# every row is judged, as before.
+#
+# Usage: check_stateful.sh [--base <base.json>] <spec.json>
+# Prints "=== PASS ===" / "=== INFO ===" / "=== FAIL ==="; exit 1 on any FAIL
+# row, 2 on usage or an unreadable base.
 
 set -euo pipefail
 export LC_ALL=C
 
-if [[ $# -ne 1 ]]; then
-  echo "usage: $0 <spec.json>" >&2
-  exit 2
-fi
-SPEC=$(realpath -- "$1")
+usage() { echo "usage: $0 [--base <base.json>] <spec.json>" >&2; exit 2; }
+BASE="" FAILS_ONLY=0 SPEC_ARG=""
+while (($#)); do
+  case "$1" in
+    --base) (($# >= 2)) || usage; BASE=$2; shift 2 ;;
+    # Internal, for judging the base: FAIL rows never depend on the consensus
+    # map, so skip the ~140-file sibling scan.
+    --fails-only) FAILS_ONLY=1; shift ;;
+    -*) usage ;;
+    *) [[ -z "$SPEC_ARG" ]] || usage; SPEC_ARG=$1; shift ;;
+  esac
+done
+[[ -n "$SPEC_ARG" ]] || usage
+SPEC=$(realpath -- "$SPEC_ARG")
 [[ -r "$SPEC" ]] || { echo "cannot read spec: $SPEC" >&2; exit 1; }
 SPECDIR=$(dirname "$SPEC")
 
@@ -138,7 +156,7 @@ declare -A TOTAL
 SPECBASE=${SPEC##*/}
 shopt -s nullglob
 SIBS=()
-for _s in "$SPECDIR"/*.json; do
+((FAILS_ONLY)) || for _s in "$SPECDIR"/*.json; do
   [[ "${_s##*/}" == "$SPECBASE" ]] && continue
   SIBS+=("$_s")
 done
@@ -212,6 +230,21 @@ done < <(jq -r '
       .name,
       ((.category.stateful // 0)|tostring)
     ] | @tsv' "$SPEC")
+
+# ---- base mode: demote the rows the base already fails, verbatim.
+if [[ -n "$BASE" ]]; then
+  jq -e 'type == "object"' "$BASE" >/dev/null 2>&1 || { echo "cannot read base: $BASE" >&2; exit 2; }
+  BASE_FAILS=$(bash "$0" --fails-only "$BASE" 2>/dev/null | sed -n '/^=== FAIL ===$/,$p' | tail -n +2 || true)
+  KEPT=()
+  for row in ${FAIL[@]+"${FAIL[@]}"}; do
+    if grep -qxF -- "$row" <<<"$BASE_FAILS"; then
+      INFO+=("$row  [pre-existing: the base fails this row identically]")
+    else
+      KEPT+=("$row")
+    fi
+  done
+  FAIL=(${KEPT[@]+"${KEPT[@]}"})
+fi
 
 echo "=== PASS ==="
 ((${#PASS[@]})) && printf '%s\n' "${PASS[@]}"

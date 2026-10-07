@@ -114,4 +114,35 @@ spec clean.json CLEAN "$(api eth_blockNumber 0)"
 bash "$SCRIPT" "$T/clean.json" >/dev/null 2>&1 || fail "clean: expected exit 0"
 echo "clean-spec: OK"
 
+# 11. base mode: a row the base already fails identically is pre-existing (INFO,
+#     exit 0); a row the candidate newly breaks still FAILs.
+rm -f "$T"/*.json
+mkdir -p "$T/base"
+spec cand.json CAND "$(api eth_sendTransaction 0)" "$(api eth_sendRawTransaction 1)"
+cp "$T/cand.json" "$T/base/cand.json"
+OUT=$(bash "$SCRIPT" --base "$T/base/cand.json" "$T/cand.json" 2>&1) || fail "base, unchanged failing row: expected exit 0: $OUT"
+grep -q "eth_sendTransaction.*pre-existing" <<<"$OUT" || fail "base, unchanged failing row: no pre-existing INFO row: $OUT"
+failrows "$OUT" | grep -q "eth_sendTransaction" && fail "base, unchanged failing row: still under FAIL"
+echo "base-pre-existing-row: OK"
+
+spec cand.json CAND "$(api eth_sendTransaction 0)" "$(api eth_sendRawTransaction 0)"
+OUT=$(bash "$SCRIPT" --base "$T/base/cand.json" "$T/cand.json" 2>&1 || true)
+failrows "$OUT" | grep -q "CAND/jsonrpc/eth_sendRawTransaction" || fail "base, row changed to failing: expected FAIL: $OUT"
+failrows "$OUT" | grep -q "eth_sendTransaction|" && fail "base, row changed to failing: the untouched row FAILs too"
+echo "base-changed-row-fails: OK"
+
+spec cand.json CAND "$(api eth_sendTransaction 0)" "$(api eth_sendRawTransaction 1)" "$(api eth_call 1)"
+OUT=$(bash "$SCRIPT" --base "$T/base/cand.json" "$T/cand.json" 2>&1 || true)
+failrows "$OUT" | grep -q "CAND/jsonrpc/eth_call" || fail "base, new failing row: expected FAIL: $OUT"
+echo "base-new-row-fails: OK"
+
+spec cand.json CAND "$(api eth_sendTransaction 0)" "$(api eth_sendRawTransaction 1)"
+if bash "$SCRIPT" "$T/cand.json" >/dev/null 2>&1; then fail "no base: the established failing row must still FAIL"; fi
+echo "no-base-unchanged: OK"
+
+echo '{' > "$T/base/broken.json"
+set +e; bash "$SCRIPT" --base "$T/base/broken.json" "$T/cand.json" >/dev/null 2>&1; rc=$?; set -e
+[ "$rc" -eq 2 ] || fail "unreadable base: expected exit 2, got $rc"
+echo "base-unreadable: OK"
+
 echo "ALL TESTS PASSED"

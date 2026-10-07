@@ -97,8 +97,8 @@ Four of these surface again as gate failures. **The last two are covered by no v
 | `name` and `enabled` present at spec-entry level | manual | partly (chain-metadata) |
 | Mainnet `chain-id` `expected_value` from a **live curl**, not a docs decimal | `curl` the mainnet RPC, capture the hex verbatim | value correctness only at Phase 8 |
 | Testnet `chain-id` `expected_value` from a live curl | `curl` the testnet RPC | value correctness only at Phase 8 Step 7 |
-| **Every `hanging_api: true` has an explicit `timeout_ms`** | `jq` selecting `hanging_api == true and timeout_ms == null`; output must be empty | **NO — hand-check only** (`SKILL.md:263`) |
-| **`category.stateful` set only on broadcast / state-modifying methods** | spot-check against chain docs; read methods must be `stateful: 0` or unset | **NO — no validator enforces direction** (`SKILL.md:264`) |
+| **Every `hanging_api: true` has an explicit `timeout_ms`** | `jq` selecting `hanging_api == true and timeout_ms == null`; output must be empty | Yes — `check_hanging_api.sh` rule 2 (`method-schema` gate) |
+| **`category.stateful` set only on broadcast / state-modifying methods** | spot-check against chain docs; read methods must be `stateful: 0` or unset | Yes, against a curated list — `check_stateful.sh` (`method-schema` gate) |
 
 Note on the two chain-id rows: Phase 6 *obtains* the values by curling each network directly. Phase 8 is where the resulting spec verification is *executed through the router* — Step 3.5(c) for mainnet, Step 7 for testnet. Different operations, easily conflated.
 
@@ -216,11 +216,10 @@ Lists methods that are still `enabled: true` despite research having *explicitly
 
 **`check_method_schema.sh`** — per API: `enabled`, `compute_units`, `block_parsing`, `category` all present; when `block_parsing` exists, `parser_func` and `parser_arg` present and **every `parser_arg` element a string**. Plus: no duplicate API names within a collection.
 
-**`check_hanging_api.sh`** — the three `category.hanging_api` rules. All three come from one function, `protocol/chainlib/common.go:575`:
+**`check_hanging_api.sh`** — the three `category.hanging_api` rules. All three come from the window `GetRelayTimeout` returns (smart-router `protocol/chainlib/common.go:600`). It bounds a caller's `lava-relay-timeout` override with `common.BoundCallerRelayTimeout`; the spec's own inputs are read by `routerRelayTimeout` (`common.go:613`):
 
 ```go
-func GetRelayTimeout(chainMessage, averageBlockTime) time.Duration {
-    if chainMessage.TimeoutOverride() != 0 { return chainMessage.TimeoutOverride() }
+func routerRelayTimeout(chainMessage, averageBlockTime) time.Duration {
     extraRelayTimeout := 0
     if IsHangingApi(chainMessage) { extraRelayTimeout = averageBlockTime * 2 }
     relayTimeAddition := common.GetTimePerCu(GetComputeUnits(chainMessage))
@@ -231,11 +230,11 @@ func GetRelayTimeout(chainMessage, averageBlockTime) time.Duration {
 }
 ```
 
-1. **`hanging_api` on a `SUBSCRIBE`-tagged API → FAIL.** The router never reads it. `consumer_websocket_manager.go:298` branches on the SUBSCRIBE function tag straight into `StartSubscription`; all four `GetRelayTimeout` call sites are on the unary path and neither subscription manager references it. A subscription's lifetime is its socket's — the WS manager's only timeouts are two hardcoded 10s constants for *unsubscribe* teardown. So on a SUBSCRIBE-tagged API, `hanging_api`, `compute_units` and `timeout_ms` are all dead inputs. SUBSCRIBE names are collected **inheritance-aware** (candidate + transitive parents through `imports`), because an L2 importing ETH1 has an empty `parse_directives` array of its own.
+1. **`hanging_api` on a `SUBSCRIBE`-tagged API → FAIL.** The router never reads it. `consumer_websocket_manager.go:525` branches on the SUBSCRIBE function tag straight into `StartSubscription`; every `GetRelayTimeout` call site is on the unary path and no subscription manager references it. A subscription's lifetime is its socket's — the WS manager's only timeouts are two hardcoded 10s constants for *unsubscribe* teardown. So on a SUBSCRIBE-tagged API, `hanging_api`, `compute_units` and `timeout_ms` are all dead inputs. SUBSCRIBE names are collected **inheritance-aware** (candidate + transitive parents through `imports`), because an L2 importing ETH1 has an empty `parse_directives` array of its own.
 
-2. **`hanging_api: true` with no `timeout_ms` → FAIL.** Automates the rule stated at `SKILL.md:263` and `agents/spec-builder.md:59`, which those docs previously flagged as having no validator coverage.
+2. **`hanging_api: true` with no `timeout_ms` → FAIL.** Automates the rule stated in SKILL.md's Phase 6 pre-flight checklist and `agents/spec-builder.md:59`, which those docs previously flagged as having no validator coverage.
 
-3. **`timeout_ms` below `max(1s, CU × 100ms)` → FAIL.** `timeout_ms` **replaces** the CU term rather than adding to it, so a value under the CU-implied floor *shortens* the relay budget relative to setting nothing at all — the opposite of why anyone sets the field. Caught live on Acala: at CU 1000 the implied base is 100 000 ms, and a reflexive `timeout_ms: 30000` would have cut the budget from 124s to 54s (MAG-3389).
+3. **`timeout_ms` below `max(1s, CU × 100ms)` → FAIL.** The 1s is `MinimumTimePerRelayDelay`'s default; a deployment that raises it with `--min-relay-timeout` raises the real budget too, so the check stays conservative there. `timeout_ms` **replaces** the CU term rather than adding to it, so a value under the CU-implied floor *shortens* the relay budget relative to setting nothing at all — the opposite of why anyone sets the field. Caught live on Acala: at CU 1000 the implied base is 100 000 ms, and a reflexive `timeout_ms: 30000` would have cut the budget from 124s to 54s (MAG-3389).
 
 Rule 1 short-circuits — a subscription is never judged on its timeout, since neither field is read.
 
@@ -258,7 +257,7 @@ REST entries are keyed `"TYPE /path"` where the verb disambiguates: `GET /cosmos
 
 Calibration over the 140-spec catalogue: **29 FAIL rows in 16 specs, 11 INFO rows** — every FAIL a genuine defect (the 10 specs with the watch pair at `0`, `babylon`/`kava`/`sei` on `decode/amino`, `monad`/`optimism` on `eth_sendTransaction`, and `cosmossdk`'s four REST reads). Two of the 29 — `monad` and `optimism`'s `eth_sendTransaction` — are `enabled: false`, so they are latent rather than live; the other 27 are on enabled methods.
 
-**Scope.** Candidate file only, which is how the pipeline uses it. 152 APIs across ~30 established specs (`ethereum`, `cosmossdk`, `tendermint`, `solana`, `kusama` …) predate rule 2 and would fail if it were run over the whole repo; that is a separate cleanup, tracked in MAG-3389, not this gate's job.
+**Scope.** Candidate file only, which is how the pipeline uses it. 152 APIs across ~30 established specs (`ethereum`, `cosmossdk`, `tendermint`, `solana`, `kusama` …) predate rule 2 and would fail if it were run over the whole repo; that is a separate cleanup, tracked in MAG-3389, not this gate's job. The same rows would fail an **update** of one of those specs (and an add-testnet or add-collection run), where the candidate *is* the established file: on main, `zcash.json` and `solana.json` carry one `check_hanging_api.sh` FAIL row each, `starknet.json` six, and `monad.json` and `optimism.json` one `check_stateful.sh` row each. So both scripts take `--base <file>`: a FAIL row the base already fails with identical text moves to `=== INFO ===` as `[pre-existing …]`, and only new or changed rows FAIL. Phase 6 passes the file on `origin/main` in those modes (nothing for a new chain), and Phase 10a passes the pre-fix snapshot, so a FAIL there really is the fixer's. All five specs above pass against themselves as base. The base is judged in the candidate's directory, by its own `imports`, so an inherited SUBSCRIBE directive resolves the same way for both.
 
 ### Aggregation, severity routing, and the fixer
 

@@ -2,10 +2,12 @@
 # check_hanging_api.sh — the three `category.hanging_api` rules, verified against
 # the smart-router source rather than inferred from the specs.
 #
-# `hanging_api` feeds exactly one thing: protocol/chainlib/common.go:575,
+# `hanging_api` feeds exactly one thing: the window GetRelayTimeout returns
+# (smart-router protocol/chainlib/common.go:600). That function bounds a caller's
+# lava-relay-timeout override with common.BoundCallerRelayTimeout; the spec's own
+# inputs are read by routerRelayTimeout (common.go:613):
 #
-#   func GetRelayTimeout(chainMessage, averageBlockTime) time.Duration {
-#       if chainMessage.TimeoutOverride() != 0 { return chainMessage.TimeoutOverride() }
+#   func routerRelayTimeout(chainMessage, averageBlockTime) time.Duration {
 #       extraRelayTimeout := 0
 #       if IsHangingApi(chainMessage) { extraRelayTimeout = averageBlockTime * 2 }
 #       relayTimeAddition := common.GetTimePerCu(GetComputeUnits(chainMessage))
@@ -17,10 +19,10 @@
 #
 # Two consequences drive the checks below.
 #
-# SUBSCRIBE never reaches it. protocol/chainlib/consumer_websocket_manager.go:298
+# SUBSCRIBE never reaches it. protocol/chainlib/consumer_websocket_manager.go:525
 # branches on the SUBSCRIBE function tag and hands the message to
-# StartSubscription; the four GetRelayTimeout call sites are all on the unary
-# path, and neither subscription manager references it. A subscription's lifetime
+# StartSubscription; every GetRelayTimeout call site is on the unary path, and
+# no subscription manager references it. A subscription's lifetime
 # is its socket's — nothing in the spec bounds it. So on a SUBSCRIBE-tagged API,
 # `hanging_api`, `compute_units` and `timeout_ms` are dead inputs, and setting
 # `hanging_api` there states something the router will never read. 3 of 288
@@ -32,8 +34,8 @@
 # CU 1000 carries a 100 000 ms implied base; a reflexive `timeout_ms: 30000`
 # would have cut it from 124s to 54s (MAG-3389, PR #136).
 #
-# The third check automates the rule stated at create-spec/SKILL.md:263 and
-# agents/spec-builder.md:59 — "Every API with category.hanging_api: true has an
+# The third check automates the rule stated in create-spec/SKILL.md (Phase 6,
+# pre-flight checklist) and agents/spec-builder.md:59 — "Every API with category.hanging_api: true has an
 # explicit timeout_ms" — which those docs flag as having no validator coverage.
 #
 # Scope note: this gate reads the CANDIDATE file only, which is how the pipeline
@@ -46,23 +48,45 @@
 # way check_directive_presence.sh does, because an L2 that imports ETH1 carries an
 # empty parse_directives array of its own.
 #
-# Usage: check_hanging_api.sh <spec.json>
-# Prints "=== PASS ===" / "=== FAIL ===" sections; exit 1 if any FAIL row.
+# Base mode (--base <file>): an update, add-testnet or add-collection run edits
+# an established spec, which may already carry some of those 152 rows. With a
+# base — the same file on origin/main, or Phase 10a's pre-fix snapshot — a FAIL
+# row that the base already fails with the identical text is reported under
+# INFO as pre-existing, and only rows that are new or changed FAIL. Without a
+# base (a new chain) every row is judged, as before.
+#
+# Usage: check_hanging_api.sh [--base <base.json>] <spec.json>
+# Prints "=== PASS ===" / "=== INFO ===" / "=== FAIL ===" sections; exit 1 if
+# any FAIL row, 2 on usage or an unreadable base.
 
 set -euo pipefail
 export LC_ALL=C
 
-if [[ $# -ne 1 ]]; then
-  echo "usage: $0 <spec.json>" >&2
-  exit 2
-fi
-SPEC=$(realpath -- "$1")
+usage() { echo "usage: $0 [--base <base.json>] <spec.json>" >&2; exit 2; }
+BASE="" CONTEXT="" SPEC_ARG=""
+while (($#)); do
+  case "$1" in
+    --base) (($# >= 2)) || usage; BASE=$2; shift 2 ;;
+    # Internal: judge the base as if it sat at the candidate's path, so its
+    # imports resolve against the candidate's siblings, not wherever it was saved.
+    --context) (($# >= 2)) || usage; CONTEXT=$2; shift 2 ;;
+    -*) usage ;;
+    *) [[ -z "$SPEC_ARG" ]] || usage; SPEC_ARG=$1; shift ;;
+  esac
+done
+[[ -n "$SPEC_ARG" ]] || usage
+SPEC=$(realpath -- "$SPEC_ARG")
 [[ -r "$SPEC" ]] || { echo "cannot read spec: $SPEC" >&2; exit 1; }
+SPECDIR=$(dirname "$(realpath -- "${CONTEXT:-$SPEC}")")
 
-# ---- index -> file map over every *.json beside the candidate (flat repo). First wins.
+# ---- index -> file map: the spec's own indexes first, then every *.json beside
+# it (flat repo). First wins, so a base judged in context resolves to itself.
 declare -A INDEX_FILE
+while IFS= read -r idx; do
+  [[ -n "$idx" ]] && INDEX_FILE[$idx]=$SPEC
+done < <(jq -r '.proposal.specs[]?.index // empty' "$SPEC" 2>/dev/null)
 shopt -s nullglob
-for f in "$(dirname "$SPEC")"/*.json; do
+for f in "$SPECDIR"/*.json; do
   while IFS= read -r idx; do
     [[ -z "$idx" || -n "${INDEX_FILE[$idx]:-}" ]] && continue
     INDEX_FILE[$idx]=$f
@@ -114,11 +138,14 @@ while IFS=$'\t' read -r idx iface name cu tms; do
   fi
 
   implied=$(( cu * 100 ))
-  (( implied < 1000 )) && implied=1000   # GetTimePerCu floors at 1s
+  # GetTimePerCu floors at MinimumTimePerRelayDelay. 1000 assumes its default:
+  # a deployment that raises it with --min-relay-timeout raises the real budget
+  # too, so this check stays conservative there.
+  (( implied < 1000 )) && implied=1000
 
-  # 2. hanging_api: true with no timeout_ms (SKILL.md:263).
+  # 2. hanging_api: true with no timeout_ms (SKILL.md, Phase 6 pre-flight checklist).
   if (( tms == 0 )); then
-    FAIL+=("$ROW|hanging_api: true with no timeout_ms (SKILL.md:263); relay budget falls back to the CU-derived ${implied}ms + 2x block time")
+    FAIL+=("$ROW|hanging_api: true with no timeout_ms (SKILL.md, Phase 6 pre-flight checklist); relay budget falls back to the CU-derived ${implied}ms + 2x block time")
     continue
   fi
 
@@ -141,8 +168,27 @@ done < <(jq -r '
       (.timeout_ms // 0)
     ] | @tsv' "$SPEC")
 
+# ---- base mode: demote the rows the base already fails, verbatim.
+INFO=()
+if [[ -n "$BASE" ]]; then
+  jq -e 'type == "object"' "$BASE" >/dev/null 2>&1 || { echo "cannot read base: $BASE" >&2; exit 2; }
+  BASE_FAILS=$(bash "$0" --context "$SPEC" "$BASE" 2>/dev/null | sed -n '/^=== FAIL ===$/,$p' | tail -n +2 || true)
+  KEPT=()
+  for row in ${FAIL[@]+"${FAIL[@]}"}; do
+    if grep -qxF -- "$row" <<<"$BASE_FAILS"; then
+      INFO+=("$row  [pre-existing: the base fails this row identically]")
+    else
+      KEPT+=("$row")
+    fi
+  done
+  FAIL=(${KEPT[@]+"${KEPT[@]}"})
+fi
+
 echo "=== PASS ==="
 ((${#PASS[@]})) && printf '%s\n' "${PASS[@]}"
+echo
+echo "=== INFO ==="
+((${#INFO[@]})) && printf '%s\n' "${INFO[@]}"
 echo
 echo "=== FAIL ==="
 ((${#FAIL[@]})) && printf '%s\n' "${FAIL[@]}"
