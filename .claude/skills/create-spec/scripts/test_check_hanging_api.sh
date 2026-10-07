@@ -43,7 +43,7 @@ echo "hanging-on-subscribe: OK"
 grep -q "below the CU-implied" <<<"$OUT" && fail "onsub: should not also report a timeout row"
 echo "rule-1-precedence: OK"
 
-# 3. hanging_api: true with no timeout_ms → FAIL (rule 2, SKILL.md:263)
+# 3. hanging_api: true with no timeout_ms → FAIL (rule 2, SKILL.md Phase 6 pre-flight checklist)
 spec noto.json NOTO '[]' "$nodir" "$(api eth_sendRawTransaction 10 0 true)"
 if bash "$SCRIPT" "$T/noto.json" >/dev/null 2>&1; then fail "noto: expected non-zero exit"; fi
 OUT=$(bash "$SCRIPT" "$T/noto.json" 2>&1 || true)
@@ -51,11 +51,11 @@ grep -q "no timeout_ms" <<<"$OUT" || fail "noto: got '$OUT'"
 echo "missing-timeout: OK"
 
 # 4. timeout_ms below the CU-implied floor → FAIL (rule 3) — the Acala case:
-#    cu=1000 implies 100000ms, so a reflexive 30000 shortens the budget.
+#    cu=1000 implies 100000ms, so a reflexive 30000 shortens the window.
 spec short.json SHORT '[]' "$nodir" "$(api author_submitAndWatchExtrinsic 1000 30000 true)"
 if bash "$SCRIPT" "$T/short.json" >/dev/null 2>&1; then fail "short: expected non-zero exit"; fi
 OUT=$(bash "$SCRIPT" "$T/short.json" 2>&1 || true)
-grep -q "SHORTENS the relay budget" <<<"$OUT" || fail "short: got '$OUT'"
+grep -q "SHORTENS the relay window" <<<"$OUT" || fail "short: got '$OUT'"
 grep -q "below the CU-implied 100000ms" <<<"$OUT" || fail "short: wrong implied floor in '$OUT'"
 echo "timeout-shortens: OK"
 
@@ -142,6 +142,36 @@ if bash "$SCRIPT" --base "$T/base/ichild2.json" "$T/ichild2.json" >/dev/null 2>&
 fi
 rm -f "$T/ichild2.json"
 echo "base-judged-by-its-own-imports: OK"
+
+# The add-collection case: the base already fails eth_sendRawTransaction in its
+# jsonrpc collection, and the candidate adds a jsonrpc add-on collection that
+# declares it again with the same defect. The new row names its collection, so
+# the old one cannot excuse it.
+cat > "$T/base/addc.json" <<EOF
+{"proposal":{"specs":[{"index":"ADDC","imports":[],"api_collections":[
+  {"collection_data":{"api_interface":"jsonrpc","add_on":""},"parse_directives":[],"apis":[$(api eth_sendRawTransaction 10 0 true)]}]}]},"deposit":"x"}
+EOF
+cat > "$T/addc.json" <<EOF
+{"proposal":{"specs":[{"index":"ADDC","imports":[],"api_collections":[
+  {"collection_data":{"api_interface":"jsonrpc","add_on":""},"parse_directives":[],"apis":[$(api eth_sendRawTransaction 10 0 true)]},
+  {"collection_data":{"api_interface":"jsonrpc","add_on":"debug"},"parse_directives":[],"apis":[$(api eth_sendRawTransaction 10 0 true)]}]}]},"deposit":"x"}
+EOF
+OUT=$(bash "$SCRIPT" --base "$T/base/addc.json" "$T/addc.json" 2>&1 || true)
+sed -n '/=== FAIL ===/,$p' <<<"$OUT" | grep -q "^ADDC/jsonrpc@debug/eth_sendRawTransaction|" \
+  || fail "base, same defect in a new add-on collection: expected FAIL: $OUT"
+grep -q "^ADDC/jsonrpc/eth_sendRawTransaction|.*pre-existing" <<<"$OUT" \
+  || fail "base, same defect in a new add-on collection: the base's row should be INFO: $OUT"
+echo "base-new-addon-collection-fails: OK"
+
+# Matched by count: a row the base fails once excuses one copy, not two.
+cat > "$T/addc.json" <<EOF
+{"proposal":{"specs":[{"index":"ADDC","imports":[],"api_collections":[
+  {"collection_data":{"api_interface":"jsonrpc","add_on":""},"parse_directives":[],"apis":[$(api eth_sendRawTransaction 10 0 true),$(api eth_sendRawTransaction 10 0 true)]}]}]},"deposit":"x"}
+EOF
+OUT=$(bash "$SCRIPT" --base "$T/base/addc.json" "$T/addc.json" 2>&1 || true)
+[ "$(sed -n '/=== FAIL ===/,$p' <<<"$OUT" | grep -c "^ADDC/jsonrpc/eth_sendRawTransaction|")" -eq 1 ] \
+  || fail "base, a row duplicated: expected one FAIL and one INFO: $OUT"
+echo "base-matched-by-count: OK"
 
 echo '{' > "$T/base/broken.json"
 set +e; bash "$SCRIPT" --base "$T/base/broken.json" "$T/upd.json" >/dev/null 2>&1; rc=$?; set -e

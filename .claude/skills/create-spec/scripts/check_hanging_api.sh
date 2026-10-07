@@ -2,8 +2,12 @@
 # check_hanging_api.sh — the three `category.hanging_api` rules, verified against
 # the smart-router source rather than inferred from the specs.
 #
-# `hanging_api` feeds exactly one thing: the window GetRelayTimeout returns
-# (smart-router protocol/chainlib/common.go:600). That function bounds a caller's
+# `hanging_api` is read in three places: the dispatch window GetRelayTimeout
+# returns (smart-router protocol/chainlib/common.go:600), the attempt budget
+# (GetTimeoutInfo, common.go:803 -> GetTimeoutForProcessing, which raises it to
+# 6x DefaultTimeout, protocol/common/timeout.go:198) and the recovery probe
+# (protocol/rpcsmartrouter/recovery_probe.go:136). The checks below concern the
+# window. GetRelayTimeout bounds a caller's
 # lava-relay-timeout override with common.BoundCallerRelayTimeout; the spec's own
 # inputs are read by routerRelayTimeout (common.go:613):
 #
@@ -19,28 +23,30 @@
 #
 # Two consequences drive the checks below.
 #
-# SUBSCRIBE never reaches it. protocol/chainlib/consumer_websocket_manager.go:525
-# branches on the SUBSCRIBE function tag and hands the message to
-# StartSubscription; every GetRelayTimeout call site is on the unary path, and
-# no subscription manager references it. A subscription's lifetime
-# is its socket's — nothing in the spec bounds it. So on a SUBSCRIBE-tagged API,
-# `hanging_api`, `compute_units` and `timeout_ms` are dead inputs, and setting
-# `hanging_api` there states something the router will never read. 3 of 288
+# SUBSCRIBE never reaches it over WebSocket, which is where a subscription is
+# served. protocol/chainlib/consumer_websocket_manager.go:525 branches on the
+# SUBSCRIBE function tag and hands the message to StartSubscription; every
+# GetRelayTimeout call site is on the unary path, and no subscription manager
+# references it. A subscription's lifetime is its socket's — nothing in the spec
+# bounds it. (A SUBSCRIBE call sent over HTTP takes the unary path like any
+# other, but it cannot deliver a subscription there.) So on a SUBSCRIBE-tagged
+# API, `hanging_api` states something the subscription path never reads. 3 of 288
 # SUBSCRIBE-registered APIs across the catalogue do this (MAG-3389).
 #
 # `timeout_ms` REPLACES the CU term, it does not add to it. So a `timeout_ms`
-# below `CU * 100` ms *shortens* the relay budget relative to setting nothing at
-# all — the opposite of why anyone sets it. Real case: Acala's watch pair at
+# below `CU * 100` ms *shortens* the relay window relative to setting nothing at
+# all — the opposite of why anyone sets it. (The window decides when the router
+# tries another provider; the attempt budget above is separate and unchanged.) Real case: Acala's watch pair at
 # CU 1000 carries a 100 000 ms implied base; a reflexive `timeout_ms: 30000`
 # would have cut it from 124s to 54s (MAG-3389, PR #136).
 #
-# The third check automates the rule stated in create-spec/SKILL.md (Phase 6,
+# The second check automates the rule stated in create-spec/SKILL.md (Phase 6,
 # pre-flight checklist) and agents/spec-builder.md:59 — "Every API with category.hanging_api: true has an
 # explicit timeout_ms" — which those docs flag as having no validator coverage.
 #
 # Scope note: this gate reads the CANDIDATE file only, which is how the pipeline
 # uses it. 152 APIs across ~30 established specs (ethereum, cosmossdk, tendermint,
-# solana, kusama …) predate the timeout_ms rule and would fail check 3 if it were
+# solana, kusama …) predate the timeout_ms rule and would fail check 2 if it were
 # ever run over the whole repo. That is a separate cleanup, not this gate's job.
 #
 # SUBSCRIBE names are collected inheritance-aware: the candidate's own directives
@@ -50,9 +56,12 @@
 #
 # Base mode (--base <file>): an update, add-testnet or add-collection run edits
 # an established spec, which may already carry some of those 152 rows. With a
-# base — the same file on origin/main, or Phase 10a's pre-fix snapshot — a FAIL
-# row that the base already fails with the identical text is reported under
-# INFO as pre-existing, and only rows that are new or changed FAIL. Without a
+# base — the same file as it is on origin/main, in Phase 6 and Phase 10a alike —
+# a FAIL row that the base already fails with the identical text is reported
+# under INFO as pre-existing, and only rows that are new or changed FAIL. Rows
+# name the collection (interface, REST verb, internal_path, add_on), and are
+# matched by count, so a method that already fails in one collection does not
+# excuse the same method failing in a collection this run added. Without a
 # base (a new chain) every row is judged, as before.
 #
 # Usage: check_hanging_api.sh [--base <base.json>] <spec.json>
@@ -126,14 +135,16 @@ PASS=()
 FAIL=()
 
 # ---- evaluate every hanging API in the candidate.
-# jq emits: index <TAB> interface <TAB> name <TAB> cu <TAB> timeout_ms (0 = unset)
-while IFS=$'\t' read -r idx iface name cu tms; do
+# jq emits: index <TAB> collection <TAB> name <TAB> cu <TAB> timeout_ms (0 = unset)
+# where collection is the interface, plus ":VERB" on rest, the internal_path and
+# "@add_on" when set: jsonrpc, rest:GET, jsonrpc@debug.
+while IFS=$'\t' read -r idx coll name cu tms; do
   [[ -z "$name" || "$name" == "null" ]] && continue
-  ROW="$idx/$iface/$name"
+  ROW="$idx/$coll/$name"
 
   # 1. hanging_api on a SUBSCRIBE-tagged API — the router never reads it.
   if grep -qxF -- "$name" <<<"$SUBS"; then
-    FAIL+=("$ROW|hanging_api set on a SUBSCRIBE-tagged API; the subscription path never reaches GetRelayTimeout, so this flag is never read — remove category.hanging_api")
+    FAIL+=("$ROW|hanging_api set on a SUBSCRIBE-tagged API; the subscription path never reaches GetRelayTimeout, so it never reads this flag — remove category.hanging_api")
     continue
   fi
 
@@ -151,7 +162,7 @@ while IFS=$'\t' read -r idx iface name cu tms; do
 
   # 3. timeout_ms below the CU-implied floor — it replaces that term, so this shortens.
   if (( tms < implied )); then
-    FAIL+=("$ROW|timeout_ms ${tms}ms is below the CU-implied ${implied}ms (cu=${cu}); timeout_ms REPLACES the CU term, so this SHORTENS the relay budget — raise it above ${implied} or lower compute_units")
+    FAIL+=("$ROW|timeout_ms ${tms}ms is below the CU-implied ${implied}ms (cu=${cu}); timeout_ms REPLACES the CU term, so this SHORTENS the relay window — raise it above ${implied} or lower compute_units")
     continue
   fi
 
@@ -161,21 +172,30 @@ done < <(jq -r '
   | $s.api_collections[]? as $c
   | $c.apis[]?
   | select(.category.hanging_api == true)
+  | ($c.collection_data // {}) as $d
+  | ($d.api_interface // $d.apiInterface // "?") as $i
   | [ $s.index,
-      ($c.collection_data.api_interface // $c.collection_data.apiInterface // "?"),
+      ($i + (if $i == "rest" and ($d.type // "") != "" then ":" + $d.type else "" end)
+          + ($d.internal_path // "")
+          + (if ($d.add_on // "") != "" then "@" + $d.add_on else "" end)),
       .name,
       (.compute_units // 0),
       (.timeout_ms // 0)
     ] | @tsv' "$SPEC")
 
-# ---- base mode: demote the rows the base already fails, verbatim.
+# ---- base mode: demote the rows the base already fails, verbatim, by count.
 INFO=()
 if [[ -n "$BASE" ]]; then
   jq -e 'type == "object"' "$BASE" >/dev/null 2>&1 || { echo "cannot read base: $BASE" >&2; exit 2; }
   BASE_FAILS=$(bash "$0" --context "$SPEC" "$BASE" 2>/dev/null | sed -n '/^=== FAIL ===$/,$p' | tail -n +2 || true)
+  declare -A BASE_N=()
+  while IFS= read -r l; do
+    [[ -n "$l" ]] && BASE_N["$l"]=$(( ${BASE_N["$l"]:-0} + 1 ))
+  done <<<"$BASE_FAILS"
   KEPT=()
   for row in ${FAIL[@]+"${FAIL[@]}"}; do
-    if grep -qxF -- "$row" <<<"$BASE_FAILS"; then
+    if (( ${BASE_N["$row"]:-0} > 0 )); then
+      BASE_N["$row"]=$(( BASE_N["$row"] - 1 ))
       INFO+=("$row  [pre-existing: the base fails this row identically]")
     else
       KEPT+=("$row")

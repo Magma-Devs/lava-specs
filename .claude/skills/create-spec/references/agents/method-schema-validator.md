@@ -21,7 +21,7 @@ Both emit `=== PASS ===` and `=== FAIL ===`, exit 0 if no FAIL rows and 1 otherw
 
 `check_method_schema.sh` covers per-API required fields, `parser_arg` shape, and duplicate names.
 
-`check_hanging_api.sh` covers the three `category.hanging_api` rules: the flag must not appear on a `SUBSCRIBE`-tagged API (the router's subscription path never reads it), a hanging API must carry an explicit `timeout_ms`, and that `timeout_ms` must be at least `max(1s, compute_units × 100ms)` — below that it *shortens* the relay budget, because `timeout_ms` replaces the CU term rather than adding to it. TESTING.md §9 has the router citations.
+`check_hanging_api.sh` covers the three `category.hanging_api` rules: the flag must not appear on a `SUBSCRIBE`-tagged API (the router's WebSocket subscription path never reads it), a hanging API must carry an explicit `timeout_ms`, and that `timeout_ms` must be at least `max(1s, compute_units × 100ms)` — below that it *shortens* the relay budget, because `timeout_ms` replaces the CU term rather than adding to it. TESTING.md §9 has the router citations.
 
 `check_stateful.sh` checks the direction of `category.stateful` — a write missing it loses multi-provider broadcast, a read carrying it is fanned out to every provider and billed for it. Both scripts emit a third section, `=== INFO ===`, holding pre-existing rows (base mode) and, for `check_stateful.sh`, cross-spec consensus rows. **Those are advisory: they never make the gate FAIL.** Pass them through verbatim so the orchestrator can weigh them; they are usually right but must be checked against the chain's docs, not applied blindly.
 
