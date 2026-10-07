@@ -404,10 +404,11 @@ Agent(description: "Gate: method schema", subagent_type: "general-purpose", mode
 
 Wait for all 9 subagents to return. Parse each one's last `RESULT: PASS | FAIL` line.
 
-**Severity routing.** Three of the nine gates emit ADVISORY findings in addition to their `RESULT` line:
+**Severity routing.** Four of the nine gates emit ADVISORY findings in addition to their `RESULT` line:
 - `cu-semantic` — its Layer-1 ADVISORY rows (out-of-band CU). These DO feed the fixer as suggested CU adjustments.
 - `enabled` — its WATCH-LIST rows. These do NOT feed the fixer (never auto-disable — free-tier caveat). Print them to the user and carry them into Phase 8 as a probe watch-list.
 - `pruning` — when it prints `INFO: retention unknown`, treat as PASS (no fix); print the INFO to the user.
+- `method-schema` — its ADVISORY block (`check_stateful.sh` consensus rows, and `[pre-existing …]` rows the base already fails). These do NOT feed the fixer: print them to the user. Only its FAIL rows route to the fixer.
 
 A gate's `RESULT: FAIL` (cu-semantic Layer-0 subscription-CU violation, pruning >3× off, or any existing hard gate) routes to the fixer as a must-fix. The `enabled` gate's `RESULT` is always PASS.
 
@@ -673,7 +674,7 @@ If exit non-zero: outcome = `BROKEN_AFTER_FIX`. Present the snapshot path (`/tmp
 
 Valid JSON is not the same as a valid spec. The Phase 6 gates ran **before** the fixer, so any defect the fixer itself introduces is unguarded — and the fixer is exactly the step most likely to introduce these, because it applies field-level instructions without the surrounding context:
 
-- *"`hanging_api: true` needs a `timeout_ms`"* → a reflexive `timeout_ms: 30000` on a CU-1000 API **shortens** the relay budget, because `timeout_ms` replaces the CU term rather than adding to it. This exact mistake was made by hand while writing MAG-3389.
+- *"`hanging_api: true` needs a `timeout_ms`"* → a reflexive `timeout_ms: 30000` on a CU-1000 API **shortens** the relay window, because `timeout_ms` replaces the CU term rather than adding to it. This exact mistake was made by hand while writing MAG-3389.
 - *"disable the methods that failed the probe"* → a disabled count that no longer matches the PR body's claim.
 - A `stateful` flipped on the wrong side of a fix.
 
@@ -684,15 +685,18 @@ S=.claude/skills/create-spec/scripts
 for check in check_method_schema check_unused_fields; do
   bash $S/$check.sh <chain>.json || echo "POST-FIX GATE FAILED: $check"
 done
-# Judged against the pre-fix snapshot: a row the spec already failed before the
-# fixer ran is reported as pre-existing INFO, not as a regression.
+# The same base as Phase 6: the file as it is on main, or none for a new chain.
+# Never the pre-fix snapshot: it is taken after the Phase-6 fixer, so it already
+# holds any Phase-6 defect that survived, and would excuse it as pre-existing.
+BASE_ARGS=()
+git show origin/main:<chain>.json > /tmp/spec_<chain>_base.json 2>/dev/null \
+  && BASE_ARGS=(--base /tmp/spec_<chain>_base.json)
 for check in check_hanging_api check_stateful; do
-  bash $S/$check.sh --base /tmp/spec_<chain>_pre_fix.json <chain>.json || echo "POST-FIX GATE FAILED: $check"
+  bash $S/$check.sh "${BASE_ARGS[@]}" <chain>.json || echo "POST-FIX GATE FAILED: $check"
 done
-bash $S/check_disabled_count.sh <chain>.json --expect <N>
 ```
 
-Any FAIL row here is a fixer-introduced regression, not an original defect: `--base` has already moved every row the pre-fix file failed identically under `=== INFO ===`, so what is left under FAIL is new or changed by the fixer. Feed it back as a CRITICAL item and re-run the fixer on that item alone — do not carry it into Phase 10b. `=== INFO ===` rows (pre-existing rows, and `check_stateful.sh`'s consensus rows) are advisory and never block.
+Any FAIL row here blocks: it is not on main, so this PR put it there, either the fixer just now or an earlier phase it should have caught (a Phase-6 FAIL the fixer left in place is exactly the case this re-run exists for). `--base` has already moved every row main fails identically under `=== INFO ===`, so an update is never blocked over methods it did not touch. Feed each FAIL back as a CRITICAL item and re-run the fixer on that item alone — do not carry it into Phase 10b. `=== INFO ===` rows (pre-existing rows, and `check_stateful.sh`'s consensus rows) are advisory and never block.
 
 Then re-count what the fixer actually disabled. This pass is where the disabled
 set changes, and it runs *after* the PR body was written — the #130 mechanism,
@@ -706,7 +710,7 @@ The report-only form prints the set; it cannot assert here, because the body it
 would be checked against is not final until the PR is (the `spec_guards.yml`
 gate on `pull_request: edited` is the point that sees both halves settled). Use
 its distinct-method count as the value the PR body's `<!-- disabled-count: N -->`
-marker must carry — and as the `<N>` for the `--expect` form above — and confirm
+marker must carry, and confirm
 every listed method has a positive-evidence row in the Disabled-API
 Justifications ledger. If the count moved and the body is already posted, update
 the marker and the ledger comment before Phase 11.

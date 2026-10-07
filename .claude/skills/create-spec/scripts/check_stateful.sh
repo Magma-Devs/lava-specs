@@ -3,10 +3,11 @@
 #
 # `stateful: 1` is not a label, it is a routing instruction. It maps to
 # common.CONSISTENCY_SELECT_ALL_PROVIDERS, and the router acts on it in four
-# places (rpcsmartrouter_server.go:3336, :3585, :3835, :4735): the call is fanned
-# out to EVERY provider, and it is excluded from cross-validation
-# (cross_validation_policy.go:422) and from the recovery probe
-# (recovery_probe.go:112-133).
+# places (smart-router protocol/rpcsmartrouter/rpcsmartrouter_server.go:1384,
+# :4112, :4921, :6008): the call is fanned out to EVERY provider, and it is
+# excluded from cross-validation (the ValidateNoStatefulPolicies guard,
+# cross_validation_policy.go:572, wired at cross_validation_boot.go:107-119)
+# and from the recovery probe (recovery_probe.go:112-133).
 #
 # So the two directions fail differently, and both silently:
 #   stateful: 0 on a write  -> the broadcast goes to ONE provider. No
@@ -20,7 +21,7 @@
 #     subscription managers. So on a SUBSCRIBE-tagged method such as
 #     author_submitAndWatchExtrinsic, provider fan-out does NOT depend on this
 #     flag. What does still read it there is ApiHasStatefulCategory
-#     (base_chain_parser.go:549, via rpcsmartrouter_server.go:456): a lookup by
+#     (base_chain_parser.go:608, via cross_validation_boot.go:107): a lookup by
 #     method NAME, transport-independent, used by the cross-validation policy
 #     guard to reject an enabled per-method CV policy on a write. That is why
 #     the write list still FAILs on subscription methods rather than skipping
@@ -32,9 +33,11 @@
 #
 # Unlike hanging_api, this cannot be settled from the router source: "does this
 # method change chain state" is chain knowledge. Nor can it be settled by vote —
-# across the catalogue `author_submitAndWatchExtrinsic` splits 10 specs at 0
+# across the catalogue `author_submitAndWatchExtrinsic` split 10 specs at 0
 # against 11 at 1, with kusama.json and polkadot.json on opposite sides, so a
-# majority rule produces no answer exactly where one is needed.
+# majority rule produces no answer exactly where one is needed. (That was the
+# split before MAG-3389's fixes; all 21 now declare 1, which a vote would have
+# reached only after the fact.)
 #
 # Hence three checks of decreasing confidence:
 #
@@ -57,10 +60,13 @@
 # Base mode (--base <file>): established specs already carry some FAIL rows
 # (monad and optimism declare eth_sendTransaction at 0), and an update,
 # add-testnet or add-collection run must not fail on rows it never touched.
-# With a base — the same file on origin/main, or Phase 10a's pre-fix snapshot —
-# a FAIL row the base already fails with the identical text moves to INFO as
-# pre-existing; only new or changed rows FAIL. Without a base (a new chain)
-# every row is judged, as before.
+# With a base — the same file as it is on origin/main, in Phase 6 and Phase 10a
+# alike — a FAIL row the base already fails with the identical text moves to
+# INFO as pre-existing; only new or changed rows FAIL. Rows name the collection
+# (interface, REST verb, internal_path, add_on) and are matched by count, so a
+# method that already fails in one collection does not excuse the same method
+# failing in a collection this run added. Without a base (a new chain) every
+# row is judged, as before.
 #
 # Usage: check_stateful.sh [--base <base.json>] <spec.json>
 # Prints "=== PASS ===" / "=== INFO ===" / "=== FAIL ==="; exit 1 on any FAIL
@@ -179,9 +185,9 @@ fi
 
 PASS=(); FAIL=(); INFO=()
 
-while IFS=$'\t' read -r idx iface ctype name st; do
+while IFS=$'\t' read -r idx iface ctype coll name st; do
   [[ -z "$name" || "$name" == "null" ]] && continue
-  ROW="$idx/$iface/$name"
+  ROW="$idx/$coll/$name"
   KEY="$name"
   if [[ "$iface" == "rest" ]]; then
     if [[ -n "$ctype" && "$ctype" != "-" ]]; then
@@ -224,20 +230,31 @@ done < <(jq -r '
   .proposal.specs[]? as $s
   | $s.api_collections[]? as $c
   | $c.apis[]?
+  | ($c.collection_data // {}) as $d
+  | ($d.api_interface // "?") as $i
   | [ $s.index,
-      ($c.collection_data.api_interface // "?"),
-      ($c.collection_data.type // "-"),
+      $i,
+      ($d.type // "-"),
+      # The row label: interface, ":VERB" on rest, internal_path, "@add_on".
+      ($i + (if $i == "rest" and ($d.type // "") != "" then ":" + $d.type else "" end)
+          + ($d.internal_path // "")
+          + (if ($d.add_on // "") != "" then "@" + $d.add_on else "" end)),
       .name,
       ((.category.stateful // 0)|tostring)
     ] | @tsv' "$SPEC")
 
-# ---- base mode: demote the rows the base already fails, verbatim.
+# ---- base mode: demote the rows the base already fails, verbatim, by count.
 if [[ -n "$BASE" ]]; then
   jq -e 'type == "object"' "$BASE" >/dev/null 2>&1 || { echo "cannot read base: $BASE" >&2; exit 2; }
   BASE_FAILS=$(bash "$0" --fails-only "$BASE" 2>/dev/null | sed -n '/^=== FAIL ===$/,$p' | tail -n +2 || true)
+  declare -A BASE_N=()
+  while IFS= read -r l; do
+    [[ -n "$l" ]] && BASE_N["$l"]=$(( ${BASE_N["$l"]:-0} + 1 ))
+  done <<<"$BASE_FAILS"
   KEPT=()
   for row in ${FAIL[@]+"${FAIL[@]}"}; do
-    if grep -qxF -- "$row" <<<"$BASE_FAILS"; then
+    if (( ${BASE_N["$row"]:-0} > 0 )); then
+      BASE_N["$row"]=$(( BASE_N["$row"] - 1 ))
       INFO+=("$row  [pre-existing: the base fails this row identically]")
     else
       KEPT+=("$row")
