@@ -1891,7 +1891,7 @@
                                     ],
                                     "parser_func": "DEFAULT"
                                 },
-                                "compute_units": 100,
+                                "compute_units": 10,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
@@ -1906,7 +1906,7 @@
                                     ],
                                     "parser_func": "DEFAULT"
                                 },
-                                "compute_units": 100,
+                                "compute_units": 10,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
