@@ -18,19 +18,23 @@ api() { # name stateful
 # jsonrpc collection
 spec() { # file index apis...
   local f=$1 idx=$2; shift 2
-  local IFS=,
+  # Join in an assignment: an unquoted $* in a heredoc joins with spaces, not
+  # IFS, on bash before 5.3 (CI's), which makes two apis invalid JSON.
+  local IFS=, apis
+  apis="$*"
   cat > "$T/$f" <<EOF
 {"proposal":{"specs":[{"index":"$idx","imports":[],"api_collections":[
-  {"collection_data":{"api_interface":"jsonrpc"},"parse_directives":[],"apis":[$*]}]}]},"deposit":"x"}
+  {"collection_data":{"api_interface":"jsonrpc"},"parse_directives":[],"apis":[$apis]}]}]},"deposit":"x"}
 EOF
 }
 # rest collection with an explicit HTTP verb
 restspec() { # file index type apis...
   local f=$1 idx=$2 ty=$3; shift 3
-  local IFS=,
+  local IFS=, apis
+  apis="$*"
   cat > "$T/$f" <<EOF
 {"proposal":{"specs":[{"index":"$idx","imports":[],"api_collections":[
-  {"collection_data":{"api_interface":"rest","type":"$ty"},"parse_directives":[],"apis":[$*]}]}]},"deposit":"x"}
+  {"collection_data":{"api_interface":"rest","type":"$ty"},"parse_directives":[],"apis":[$apis]}]}]},"deposit":"x"}
 EOF
 }
 # The script exits 1 on FAIL rows and this suite runs under `pipefail`, so a
