@@ -12,20 +12,24 @@
 # PR of the same shape) adds api_collections for an interface — REST beside
 # jsonrpc, say — to specs that already exist. Its fix pass may change only
 # collections that are
-#   - of an api_interface the PR's first commit added, and
-#   - not on main under that index (keyed by the CollectionData 4-tuple, the key
-#     the router merges on), and
+#   - keyed by a CollectionData 4-tuple (the key the router merges on) that the
+#     PR's first commit added, and
+#   - not on main under that index, and
 #   - under an index the first commit targeted, or under an index that imports
-#     one of those, transitively.
+#     one of those, transitively. Under such an importer the collection must
+#     carry no apis, inheritance_apis, parse_directives, headers or extensions.
 # The importers are in because a collection added to an imported spec leaks into
 # every importer, carrying the parent's network values. Each importer then needs
 # a collection of its own with the same key: a disabled stub, or an override of
 # the inherited verifications. PR #145 (REST on BTC) needed both (DOGE's stub,
-# BCH's chain-id), in btc.json and in the importers' own files. Adding a
-# collection of ANOTHER interface under an existing index would rewrite what the
-# index inherits for it (a child's collection absorbs the parent's of the same
-# key), so it is outside the rule. So is every spec-level field, every
-# collection on main, every other spec and the envelope.
+# BCH's chain-id), in btc.json and in the importers' own files, and nothing more.
+# Adding any OTHER key under an existing index would rewrite what the index
+# inherits for it (a child's collection absorbs the parent's of the same key,
+# smart-router types/spec/expand.go), so it is outside the rule even when its
+# interface is the added one: on an addon PR (jsonrpc|POST|debug) the index
+# already serves jsonrpc, and a new jsonrpc|POST|trace is not this PR's. So is
+# every spec-level field, every collection on main, every other spec and the
+# envelope.
 #
 # Anchors:
 #   - classify reads the PR's FIRST commit, and its own root-JSON files, not the
@@ -37,11 +41,16 @@
 #   - main means the merge-base, not main's tip: a later merge to main that touched
 #     the same file is not this PR's change.
 #
+# Fails closed: a spec file that does not parse, at the first commit or in a
+# catalog, exits 2 rather than switching the guard off. jq reads every document
+# from a file, never from an argument (the catalog alone is ~65 KB, and Linux
+# caps one argument at 128 KB).
+#
 # Usage:
 #   BASE_REF=origin/main HEAD_REF_NAME=<branch> PR_TITLE=<title> \
 #     check_add_collection_pr.sh classify
-#   BASE=<sha> START=<sha> ALLOWED_INDEXES=A,B ADDED_IFACES=rest \
-#     check_add_collection_pr.sh enforce
+#   BASE=<sha> START=<sha> TARGETS=A ALLOWED_INDEXES=A,B \
+#     ADDED_KEYS='[["rest","","GET",""]]' check_add_collection_pr.sh enforce
 #
 # Exit: 0 pass or N/A · 1 refused · 2 usage or unusable input.
 set -euo pipefail
@@ -55,37 +64,61 @@ trap 'rm -rf "$WORK"' EXIT
 
 note() { printf '%s\n' "$*" >&2; }
 
-# The catalog at <rev> as one JSON object: index -> {file, imports, keys}, where
-# keys are the CollectionData of every collection the index declares.
+# A collection's CollectionData as the 4-tuple the router merges on.
+CK='def ck: .collection_data | [.api_interface, .internal_path, .type, .add_on] | map(. // "");'
+
+# The catalog at <rev>, written to <out> as one JSON object: index -> {file,
+# imports, keys}, where keys are the 4-tuples of every collection the index
+# declares. A root JSON that does not parse is fatal: skipping it would drop its
+# indexes from the rule.
 catalog() {
-  local rev=$1 f
-  git ls-tree --name-only "$rev" | { grep -E '^[^/]+\.json$' || true; } | while IFS= read -r f; do
-    git show "$rev:$f" 2>/dev/null | jq -c --arg f "$f" '
+  local rev=$1 out=$2 f
+  : > "$WORK/cat.parts"
+  while IFS= read -r f; do
+    git show "$rev:$f" > "$WORK/cat.one" \
+      || { note "::error::cannot read $f at ${rev:0:7}."; exit 2; }
+    jq -c --arg f "$f" "$CK"'
       [ .proposal.specs[]? | {key: .index, value: {file: $f, imports: (.imports // []),
-                                                  keys: [.api_collections[]?.collection_data]}} ]
-      | from_entries' 2>/dev/null || true
-  done | jq -s -c 'add // {}'
+                                                  keys: [.api_collections[]? | ck]}} ]
+      | from_entries' "$WORK/cat.one" >> "$WORK/cat.parts" 2>/dev/null \
+      || { note "::error::$f does not parse at ${rev:0:7}, so the catalog cannot be built."; exit 2; }
+  done < <(git ls-tree --name-only "$rev" | { grep -E '^[^/]+\.json$' || true; })
+  jq -s -c 'add // {}' "$WORK/cat.parts" > "$out"
 }
 
+# Under an importer, a freed collection may be a stub or a verifications-only
+# override: nothing that serves or reshapes an API.
+CONTENT='def content: [.apis, .inheritance_apis, .parse_directives, .headers, .extensions]
+                     | any(. != null and . != []);'
+
 # Drops what the rule allows to change: under an allowed index, every collection
-# of an added interface whose key is not in the merge-base catalog. What is left
-# must not move.
-MASK='
-  ($allowed | split(",")) as $A | ($ifaces | split(",")) as $I
+# whose key the first commit added and that is not in the merge-base catalog —
+# under an importer, only when it carries no content. What is left must not move.
+MASK="$CK $CONTENT"'
+  ($allowed | split(",")) as $A | ($targets | split(",")) as $T | $keys[0] as $K
   | .proposal.specs |= ((. // []) | map(
       . as $s
       | if ($A | index($s.index)) then
           .api_collections = [ (.api_collections // [])[] as $c
-            | select((($base[$s.index].keys // []) | any(. == $c.collection_data))
-                     or (($I | index($c.collection_data.api_interface)) | not))
+            | select((($base[0][$s.index].keys // []) | index([$c | ck]))
+                     or (($K | index([$c | ck])) | not)
+                     or ((($T | index($s.index)) | not) and ($c | content)))
             | $c ]
         else . end))'
+
+# The importer collections the mask kept only because they carry content.
+IMPORTER_CONTENT="$CK $CONTENT"'
+  ($allowed | split(",")) as $A | ($targets | split(",")) as $T | $keys[0] as $K
+  | .proposal.specs[]? | . as $s
+  | select(($A | index($s.index)) and (($T | index($s.index)) | not))
+  | .api_collections[]? | ck as $k | select(($K | index([$k])) and content)
+  | "importer-content|\($s.index)|\($k | join("|"))"'
 
 # What differs between two masked docs, one line per finding.
 DELTA='
   def keyof: .collection_data | [.api_interface, .internal_path, .type, .add_on] | join("|");
   def specs: [.proposal.specs[]? | {key: .index, value: .}] | from_entries;
-  ($a | specs) as $sa | ($b | specs) as $sb
+  ($a[0] | specs) as $sa | ($b[0] | specs) as $sb
   | ([($sa | keys[]), ($sb | keys[])] | unique[]) as $i
   | if ($sa[$i] == null) then "spec-added|\($i)"
     elif ($sb[$i] == null) then "spec-removed|\($i)"
@@ -100,14 +133,16 @@ DELTA='
         elif $ca[$k] != $cb[$k] then "collection-changed|\($i)|\($k)"
         else empty end )
     end,
-  (if ($a | del(.proposal.specs)) != ($b | del(.proposal.specs)) then "envelope" else empty end)'
+  (if ($a[0] | del(.proposal.specs)) != ($b[0] | del(.proposal.specs)) then "envelope" else empty end)'
 
+# shellcheck disable=SC2153  # TARGETS and ALLOWED_INDEXES are enforce's environment
 mask() {  # <file> -> canonical masked JSON on stdout
-  jq -S -c --argjson base "$BASECAT" --arg allowed "$ALLOWED_INDEXES" --arg ifaces "$ADDED_IFACES" "$MASK" "$1"
+  jq -S -c --slurpfile base "$WORK/basecat.json" --slurpfile keys "$WORK/keys.json" \
+    --arg allowed "$ALLOWED_INDEXES" --arg targets "$TARGETS" "$MASK" "$1"
 }
 
 classify() {
-  local base_ref="${BASE_REF:-origin/main}" start base first f added idx tmp="$WORK"
+  local base_ref="${BASE_REF:-origin/main}" start base first f idx rc tmp="$WORK"
   out() { printf '%s=%s\n' "$1" "$2"; }
   na() {
     note "::notice::add-collection guard N/A — $1"
@@ -139,67 +174,78 @@ classify() {
   done < <(git diff --name-only "$first^" "$first" -- "$ROOT_JSON")
   [ "${#files[@]}" -gt 0 ] || na "the PR's first commit changes no root spec file"
 
-  local targets="" ifaces=""
+  local targets=""
+  : > "$tmp/added.parts"
   for f in "${files[@]}"; do
     git show "$first^:$f" > "$tmp/before.json" 2>/dev/null || na "$f is new in the first commit (a new-chain PR)"
     git show "$first:$f" > "$tmp/after.json" 2>/dev/null || na "the first commit deletes $f"
-    added="$(jq -c -n --slurpfile b "$tmp/before.json" --slurpfile a "$tmp/after.json" '
-        ($b[0].proposal.specs // [] | map({key: .index, value: [.api_collections[]?.collection_data]})
+    jq -c -n --slurpfile b "$tmp/before.json" --slurpfile a "$tmp/after.json" "$CK"'
+        ($b[0].proposal.specs // [] | map({key: .index, value: [.api_collections[]? | ck]})
          | from_entries) as $known
         | [ $a[0].proposal.specs[]? | select(.index as $i | $known | has($i))
-            | . as $s | ([.api_collections[]?.collection_data] - $known[$s.index]) as $new
+            | . as $s | ([.api_collections[]? | ck] - $known[$s.index]) as $new
             | select($new | length > 0)
-            | {index: $s.index, ifaces: [$new[].api_interface]} ]' 2>/dev/null)" \
-      || na "$f does not parse at the first commit"
-    idx="$(jq -r 'map(.index) | join(",")' <<<"$added")"
+            | {index: $s.index, keys: $new} ]' > "$tmp/added.json" 2>/dev/null \
+      || { note "::error::$f does not parse on one side of the first commit ${first:0:7} — cannot classify the PR."; exit 2; }
+    idx="$(jq -r 'map(.index) | join(",")' "$tmp/added.json")"
     [ -n "$idx" ] || na "$f: the first commit adds no collection to an existing spec"
-    bash "$CCA" "$tmp/before.json" "$tmp/after.json" "$idx" >/dev/null 2>&1 \
-      || na "$f: the first commit changes more than it adds (an update, add-testnet or mixed PR)"
+    rc=0; bash "$CCA" "$tmp/before.json" "$tmp/after.json" "$idx" >/dev/null 2>&1 || rc=$?
+    case "$rc" in
+      0) ;;
+      1) na "$f: the first commit changes more than it adds (an update, add-testnet or mixed PR)" ;;
+      *) note "::error::check_collection_addition.sh could not read $f at the first commit (exit $rc) — cannot classify the PR."; exit 2 ;;
+    esac
     targets="${targets:+$targets,}$idx"
-    ifaces="${ifaces:+$ifaces,}$(jq -r 'map(.ifaces[]) | join(",")' <<<"$added")"
+    cat "$tmp/added.json" >> "$tmp/added.parts"
   done
   targets="$(tr ',' '\n' <<<"$targets" | sort -u | paste -sd, -)"
-  ifaces="$(tr ',' '\n' <<<"$ifaces" | sort -u | paste -sd, -)"
+
+  # The exact keys the first commit added, under any target: the only keys the
+  # fix pass may free.
+  local keys keys_text
+  keys="$(jq -s -c 'map(.[].keys[]) | unique' "$tmp/added.parts")"
+  keys_text="$(jq -r 'map(join("|")) | join(", ")' <<<"$keys")"
 
   # Allowed = the targets and everything that imports them, transitively, read
   # from the pre-agent head so the agent cannot widen it by adding an import.
-  local cat allowed importers files_allowed
-  cat="$(catalog "$start")"
-  allowed="$(jq -r -n --argjson cat "$cat" --arg t "$targets" '
-      [ $cat | to_entries[] | {child: .key, parents: .value.imports} ] as $edges
+  local allowed importers
+  catalog "$start" "$tmp/startcat.json"
+  allowed="$(jq -r --arg t "$targets" '
+      [ to_entries[] | {child: .key, parents: .value.imports} ] as $edges
       | def grow($set):
           ([ $edges[] | select(any(.parents[]; . as $p | $set | index($p))) | .child ] + $set | unique) as $next
           | if ($next | length) == ($set | length) then $set else grow($next) end;
-        grow($t | split(",") | unique) | join(",")')"
+        grow($t | split(",") | unique) | join(",")' "$tmp/startcat.json")"
   importers="$(comm -13 <(tr ',' '\n' <<<"$targets" | sort) <(tr ',' '\n' <<<"$allowed" | sort) | paste -sd, -)"
-  files_allowed="$(jq -r -n --argjson cat "$cat" --arg a "$allowed" \
-      '[ ($a | split(","))[] as $i | $cat[$i].file // empty ] | unique | join(",")')"
 
-  local rule="- ADD-COLLECTION PR (a guard enforces this): the Phase-10 fix pass may change ONLY api_collections whose api_interface is ${ifaces//,/ or } and that are not on main — the ones this PR added on ${targets}"
+  local rule="- ADD-COLLECTION PR (a guard enforces this): the Phase-10 fix pass may change ONLY the api_collections this PR added, keyed (api_interface|internal_path|type|add_on) ${keys_text}, on ${targets}"
   if [ -n "$importers" ]; then
-    rule+=", plus, on the specs that import them (${importers}), a collection of that kind only where the import leaks the new one with the wrong values (a disabled stub, or an override of the inherited verifications), in that spec's own file"
+    rule+=", plus, on the specs that import them (${importers}), a collection with one of those keys only where the import leaks the new one with the wrong values: a disabled stub, or an override of the inherited verifications, with no apis, inheritance_apis, parse_directives, headers or extensions, in that spec's own file"
   fi
-  rule+=". Do not change any spec-level field, any collection that is on main, any collection of another interface, or any other spec: report such findings instead of fixing them. The guard refuses the whole commit otherwise."
+  rule+=". Do not change any spec-level field or any collection that is on main, do not add a collection with any other key (even of the same api_interface), and do not touch any other spec: report such findings instead of fixing them. The guard refuses the whole commit otherwise."
 
-  note "::notice::add-collection guard ENFORCING — interface(s) ${ifaces} on ${targets}${importers:+, importers ${importers}}, first commit ${first:0:7}"
+  note "::notice::add-collection guard ENFORCING — ${keys_text} on ${targets}${importers:+, importers ${importers}}, first commit ${first:0:7}"
   out ENFORCE true
   out BASE "$base"
   out START "$start"
   out FIRST "$first"
   out TARGETS "$targets"
   out ALLOWED_INDEXES "$allowed"
-  out ADDED_IFACES "$ifaces"
-  out ALLOWED_FILES "$files_allowed"
+  out ADDED_KEYS "$keys"
   out PROMPT_RULE "$rule"
 }
 
 enforce() {
-  : "${BASE:?BASE is required}" "${START:?START is required}"
-  : "${ALLOWED_INDEXES:?ALLOWED_INDEXES is required}" "${ADDED_IFACES:?ADDED_IFACES is required}"
+  : "${BASE:?BASE is required}" "${START:?START is required}" "${TARGETS:?TARGETS is required}"
+  : "${ALLOWED_INDEXES:?ALLOWED_INDEXES is required}" "${ADDED_KEYS:?ADDED_KEYS is required}"
   git cat-file -e "$START^{commit}" 2>/dev/null || { note "::error::START $START is not a commit here."; exit 2; }
-  BASECAT="$(catalog "$BASE")"
+  printf '%s' "$ADDED_KEYS" > "$WORK/keys.json"
+  jq -e 'type == "array" and length > 0 and all(type == "array" and length == 4)' "$WORK/keys.json" >/dev/null 2>&1 \
+    || { note "::error::ADDED_KEYS is not a list of CollectionData 4-tuples: $ADDED_KEYS"; exit 2; }
+  catalog "$BASE" "$WORK/basecat.json"
 
-  local tmp="$WORK" f a b refused=0
+  local tmp="$WORK" f refused=0 keys_text
+  keys_text="$(jq -r 'map(join("|")) | join(", ")' "$WORK/keys.json")"
 
   # Drift the branch already carries is not this run's, and never blocks it. It
   # is said, once, so nobody reads a pass as "the branch is clean".
@@ -208,9 +254,9 @@ enforce() {
     [ -n "$f" ] || continue
     if ! git show "$BASE:$f" > "$tmp/x.json" 2>/dev/null; then drift+=("$f (new)"); continue; fi
     git show "$START:$f" > "$tmp/y.json" 2>/dev/null || { drift+=("$f (deleted)"); continue; }
-    a="$(mask "$tmp/x.json" 2>/dev/null)" || { drift+=("$f"); continue; }
-    b="$(mask "$tmp/y.json" 2>/dev/null)" || { drift+=("$f"); continue; }
-    [ "$a" = "$b" ] || drift+=("$f")
+    mask "$tmp/x.json" > "$tmp/xm.json" 2>/dev/null || { drift+=("$f"); continue; }
+    mask "$tmp/y.json" > "$tmp/ym.json" 2>/dev/null || { drift+=("$f"); continue; }
+    cmp -s "$tmp/xm.json" "$tmp/ym.json" || drift+=("$f")
   done < <(git diff --name-only "$BASE" "$START" -- "$ROOT_JSON")
   if [ "${#drift[@]}" -gt 0 ]; then
     note "::warning::the branch already carries committed changes outside the collections this PR may change: ${drift[*]}. Not this run's, so not refused."
@@ -242,21 +288,25 @@ enforce() {
       note "::error::'$f' does not parse after the fix pass."
       refused=1; continue
     fi
-    a="$(mask "$tmp/start.json")"
-    b="$(mask "$f")"
-    if [ "$a" != "$b" ]; then
+    mask "$tmp/start.json" > "$tmp/a.json"
+    mask "$f" > "$tmp/b.json"
+    if ! cmp -s "$tmp/a.json" "$tmp/b.json"; then
       refused=1
       note "::error::the fix pass changed '$f' outside what this add-collection PR may change:"
-      jq -r -n --argjson a "$a" --argjson b "$b" "$DELTA" | sed 's/^/    /' >&2
+      jq -r -n --slurpfile a "$tmp/a.json" --slurpfile b "$tmp/b.json" "$DELTA" | sed 's/^/    /' >&2
+      jq -r --slurpfile keys "$WORK/keys.json" --arg allowed "$ALLOWED_INDEXES" --arg targets "$TARGETS" \
+        "$IMPORTER_CONTENT" "$f" | sed 's/^/    /; s/$/  (an importer may get only a stub or a verifications-only override)/' >&2
     fi
   done
 
   if [ "$refused" -ne 0 ]; then
-    note "Allowed: collections of interface(s) ${ADDED_IFACES} that are not on main, under ${ALLOWED_INDEXES}. Refusing to commit."
+    local importers
+    importers="$(comm -13 <(tr ',' '\n' <<<"$TARGETS" | sort) <(tr ',' '\n' <<<"$ALLOWED_INDEXES" | sort) | paste -sd, -)"
+    note "Allowed: collections keyed ${keys_text} that are not on main, under ${TARGETS}${importers:+, and content-free ones (a stub or a verifications-only override) under ${importers}}. Refusing to commit."
     note "A change the PR really needs goes in as its own commit, by hand. A committed change is not judged again."
     exit 1
   fi
-  note "::notice::add-collection guard OK — the fix pass changed only collections of interface(s) ${ADDED_IFACES} that are not on main, under ${ALLOWED_INDEXES}."
+  note "::notice::add-collection guard OK — the fix pass changed only collections keyed ${keys_text} that are not on main, under ${ALLOWED_INDEXES}."
 }
 
 case "${1:-}" in

@@ -650,11 +650,13 @@ Snapshot the spec before fixing:
 cp <chain>.json /tmp/spec_<chain>_pre_fix.json
 ```
 
-Dispatch one `general-purpose` Agent subagent (`model: "sonnet"`, no worktree needed — main filesystem) with this prompt:
+Dispatch one `general-purpose` Agent subagent (`model: "sonnet"`, no worktree needed — main filesystem) with this prompt. When the run's own prompt carries an `ADD-COLLECTION PR` rule (`spec_pipeline.yml` adds one when its add-collection guard enforces), substitute that rule verbatim for `[ADD-COLLECTION RULE]`; otherwise drop that paragraph. The fixer is the one that edits, so a rule only you have read does not bound the fix, and the guard refuses the whole commit when the fix crosses it.
 
 > You are fixing a Lava blockchain spec. Read `<chain>.json` and the deduplicated gap list at `docs/<chain>/FIX_LIST.md`. Apply EVERY listed CRITICAL and MEDIUM fix in one pass. Do not touch any field not mentioned in the gap list. Do not refactor, reformat, or improve adjacent fields.
 >
 > You MUST NOT set `enabled: false` on any method, addon, or collection unless the gap entry cites positive documentation/client-source evidence with a URL — probe errors alone (`-32601`, HTTP `501`/`4xx`/`5xx`, timeouts) never justify disabling. When you do disable one, include its positive-evidence row — `| name | evidence-type | source URL | one-line quote |` — in your returned summary under a `DISABLED-API JUSTIFICATIONS:` heading so the orchestrator can post it to the PR's Disabled-API Justifications comment; do NOT write a file under `docs/` (it is gitignored and never persists).
+>
+> [ADD-COLLECTION RULE] This rule overrides "Apply EVERY listed fix": a gap it puts out of bounds is not fixed. List each such gap under a `NOT FIXED (add-collection scope):` heading instead.
 >
 > Return a markdown summary of every change in the format:
 > `- <file>:<line> — <one-sentence description> (gap: <severity>, "<gap title>")`

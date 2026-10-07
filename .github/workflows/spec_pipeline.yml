@@ -579,14 +579,16 @@ jobs:
       # the Phase-9 reviewers read the whole spec, so on a chain that gains REST
       # beside jsonrpc they can flag jsonrpc gaps (MAG-3906, Hedera).
       - name: Guard — collection addition (add-collection PRs)
+        id: addcoll_guard
         if: steps.cmd.outputs.IS_COMMAND == 'true'
         env:
           ENFORCE: ${{ steps.addcoll.outputs.ENFORCE }}
           REASON: ${{ steps.addcoll.outputs.REASON }}
           BASE: ${{ steps.addcoll.outputs.BASE }}
           START: ${{ steps.addcoll.outputs.START }}
+          TARGETS: ${{ steps.addcoll.outputs.TARGETS }}
           ALLOWED_INDEXES: ${{ steps.addcoll.outputs.ALLOWED_INDEXES }}
-          ADDED_IFACES: ${{ steps.addcoll.outputs.ADDED_IFACES }}
+          ADDED_KEYS: ${{ steps.addcoll.outputs.ADDED_KEYS }}
         run: |
           set -euo pipefail
           if [ "${ENFORCE:-}" != "true" ]; then
@@ -728,8 +730,16 @@ jobs:
           PR: ${{ steps.pr.outputs.number }}
           START: ${{ steps.cmd.outputs.START_PHASE }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          GUARD_OUTCOME: ${{ steps.addcoll_guard.outcome }}
         run: |
           set -euo pipefail
+          # A refusal by the add-collection guard is not a flake: a rerun repeats the
+          # same fix pass and meets the same refusal, so it gets its own comment.
+          if [ "${GUARD_OUTCOME:-}" = "failure" ]; then
+            # shellcheck disable=SC2016  # the backticks are markdown, not expansions
+            gh pr comment "$PR" --repo "$REPO" --body "$(printf '**Spec pipeline: the add-collection guard refused the Phase-10 fix pass** (started at Phase %s). The fix pass changed something outside the collections this PR added, so nothing was committed, and any Phase-10 or Phase-11 comment above that describes a fix as applied does **not** reflect the branch. See the [run log](%s) for each refused change.\n\nA plain `/rerun-*` repeats the same fix and the same refusal. If a refused change is one the PR really needs, commit it by hand (a committed change is not judged again), then rerun. Otherwise leave it for a separate PR.' "$START" "$RUN_URL")"
+            exit 0
+          fi
           # Suggest the command whose span matches the phase that was running.
           case "$START" in
             8)  cmd='/rerun-probe   (optionally `/rerun-probe mainnet=https://your-node/rpc`, or `mainnet=use=PAID_RPC_1` for a stored secret node)' ;;

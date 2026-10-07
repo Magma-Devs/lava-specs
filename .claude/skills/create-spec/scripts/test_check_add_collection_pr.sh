@@ -66,8 +66,8 @@ classify() { # <dir> [VAR=value...] -> CRC, COUT, CERR
 get() { sed -n "s/^$1=//p" <<<"$COUT"; }
 enforce() { # <dir> -> ERC, EOUT (the classification in COUT is the one enforced)
   set +e
-  EOUT="$(cd "$1" && env BASE="$(get BASE)" START="$(get START)" ALLOWED_INDEXES="$(get ALLOWED_INDEXES)" \
-          ADDED_IFACES="$(get ADDED_IFACES)" bash "$SCRIPT" enforce 2>&1)"
+  EOUT="$(cd "$1" && env BASE="$(get BASE)" START="$(get START)" TARGETS="$(get TARGETS)" \
+          ALLOWED_INDEXES="$(get ALLOWED_INDEXES)" ADDED_KEYS="$(get ADDED_KEYS)" bash "$SCRIPT" enforce 2>&1)"
   ERC=$?
   set -e
 }
@@ -100,15 +100,17 @@ w="$(hedera_pr)"; classify "$w"
 want_enforcing "hedera classify"
 [ "$(get TARGETS)" = "HEDERA,HEDERAT" ] || fail "hedera targets: $(get TARGETS)"
 [ "$(get ALLOWED_INDEXES)" = "HEDERA,HEDERAT" ] || fail "hedera allowed: $(get ALLOWED_INDEXES)"
-[ "$(get ADDED_IFACES)" = "rest" ] || fail "hedera ifaces: $(get ADDED_IFACES)"
-grep -q "whose api_interface is rest" <<<"$(get PROMPT_RULE)" || fail "hedera prompt rule: $(get PROMPT_RULE)"
+[ "$(get ADDED_KEYS)" = '[["rest","","GET",""]]' ] || fail "hedera keys: $(get ADDED_KEYS)"
+grep -q "keyed (api_interface|internal_path|type|add_on) rest||GET|, on HEDERA,HEDERAT" <<<"$(get PROMPT_RULE)" \
+  || fail "hedera prompt rule: $(get PROMPT_RULE)"
+grep -q "ALLOWED_FILES" <<<"$COUT" && fail "ALLOWED_FILES is no longer an output"
 ok "hedera classify"
 
 w="$(btc_pr)"; classify "$w"
 want_enforcing "btc classify"
 [ "$(get ALLOWED_INDEXES)" = "BCH,BCHT,BTC,BTCS,BTCT,DOGE" ] || fail "btc allowed (transitive importers): $(get ALLOWED_INDEXES)"
-[ "$(get ALLOWED_FILES)" = "bch.json,btc.json,doge.json" ] || fail "btc allowed files: $(get ALLOWED_FILES)"
 grep -q "import them (BCH,BCHT,BTCS,BTCT,DOGE)" <<<"$(get PROMPT_RULE)" || fail "btc prompt rule: $(get PROMPT_RULE)"
+grep -q "with no apis, inheritance_apis" <<<"$(get PROMPT_RULE)" || fail "btc prompt rule (importer shape): $(get PROMPT_RULE)"
 ok "btc classify (importers, transitively)"
 
 w="$(repo)"; ( cd "$w" && catalog_file newchain.json "$(spec NEW)" && git add -A && git commit -qm new ); classify "$w"
@@ -132,6 +134,22 @@ want_na "no commits" "no commits past main"; ok "no commits past main: N/A"
 w="$(repo)"; ( cd "$w" && echo x > notes.md && git add -A && git commit -qm docs ); classify "$w"
 want_na "no spec in first commit" "changes no root spec file"; ok "first commit touches no spec: N/A"
 
+# Fails closed: unparseable input exits 2, it does not switch the guard off.
+w="$(repo)"; ( cd "$w" && printf '{"proposal": {' > hedera.json && git commit -qam corrupt ); classify "$w"
+[ "$CRC" -eq 2 ] || fail "corrupt first commit: want exit 2 (rc=$CRC): $COUT $CERR"
+grep -q "does not parse" <<<"$CERR" || fail "corrupt first commit: $CERR"
+ok "a first commit that does not parse: exit 2, not N/A"
+
+w="$(hedera_pr)"; ( cd "$w" && echo '{' > broken.json && git add broken.json && git commit -qm "a broken root json" ); classify "$w"
+[ "$CRC" -eq 2 ] || fail "corrupt catalog file: want exit 2 (rc=$CRC): $COUT $CERR"
+grep -q "broken.json does not parse" <<<"$CERR" || fail "corrupt catalog file: $CERR"
+ok "a root JSON that does not parse in the catalog: exit 2, not dropped"
+
+printf '#!/usr/bin/env bash\nexit 2\n' > "$T/cca2.sh"
+w="$(hedera_pr)"; classify "$w" CCA="$T/cca2.sh"
+[ "$CRC" -eq 2 ] || fail "check_collection_addition.sh exit 2: want exit 2 (rc=$CRC): $COUT $CERR"
+ok "check_collection_addition.sh cannot read its input: exit 2, not N/A"
+
 # --- enforce: what the fix pass may change --------------------------------------
 
 w="$(hedera_pr)"; classify "$w"
@@ -149,6 +167,11 @@ enforce "$w"; want_refused "spec field" "spec-fields|HEDERA"; ok "spec-level fie
 w="$(hedera_pr)"; classify "$w"
 ( cd "$w" && addc hedera.json HEDERAT "$(coll jsonrpc POST true "" debug)" )
 enforce "$w"; want_refused "another interface" "collection-added|HEDERAT|jsonrpc||POST|debug"; ok "new collection of another interface: refused"
+
+w="$(hedera_pr)"; classify "$w"
+( cd "$w" && addc hedera.json HEDERA "$(coll rest POST)" )
+enforce "$w"; want_refused "another key, same interface" "collection-added|HEDERA|rest||POST|"
+ok "a new key of the added interface that the PR did not add: refused"
 
 w="$(hedera_pr)"; classify "$w"
 ( cd "$w" && addc other.json OTHER "$(coll rest GET)" )
@@ -204,12 +227,24 @@ w="$(repo)"
     && git push -q origin main && git fetch -q origin && git switch -q -C pr main \
     && addc other.json OTHER "$(coll rest GET true "" archive)" && git commit -qam "add a rest archive addon" )
 classify "$w"; want_enforcing "addon beside an existing interface"
-[ "$(get ADDED_IFACES)" = "rest" ] || fail "addon ifaces: $(get ADDED_IFACES)"
+[ "$(get ADDED_KEYS)" = '[["rest","","GET","archive"]]' ] || fail "addon keys: $(get ADDED_KEYS)"
 ( cd "$w" && jqi other.json '(.proposal.specs[0].api_collections[] | select(.collection_data.add_on == "archive") | .apis) += [{name: "/a"}]' )
 enforce "$w"; want_pass "fix inside the added addon"
 ( cd "$w" && jqi other.json '(.proposal.specs[0].api_collections[] | select(.collection_data.api_interface == "rest" and .collection_data.add_on == "") | .apis) += [{name: "/b"}]' )
 enforce "$w"; want_refused "on-main collection of the added interface" "collection-changed|OTHER|rest||GET|"
 ok "an on-main collection of the added interface: refused; the added addon beside it: pass"
+
+# The addon PR's interface is already served, so keying on the interface would
+# free every new key of it. Only the added key is freed.
+w="$(repo)"
+( cd "$w" && addc other.json OTHER "$(coll jsonrpc POST true "" debug)" && git commit -qam "add a jsonrpc debug addon" )
+classify "$w"; want_enforcing "jsonrpc addon"
+[ "$(get ADDED_KEYS)" = '[["jsonrpc","","POST","debug"]]' ] || fail "jsonrpc addon keys: $(get ADDED_KEYS)"
+( cd "$w" && jqi other.json '(.proposal.specs[0].api_collections[] | select(.collection_data.add_on == "debug") | .apis) += [{name: "debug_x"}]' )
+enforce "$w"; want_pass "fix inside the added jsonrpc addon"
+( cd "$w" && addc other.json OTHER "$(coll jsonrpc POST true "" trace)" )
+enforce "$w"; want_refused "a second jsonrpc addon" "collection-added|OTHER|jsonrpc||POST|trace"
+ok "addon PR: the added addon may change, a new addon of the same interface is refused"
 
 # --- enforce on an imported spec (PR #145's shape) -------------------------------
 
@@ -223,11 +258,40 @@ w="$(btc_pr)"; classify "$w"
 ( cd "$w" && jqi bch.json '(.proposal.specs[] | select(.index=="BCH") | .api_collections[0].apis) += [{name: "x"}]' )
 enforce "$w"; want_refused "importer's jsonrpc" "collection-changed|BCH|jsonrpc||POST|"; ok "an importer's existing collection: refused"
 
+w="$(btc_pr)"; classify "$w"
+( cd "$w" && addc doge.json DOGE "$(coll rest GET true dogecoin | jq -c '.apis = [{name: "/block", enabled: true}]')" )
+enforce "$w"; want_refused "importer with apis" "importer-content|DOGE|rest||GET|"
+grep -q "collection-added|DOGE|rest||GET|" <<<"$EOUT" || fail "importer with apis delta: $EOUT"
+ok "an importer collection that serves apis: refused"
+
+w="$(btc_pr)"; classify "$w"
+( cd "$w" && addc doge.json DOGE "$(coll rest GET false | jq -c '.headers = [{name: "x-api-key", kind: "pass_send"}]')" )
+enforce "$w"; want_refused "importer with headers" "importer-content|DOGE|rest||GET|"
+ok "an importer collection that declares headers: refused"
+
+w="$(btc_pr)"; classify "$w"
+( cd "$w" && addc doge.json DOGE "$(coll rest POST false)" )
+enforce "$w"; want_refused "importer, key not added" "collection-added|DOGE|rest||POST|"
+ok "an importer stub for a key the PR did not add: refused"
+
 w="$(btc_pr)"
 ( cd "$w" && addc doge.json DOGE "$(coll rest GET false)" && git commit -qam "stub doge" )
 classify "$w"; want_enforcing "a later commit in another file"
 ( cd "$w" && jqi btc.json '(.proposal.specs[] | select(.index=="BTC") | .api_collections[1].apis) += [{name: "/tx"}]' )
 enforce "$w"; want_pass "later importer commit, clean fix"
 ok "a later commit in an importer's file does not switch the guard off"
+
+# Large documents go to jq as files: a refusal on a spec past Linux's 128 KB
+# per-argument limit must still print its findings, not E2BIG.
+w="$(repo)"
+( cd "$w" && jqi hedera.json '(.proposal.specs[] | select(.index=="HEDERA") | .api_collections[0].apis) +=
+      [range(4000) | {name: ("eth_padding_method_\(.)"), enabled: true, compute_units: 10}]' \
+    && git commit -qam "big jsonrpc" && git push -q origin HEAD:main && git fetch -q origin \
+    && addc hedera.json HEDERA "$(coll rest GET)" && git commit -qam "add rest" )
+[ "$(wc -c < "$w/hedera.json")" -gt 131072 ] || fail "large doc fixture is too small"
+classify "$w"; want_enforcing "large doc"
+( cd "$w" && jqi hedera.json '(.proposal.specs[] | select(.index=="HEDERA") | .api_collections[0].apis[0].enabled) = false' )
+enforce "$w"; want_refused "large doc" "collection-changed|HEDERA|jsonrpc||POST|"
+ok "a refusal on a spec larger than one argument may be: findings printed"
 
 echo "ALL OK"
