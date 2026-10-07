@@ -38,16 +38,17 @@ Phases 1–5 (pre-flight, input gathering, research fan-out, synthesis, inherita
 
 ### CI-level guards (outside the 12 phases)
 
-Two guards run as `spec_pipeline.yml` steps rather than skill phases. Both **fail closed** — if `gh pr view` cannot list the PR's files, the step errors rather than reporting a clean pass.
+Three guards run as `spec_pipeline.yml` steps rather than skill phases. All three **fail closed**: when a guard cannot read what it needs (`gh pr view`, a fetch of `main`, an unparseable spec), the step errors rather than reporting a clean pass.
 
 | Guard | Script | What it catches |
 |---|---|---|
 | **Reject removed spec fields** | `check_unused_fields.sh` | Any of the 15 fields deleted from the smart-router model (smart-router#218): the nine governance fields, `proposal.title`/`description`, top-level `deposit`, `extra_compute_units`, `category.local`, `category.subscription`. Strict by default (exit 1, printing each offender's exact JSON path); `--warn` reports but exits 0, for deliberately exercising a legacy fixture. Fails closed on unparseable JSON, so a corrupt spec cannot read as clean |
 | **Preservation** (add-testnet PRs) | `check_preservation.sh` | Semantic drift in any *pre-existing* spec entry. Compares `jq -S` canonical form, so it is immune to whitespace and key order but catches every value change, field add/remove, and array reorder |
+| **Collection addition** (add-collection PRs) | `check_add_collection_pr.sh` (`classify` before the agent, `enforce` after the fix pass) | A fix pass that changes anything but collections that are (a) keyed by a CollectionData 4-tuple the PR's first commit added, (b) not on main under that index, and (c) under an index the first commit targeted or one that imports it, transitively. So: a spec-level field, a collection on main (the jsonrpc beside a new rest, or a rest collection already served), a collection with any other key, even of the added interface (on an addon PR, a second addon; it would rewrite what the index inherits), any other spec. An importer may gain its own collection with an added key, but only a disabled stub or a verifications-only override, with no `apis`, `inheritance_apis`, `parse_directives`, `headers` or `extensions`: how PR #145 stubbed REST on DOGE and overrode BCH's chain-id. Only what this run would push is judged: changes already committed are warned about, never refused |
 
-The second exists because the first is not enough: `check_unused_fields.sh` only sees removed field *names*. PR #80 regenerated a mainnet whose `average_block_time` drifted 200 → 35 and whose parser arg changed `block_height` → `block_hash` — both passed the removed-field guard cleanly.
+The second exists because the first is not enough: `check_unused_fields.sh` only sees removed field *names*. PR #80 regenerated a mainnet whose `average_block_time` drifted 200 → 35 and whose parser arg changed `block_height` → `block_hash` — both passed the removed-field guard cleanly. The third is the second's counterpart for add-collection PRs, which add no spec index and so read as N/A to the preservation guard. It is classified from the PR's first commit (an update-mode branch or title is N/A), and the classify step's rule goes into the run's prompt, which SKILL.md forwards verbatim into the Phase-10 fixer's prompt, so the fixer knows the bounds before it edits. A refusal posts its own failure comment: a plain `/rerun-*` repeats the same fix and the same refusal.
 
-⚠️ **The preservation guard self-skips.** If `check_preservation.sh` is not on the PR branch, the step logs `::notice:: … skipping` and exits 0. In a CI log a skip is easy to mistake for a pass.
+⚠️ **The preservation guard self-skips** when `check_preservation.sh` is not on the PR branch, and **the collection-addition guard is N/A** for any PR that is not an add-collection PR. Both log a `::notice::` and exit 0, and in a CI log either is easy to mistake for a pass. The collection-addition guard's notice says which it did: `ENFORCING …` or `N/A — <reason>`.
 
 ---
 
