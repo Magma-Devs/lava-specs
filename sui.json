@@ -1399,9 +1399,9 @@
                                 "name": "chainIdentifier",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "latest"
+                                        ""
                                     ],
-                                    "parser_func": "DEFAULT"
+                                    "parser_func": "EMPTY"
                                 },
                                 "compute_units": 10,
                                 "enabled": true,
@@ -1453,7 +1453,7 @@
                                 "compute_units": 20,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
+                                    "deterministic": false,
                                     "stateful": 0
                                 }
                             },
@@ -1884,6 +1884,51 @@
                                 }
                             },
                             {
+                                "name": "multiGetDerivedObjects",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 100,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "stateful": 0
+                                }
+                            },
+                            {
+                                "name": "multiGetDynamicFields",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 100,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "stateful": 0
+                                }
+                            },
+                            {
+                                "name": "multiGetDynamicObjectFields",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 100,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "stateful": 0
+                                }
+                            },
+                            {
                                 "name": "simulateTransaction",
                                 "block_parsing": {
                                     "parser_arg": [
@@ -2131,7 +2176,7 @@
                                 "name": "chain-id",
                                 "values": [
                                     {
-                                        "expected_value": "HqW49ubUVvCrjTRiM5FJzzhD4A3geXQY6GcK5JMhPWs"
+                                        "expected_value": "Az3h5PJGb1xnEAwgNYLr7SdKRkLHhVZbEHRSxnsfHs66"
                                     }
                                 ]
                             }
