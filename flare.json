@@ -5,7 +5,7 @@
                 "index": "FLARE",
                 "name": "Flare Mainnet",
                 "enabled": true,
-                "block_distance_for_finalized_data": 1,
+                "block_distance_for_finalized_data": 60,
                 "blocks_in_finalization_proof": 1,
                 "average_block_time": 1200,
                 "allowed_block_lag_for_qos_sync": 9,
@@ -480,7 +480,7 @@
                 "imports": [
                     "FLARE"
                 ],
-                "block_distance_for_finalized_data": 1,
+                "block_distance_for_finalized_data": 60,
                 "blocks_in_finalization_proof": 1,
                 "average_block_time": 2800,
                 "allowed_block_lag_for_qos_sync": 4,

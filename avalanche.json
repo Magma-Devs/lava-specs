@@ -5,7 +5,7 @@
                 "index": "AVAX",
                 "name": "Avalanche Mainnet",
                 "enabled": true,
-                "block_distance_for_finalized_data": 4,
+                "block_distance_for_finalized_data": 20,
                 "blocks_in_finalization_proof": 3,
                 "average_block_time": 2000,
                 "allowed_block_lag_for_qos_sync": 5,
@@ -740,7 +740,7 @@
                 "imports": [
                     "AVAX"
                 ],
-                "block_distance_for_finalized_data": 4,
+                "block_distance_for_finalized_data": 20,
                 "blocks_in_finalization_proof": 3,
                 "average_block_time": 2000,
                 "allowed_block_lag_for_qos_sync": 5,
