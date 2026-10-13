@@ -791,7 +791,8 @@
                                     "deterministic": false,
                                     "stateful": 1,
                                     "hanging_api": true
-                                }
+                                },
+                                "timeout_ms": 10000
                             },
                             {
                                 "name": "simulateTransaction",
