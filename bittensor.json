@@ -2788,7 +2788,7 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "stateful": 1
+                  "stateful": 0
                 }
               },
               {
@@ -2803,7 +2803,7 @@
                 "enabled": true,
                 "category": {
                   "deterministic": false,
-                  "stateful": 1
+                  "stateful": 0
                 }
               },
               {
