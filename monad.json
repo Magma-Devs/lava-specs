@@ -172,7 +172,11 @@
                             {
                                 "name": "eth_sendTransaction",
                                 "compute_units": 10,
-                                "enabled": false
+                                "enabled": false,
+                                "category": {
+                                    "deterministic": false,
+                                    "stateful": 1
+                                }
                             },
                             {
                                 "name": "eth_sign",

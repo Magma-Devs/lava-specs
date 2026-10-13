@@ -64,7 +64,7 @@
                                 "enabled": false,
                                 "category": {
                                     "deterministic": true,
-                                    "stateful": 0
+                                    "stateful": 1
                                 }
                             },
                             {
