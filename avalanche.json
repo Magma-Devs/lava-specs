@@ -76,6 +76,18 @@
                                         "expected_value": "0xa86a"
                                     }
                                 ]
+                            },
+                            {
+                                "name": "pruning",
+                                "values": [
+                                    {
+                                        "latest_distance": 32
+                                    },
+                                    {
+                                        "extension": "archive",
+                                        "expected_value": "0x0"
+                                    }
+                                ]
                             }
                         ],
                         "extensions": [
@@ -183,7 +195,20 @@
                             }
                         ],
                         "parse_directives": [],
-                        "verifications": [],
+                        "verifications": [
+                            {
+                                "name": "pruning",
+                                "values": [
+                                    {
+                                        "latest_distance": 32
+                                    },
+                                    {
+                                        "extension": "archive",
+                                        "expected_value": "0x0"
+                                    }
+                                ]
+                            }
+                        ],
                         "extensions": [
                             {
                                 "name": "archive",

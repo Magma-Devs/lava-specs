@@ -33,6 +33,18 @@
                                         "expected_value": "0x38"
                                     }
                                 ]
+                            },
+                            {
+                                "name": "pruning",
+                                "values": [
+                                    {
+                                        "latest_distance": 76
+                                    },
+                                    {
+                                        "extension": "archive",
+                                        "expected_value": "0x0"
+                                    }
+                                ]
                             }
                         ],
                         "extensions": [
