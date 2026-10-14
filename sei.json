@@ -217,6 +217,14 @@
                                         "expected_value": "pacific-1"
                                     }
                                 ]
+                            },
+                            {
+                                "name": "pruning",
+                                "values": [
+                                    {
+                                        "latest_distance": 100000
+                                    }
+                                ]
                             }
                         ],
                         "extensions": [
@@ -820,6 +828,14 @@
                                         "expected_value": "pacific-1"
                                     }
                                 ]
+                            },
+                            {
+                                "name": "pruning",
+                                "values": [
+                                    {
+                                        "latest_distance": 100000
+                                    }
+                                ]
                             }
                         ],
                         "extensions": [
@@ -850,6 +866,14 @@
                                 "values": [
                                     {
                                         "expected_value": "pacific-1"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "pruning",
+                                "values": [
+                                    {
+                                        "latest_distance": 100000
                                     }
                                 ]
                             }
