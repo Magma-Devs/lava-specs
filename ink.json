@@ -174,7 +174,7 @@
                                 },
                                 "values": [
                                     {
-                                        "latest_distance": 90000
+                                        "latest_distance": 128
                                     },
                                     {
                                         "extension": "archive",
@@ -188,7 +188,7 @@
                                 "name": "archive",
                                 "cu_multiplier": 5,
                                 "rule": {
-                                    "block": 90000
+                                    "block": 127
                                 }
                             }
                         ]
@@ -858,7 +858,7 @@
                             {
                                 "name": "archive",
                                 "cu_multiplier": 5,
-                                "rule": { "block": 90000 }
+                                "rule": { "block": 127 }
                             }
                         ]
                     }

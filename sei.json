@@ -218,6 +218,15 @@
                                     }
                                 ]
                             }
+                        ],
+                        "extensions": [
+                            {
+                                "name": "archive",
+                                "cu_multiplier": 5,
+                                "rule": {
+                                    "block": 99999
+                                }
+                            }
                         ]
                     },
                     {
@@ -812,6 +821,15 @@
                                     }
                                 ]
                             }
+                        ],
+                        "extensions": [
+                            {
+                                "name": "archive",
+                                "cu_multiplier": 5,
+                                "rule": {
+                                    "block": 99999
+                                }
+                            }
                         ]
                     },
                     {
@@ -834,6 +852,15 @@
                                         "expected_value": "pacific-1"
                                     }
                                 ]
+                            }
+                        ],
+                        "extensions": [
+                            {
+                                "name": "archive",
+                                "cu_multiplier": 5,
+                                "rule": {
+                                    "block": 99999
+                                }
                             }
                         ]
                     },
