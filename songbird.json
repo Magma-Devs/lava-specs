@@ -338,7 +338,7 @@
                                 "name": "archive",
                                 "cu_multiplier": 5,
                                 "rule": {
-                                    "block": 48000
+                                    "block": 24
                                 }
                             }
                         ]
@@ -481,7 +481,7 @@
                                 "name": "archive",
                                 "cu_multiplier": 5,
                                 "rule": {
-                                    "block": 48000
+                                    "block": 24
                                 }
                             }
                         ]
