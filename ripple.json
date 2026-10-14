@@ -791,7 +791,7 @@
                                 "name": "archive",
                                 "cu_multiplier": 5,
                                 "rule": {
-                                    "block": 1999
+                                    "block": 511
                                 }
                             }
                         ]
