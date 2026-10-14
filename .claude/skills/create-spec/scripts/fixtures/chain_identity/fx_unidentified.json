@@ -1,0 +1,215 @@
+{
+  "proposal": {
+    "specs": [
+      {
+        "index": "FXNONE",
+        "name": "only an accept-anything check",
+        "enabled": true,
+        "api_collections": [
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "jsonrpc",
+              "internal_path": "",
+              "type": "POST",
+              "add_on": ""
+            },
+            "verifications": [
+              {
+                "name": "version",
+                "parse_directive": {
+                  "function_tag": "VERIFICATION",
+                  "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"getVersion\",\"params\":[],\"id\":1}",
+                  "api_name": "getVersion",
+                  "result_parsing": {
+                    "parser_arg": [
+                      "0",
+                      "version"
+                    ],
+                    "parser_func": "PARSE_CANONICAL"
+                  }
+                },
+                "values": [
+                  {
+                    "expected_value": "*"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "index": "FXWARN",
+        "name": "a real value, but Warning severity only logs",
+        "enabled": true,
+        "api_collections": [
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "jsonrpc",
+              "internal_path": "",
+              "type": "POST",
+              "add_on": ""
+            },
+            "verifications": [
+              {
+                "name": "chain-id",
+                "parse_directive": {
+                  "function_tag": "VERIFICATION",
+                  "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"getblockhash\",\"params\":[0],\"id\":1}",
+                  "api_name": "getblockhash",
+                  "result_parsing": {
+                    "parser_arg": [
+                      "0"
+                    ],
+                    "parser_func": "PARSE_BY_ARG"
+                  }
+                },
+                "values": [
+                  {
+                    "expected_value": "www",
+                    "severity": "Warning"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "index": "FXFETCH",
+        "name": "GET_BLOCK_BY_NUM: the expected value is a height to fetch",
+        "enabled": true,
+        "api_collections": [
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "jsonrpc",
+              "internal_path": "",
+              "type": "POST",
+              "add_on": ""
+            },
+            "verifications": [
+              {
+                "name": "pruning",
+                "parse_directive": {
+                  "function_tag": "GET_BLOCK_BY_NUM"
+                },
+                "values": [
+                  {
+                    "expected_value": "1"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "index": "FXOFF",
+        "name": "disabled spec, same answer as FXSUB: ignored",
+        "enabled": false,
+        "api_collections": [
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "jsonrpc",
+              "internal_path": "",
+              "type": "POST",
+              "add_on": ""
+            },
+            "verifications": [
+              {
+                "name": "chain-id",
+                "parse_directive": {
+                  "function_tag": "VERIFICATION",
+                  "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"chain_getBlockHash\",\"params\":[0],\"id\":1}",
+                  "api_name": "chain_getBlockHash",
+                  "result_parsing": {
+                    "parser_arg": [
+                      "0"
+                    ],
+                    "parser_func": "PARSE_BY_ARG"
+                  }
+                },
+                "values": [
+                  {
+                    "expected_value": "0xe1"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "index": "FXDIS",
+        "name": "a disabled collection carrying FXBASE's answer: ignored",
+        "enabled": true,
+        "api_collections": [
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "jsonrpc",
+              "internal_path": "",
+              "type": "POST",
+              "add_on": ""
+            },
+            "verifications": [
+              {
+                "name": "chain-id",
+                "parse_directive": {
+                  "function_tag": "VERIFICATION",
+                  "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"getblockhash\",\"params\":[0],\"id\":1}",
+                  "api_name": "getblockhash",
+                  "result_parsing": {
+                    "parser_arg": [
+                      "0"
+                    ],
+                    "parser_func": "PARSE_BY_ARG"
+                  }
+                },
+                "values": [
+                  {
+                    "expected_value": "zzz"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "enabled": false,
+            "collection_data": {
+              "api_interface": "jsonrpc",
+              "internal_path": "",
+              "type": "POST",
+              "add_on": "trace"
+            },
+            "verifications": [
+              {
+                "name": "chain-id",
+                "parse_directive": {
+                  "function_tag": "VERIFICATION",
+                  "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"getblockhash\",\"params\":[0],\"id\":1}",
+                  "api_name": "getblockhash",
+                  "result_parsing": {
+                    "parser_arg": [
+                      "0"
+                    ],
+                    "parser_func": "PARSE_BY_ARG"
+                  }
+                },
+                "values": [
+                  {
+                    "expected_value": "aaa"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

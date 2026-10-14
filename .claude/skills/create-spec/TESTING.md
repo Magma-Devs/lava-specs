@@ -630,11 +630,11 @@ for t in .claude/skills/create-spec/scripts/test_*.sh; do
 done
 ```
 
-> **The suite requires bash ≥ 4.** Stock macOS `/bin/bash` is 3.2 and fails 7 of the 19 for reasons that have nothing to do with awk: `declare -A` in `compare_spec_methods.sh`, `compare_spec_directives.sh`, `check_directive_presence.sh`, `check_hanging_api.sh` and `check_stateful.sh`, and the empty-array `"${arr[@]}"`-under-`set -u` expansion in `check_extensions.sh` and `check_method_schema.sh`. Run under Homebrew bash (or any bash ≥ 4.4) before concluding anything is broken. `check_disabled_count.sh` and `check_node_admin_rpcs.sh` are the exceptions — both are deliberately bash-3.2-clean (rows read through `while read` rather than `mapfile`; baseline membership matched with `grep -Fxq` against a temp file rather than a `declare -A` map), because they are the guards a reviewer runs by hand against a PR rather than inside a phase.
+> **The suite requires bash ≥ 4.** Stock macOS `/bin/bash` is 3.2 and fails 7 of the 20 for reasons that have nothing to do with awk: `declare -A` in `compare_spec_methods.sh`, `compare_spec_directives.sh`, `check_directive_presence.sh`, `check_hanging_api.sh` and `check_stateful.sh`, and the empty-array `"${arr[@]}"`-under-`set -u` expansion in `check_extensions.sh` and `check_method_schema.sh`. Run under Homebrew bash (or any bash ≥ 4.4) before concluding anything is broken. `check_disabled_count.sh`, `check_node_admin_rpcs.sh` and `check_chain_identity.sh` are the exceptions — all three are deliberately bash-3.2-clean (rows read through `while read` rather than `mapfile`; baseline membership matched with `grep -Fxq` against a temp file rather than a `declare -A` map), because they are the guards a reviewer runs by hand against a PR rather than inside a phase.
 
 ### Suite status
 
-All 19 pass, verified 2026-10-05 on darwin under both BSD awk (`version 20200816`) and GNU Awk 5.4.0.
+All 20 pass, verified 2026-10-14 on darwin under both BSD awk (`version 20200816`) and GNU Awk 5.4.0.
 
 | Test | Covers |
 |---|---|
@@ -657,6 +657,7 @@ All 19 pass, verified 2026-10-05 on darwin under both BSD awk (`version 20200816
 | `test_check_internal_paths.sh` | `check_internal_paths.sh` |
 | `test_check_collection_addition.sh` | `check_collection_addition.sh` |
 | `test_check_update_diff.sh` | `check_update_diff.sh` |
+| `test_check_chain_identity.sh` | `check_chain_identity.sh` + `chain_identity.jq` (expansion pinned to a router-generated golden) |
 
 ### Fixed: two macOS portability defects (2026-08-04)
 

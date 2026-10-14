@@ -1,0 +1,110 @@
+# Chain-identity findings already on `main`.
+#
+# A row here is a DEBT RECORD, not an exemption: it says "known, ticketed, not a
+# regression introduced by this PR". Fixing the spec is what removes the row.
+# Adding a row for a NEW finding defeats the guard — fix it instead, unless two
+# specs describe one network on purpose, and then say so next to the row. See
+# check_chain_identity.sh.
+#
+# Format: <KIND> <INDEX> <interface> <internal_path, or - for none> [TEMPORARY]
+#
+#   UNSEPARATED   every identity check on that endpoint is answered the same way
+#                 by a node of another catalogue chain (the guard prints which)
+#   UNIDENTIFIED  no Fail-severity check on that endpoint compares a value
+#
+# A row the catalogue no longer produces is STALE and FAILS the guard — delete
+# it. That is deliberate: a stale row would silently re-permit the finding if
+# the fix were ever reverted, so the ledger cleans itself. The `TEMPORARY` token
+# is the one exception, for a fix already in flight on another branch: a stale
+# TEMPORARY row is reported loudly but does not fail.
+#
+# Established 2026-10-14 by running the guard against main at 1a12b8c (MAG-2850).
+
+# ---------------------------------------------------------------------------
+# Bitcoin family over JSON-RPC. chain-id asks getblockchaininfo for its `chain`
+# field, which is the network TYPE (main / test), not the coin: all six
+# mainnets answer `main` and all six testnets `test`, so a Dogecoin URL
+# configured as BTC boots and serves Dogecoin as Bitcoin. Their REST
+# collections are not here: the `network` check there separates them.
+# Fix: MAG-2850 PR B — chain-id becomes getblockhash at a fixed height (the
+# QTUM / PEP pattern). BTC and BCH share block 0, so those two use a block
+# after their 2017 split.
+UNSEPARATED BCH jsonrpc -
+UNSEPARATED BTC jsonrpc -
+UNSEPARATED DASH jsonrpc -
+UNSEPARATED DOGE jsonrpc -
+UNSEPARATED LTC jsonrpc -
+UNSEPARATED ZCASH jsonrpc -
+UNSEPARATED BCHT jsonrpc -
+UNSEPARATED BTCT jsonrpc -
+UNSEPARATED DASHT jsonrpc -
+UNSEPARATED DOGET jsonrpc -
+UNSEPARATED LTCT jsonrpc -
+UNSEPARATED ZCASHT jsonrpc -
+
+# ---------------------------------------------------------------------------
+# One network under two specs. No other chain's data can get in, but a router
+# built with the wrong spec of the pair expects interfaces the provider may not
+# serve. Decided in MAG-2850 (comment 30372).
+#
+# Kept on purpose: AVAX is the C/P/X umbrella for node-root URLs, and AVALANCHEC
+# the C-chain-only spec for gateways that serve nothing else.
+UNSEPARATED AVAX jsonrpc /C/rpc                # C/P/X umbrella for node-root URLs
+UNSEPARATED AVALANCHEC jsonrpc /C/rpc          # C-chain only, the same chain as AVAX /C/rpc
+UNSEPARATED AVAXT jsonrpc /C/rpc
+UNSEPARATED AVALANCHECT jsonrpc /C/rpc
+
+# To be disabled: one spec of each pair, once no deployment is confirmed to use
+# it. That leaves both of the pair's rows stale, so delete them in the same PR.
+UNSEPARATED MOONBEAMT jsonrpc -                # both check Moonbase Alpha (0x507)
+UNSEPARATED MOONRIVERT jsonrpc -
+UNSEPARATED KUSAMAT jsonrpc -                  # both specs are Westend
+UNSEPARATED POLKADOTT jsonrpc -
+UNSEPARATED KUSAMAASSETHUBT jsonrpc -          # both specs are Westend Asset Hub
+UNSEPARATED KUSAMAASSETHUBT rest -
+UNSEPARATED POLKADOTASSETHUBT jsonrpc -
+UNSEPARATED POLKADOTASSETHUBT rest -
+UNSEPARATED BERAT jsonrpc -                    # named Artio, checks bArtio's 0x138d4
+UNSEPARATED BERAT2 jsonrpc -
+
+# ---------------------------------------------------------------------------
+# A testnet spec that inherits mainnet's answer: ARWEAVET expects mainnet's
+# network name, so a mainnet node passes as testnet and the other way round.
+# Still open in MAG-2850: give ARWEAVET its own network's answer, or disable it
+# with the pairs above.
+UNSEPARATED ARWEAVE rest -
+UNSEPARATED ARWEAVET rest -
+
+# ---------------------------------------------------------------------------
+# Chains with no identity check at all: the only checks accept any answer, so a
+# Solana devnet or testnet node passes as SOLANA. Fix: MAG-2850 PR C
+# (getGenesisHash; SOLANAD already has one). KOII imports SOLANA, so it needs
+# its own genesis value when SOLANA gets one.
+UNIDENTIFIED SOLANA jsonrpc -
+UNIDENTIFIED SOLANAT jsonrpc -
+UNIDENTIFIED KOII jsonrpc -
+UNIDENTIFIED KOIIT jsonrpc -
+
+# ---------------------------------------------------------------------------
+# Endpoint shapes of chains that ARE identified elsewhere, where an endpoint
+# serving only this interface or path is not. Found by this guard; follow-up
+# under MAG-2850.
+UNIDENTIFIED AVAX jsonrpc /P                   # AVALANCHEP's staking-asset-id check would fit
+UNIDENTIFIED AVAX jsonrpc /X
+UNIDENTIFIED AVAX jsonrpc /C/avax
+UNIDENTIFIED AVAXT jsonrpc /P
+UNIDENTIFIED AVAXT jsonrpc /X
+UNIDENTIFIED AVAXT jsonrpc /C/avax
+UNIDENTIFIED AVALANCHEC jsonrpc /C/avax
+UNIDENTIFIED AVALANCHECT jsonrpc /C/avax
+UNIDENTIFIED CONCORDIUM rest -                 # identified on grpc only
+UNIDENTIFIED CONCORDIUMT rest -
+UNIDENTIFIED HEDERAT rest -                    # its REST chain-id is Warning by design (MAG-3966)
+UNIDENTIFIED STRK jsonrpc /rpc/pathfinder/v0.1
+UNIDENTIFIED STRKS jsonrpc /rpc/pathfinder/v0.1
+UNIDENTIFIED TON rest /v3                      # identified on /v2 only
+UNIDENTIFIED TONT rest /v3
+
+# ---------------------------------------------------------------------------
+# Not a chain: a multi-chain data API with no network of its own to identify.
+UNIDENTIFIED MORALIS rest -

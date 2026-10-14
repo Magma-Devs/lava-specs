@@ -1,0 +1,10 @@
+# Every finding the fixture catalogue produces, so the guard passes.
+UNIDENTIFIED FXFETCH jsonrpc -
+UNIDENTIFIED FXNONE jsonrpc -
+UNIDENTIFIED FXWARN jsonrpc -
+UNSEPARATED FXBASE jsonrpc -
+UNSEPARATED FXFORK jsonrpc -
+UNSEPARATED FXFORKT jsonrpc -
+UNSEPARATED FXMP1 rest -       # inline comments are ignored
+UNSEPARATED FXMP2 rest -
+UNSEPARATED FXTWO rest -
