@@ -222,7 +222,7 @@
                                 "name": "pruning",
                                 "values": [
                                     {
-                                        "latest_distance": 100000
+                                        "latest_distance": 90000
                                     }
                                 ]
                             }
@@ -232,7 +232,7 @@
                                 "name": "archive",
                                 "cu_multiplier": 5,
                                 "rule": {
-                                    "block": 99999
+                                    "block": 89999
                                 }
                             }
                         ]
@@ -833,7 +833,7 @@
                                 "name": "pruning",
                                 "values": [
                                     {
-                                        "latest_distance": 100000
+                                        "latest_distance": 90000
                                     }
                                 ]
                             }
@@ -843,7 +843,7 @@
                                 "name": "archive",
                                 "cu_multiplier": 5,
                                 "rule": {
-                                    "block": 99999
+                                    "block": 89999
                                 }
                             }
                         ]
@@ -873,7 +873,7 @@
                                 "name": "pruning",
                                 "values": [
                                     {
-                                        "latest_distance": 100000
+                                        "latest_distance": 90000
                                     }
                                 ]
                             }
@@ -883,7 +883,7 @@
                                 "name": "archive",
                                 "cu_multiplier": 5,
                                 "rule": {
-                                    "block": 99999
+                                    "block": 89999
                                 }
                             }
                         ]
