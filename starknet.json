@@ -818,6 +818,60 @@
                         "enabled": true,
                         "collection_data": {
                             "api_interface": "jsonrpc",
+                            "internal_path": "/rpc/v0_8",
+                            "type": "POST",
+                            "add_on": "trace"
+                        },
+                        "inheritance_apis": [
+                            {
+                                "api_interface": "jsonrpc",
+                                "internal_path": "",
+                                "type": "POST",
+                                "add_on": "trace"
+                            }
+                        ],
+                        "verifications": []
+                    },
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "jsonrpc",
+                            "internal_path": "/rpc/v0_9",
+                            "type": "POST",
+                            "add_on": "trace"
+                        },
+                        "inheritance_apis": [
+                            {
+                                "api_interface": "jsonrpc",
+                                "internal_path": "",
+                                "type": "POST",
+                                "add_on": "trace"
+                            }
+                        ],
+                        "verifications": []
+                    },
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "jsonrpc",
+                            "internal_path": "/rpc/v0_10",
+                            "type": "POST",
+                            "add_on": "trace"
+                        },
+                        "inheritance_apis": [
+                            {
+                                "api_interface": "jsonrpc",
+                                "internal_path": "",
+                                "type": "POST",
+                                "add_on": "trace"
+                            }
+                        ],
+                        "verifications": []
+                    },
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "jsonrpc",
                             "internal_path": "/rpc/pathfinder/v0.1",
                             "type": "POST",
                             "add_on": ""
@@ -1706,6 +1760,60 @@
                                 ]
                             }
                         ]
+                    },
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "jsonrpc",
+                            "internal_path": "/rpc/v0_8",
+                            "type": "POST",
+                            "add_on": "trace"
+                        },
+                        "inheritance_apis": [
+                            {
+                                "api_interface": "jsonrpc",
+                                "internal_path": "",
+                                "type": "POST",
+                                "add_on": "trace"
+                            }
+                        ],
+                        "verifications": []
+                    },
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "jsonrpc",
+                            "internal_path": "/rpc/v0_9",
+                            "type": "POST",
+                            "add_on": "trace"
+                        },
+                        "inheritance_apis": [
+                            {
+                                "api_interface": "jsonrpc",
+                                "internal_path": "",
+                                "type": "POST",
+                                "add_on": "trace"
+                            }
+                        ],
+                        "verifications": []
+                    },
+                    {
+                        "enabled": true,
+                        "collection_data": {
+                            "api_interface": "jsonrpc",
+                            "internal_path": "/rpc/v0_10",
+                            "type": "POST",
+                            "add_on": "trace"
+                        },
+                        "inheritance_apis": [
+                            {
+                                "api_interface": "jsonrpc",
+                                "internal_path": "",
+                                "type": "POST",
+                                "add_on": "trace"
+                            }
+                        ],
+                        "verifications": []
                     },
                     {
                         "enabled": true,
