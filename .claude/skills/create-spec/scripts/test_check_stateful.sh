@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Tests for check_stateful.sh — a throwaway spec dir covering the curated write
 # list, the curated read list, REST verb disambiguation, and the advisory
-# consensus layer including its threshold and its dedupe key.
+# consensus layer including its threshold and its dedupe key. The last test
+# sweeps the shipped catalogue: it is what runs the guard on every spec PR.
 #
 # Requires bash >= 4 for `declare -A` in the script under test (see TESTING.md).
 
@@ -179,5 +180,79 @@ echo '{' > "$T/base/broken.json"
 set +e; bash "$SCRIPT" --base "$T/base/broken.json" "$T/cand.json" >/dev/null 2>&1; rc=$?; set -e
 [ "$rc" -eq 2 ] || fail "unreadable base: expected exit 2, got $rc"
 echo "base-unreadable: OK"
+
+# 12. The shapes main shipped at 0 until MAG-3401 and MAG-4035 fixed them.
+rm -f "$T"/*.json
+
+# A SUBSCRIBE-tagged submit, as on the 21 Substrate specs. The directive makes
+# it a subscription, not a read: the write list FAILs it on every transport.
+watchspec() { # file index stateful
+  cat > "$T/$1" <<EOF2
+{"proposal":{"specs":[{"index":"$2","imports":[],"api_collections":[
+  {"collection_data":{"api_interface":"jsonrpc"},
+   "parse_directives":[{"function_tag":"SUBSCRIBE","api_name":"transactionWatch_v1_submitAndWatch"}],
+   "apis":[$(api transactionWatch_v1_submitAndWatch "$3")]}]}]},"deposit":"x"}
+EOF2
+}
+watchspec watch0.json WATCH0 0
+OUT=$(bash "$SCRIPT" "$T/watch0.json" 2>&1 || true)
+failrows "$OUT" | grep -q "^WATCH0/jsonrpc/transactionWatch_v1_submitAndWatch|broadcasts a transaction" \
+  || fail "SUBSCRIBE-tagged submit at 0: expected FAIL, got '$OUT'"
+watchspec watch1.json WATCH1 1
+bash "$SCRIPT" "$T/watch1.json" >/dev/null 2>&1 || fail "SUBSCRIBE-tagged submit at 1: expected exit 0"
+echo "subscribe-tagged-submit: OK"
+
+# Aptos REST submits, keyed by verb: POST /transactions and /transactions/batch
+# at 0 FAIL. POST /transactions/simulate is a dry run and GET /transactions a
+# list, so neither is forced to 1.
+restspec aptpost0.json APTPOST0 POST "$(api /transactions 0)" "$(api /transactions/batch 0)" "$(api /transactions/simulate 0)"
+if bash "$SCRIPT" "$T/aptpost0.json" >/dev/null 2>&1; then fail "POST /transactions at 0: expected non-zero exit"; fi
+OUT=$(bash "$SCRIPT" "$T/aptpost0.json" 2>&1 || true)
+failrows "$OUT" | grep -q "^APTPOST0/rest:POST//transactions|broadcasts a transaction" \
+  || fail "POST /transactions at 0: expected FAIL, got '$OUT'"
+failrows "$OUT" | grep -q "^APTPOST0/rest:POST//transactions/batch|broadcasts a transaction" \
+  || fail "POST /transactions/batch at 0: expected FAIL, got '$OUT'"
+failrows "$OUT" | grep -q "/transactions/simulate|" && fail "POST /transactions/simulate is a read and must not FAIL at 0"
+restspec aptpost1.json APTPOST1 POST "$(api /transactions 1)" "$(api /transactions/batch 1)"
+bash "$SCRIPT" "$T/aptpost1.json" >/dev/null 2>&1 || fail "POST /transactions and /transactions/batch at 1: expected exit 0"
+restspec aptget.json APTGET GET "$(api /transactions 0)"
+bash "$SCRIPT" "$T/aptget.json" >/dev/null 2>&1 || fail "GET /transactions at 0 is a list and must pass"
+echo "rest-transactions-submit: OK"
+
+# A disabled override stub with no category, the shape monad.json carried for
+# eth_sendTransaction. stateful defaults to 0, so it FAILs: disabled is latent,
+# not exempt, and re-enabling the stub would put a submit on the read path.
+cat > "$T/stub.json" <<EOF2
+{"proposal":{"specs":[{"index":"STUB","imports":[],"api_collections":[
+  {"collection_data":{"api_interface":"jsonrpc"},"parse_directives":[],"apis":[{"name":"eth_sendTransaction","compute_units":10,"enabled":false}]}]}]},"deposit":"x"}
+EOF2
+OUT=$(bash "$SCRIPT" "$T/stub.json" 2>&1 || true)
+failrows "$OUT" | grep -q "^STUB/jsonrpc/eth_sendTransaction|broadcasts a transaction but stateful=0" \
+  || fail "disabled stub with no category: expected FAIL, got '$OUT'"
+echo "disabled-stub-without-category: OK"
+
+# 13. The shipped catalogue: no root spec may carry a FAIL row. The pipeline
+#     gates run check_stateful.sh only on the spec a create-spec run builds,
+#     so nothing else checks the shipped specs or a hand-made spec PR: 11 specs
+#     carried a submit at 0 until they were found by hand (MAG-3401, MAG-4035).
+#     spec_guards.yml runs this suite on every PR. --fails-only skips the
+#     consensus scan, which only feeds INFO rows. No base: main carries no FAIL
+#     row, so none is excused.
+REPO_ROOT="$(cd "$DIR/../../../.." && pwd)"
+if ls "$REPO_ROOT"/*.json >/dev/null 2>&1; then
+  n=0 dirty=0
+  for s in "$REPO_ROOT"/*.json; do
+    n=$((n + 1))
+    if ! OUT=$(bash "$SCRIPT" --fails-only "$s" 2>&1); then
+      echo "  catalogue regression: $(basename "$s")" >&2
+      failrows "$OUT" | tail -n +2 | sed 's/^/    /' >&2
+      dirty=1
+    fi
+  done
+  [ "$dirty" -eq 0 ] || fail "shipped catalogue has stateful FAIL rows (listed above); fix the flag in the spec, or the curated list if the entry is wrong"
+  echo "catalogue: OK ($n shipped specs, no FAIL row)"
+else
+  echo "catalogue: SKIP (repo root not found)"
+fi
 
 echo "ALL TESTS PASSED"
