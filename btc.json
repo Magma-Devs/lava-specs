@@ -597,20 +597,19 @@
                             {
                                 "name": "chain-id",
                                 "parse_directive": {
-                                    "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"getblockchaininfo\",\"params\":[],\"id\":1}",
+                                    "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"getblockhash\",\"params\":[740238],\"id\":1}",
                                     "function_tag": "VERIFICATION",
                                     "result_parsing": {
                                         "parser_arg": [
-                                            "chain",
-                                            "="
+                                            "0"
                                         ],
-                                        "parser_func": "PARSE_DICTIONARY"
+                                        "parser_func": "PARSE_BY_ARG"
                                     },
-                                    "api_name": "getblockchaininfo"
+                                    "api_name": "getblockhash"
                                 },
                                 "values": [
                                     {
-                                        "expected_value": "main"
+                                        "expected_value": "000000000000000000029075e262ea5f71c5c8e5706439e4983bbd443d9aed2b"
                                     }
                                 ]
                             }
@@ -1162,9 +1161,20 @@
                         "verifications": [
                             {
                                 "name": "chain-id",
+                                "parse_directive": {
+                                    "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"getblockhash\",\"params\":[1500206],\"id\":1}",
+                                    "function_tag": "VERIFICATION",
+                                    "result_parsing": {
+                                        "parser_arg": [
+                                            "0"
+                                        ],
+                                        "parser_func": "PARSE_BY_ARG"
+                                    },
+                                    "api_name": "getblockhash"
+                                },
                                 "values": [
                                     {
-                                        "expected_value": "test"
+                                        "expected_value": "00000000000190129e62503b3363c58149382d685589e5a06aab4745aeceba1c"
                                     }
                                 ]
                             }
@@ -1223,9 +1233,20 @@
                         "verifications": [
                             {
                                 "name": "chain-id",
+                                "parse_directive": {
+                                    "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"getblockhash\",\"params\":[0],\"id\":1}",
+                                    "function_tag": "VERIFICATION",
+                                    "result_parsing": {
+                                        "parser_arg": [
+                                            "0"
+                                        ],
+                                        "parser_func": "PARSE_BY_ARG"
+                                    },
+                                    "api_name": "getblockhash"
+                                },
                                 "values": [
                                     {
-                                        "expected_value": "testnet4"
+                                        "expected_value": "00000000da84f2bafbbc53dee25a72ae507ff4914b867c565be350b0da8bf043"
                                     }
                                 ]
                             }
@@ -1284,9 +1305,20 @@
                         "verifications": [
                             {
                                 "name": "chain-id",
+                                "parse_directive": {
+                                    "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"getblockhash\",\"params\":[0],\"id\":1}",
+                                    "function_tag": "VERIFICATION",
+                                    "result_parsing": {
+                                        "parser_arg": [
+                                            "0"
+                                        ],
+                                        "parser_func": "PARSE_BY_ARG"
+                                    },
+                                    "api_name": "getblockhash"
+                                },
                                 "values": [
                                     {
-                                        "expected_value": "signet"
+                                        "expected_value": "00000008819873e925422c1ff0f99f7cc9bbb232af63a077a480a3633bee1ef6"
                                     }
                                 ]
                             }

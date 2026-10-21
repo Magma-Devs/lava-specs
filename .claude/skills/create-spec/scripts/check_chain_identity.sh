@@ -21,10 +21,10 @@
 # to six different requests; none can pass another's check, and none is
 # reported.
 #
-# Provenance: MAG-2850. getblockchaininfo's `chain` field is the network type,
-# so BTC, BCH, DASH, DOGE, LTC and ZCASH all expect `main`: a Dogecoin URL
-# configured as BTC boots and serves Dogecoin as Bitcoin, with no error
-# anywhere.
+# Provenance: MAG-2850. Bitcoin-family chain-id used to read getblockchaininfo's
+# `chain` field, which is the network type, so BTC, BCH, DASH, DOGE, LTC and
+# ZCASH all expected `main`: a Dogecoin URL configured as BTC booted and served
+# Dogecoin as Bitcoin, with no error anywhere.
 #
 # Catalogue-wide by nature: one spec's identity only means something against
 # every other spec's answers, so adding or changing ANY spec can make an

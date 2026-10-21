@@ -21,28 +21,6 @@
 # Established 2026-10-14 by running the guard against main at 1a12b8c (MAG-2850).
 
 # ---------------------------------------------------------------------------
-# Bitcoin family over JSON-RPC. chain-id asks getblockchaininfo for its `chain`
-# field, which is the network TYPE (main / test), not the coin: all six
-# mainnets answer `main` and all six testnets `test`, so a Dogecoin URL
-# configured as BTC boots and serves Dogecoin as Bitcoin. Their REST
-# collections are not here: the `network` check there separates them.
-# Fix: MAG-2850 PR B — chain-id becomes getblockhash at a fixed height (the
-# QTUM / PEP pattern). BTC and BCH share block 0, so those two use a block
-# after their 2017 split.
-UNSEPARATED BCH jsonrpc -
-UNSEPARATED BTC jsonrpc -
-UNSEPARATED DASH jsonrpc -
-UNSEPARATED DOGE jsonrpc -
-UNSEPARATED LTC jsonrpc -
-UNSEPARATED ZCASH jsonrpc -
-UNSEPARATED BCHT jsonrpc -
-UNSEPARATED BTCT jsonrpc -
-UNSEPARATED DASHT jsonrpc -
-UNSEPARATED DOGET jsonrpc -
-UNSEPARATED LTCT jsonrpc -
-UNSEPARATED ZCASHT jsonrpc -
-
-# ---------------------------------------------------------------------------
 # One network under two specs. No other chain's data can get in, but a router
 # built with the wrong spec of the pair expects interfaces the provider may not
 # serve. Decided in MAG-2850 (comment 30372).
