@@ -28,9 +28,20 @@
                         "verifications": [
                             {
                                 "name": "chain-id",
+                                "parse_directive": {
+                                    "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"getblockhash\",\"params\":[0],\"id\":1}",
+                                    "function_tag": "VERIFICATION",
+                                    "result_parsing": {
+                                        "parser_arg": [
+                                            "0"
+                                        ],
+                                        "parser_func": "PARSE_BY_ARG"
+                                    },
+                                    "api_name": "getblockhash"
+                                },
                                 "values": [
                                     {
-                                        "expected_value": "main"
+                                        "expected_value": "12a765e31ffd4059bada1e25190f6e98c99d9714d334efa41a195a7e7e04bfe2"
                                     }
                                 ]
                             }
@@ -106,7 +117,7 @@
                                 "name": "chain-id",
                                 "values": [
                                     {
-                                        "expected_value": "test"
+                                        "expected_value": "4966625a4b2851d9fdee139e56211a0d88575f59ed816ff5e6a63deb4e3e29a0"
                                     }
                                 ]
                             }
