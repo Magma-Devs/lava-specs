@@ -14,10 +14,9 @@ PASS=()
 FAIL=()
 INFO=()
 
-# Extract: idx | collection_iface | ver_name | has_parse_directive | pd_function_tag | num_values | first_expected_value | severity
-# Note: severity lives on values[], not on the verification itself (proto ParseValue.severity).
+# Extract: idx | collection_iface | ver_name | has_parse_directive | pd_function_tag | num_values | first_expected_value
 # Note: parse_directive is optional; absent means the chain validator assigns DISABLED tag (zero value).
-while IFS=$'\t' read -r idx iface name has_pd pd_tag nvals val0 sev; do
+while IFS=$'\t' read -r idx iface name has_pd pd_tag nvals val0; do
   [[ -z "$idx" ]] && continue
   ROW="$idx/$iface/$name"
 
@@ -38,18 +37,57 @@ while IFS=$'\t' read -r idx iface name has_pd pd_tag nvals val0 sev; do
     fi
   fi
 
-  # severity enum (per proto, severity lives on values[] and defaults to Fail when absent)
-  case "$sev" in
-    Warning|Fail|Stop) PASS+=("$ROW|severity=$sev") ;;
-    null|"") PASS+=("$ROW|severity=Fail (default)") ;;
-    *) FAIL+=("$ROW|severity invalid ($sev), expected Warning|Fail|Stop") ;;
-  esac
-
 done < <(jq -r '
   .proposal.specs[] as $s
   | $s.api_collections[]? as $c
   | $c.verifications[]?
-  | "\($s.index)\t\($c.collection_data.api_interface)\t\(.name // "null")\t\(.parse_directive != null)\t\(.parse_directive.function_tag // "null")\t\(.values | length)\t\(if (.values[0].expected_value? // null) == null or (.values[0].expected_value? // null) == "" then "null" else .values[0].expected_value end)\t\(.values[0].severity // "null")"
+  | "\($s.index)\t\($c.collection_data.api_interface)\t\(.name // "null")\t\(.parse_directive != null)\t\(.parse_directive.function_tag // "null")\t\(.values | length)\t\(if (.values[0].expected_value? // null) == null or (.values[0].expected_value? // null) == "" then "null" else .values[0].expected_value end)"
+' "$SPEC")
+
+# Severity, on every value: it lives on values[], not on the verification (proto
+# ParseValue.severity), and each value is its own check. It says what the check's
+# failure costs (MAG-3950): Fail takes the url out, PartialFail switches off only the
+# add-on or extension the check covers, Warning nothing. A value that sets none takes the
+# default for where its check sits: Fail for a basic check (a collection with no add_on,
+# a value with no extension), PartialFail for an add-on or extension check.
+# Extract: idx | collection_iface | ver_name | value_index | add_on ("-" for none) | extension ("-" for none) | severity
+while IFS=$'\t' read -r idx iface name i addon ext sev; do
+  [[ -z "$idx" ]] && continue
+  ROW="$idx/$iface/$name"
+  [[ "$addon" == "-" ]] && addon=""
+  [[ "$ext" == "-" ]] && ext=""
+  where="values[$i]"
+  [[ -n "$addon" ]] && where="$where add-on $addon"
+  [[ -n "$ext" ]] && where="$where extension $ext"
+  # The router charges an add-on check to its extension first, else to its add-on.
+  part="${ext:-$addon}"
+  case "$sev" in
+    null|"")
+      if [[ -z "$part" ]]; then
+        PASS+=("$ROW|$where severity=Fail (default for a basic check)")
+      else
+        PASS+=("$ROW|$where severity=PartialFail (default for an add-on or extension check)")
+      fi ;;
+    Warning) PASS+=("$ROW|$where severity=Warning") ;;
+    Fail)
+      PASS+=("$ROW|$where severity=Fail")
+      if [[ -n "$part" ]]; then
+        INFO+=("$ROW|$where severity=Fail makes $part mandatory: on a router with MAG-3950 its failure takes the url out, not only $part")
+      fi ;;
+    PartialFail)
+      if [[ -z "$part" ]]; then
+        FAIL+=("$ROW|$where severity=PartialFail on a basic check: there is no smaller part to switch off, and the router reads it as Fail; set Fail, or leave it out")
+      else
+        PASS+=("$ROW|$where severity=PartialFail")
+      fi ;;
+    *) FAIL+=("$ROW|$where severity invalid ($sev), expected Warning|Fail|PartialFail") ;;
+  esac
+done < <(jq -r '
+  .proposal.specs[] as $s
+  | $s.api_collections[]? as $c
+  | $c.verifications[]? as $v
+  | ($v.values // []) | to_entries[]
+  | "\($s.index)\t\($c.collection_data.api_interface)\t\($v.name // "null")\t\(.key)\t\(if ($c.collection_data.add_on // "") == "" then "-" else $c.collection_data.add_on end)\t\(if (.value.extension // "") == "" then "-" else .value.extension end)\t\(.value.severity // "null")"
 ' "$SPEC")
 
 # Cross-reference: every verification's parse_directive.function_tag must exist in its own collection's parse_directives[]
