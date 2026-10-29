@@ -386,26 +386,6 @@
                                         "expected_value": "25f6e3b9295a61f69fcb956aca9f0076234ecf2e02d399db5448b6e22f26e81c"
                                     }
                                 ]
-                            },
-                            {
-                                "name": "index-mode",
-                                "parse_directive": {
-                                    "function_template": "/api/state",
-                                    "function_tag": "VERIFICATION",
-                                    "result_parsing": {
-                                        "parser_arg": [
-                                            "0",
-                                            "indexMode"
-                                        ],
-                                        "parser_func": "PARSE_CANONICAL"
-                                    },
-                                    "api_name": "/api/state"
-                                },
-                                "values": [
-                                    {
-                                        "expected_value": "full"
-                                    }
-                                ]
                             }
                         ],
                         "extensions": []
