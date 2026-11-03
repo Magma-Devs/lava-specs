@@ -385,20 +385,20 @@
                             {
                                 "name": "chain-id",
                                 "parse_directive": {
-                                    "function_template": "/api/consensus/index/0",
+                                    "function_template": "/api/consensus/network",
                                     "function_tag": "VERIFICATION",
                                     "result_parsing": {
                                         "parser_arg": [
                                             "0",
-                                            "id"
+                                            "name"
                                         ],
                                         "parser_func": "PARSE_CANONICAL"
                                     },
-                                    "api_name": "/api/consensus/index/{height}"
+                                    "api_name": "/api/consensus/network"
                                 },
                                 "values": [
                                     {
-                                        "expected_value": "25f6e3b9295a61f69fcb956aca9f0076234ecf2e02d399db5448b6e22f26e81c"
+                                        "expected_value": "mainnet"
                                     }
                                 ]
                             }
@@ -578,7 +578,7 @@
                                 "name": "chain-id",
                                 "values": [
                                     {
-                                        "expected_value": "172fb3d508c86ac628f93c3362ba60312251466c77d63a8c99ea87717e4112c3"
+                                        "expected_value": "zen"
                                     }
                                 ]
                             }
