@@ -791,6 +791,7 @@
                                     "parser_func": "DEFAULT"
                                 },
                                 "compute_units": 10,
+                                "timeout_ms": 10000,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
