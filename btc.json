@@ -786,9 +786,10 @@
                                 "name": "bb_getAddress",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "latest"
+                                        "1",
+                                        "toHeight"
                                     ],
-                                    "parser_func": "DEFAULT"
+                                    "parser_func": "PARSE_CANONICAL"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
@@ -823,7 +824,7 @@
                                 "compute_units": 20,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
+                                    "deterministic": false,
                                     "stateful": 0
                                 }
                             },
@@ -1007,9 +1008,10 @@
                                 "name": "bb_getXPUB",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "latest"
+                                        "1",
+                                        "toHeight"
                                     ],
-                                    "parser_func": "DEFAULT"
+                                    "parser_func": "PARSE_CANONICAL"
                                 },
                                 "compute_units": 20,
                                 "enabled": true,
