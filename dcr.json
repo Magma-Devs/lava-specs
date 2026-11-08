@@ -233,9 +233,9 @@
                                 "name": "getcurrentnet",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "latest"
+                                        ""
                                     ],
-                                    "parser_func": "DEFAULT"
+                                    "parser_func": "EMPTY"
                                 },
                                 "compute_units": 10,
                                 "enabled": true,
@@ -368,9 +368,9 @@
                                 "name": "version",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "latest"
+                                        ""
                                     ],
-                                    "parser_func": "DEFAULT"
+                                    "parser_func": "EMPTY"
                                 },
                                 "compute_units": 10,
                                 "enabled": true,
@@ -504,9 +504,9 @@
                                 "name": "validateaddress",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "latest"
+                                        ""
                                     ],
-                                    "parser_func": "DEFAULT"
+                                    "parser_func": "EMPTY"
                                 },
                                 "compute_units": 10,
                                 "enabled": true,
@@ -519,9 +519,9 @@
                                 "name": "verifymessage",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "latest"
+                                        ""
                                     ],
-                                    "parser_func": "DEFAULT"
+                                    "parser_func": "EMPTY"
                                 },
                                 "compute_units": 10,
                                 "enabled": true,
@@ -549,9 +549,9 @@
                                 "name": "decodescript",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "latest"
+                                        ""
                                     ],
-                                    "parser_func": "DEFAULT"
+                                    "parser_func": "EMPTY"
                                 },
                                 "compute_units": 10,
                                 "enabled": true,
@@ -564,9 +564,9 @@
                                 "name": "createrawtransaction",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "latest"
+                                        ""
                                     ],
-                                    "parser_func": "DEFAULT"
+                                    "parser_func": "EMPTY"
                                 },
                                 "compute_units": 10,
                                 "enabled": true,
@@ -579,9 +579,9 @@
                                 "name": "createrawsstx",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "latest"
+                                        ""
                                     ],
-                                    "parser_func": "DEFAULT"
+                                    "parser_func": "EMPTY"
                                 },
                                 "compute_units": 10,
                                 "enabled": true,
@@ -601,7 +601,7 @@
                                 "compute_units": 10,
                                 "enabled": true,
                                 "category": {
-                                    "deterministic": true,
+                                    "deterministic": false,
                                     "stateful": 0
                                 }
                             },
@@ -609,9 +609,9 @@
                                 "name": "estimatefee",
                                 "block_parsing": {
                                     "parser_arg": [
-                                        "latest"
+                                        ""
                                     ],
-                                    "parser_func": "DEFAULT"
+                                    "parser_func": "EMPTY"
                                 },
                                 "compute_units": 10,
                                 "enabled": true,
@@ -673,7 +673,8 @@
                                     ],
                                     "parser_func": "PARSE_BY_ARG"
                                 },
-                                "compute_units": 20,
+                                "compute_units": 500,
+                                "timeout_ms": 180000,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": true,
@@ -802,7 +803,8 @@
                                     ],
                                     "parser_func": "DEFAULT"
                                 },
-                                "compute_units": 20,
+                                "compute_units": 500,
+                                "timeout_ms": 180000,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
@@ -817,7 +819,8 @@
                                     ],
                                     "parser_func": "DEFAULT"
                                 },
-                                "compute_units": 20,
+                                "compute_units": 500,
+                                "timeout_ms": 180000,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
@@ -832,7 +835,8 @@
                                     ],
                                     "parser_func": "DEFAULT"
                                 },
-                                "compute_units": 20,
+                                "compute_units": 500,
+                                "timeout_ms": 180000,
                                 "enabled": true,
                                 "category": {
                                     "deterministic": false,
