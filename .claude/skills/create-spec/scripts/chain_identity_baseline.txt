@@ -26,7 +26,7 @@
 # mainnets answer `main` and all six testnets `test`, so a Dogecoin URL
 # configured as BTC boots and serves Dogecoin as Bitcoin. Their REST
 # collections are not here: the `network` check there separates them.
-# Fix: MAG-2850 PR B — chain-id becomes getblockhash at a fixed height (the
+# Fix: lava-specs #198 (MAG-2850) — chain-id becomes getblockhash at a fixed height (the
 # QTUM / PEP pattern). BTC and BCH share block 0, so those two use a block
 # after their 2017 split.
 UNSEPARATED BCH jsonrpc -
@@ -56,6 +56,7 @@ UNSEPARATED AVALANCHECT jsonrpc /C/rpc
 
 # To be disabled: one spec of each pair, once no deployment is confirmed to use
 # it. That leaves both of the pair's rows stale, so delete them in the same PR.
+# Fix: MAG-5071.
 UNSEPARATED MOONBEAMT jsonrpc -                # both check Moonbase Alpha (0x507)
 UNSEPARATED MOONRIVERT jsonrpc -
 UNSEPARATED KUSAMAT jsonrpc -                  # both specs are Westend
@@ -70,16 +71,16 @@ UNSEPARATED BERAT2 jsonrpc -
 # ---------------------------------------------------------------------------
 # A testnet spec that inherits mainnet's answer: ARWEAVET expects mainnet's
 # network name, so a mainnet node passes as testnet and the other way round.
-# Still open in MAG-2850: give ARWEAVET its own network's answer, or disable it
-# with the pairs above.
+# Fix: MAG-5071 — give ARWEAVET its own network's answer, or disable it with
+# the pairs above.
 UNSEPARATED ARWEAVE rest -
 UNSEPARATED ARWEAVET rest -
 
 # ---------------------------------------------------------------------------
 # Chains with no identity check at all: the only checks accept any answer, so a
-# Solana devnet or testnet node passes as SOLANA. Fix: MAG-2850 PR C
+# Solana devnet or testnet node passes as SOLANA. Fix: MAG-5070
 # (getGenesisHash; SOLANAD already has one). KOII imports SOLANA, so it needs
-# its own genesis value when SOLANA gets one.
+# its own genesis value when SOLANA gets one; it waits for a working endpoint.
 UNIDENTIFIED SOLANA jsonrpc -
 UNIDENTIFIED SOLANAT jsonrpc -
 UNIDENTIFIED KOII jsonrpc -
@@ -87,8 +88,8 @@ UNIDENTIFIED KOIIT jsonrpc -
 
 # ---------------------------------------------------------------------------
 # Endpoint shapes of chains that ARE identified elsewhere, where an endpoint
-# serving only this interface or path is not. Found by this guard; follow-up
-# under MAG-2850.
+# serving only this interface or path is not. Found by this guard.
+# Fix: MAG-5081.
 UNIDENTIFIED AVAX jsonrpc /P                   # AVALANCHEP's staking-asset-id check would fit
 UNIDENTIFIED AVAX jsonrpc /X
 UNIDENTIFIED AVAX jsonrpc /C/avax
