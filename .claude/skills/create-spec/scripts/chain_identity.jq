@@ -5,7 +5,7 @@
 # order the router walks them). Output: tab-separated rows, listed at the bottom.
 #
 # Why it re-implements import expansion: a spec's checks are mostly INHERITED
-# (BCH, DOGE, LTC, DASH and ZCASH carry BTC's chain-id request and override only
+# (BCH and most testnets carry their parent's chain-id request and override only
 # the expected value), so reading the declared JSON alone misses most of them.
 # The router's rules are mirrored from smart-router types/spec — DoExpandSpec
 # (expand.go), CombineCollections (spec.go), Expand / CombineWithOthers
