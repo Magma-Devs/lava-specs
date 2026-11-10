@@ -94,6 +94,7 @@ CONTENT='def content: [.apis, .inheritance_apis, .parse_directives, .headers, .e
 # Drops what the rule allows to change: under an allowed index, every collection
 # whose key the first commit added and that is not in the merge-base catalog —
 # under an importer, only when it carries no content. What is left must not move.
+# shellcheck disable=SC2016  # $-names are jq variables, not shell ones
 MASK="$CK $CONTENT"'
   ($allowed | split(",")) as $A | ($targets | split(",")) as $T | $keys[0] as $K
   | .proposal.specs |= ((. // []) | map(
@@ -107,6 +108,7 @@ MASK="$CK $CONTENT"'
         else . end))'
 
 # The importer collections the mask kept only because they carry content.
+# shellcheck disable=SC2016
 IMPORTER_CONTENT="$CK $CONTENT"'
   ($allowed | split(",")) as $A | ($targets | split(",")) as $T | $keys[0] as $K
   | .proposal.specs[]? | . as $s
@@ -115,6 +117,7 @@ IMPORTER_CONTENT="$CK $CONTENT"'
   | "importer-content|\($s.index)|\($k | join("|"))"'
 
 # What differs between two masked docs, one line per finding.
+# shellcheck disable=SC2016
 DELTA='
   def keyof: .collection_data | [.api_interface, .internal_path, .type, .add_on] | join("|");
   def specs: [.proposal.specs[]? | {key: .index, value: .}] | from_entries;

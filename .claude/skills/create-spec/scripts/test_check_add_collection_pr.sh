@@ -274,6 +274,18 @@ w="$(btc_pr)"; classify "$w"
 enforce "$w"; want_refused "importer, key not added" "collection-added|DOGE|rest||POST|"
 ok "an importer stub for a key the PR did not add: refused"
 
+# An importer that already stubs the added key on main: its stub is on main, so
+# the fix pass may not drop it, although it is content-free. Dropped, DOGE would
+# inherit BTC's new rest with BTC's network values.
+w="$(repo)"
+( cd "$w" && git switch -q main && addc doge.json DOGE "$(coll rest GET false)" && git commit -qam "doge rest stub on main" \
+    && git push -q origin main && git fetch -q origin && git switch -q -C pr main \
+    && addc btc.json BTC "$(coll rest GET true bitcoin)" && git commit -qam "add rest to btc" )
+classify "$w"; want_enforcing "importer stub on main"
+( cd "$w" && jqi doge.json '(.proposal.specs[] | select(.index=="DOGE") | .api_collections) |= map(select(.collection_data.api_interface != "rest"))' )
+enforce "$w"; want_refused "importer's on-main stub" "collection-removed|DOGE|rest||GET|"
+ok "an importer's on-main stub of the added key: refused"
+
 w="$(btc_pr)"
 ( cd "$w" && addc doge.json DOGE "$(coll rest GET false)" && git commit -qam "stub doge" )
 classify "$w"; want_enforcing "a later commit in another file"
