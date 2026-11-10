@@ -1,0 +1,32 @@
+{
+  "proposal": {
+    "specs": [
+      {
+        "index": "SEVBAD",
+        "api_collections": [
+          {
+            "collection_data": {"api_interface": "jsonrpc"},
+            "parse_directives": [],
+            "verifications": [
+              {
+                "name": "basic-partial",
+                "parse_directive": {"function_tag": "VERIFICATION", "api_name": "eth_chainId"},
+                "values": [{"expected_value": "0x1", "severity": "PartialFail"}]
+              },
+              {
+                "name": "stopped",
+                "parse_directive": {"function_tag": "VERIFICATION", "api_name": "eth_chainId"},
+                "values": [{"expected_value": "0x1", "severity": "Stop"}]
+              },
+              {
+                "name": "second-value",
+                "parse_directive": {"function_tag": "VERIFICATION", "api_name": "eth_getBlockByNumber"},
+                "values": [{"expected_value": "0x1"}, {"extension": "archive", "expected_value": "0x0", "severity": "Critical"}]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

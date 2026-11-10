@@ -716,7 +716,7 @@
                         "parse_directives": [
                             {
                                 "function_tag": "GET_BLOCK_BY_NUM",
-                                "function_template": "{\"method\":\"ledger\",\"params\":[{\"ledger_index\":\"%d\",\"transactions\":false,\"expand\":false,\"owner_funds\":false}]}",
+                                "function_template": "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"ledger\",\"params\":[{\"ledger_index\":\"%d\",\"transactions\":false,\"expand\":false,\"owner_funds\":false}]}",
                                 "result_parsing": {
                                     "parser_arg": [
                                         "0",
@@ -729,7 +729,7 @@
                             },
                             {
                                 "function_tag": "GET_BLOCKNUM",
-                                "function_template": "{\"method\":\"ledger\",\"params\":[{\"ledger_index\":\"validated\",\"transactions\":false,\"expand\":false,\"owner_funds\":false}]}",
+                                "function_template": "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"ledger\",\"params\":[{\"ledger_index\":\"validated\",\"transactions\":false,\"expand\":false,\"owner_funds\":false}]}",
                                 "result_parsing": {
                                     "parser_arg": [
                                         "0",
@@ -745,13 +745,13 @@
                                 "api_name": "subscribe"
                             },
                             {
-                                "function_template": "{\"method\":\"unsubscribe\",\"params\":[{\"streams\":[]}]}",
+                                "function_template": "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"unsubscribe\",\"params\":[{\"streams\":[]}]}",
                                 "function_tag": "UNSUBSCRIBE",
                                 "api_name": "unsubscribe"
                             },
                             {
                                 "function_tag": "GET_EARLIEST_BLOCK",
-                                "function_template": "{\"method\":\"ledger\",\"params\":[{\"ledger_index\":32570,\"transactions\":false,\"expand\":false,\"owner_funds\":false}]}",
+                                "function_template": "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"ledger\",\"params\":[{\"ledger_index\":32570,\"transactions\":false,\"expand\":false,\"owner_funds\":false}]}",
                                 "result_parsing": {
                                     "parser_arg": [
                                         "0",
@@ -767,7 +767,7 @@
                             {
                                 "name": "chain-id",
                                 "parse_directive": {
-                                    "function_template": "{\"method\":\"server_info\",\"params\":[{\"counters\":false}]}",
+                                    "function_template": "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"server_info\",\"params\":[{\"counters\":false}]}",
                                     "function_tag": "VERIFICATION",
                                     "result_parsing": {
                                         "parser_arg": [

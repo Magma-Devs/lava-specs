@@ -172,7 +172,14 @@ The `blocks_in_finalization_proof` rule is a set, not a formula, on purpose: the
 
 #### 4. `verifications` — `check_verifications.sh`
 
-Per `verifications[]` entry: `name` present; `values[]` non-empty; `severity` (which lives on `values[]`, not on the verification) in `{Warning, Fail, Stop}` or absent → defaults to `Fail`.
+Per `verifications[]` entry: `name` present; `values[]` non-empty.
+
+`severity` lives on `values[]`, not on the verification, and is checked on every value. It says what the check's failure costs (MAG-3950): `Fail` takes the url out, `PartialFail` switches off only the add-on or extension the check covers, `Warning` nothing.
+- **Accepted:** `Warning`, `Fail`, `PartialFail`, or absent. Absent takes the default for where the check sits: `Fail` for a basic check (a collection with no `add_on`, a value with no `extension`), `PartialFail` for an add-on or extension check. The PASS row says which.
+- **FAIL:**
+  - `PartialFail` on a basic check: there is no smaller part to switch off, and the router reads it as `Fail`;
+  - any other name, `Stop` included (the router never knew it).
+- **INFO:** an explicit `Fail` on an add-on or extension check. It makes the add-on mandatory: on a router with MAG-3950 its failure takes the url out, not only the add-on. That's legitimate when the add-on is the reason the provider is configured.
 
 Cross-reference: every verification's `parse_directive.function_tag` (other than the literal `VERIFICATION`) must exist in its own collection's `parse_directives[]`. Not found → **FAIL**.
 
