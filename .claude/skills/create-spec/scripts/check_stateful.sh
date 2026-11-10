@@ -57,31 +57,37 @@
 # endpoints on the write path in cosmossdk.json — the verb disambiguates a name
 # collision here, it does not classify.
 #
-# Base mode (--base <file>): established specs already carry some FAIL rows
-# (monad and optimism declare eth_sendTransaction at 0), and an update,
-# add-testnet or add-collection run must not fail on rows it never touched.
-# With a base — the same file as it is on origin/main, in Phase 6 and Phase 10a
-# alike — a FAIL row the base already fails with the identical text moves to
-# INFO as pre-existing; only new or changed rows FAIL. Rows name the collection
-# (interface, REST verb, internal_path, add_on) and are matched by count, so a
-# method that already fails in one collection does not excuse the same method
-# failing in a collection this run added. Without a base (a new chain) every
-# row is judged, as before.
+# Base mode (--base <file>): an update, add-testnet or add-collection run must
+# not fail on rows it never touched. With a base — the same file as it is on
+# origin/main, in Phase 6 and Phase 10a alike — a FAIL row the base already
+# fails with the identical text moves to INFO as pre-existing; only new or
+# changed rows FAIL. Rows name the collection (interface, REST verb,
+# internal_path, add_on) and are matched by count, so a method that already
+# fails in one collection does not excuse the same method failing in a
+# collection this run added. Without a base (a new chain) every row is judged.
 #
-# Usage: check_stateful.sh [--base <base.json>] <spec.json>
+# Where it runs: the create-spec method-schema gate (Phase 6 and Phase 10a),
+# on the one spec that run builds; and on every PR, through the catalogue sweep
+# at the end of test_check_stateful.sh ("guard script self-tests" in
+# spec_guards.yml). The sweep runs this script with --fails-only over every
+# root spec and fails on any FAIL row, so a hand-made spec PR that sets a
+# curated write to 0, or a curated read to 1, in any spec fails CI.
+#
+# Usage: check_stateful.sh [--base <base.json>] [--fails-only] <spec.json>
 # Prints "=== PASS ===" / "=== INFO ===" / "=== FAIL ==="; exit 1 on any FAIL
 # row, 2 on usage or an unreadable base.
 
 set -euo pipefail
 export LC_ALL=C
 
-usage() { echo "usage: $0 [--base <base.json>] <spec.json>" >&2; exit 2; }
+usage() { echo "usage: $0 [--base <base.json>] [--fails-only] <spec.json>" >&2; exit 2; }
 BASE="" FAILS_ONLY=0 SPEC_ARG=""
 while (($#)); do
   case "$1" in
     --base) (($# >= 2)) || usage; BASE=$2; shift 2 ;;
-    # Internal, for judging the base: FAIL rows never depend on the consensus
-    # map, so skip the ~140-file sibling scan.
+    # FAIL rows never depend on the consensus map, so skip the ~150-file
+    # sibling scan. Used to judge the base, and by the catalogue sweep in
+    # test_check_stateful.sh.
     --fails-only) FAILS_ONLY=1; shift ;;
     -*) usage ;;
     *) [[ -z "$SPEC_ARG" ]] || usage; SPEC_ARG=$1; shift ;;
@@ -116,6 +122,12 @@ WRITE_METHODS=(
   starknet_addInvokeTransaction
   starknet_addDeclareTransaction
   starknet_addDeployAccountTransaction
+  # Aptos REST. POST /transactions submits one signed transaction, and it is
+  # the submit on every other spec that declares it too: KASPA, XLM (Horizon)
+  # and VECHAIN (Thor). POST /transactions/batch submits several. The verb key
+  # leaves GET /transactions alone; it lists transactions on APT1, XLM and TON.
+  "POST /transactions"
+  "POST /transactions/batch"
 )
 
 # Simulate, estimate, encode or decode. No submission, no state change.
