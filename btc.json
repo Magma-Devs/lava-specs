@@ -1598,7 +1598,7 @@
                             {
                                 "name": "chain-id",
                                 "parse_directive": {
-                                    "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"getblockhash\",\"params\":[0],\"id\":1}",
+                                    "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"getblockhash\",\"params\":[1],\"id\":1}",
                                     "function_tag": "VERIFICATION",
                                     "result_parsing": {
                                         "parser_arg": [
@@ -1610,7 +1610,7 @@
                                 },
                                 "values": [
                                     {
-                                        "expected_value": "00000008819873e925422c1ff0f99f7cc9bbb232af63a077a480a3633bee1ef6"
+                                        "expected_value": "00000086d6b2636cb2a392d45edc4ec544a10024d30141c9adf4bfd9de533b53"
                                     }
                                 ]
                             }
