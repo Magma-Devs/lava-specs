@@ -77,6 +77,21 @@ jobs:
           done < /tmp/changed_specs.txt
           exit $rc
 
+  chain-identity:
+    name: every spec can reject another chain's node
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Catalogue-wide, unlike the two jobs around it, and on every PR: one
+      # spec's identity checks only mean something against every other spec's
+      # answers, so a PR that adds or changes ANY spec can make an untouched one
+      # ambiguous. The baseline carries the debt already on main, so a PR
+      # answers only for what it changes — and a PR that fixes a baselined spec
+      # must delete its row (a stale row fails).
+      - name: Check every enabled spec's identity checks
+        run: bash .claude/skills/create-spec/scripts/check_chain_identity.sh
+
   disabled-count:
     name: disabled set matches the body
     runs-on: ubuntu-latest

@@ -1,0 +1,39 @@
+FXBASE	jsonrpc	POST			chain-id	VERIFICATION	getblockhash		aaa	0	Fail
+FXBASE	jsonrpc	POST			pruning	GET_BLOCK_BY_NUM				100	Fail
+FXBASE	jsonrpc	POST			pruning	GET_BLOCK_BY_NUM		archive	1	0	Fail
+FXBASET	jsonrpc	POST			chain-id	VERIFICATION	getblockhash		bbb	0	Fail
+FXBASET	jsonrpc	POST			pruning	GET_BLOCK_BY_NUM				100	Fail
+FXBASET	jsonrpc	POST			pruning	GET_BLOCK_BY_NUM		archive	1	0	Fail
+FXDIS	jsonrpc	POST			chain-id	VERIFICATION	getblockhash		zzz	0	Fail
+FXFETCH	jsonrpc	POST			pruning	GET_BLOCK_BY_NUM			1	0	Fail
+FXFORK	jsonrpc	POST			chain-id	VERIFICATION	getblockhash		aaa	0	Fail
+FXFORK	jsonrpc	POST			pruning	GET_BLOCK_BY_NUM				100	Fail
+FXFORK	jsonrpc	POST			pruning	GET_BLOCK_BY_NUM		archive	1	0	Fail
+FXFORKT	jsonrpc	POST			chain-id	VERIFICATION	getblockhash		aaa	0	Fail
+FXFORKT	jsonrpc	POST			pruning	GET_BLOCK_BY_NUM				100	Fail
+FXFORKT	jsonrpc	POST			pruning	GET_BLOCK_BY_NUM		archive	1	0	Fail
+FXINH	jsonrpc	POST	/C/rpc		chain-id	VERIFICATION	eth_chainId		0xc1	0	Fail
+FXINH	jsonrpc	POST	/C/rpc		pextra	VERIFICATION	pextra		p1	0	Fail
+FXMP1	rest	GET			m1	VERIFICATION	/m1		x	0	Fail
+FXMP2	rest	GET			m2	VERIFICATION	/m2		y	0	Fail
+FXMULTI	rest	GET			m1	VERIFICATION	/m1		x	0	Fail
+FXMULTI	rest	GET			m2	VERIFICATION	/m2		y	0	Fail
+FXNONE	jsonrpc	POST			version	VERIFICATION	getVersion		*	0	Fail
+FXORD	jsonrpc	POST			bcheck	VERIFICATION	bcheck		b1	0	Fail
+FXORD	jsonrpc	POST			chain-id	VERIFICATION	eth_chainId		0xd1	0	Fail
+FXORD	jsonrpc	POST			pextra	VERIFICATION	pextra		p1	0	Fail
+FXORD	jsonrpc	POST	/a		bcheck	VERIFICATION	bcheck		b1	0	Fail
+FXORD	jsonrpc	POST	/a		chain-id	VERIFICATION	eth_chainId		0xd1	0	Fail
+FXPAR	jsonrpc	POST			chain-id	VERIFICATION	eth_chainId		0x1	0	Fail
+FXPAR	jsonrpc	POST			pextra	VERIFICATION	pextra		p1	0	Fail
+FXREST1	rest	GET			chain-id	VERIFICATION	/info		1	0	Fail
+FXREST2	rest	GET			chain-id	VERIFICATION	/status		1	0	Fail
+FXSUB	jsonrpc	POST			chain-id	VERIFICATION	chain_getBlockHash		0xe1	0	Fail
+FXSUB	jsonrpc	POST		evm	chain-id	VERIFICATION	eth_chainId		0x99	0	Fail
+FXSUBT	jsonrpc	POST			chain-id	VERIFICATION	chain_getBlockHash		0xe2	0	Fail
+FXSUBT	jsonrpc	POST		evm	chain-id	VERIFICATION	eth_chainId		0x99	0	Fail
+FXTWO	rest	GET			chain-id	VERIFICATION	/		coin	0	Fail
+FXTWO	rest	GET			network	VERIFICATION	/		mainnet	0	Fail
+FXTWOT	rest	GET			chain-id	VERIFICATION	/		coin	0	Fail
+FXTWOT	rest	GET			network	VERIFICATION	/		testnet	0	Fail
+FXWARN	jsonrpc	POST			chain-id	VERIFICATION	getblockhash		www	0	Warning

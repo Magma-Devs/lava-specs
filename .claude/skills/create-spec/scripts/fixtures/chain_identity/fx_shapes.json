@@ -1,0 +1,265 @@
+{
+  "proposal": {
+    "specs": [
+      {
+        "index": "FXREST1",
+        "name": "answers 1 to /info",
+        "enabled": true,
+        "api_collections": [
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "rest",
+              "internal_path": "",
+              "type": "GET",
+              "add_on": ""
+            },
+            "verifications": [
+              {
+                "name": "chain-id",
+                "parse_directive": {
+                  "function_tag": "VERIFICATION",
+                  "function_template": "/info",
+                  "api_name": "/info",
+                  "result_parsing": {
+                    "parser_arg": [
+                      "0",
+                      "network_id"
+                    ],
+                    "parser_func": "PARSE_CANONICAL"
+                  }
+                },
+                "values": [
+                  {
+                    "expected_value": "1"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "index": "FXREST2",
+        "name": "answers 1 to /status, a different question",
+        "enabled": true,
+        "api_collections": [
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "rest",
+              "internal_path": "",
+              "type": "GET",
+              "add_on": ""
+            },
+            "verifications": [
+              {
+                "name": "chain-id",
+                "parse_directive": {
+                  "function_tag": "VERIFICATION",
+                  "function_template": "/status",
+                  "api_name": "/status",
+                  "result_parsing": {
+                    "parser_arg": [
+                      "0",
+                      "chain_id"
+                    ],
+                    "parser_func": "PARSE_CANONICAL"
+                  }
+                },
+                "values": [
+                  {
+                    "expected_value": "1"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "index": "FXTWO",
+        "name": "two checks: the coin and the network",
+        "enabled": true,
+        "api_collections": [
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "rest",
+              "internal_path": "",
+              "type": "GET",
+              "add_on": ""
+            },
+            "verifications": [
+              {
+                "name": "chain-id",
+                "parse_directive": {
+                  "function_tag": "VERIFICATION",
+                  "function_template": "/",
+                  "api_name": "/",
+                  "result_parsing": {
+                    "parser_arg": [
+                      "0",
+                      "handle"
+                    ],
+                    "parser_func": "PARSE_CANONICAL"
+                  }
+                },
+                "values": [
+                  {
+                    "expected_value": "coin"
+                  }
+                ]
+              },
+              {
+                "name": "network",
+                "parse_directive": {
+                  "function_tag": "VERIFICATION",
+                  "function_template": "/",
+                  "api_name": "/",
+                  "result_parsing": {
+                    "parser_arg": [
+                      "0",
+                      "network"
+                    ],
+                    "parser_func": "PARSE_CANONICAL"
+                  }
+                },
+                "values": [
+                  {
+                    "expected_value": "mainnet"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "index": "FXTWOT",
+        "name": "same coin, the second check tells the network apart",
+        "enabled": true,
+        "imports": [
+          "FXTWO"
+        ],
+        "api_collections": [
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "rest",
+              "internal_path": "",
+              "type": "GET",
+              "add_on": ""
+            },
+            "verifications": [
+              {
+                "name": "network",
+                "values": [
+                  {
+                    "expected_value": "testnet"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "index": "FXSUB",
+        "name": "base check plus an add-on check",
+        "enabled": true,
+        "api_collections": [
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "jsonrpc",
+              "internal_path": "",
+              "type": "POST",
+              "add_on": ""
+            },
+            "verifications": [
+              {
+                "name": "chain-id",
+                "parse_directive": {
+                  "function_tag": "VERIFICATION",
+                  "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"chain_getBlockHash\",\"params\":[0],\"id\":1}",
+                  "api_name": "chain_getBlockHash",
+                  "result_parsing": {
+                    "parser_arg": [
+                      "0"
+                    ],
+                    "parser_func": "PARSE_BY_ARG"
+                  }
+                },
+                "values": [
+                  {
+                    "expected_value": "0xe1"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "jsonrpc",
+              "internal_path": "",
+              "type": "POST",
+              "add_on": "evm"
+            },
+            "verifications": [
+              {
+                "name": "chain-id",
+                "parse_directive": {
+                  "function_tag": "VERIFICATION",
+                  "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"eth_chainId\",\"params\":[],\"id\":1}",
+                  "api_name": "eth_chainId",
+                  "result_parsing": {
+                    "parser_arg": [
+                      "0"
+                    ],
+                    "parser_func": "PARSE_BY_ARG"
+                  }
+                },
+                "values": [
+                  {
+                    "expected_value": "0x99"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "index": "FXSUBT",
+        "name": "shares the add-on answer, the base check separates it",
+        "enabled": true,
+        "imports": [
+          "FXSUB"
+        ],
+        "api_collections": [
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "jsonrpc",
+              "internal_path": "",
+              "type": "POST",
+              "add_on": ""
+            },
+            "verifications": [
+              {
+                "name": "chain-id",
+                "values": [
+                  {
+                    "expected_value": "0xe2"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

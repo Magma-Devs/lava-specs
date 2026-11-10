@@ -1,0 +1,269 @@
+{
+  "proposal": {
+    "specs": [
+      {
+        "index": "FXPAR",
+        "name": "parent with two checks",
+        "enabled": true,
+        "api_collections": [
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "jsonrpc",
+              "internal_path": "",
+              "type": "POST",
+              "add_on": ""
+            },
+            "verifications": [
+              {
+                "name": "chain-id",
+                "parse_directive": {
+                  "function_tag": "VERIFICATION",
+                  "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"eth_chainId\",\"params\":[],\"id\":1}",
+                  "api_name": "eth_chainId",
+                  "result_parsing": {
+                    "parser_arg": [
+                      "0"
+                    ],
+                    "parser_func": "PARSE_BY_ARG"
+                  }
+                },
+                "values": [
+                  {
+                    "expected_value": "0x1"
+                  }
+                ]
+              },
+              {
+                "name": "pextra",
+                "parse_directive": {
+                  "function_tag": "VERIFICATION",
+                  "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"pextra\",\"params\":[],\"id\":1}",
+                  "api_name": "pextra",
+                  "result_parsing": {
+                    "parser_arg": [
+                      "0"
+                    ],
+                    "parser_func": "PARSE_BY_ARG"
+                  }
+                },
+                "values": [
+                  {
+                    "expected_value": "p1"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "index": "FXINH",
+        "name": "AVAX-like: a path collection inherits a disabled base that inherits the parent",
+        "enabled": true,
+        "imports": [
+          "FXPAR"
+        ],
+        "api_collections": [
+          {
+            "enabled": false,
+            "collection_data": {
+              "api_interface": "jsonrpc",
+              "internal_path": "",
+              "type": "POST",
+              "add_on": ""
+            }
+          },
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "jsonrpc",
+              "internal_path": "/C/rpc",
+              "type": "POST",
+              "add_on": ""
+            },
+            "inheritance_apis": [
+              {
+                "api_interface": "jsonrpc",
+                "internal_path": "",
+                "type": "POST",
+                "add_on": ""
+              }
+            ],
+            "verifications": [
+              {
+                "name": "chain-id",
+                "values": [
+                  {
+                    "expected_value": "0xc1"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "index": "FXORD",
+        "name": "order matters: /a expands from the base before the base inherits the parent",
+        "enabled": true,
+        "imports": [
+          "FXPAR"
+        ],
+        "api_collections": [
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "jsonrpc",
+              "internal_path": "/a",
+              "type": "POST",
+              "add_on": ""
+            },
+            "inheritance_apis": [
+              {
+                "api_interface": "jsonrpc",
+                "internal_path": "",
+                "type": "POST",
+                "add_on": ""
+              }
+            ]
+          },
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "jsonrpc",
+              "internal_path": "",
+              "type": "POST",
+              "add_on": ""
+            },
+            "verifications": [
+              {
+                "name": "chain-id",
+                "parse_directive": {
+                  "function_tag": "VERIFICATION",
+                  "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"eth_chainId\",\"params\":[],\"id\":1}",
+                  "api_name": "eth_chainId",
+                  "result_parsing": {
+                    "parser_arg": [
+                      "0"
+                    ],
+                    "parser_func": "PARSE_BY_ARG"
+                  }
+                },
+                "values": [
+                  {
+                    "expected_value": "0xd1"
+                  }
+                ]
+              },
+              {
+                "name": "bcheck",
+                "parse_directive": {
+                  "function_tag": "VERIFICATION",
+                  "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"bcheck\",\"params\":[],\"id\":1}",
+                  "api_name": "bcheck",
+                  "result_parsing": {
+                    "parser_arg": [
+                      "0"
+                    ],
+                    "parser_func": "PARSE_BY_ARG"
+                  }
+                },
+                "values": [
+                  {
+                    "expected_value": "b1"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "index": "FXMP1",
+        "name": "first parent of FXMULTI",
+        "enabled": true,
+        "api_collections": [
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "rest",
+              "internal_path": "",
+              "type": "GET",
+              "add_on": ""
+            },
+            "verifications": [
+              {
+                "name": "m1",
+                "parse_directive": {
+                  "function_tag": "VERIFICATION",
+                  "function_template": "/m1",
+                  "api_name": "/m1",
+                  "result_parsing": {
+                    "parser_arg": [
+                      "0",
+                      "v"
+                    ],
+                    "parser_func": "PARSE_CANONICAL"
+                  }
+                },
+                "values": [
+                  {
+                    "expected_value": "x"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "index": "FXMP2",
+        "name": "second parent of FXMULTI",
+        "enabled": true,
+        "api_collections": [
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "rest",
+              "internal_path": "",
+              "type": "GET",
+              "add_on": ""
+            },
+            "verifications": [
+              {
+                "name": "m2",
+                "parse_directive": {
+                  "function_tag": "VERIFICATION",
+                  "function_template": "/m2",
+                  "api_name": "/m2",
+                  "result_parsing": {
+                    "parser_arg": [
+                      "0",
+                      "v"
+                    ],
+                    "parser_func": "PARSE_CANONICAL"
+                  }
+                },
+                "values": [
+                  {
+                    "expected_value": "y"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "index": "FXMULTI",
+        "name": "two parents, one collection key: merged into one collection",
+        "enabled": true,
+        "imports": [
+          "FXMP1",
+          "FXMP2"
+        ]
+      }
+    ]
+  }
+}

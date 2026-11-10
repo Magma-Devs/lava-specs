@@ -1,0 +1,124 @@
+{
+  "proposal": {
+    "specs": [
+      {
+        "index": "FXBASE",
+        "name": "fixture base chain",
+        "enabled": true,
+        "api_collections": [
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "jsonrpc",
+              "internal_path": "",
+              "type": "POST",
+              "add_on": ""
+            },
+            "verifications": [
+              {
+                "name": "chain-id",
+                "parse_directive": {
+                  "function_tag": "VERIFICATION",
+                  "function_template": "{\"jsonrpc\":\"2.0\",\"method\":\"getblockhash\",\"params\":[0],\"id\":1}",
+                  "api_name": "getblockhash",
+                  "result_parsing": {
+                    "parser_arg": [
+                      "0"
+                    ],
+                    "parser_func": "PARSE_BY_ARG"
+                  }
+                },
+                "values": [
+                  {
+                    "expected_value": "aaa"
+                  }
+                ]
+              },
+              {
+                "name": "pruning",
+                "parse_directive": {
+                  "function_tag": "GET_BLOCK_BY_NUM"
+                },
+                "values": [
+                  {
+                    "latest_distance": 100
+                  },
+                  {
+                    "extension": "archive",
+                    "expected_value": "1"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "index": "FXBASET",
+        "name": "fixture base testnet: overrides the value only",
+        "enabled": true,
+        "imports": [
+          "FXBASE"
+        ],
+        "api_collections": [
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "jsonrpc",
+              "internal_path": "",
+              "type": "POST",
+              "add_on": ""
+            },
+            "verifications": [
+              {
+                "name": "chain-id",
+                "values": [
+                  {
+                    "expected_value": "bbb"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "index": "FXFORK",
+        "name": "fixture fork that keeps its parent's answer",
+        "enabled": true,
+        "imports": [
+          "FXBASE"
+        ],
+        "api_collections": [
+          {
+            "enabled": true,
+            "collection_data": {
+              "api_interface": "jsonrpc",
+              "internal_path": "",
+              "type": "POST",
+              "add_on": ""
+            },
+            "verifications": [
+              {
+                "name": "chain-id",
+                "values": [
+                  {
+                    "expected_value": "aaa"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "index": "FXFORKT",
+        "name": "fixture grandchild with no collections of its own",
+        "enabled": true,
+        "imports": [
+          "FXFORK"
+        ]
+      }
+    ]
+  }
+}
