@@ -55,12 +55,10 @@ UNSEPARATED ARWEAVE rest -
 UNSEPARATED ARWEAVET rest -
 
 # ---------------------------------------------------------------------------
-# Chains with no identity check at all: the only checks accept any answer, so a
-# Solana devnet or testnet node passes as SOLANA. Fix: MAG-5070
-# (getGenesisHash; SOLANAD already has one). KOII imports SOLANA, so it needs
-# its own genesis value when SOLANA gets one; it waits for a working endpoint.
-UNIDENTIFIED SOLANA jsonrpc -
-UNIDENTIFIED SOLANAT jsonrpc -
+# KOII has no identity check: it imports SOLANA and overrides SOLANA's chain-id
+# (getGenesisHash) with `*`, because no public Koii endpoint answers, so its
+# genesis hash is unknown. A node of any chain passes as KOII or KOIIT.
+# Fix: MAG-5070 — set KOII's and KOIIT's genesis hash once an endpoint is found.
 UNIDENTIFIED KOII jsonrpc -
 UNIDENTIFIED KOIIT jsonrpc -
 
