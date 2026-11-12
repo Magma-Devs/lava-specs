@@ -531,6 +531,38 @@
                         ],
                         "headers": [
                             {
+                                "name": "x-aptos-ledger-version",
+                                "kind": "pass_reply"
+                            },
+                            {
+                                "name": "x-aptos-block-height",
+                                "kind": "pass_reply"
+                            },
+                            {
+                                "name": "x-aptos-ledger-oldest-version",
+                                "kind": "pass_reply"
+                            },
+                            {
+                                "name": "x-aptos-oldest-block-height",
+                                "kind": "pass_reply"
+                            },
+                            {
+                                "name": "x-aptos-chain-id",
+                                "kind": "pass_reply"
+                            },
+                            {
+                                "name": "x-aptos-epoch",
+                                "kind": "pass_reply"
+                            },
+                            {
+                                "name": "x-aptos-ledger-timestampusec",
+                                "kind": "pass_ignore"
+                            },
+                            {
+                                "name": "x-aptos-gas-used",
+                                "kind": "pass_reply"
+                            },
+                            {
                                 "name": "content-type",
                                 "kind": "pass_send"
                             }

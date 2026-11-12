@@ -905,7 +905,12 @@
                 }
               }
             ],
-            "headers": [],
+            "headers": [
+              {
+                "name": "eth-consensus-version",
+                "kind": "pass_reply"
+              }
+            ],
             "inheritance_apis": [],
             "parse_directives": [
               {
@@ -1490,7 +1495,12 @@
                 }
               }
             ],
-            "headers": [],
+            "headers": [
+              {
+                "name": "eth-consensus-version",
+                "kind": "pass_both"
+              }
+            ],
             "inheritance_apis": [],
             "parse_directives": [],
             "verifications": [],
@@ -1574,7 +1584,12 @@
                 }
               }
             ],
-            "headers": [],
+            "headers": [
+              {
+                "name": "eth-consensus-version",
+                "kind": "pass_reply"
+              }
+            ],
             "inheritance_apis": [],
             "parse_directives": [],
             "verifications": [
