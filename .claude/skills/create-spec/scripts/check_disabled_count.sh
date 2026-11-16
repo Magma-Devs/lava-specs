@@ -2,7 +2,7 @@
 # check_disabled_count.sh — the file's `enabled: false` set must match what the
 # PR body claims about it.
 #
-# Three specs in the Kraken batch shipped a body and a file that disagreed about
+# Three specs in one batch shipped a body and a file that disagreed about
 # disabling, and nothing compared them:
 #
 #   PR #125 (lit.json)  body said 12, file disabled 15
