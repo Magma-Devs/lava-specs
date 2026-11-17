@@ -60,12 +60,12 @@ When sources disagree:
 
 ### Step 4: Handle Finality Concepts
 
-Different consensus models express finality differently:
+Research this chain's own finality — never assign a value by consensus family, because chains in the same family finalize at very different depths. Report the **finality window in seconds** and its source; `block_distance_for_finalized_data = ceil(window_s / block_time_s)`.
 
-- **Instant Finality** (e.g., Cosmos, IBC-connected chains): block_distance_for_finalized_data = 1, blocks_in_finalization_proof = 1
-- **Probabilistic Finality** (e.g., Ethereum PoW): finality is probabilistic; use documented "safe" block depth (e.g., 15 for Ethereum)
-- **Finalized Checkpoints** (e.g., Ethereum PoS): use finalized epoch depth (currently ~2 epochs = ~64 blocks)
-- **Economic Finality** (e.g., Cosmos SDK): use documented slashing condition depth
+- **Chain exposes a `finalized` / `safe` tag**: measure `latest − finalized` several times on the live network; report min / median / max. The window must cover the max.
+- **Documented finality rule** (BFT commit, checkpoint/epoch finality, rollup L1 settlement): report the documented time and any known finality stalls.
+- **Probabilistic, no rule** (longest-chain PoW): report the deepest reorg on record (date, depth, source).
+- **Operator finality list**: if the chain is on it, report that value — it takes precedence.
 
 ### Step 5: QoS Sync Lag Heuristic
 
