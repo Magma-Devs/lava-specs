@@ -1958,7 +1958,7 @@
                                     "stateful": 1,
                                     "hanging_api": true
                                 },
-                                "timeout_ms": 74000
+                                "timeout_ms": 80000
                             }
                         ],
                         "headers": [],
