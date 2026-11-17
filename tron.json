@@ -352,7 +352,8 @@
                                 "block_parsing": {
                                     "parser_arg": [
                                         "0",
-                                        "block_identifier"
+                                        "block_identifier",
+                                        "number"
                                     ],
                                     "parser_func": "PARSE_CANONICAL"
                                 },
