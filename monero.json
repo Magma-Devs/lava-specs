@@ -5,7 +5,7 @@
         "index": "MONERO",
         "name": "monero mainnet",
         "enabled": true,
-        "block_distance_for_finalized_data": 10,
+        "block_distance_for_finalized_data": 15,
         "blocks_in_finalization_proof": 3,
         "average_block_time": 120000,
         "allowed_block_lag_for_qos_sync": 1,
@@ -389,7 +389,7 @@
         "imports": [
           "MONERO"
         ],
-        "block_distance_for_finalized_data": 10,
+        "block_distance_for_finalized_data": 15,
         "blocks_in_finalization_proof": 3,
         "average_block_time": 120000,
         "allowed_block_lag_for_qos_sync": 1,

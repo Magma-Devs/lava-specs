@@ -6,7 +6,7 @@
         "name": "stacks mainnet",
         "enabled": true,
         "average_block_time": 10000,
-        "block_distance_for_finalized_data": 6,
+        "block_distance_for_finalized_data": 150,
         "blocks_in_finalization_proof": 3,
         "allowed_block_lag_for_qos_sync": 1,
         "api_collections": [
@@ -2494,7 +2494,7 @@
           "STACKS"
         ],
         "average_block_time": 100000,
-        "block_distance_for_finalized_data": 6,
+        "block_distance_for_finalized_data": 150,
         "blocks_in_finalization_proof": 3,
         "allowed_block_lag_for_qos_sync": 1,
         "api_collections": [

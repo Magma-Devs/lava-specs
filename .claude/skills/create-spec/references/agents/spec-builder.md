@@ -33,7 +33,7 @@ Build this table (it is part of your return value):
 | Parameter | Source | Formula | Computed value |
 |---|---|---|---|
 | `average_block_time` | use `<average_block_time_ms>` passed in (already tie-broken) | — | (ms) |
-| `block_distance_for_finalized_data` | (consensus type — PoW=6–12, BFT=1–3, instant=1) | — | (int) |
+| `block_distance_for_finalized_data` | this chain's own finality window (measured `latest − finalized`, documented finality rule, or deepest observed reorg — no consensus-family default) | `ceil(finality_window_s / (average_block_time / 1000))`, never `0` | (int) |
 | `blocks_in_finalization_proof` | finality-typed | `3` if probabilistic finality (PoW / slow PoS, e.g. Ethereum, Arbitrum); `1` if fast/instant finality (BFT, Tendermint/Cosmos, Solana, BTC-style longest-chain-with-checkpoints, L2s that inherit instant settlement). **Fallback when finality model can't be confidently classified:** `max(ceil(1000 / average_block_time), 3)` (floors at 3 → conservative; never falls back to 1) | (int) |
 | `allowed_block_lag_for_qos_sync` | derived | `max(ceil(10000 / average_block_time), 1)` | (int) |
 
