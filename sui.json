@@ -1282,7 +1282,7 @@
                                 },
                                 "compute_units": 10,
                                 "enabled": true,
-                                "timeout_ms": 8000,
+                                "timeout_ms": 100000,
                                 "category": {
                                     "deterministic": false,
                                     "stateful": 1,
