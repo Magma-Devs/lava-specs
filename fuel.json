@@ -39,6 +39,29 @@
                         "parse_directives": [],
                         "verifications": [
                             {
+                                "name": "chain-id",
+                                "parse_directive": {
+                                    "function_template": "{\"query\":\"{ chain { consensusParameters { chainId } } }\"}",
+                                    "function_tag": "VERIFICATION",
+                                    "result_parsing": {
+                                        "parser_arg": [
+                                            "0",
+                                            "data",
+                                            "chain",
+                                            "consensusParameters",
+                                            "chainId"
+                                        ],
+                                        "parser_func": "PARSE_CANONICAL"
+                                    },
+                                    "api_name": "/v1/graphql"
+                                },
+                                "values": [
+                                    {
+                                        "expected_value": "9889"
+                                    }
+                                ]
+                            },
+                            {
                                 "name": "health",
                                 "parse_directive": {
                                     "function_template": "{\"query\":\"{ health }\"}",
