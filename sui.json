@@ -1321,7 +1321,44 @@
                                 }
                             }
                         ],
-                        "headers": [],
+                        "headers": [
+                            {
+                                "name": "x-sui-checkpoint-height",
+                                "kind": "pass_reply"
+                            },
+                            {
+                                "name": "x-sui-timestamp-ms",
+                                "kind": "pass_reply"
+                            },
+                            {
+                                "name": "x-sui-timestamp",
+                                "kind": "pass_reply"
+                            },
+                            {
+                                "name": "x-sui-epoch",
+                                "kind": "pass_reply"
+                            },
+                            {
+                                "name": "x-sui-chain-id",
+                                "kind": "pass_reply"
+                            },
+                            {
+                                "name": "x-sui-chain",
+                                "kind": "pass_reply"
+                            },
+                            {
+                                "name": "x-sui-lowest-available-checkpoint",
+                                "kind": "pass_reply"
+                            },
+                            {
+                                "name": "x-sui-lowest-available-checkpoint-objects",
+                                "kind": "pass_reply"
+                            },
+                            {
+                                "name": "x-sui-client-protocol-version",
+                                "kind": "pass_send"
+                            }
+                        ],
                         "inheritance_apis": [],
                         "parse_directives": [
                             {
