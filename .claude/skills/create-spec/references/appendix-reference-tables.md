@@ -82,7 +82,7 @@ Quick-lookup tables for parser functions, encoding, function tags, category valu
 **Common Patterns**:
 - Read query: `{deterministic: true, stateful: 0}`
 - Transaction: `{deterministic: false, stateful: 1, hanging_api: true}`
-- Subscription: detected from a `SUBSCRIBE`/`UNSUBSCRIBE` parse directive, not a category flag; the method's category is typically `{deterministic: false, stateful: 0}`
+- Subscription: detected from a `SUBSCRIBE`/`UNSUBSCRIBE` parse directive, not a category flag; the method's category is typically `{deterministic: false, stateful: 0}`. The exception is a subscription that submits a transaction: `author_submitAndWatchExtrinsic` and `transactionWatch_v1_submitAndWatch` are `stateful: 1`, like their non-watch siblings
 - Node info: `{deterministic: false, stateful: 0}` (node-local data; the `local` flag was removed from the model)
 
 ### E. Header Kinds Reference

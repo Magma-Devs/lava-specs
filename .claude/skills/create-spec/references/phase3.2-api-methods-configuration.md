@@ -194,6 +194,18 @@ Some REST specs extract block information from the response body rather than the
 
 **Common mistake:** marking `eth_fillTransaction` (and similar `*_fill*` / `*_prepare*` helpers) as `stateful: 1` because the name suggests a tx flow. Always check the method's **effect**, not its argument shape — read the chain's docs for whether the call broadcasts.
 
+| Method (other families) | Stateful? | Why |
+|---|---|---|
+| `author_submitExtrinsic`, `transaction_v1_broadcast` (Substrate) | `1` | Submits an extrinsic |
+| `author_submitAndWatchExtrinsic`, `transactionWatch_v1_submitAndWatch` (Substrate) | `1` | Submits, then streams the status. The `SUBSCRIBE` directive makes it a subscription, not a read |
+| `POST /transactions`, `POST /transactions/batch` (Aptos REST) | `1` | Submits signed transactions. `POST /transactions` is the submit on Kaspa, Stellar Horizon and VeChain Thor too |
+| `GET /transactions` (Aptos, Stellar) | `0` | Lists transactions: same path, different verb |
+| `POST /transactions/simulate`, `POST /transactions/encode_submission` (Aptos) | `0` | Dry run or encoding; nothing is submitted |
+
+**Common mistake:** marking a submit-and-watch method `stateful: 0` because it is a subscription. Ten Substrate specs shipped the watch pair at `0` (MAG-3389, MAG-3401), and APT1 shipped both REST submits at `0` (MAG-4035). At `0` the router treats the call as a read: on the unary path it goes to one provider and is retried on failure, and the cross-validation policy guard accepts a policy on it.
+
+**The gate:** `check_stateful.sh` fails a curated write at `0` and a curated read at `1`. REST entries are keyed `VERB /path`, so the verb settles a shared path. It runs in the method-schema gate, and on every PR through the catalogue sweep in `test_check_stateful.sh`, so a flag flipped in any shipped spec fails CI. A submit the curated list does not know passes the gate: add it to `WRITE_METHODS`, with a test case, in the PR that fixes the spec.
+
 Note: Use integer 1, not boolean.
 
 **`hanging_api: true`** - Use when the API waits for a new block / tx receipt before returning (often paired with `stateful: 1` for synchronous tx submission).
