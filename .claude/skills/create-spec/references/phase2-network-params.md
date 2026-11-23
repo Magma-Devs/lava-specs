@@ -17,10 +17,16 @@
    - Use median or mean value
    - Examples: Ethereum=13000, Polygon=2000, StarkNet=30000
 
-2. **`block_distance_for_finalized_data`**
-   - Probabilistic finality (PoW/PoS): 6-12 blocks (e.g., Ethereum=8)
-   - Fast finality (BFT): 1-3 blocks (e.g., Polygon=1)
-   - Instant finality: 1 block
+2. **`block_distance_for_finalized_data`** — derived **per chain** from that chain's own consensus behaviour. There is no default by consensus family (PoW / PoS / BFT): chains in the same family finalize at very different depths, so a family range is never a valid source.
+   - Formula: `ceil(finality_window_seconds / (average_block_time / 1000))` — the window is how long this chain takes before a block can no longer be replaced.
+   - Where the window comes from, in order of preference:
+     1. The chain exposes a `finalized` (or `safe`) block tag → measure `latest − finalized` on the live network several times and size the window to cover the observed maximum, not the median.
+     2. The chain documents its own finality rule (BFT commit, checkpoint/epoch finality, L1 settlement for rollups) → use that time, plus margin for documented stalls.
+     3. Probabilistic finality with no rule (longest-chain PoW, etc.) → the chain's deepest observed reorg, plus margin.
+     4. An operator-supplied finality list overrides the above for chains it covers.
+   - Rollups: the window follows L1 settlement, not L2 block production — at 1–2 s L2 blocks that is thousands of blocks.
+   - `0` is never valid: it marks the chain head itself as final.
+   - Record the source of the window in the PR so the value can be checked.
 
 3. **`blocks_in_finalization_proof`** — finality-typed (NOT a single formula; see SKILL.md)
    - `1` — fast/instant finality: BFT, Tendermint/Cosmos, Solana, instant-settlement L2s (e.g. Akash=1, Algorand=1)

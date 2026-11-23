@@ -70,7 +70,7 @@ Verify these values against the chain's actual characteristics. Read the spec gu
 | Parameter | Formula / Rule |
 |-----------|---------------|
 | `average_block_time` | Measure on live network (milliseconds) |
-| `block_distance_for_finalized_data` | Based on consensus: PoW=6-12, BFT=1-3, instant=1 |
+| `block_distance_for_finalized_data` | Per chain: `ceil(finality_window_s / block_time_s)`, window from this chain's own finality (measured `latest − finalized`, documented rule, or deepest observed reorg). No consensus-family defaults — do not flag a value for being outside a PoW/BFT range; flag it only if it is shorter than the chain's own finality window, or is `0`. |
 | `blocks_in_finalization_proof` | Finality-typed: `3` for probabilistic finality (PoW / slow PoS); `1` for fast/instant finality (BFT, Tendermint/Cosmos, instant-settlement L2s — e.g. base.json, optimism.json use 1); fallback ONLY when the finality model is unclear: `max(ceil(1000ms / average_block_time), 3)`. Do not flag a spec for using `1` when its finality model is fast/instant. |
 | `allowed_block_lag_for_qos_sync` | `10000ms / average_block_time`, minimum 1 |
 
