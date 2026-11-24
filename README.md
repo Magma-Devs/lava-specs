@@ -29,6 +29,16 @@ bash .claude/skills/create-spec/scripts/check_unused_fields.sh <chain>.json
 
 Strict mode (the default) exits non-zero and prints the JSON path of every removed field it finds; pass `--warn` only when deliberately exercising a legacy fixture. Both CI workflows run this guard as a hard gate, so a generated or committed spec that carries any removed field fails the run (and, where branch protection requires the check, is blocked from merging).
 
+## `compatibility.json`
+
+The one root JSON that is not a spec. For each `schema_version` of a spec's `errors` section, it names the first smart-router release that reads it:
+
+```json
+{ "schema_versions": { "1": { "min_router": "v1.8.0" } } }
+```
+
+A `schema_version` changes only when an older router can't read the format. The spec guards and the spec pipeline leave this file out, and the spec loaders read it as a proposal with no specs.
+
 ## Skill-assisted workflow
 
 The repo ships Claude Code skills (slash commands) to build, audit, tune, and test these specs.
