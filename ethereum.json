@@ -623,7 +623,39 @@
                                 }
                             },
                             {
+                                "name": "eth_sendBundle",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "stateful": 1,
+                                    "hanging_api": true
+                                }
+                            },
+                            {
                                 "name": "eth_sendRawTransaction",
+                                "block_parsing": {
+                                    "parser_arg": [
+                                        "latest"
+                                    ],
+                                    "parser_func": "DEFAULT"
+                                },
+                                "compute_units": 10,
+                                "enabled": true,
+                                "category": {
+                                    "deterministic": false,
+                                    "stateful": 1,
+                                    "hanging_api": true
+                                }
+                            },
+                            {
+                                "name": "eth_sendRawTransactionConditional",
                                 "block_parsing": {
                                     "parser_arg": [
                                         "latest"
