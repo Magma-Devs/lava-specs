@@ -59,8 +59,10 @@ jobs:
           BASE: ${{ github.event.pull_request.base.sha }}
           HEAD: ${{ github.event.pull_request.head.sha }}
         run: |
+          # compatibility.json (schema_version -> min_router) is the one root
+          # JSON that is not a spec.
           git diff --name-only --diff-filter=d "$BASE" "$HEAD" \
-            | grep -E '^[^/]+\.json$' > /tmp/changed_specs.txt || true
+            | grep -E '^[^/]+\.json$' | grep -vx 'compatibility.json' > /tmp/changed_specs.txt || true
           n=$(wc -l < /tmp/changed_specs.txt | tr -d ' ')
           echo "count=$n" >> "$GITHUB_OUTPUT"
           echo "changed root specs ($n):"; cat /tmp/changed_specs.txt
@@ -108,8 +110,10 @@ jobs:
         run: |
           # Specs live flat at the repo root as <chain>.json. Anything else in
           # the PR (skill scripts, workflows, docs) is not a spec change.
+          # compatibility.json (schema_version -> min_router) is the one root
+          # JSON that is not a spec.
           git diff --name-only --diff-filter=d "$BASE" "$HEAD" \
-            | grep -E '^[^/]+\.json$' > /tmp/changed_specs.txt || true
+            | grep -E '^[^/]+\.json$' | grep -vx 'compatibility.json' > /tmp/changed_specs.txt || true
           n=$(wc -l < /tmp/changed_specs.txt | tr -d ' ')
           echo "count=$n" >> "$GITHUB_OUTPUT"
           echo "changed root specs ($n):"; cat /tmp/changed_specs.txt
