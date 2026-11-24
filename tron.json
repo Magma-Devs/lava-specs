@@ -1553,7 +1553,17 @@
                                 "category": {
                                     "deterministic": false,
                                     "stateful": 0
-                                }
+                                },
+                                "parsers": [
+                                    {
+                                        "parse_path": ".params.start_block_index",
+                                        "parse_type": "BLOCK_EARLIEST"
+                                    },
+                                    {
+                                        "parse_path": ".params.end_block_index",
+                                        "parse_type": "BLOCK_LATEST"
+                                    }
+                                ]
                             },
                             {
                                 "name": "/wallet/scanshieldedtrc20notesbyovk",
@@ -1568,7 +1578,17 @@
                                 "category": {
                                     "deterministic": false,
                                     "stateful": 0
-                                }
+                                },
+                                "parsers": [
+                                    {
+                                        "parse_path": ".params.start_block_index",
+                                        "parse_type": "BLOCK_EARLIEST"
+                                    },
+                                    {
+                                        "parse_path": ".params.end_block_index",
+                                        "parse_type": "BLOCK_LATEST"
+                                    }
+                                ]
                             },
                             {
                                 "name": "/wallet/isshieldedtrc20contractnotespent",
