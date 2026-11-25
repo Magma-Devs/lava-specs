@@ -169,6 +169,15 @@ If `$ARGUMENTS[2]` was provided:
 3. Test chain-id verification
 4. Spot-check 2-3 representative APIs per category
 
+### Phase 10: Error rows audit (the `errors` section)
+
+Only when the spec carries an `errors` section (smart-router's per-chain error classification, PRD on Magma-Devs/smart-router#661). For every row and shape the change adds or edits:
+
+1. **Source.** `source` links the node software's own definition of the code, message or field, in its repository and pinned to a tag or commit. A provider's or vendor's documentation, wording, code or field is never a source (rulebook R-0.2). A missing, unpinned or vendor source is CRITICAL.
+2. **A reply per matcher.** Every `code`, `contains` and `regex`, and every alternative of a regex, has a representative reply the node software sends, quoted from the source or from a test or fixture in that repository. A matcher with no reply is CRITICAL. A regex alternative without one is MEDIUM.
+3. **Write verdicts need product.** A row that adds or changes `write`, and any change to the spec's `write_rows`, needs product's approval (Q229). Report it CRITICAL until the change names that approval.
+4. **No production evidence in public.** A row's production example and its Lava-Guid belong in the change's private evidence. They never go in the spec, a commit, a PR description or this report: lava-specs is public.
+
 ## Output
 
 Produce a gap report in markdown with:
@@ -176,6 +185,7 @@ Produce a gap report in markdown with:
 - **Evidence**: cite specific line numbers from the spec, API docs, and spec guide
 - **Impact**: explain what breaks or degrades if the gap is not fixed
 - **Cleanup findings**: every removed field reported by the Phase 0 guard, with the JSON path of each occurrence
+- **Error-row findings**: every Phase 10 finding, by row or shape `id`
 
 Save the report to `$ARGUMENTS[3]` when it was given, otherwise to
 `docs/<CHAIN_NAME>/SPEC_REVIEW_GAPS.md`. Create the parent directory if needed.
