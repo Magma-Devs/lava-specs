@@ -1,7 +1,5 @@
 {
     "proposal": {
-        "title": "Add Specs: EOS",
-        "description": "Adding new specification support for relaying EOS (Antelope/Vaulta) data on Lava: the native Antelope Chain REST API plus the EOS EVM JSON-RPC layer (imports ETH1).",
         "specs": [
             {
                 "index": "EOS",
@@ -10,17 +8,10 @@
                 "imports": [
                     "ETH1"
                 ],
-                "reliability_threshold": 268435455,
-                "data_reliability_enabled": true,
                 "block_distance_for_finalized_data": 2,
                 "blocks_in_finalization_proof": 1,
                 "average_block_time": 500,
                 "allowed_block_lag_for_qos_sync": 20,
-                "shares": 1,
-                "min_stake_provider": {
-                    "denom": "ulava",
-                    "amount": "5000000000"
-                },
                 "api_collections": [
                     {
                         "enabled": true,
@@ -1076,17 +1067,10 @@
                 "imports": [
                     "EOS"
                 ],
-                "reliability_threshold": 268435455,
-                "data_reliability_enabled": true,
                 "block_distance_for_finalized_data": 2,
                 "blocks_in_finalization_proof": 1,
                 "average_block_time": 500,
                 "allowed_block_lag_for_qos_sync": 20,
-                "shares": 1,
-                "min_stake_provider": {
-                    "denom": "ulava",
-                    "amount": "5000000000"
-                },
                 "api_collections": [
                     {
                         "enabled": true,
@@ -1211,6 +1195,5 @@
                 ]
             }
         ]
-    },
-    "deposit": "10000000ulava"
+    }
 }
