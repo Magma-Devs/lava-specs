@@ -9,6 +9,124 @@
                 "blocks_in_finalization_proof": 1,
                 "average_block_time": 200,
                 "allowed_block_lag_for_qos_sync": 50,
+                "errors": {
+                    "schema_version": 1,
+                    "rows": [
+                        {
+                            "id": "solana.block_cleaned_up",
+                            "interface": "jsonrpc",
+                            "code": -32001,
+                            "error": "CHAIN_STATE_PRUNED",
+                            "source": "https://github.com/anza-xyz/agave/blob/v2.1.0/rpc-client-api/src/custom_error.rs"
+                        },
+                        {
+                            "id": "solana.send_transaction_preflight_failure",
+                            "interface": "jsonrpc",
+                            "code": -32002,
+                            "error": "CHAIN_SOLANA_SIMULATION_FAILED",
+                            "class": "C2",
+                            "source": "https://github.com/anza-xyz/agave/blob/v2.1.0/rpc-client-api/src/custom_error.rs"
+                        },
+                        {
+                            "id": "solana.transaction_signature_verification_failure",
+                            "interface": "jsonrpc",
+                            "code": -32003,
+                            "error": "CHAIN_SOLANA_SIGNATURE_VERIFY_FAILED",
+                            "class": "C2",
+                            "source": "https://github.com/anza-xyz/agave/blob/v2.1.0/rpc-client-api/src/custom_error.rs"
+                        },
+                        {
+                            "id": "solana.block_not_available",
+                            "interface": "jsonrpc",
+                            "code": -32004,
+                            "error": "CHAIN_BLOCK_NOT_FOUND",
+                            "source": "https://github.com/anza-xyz/agave/blob/v2.1.0/rpc-client-api/src/custom_error.rs"
+                        },
+                        {
+                            "id": "solana.node_unhealthy",
+                            "interface": "jsonrpc",
+                            "code": -32005,
+                            "error": "NODE_SOLANA_UNHEALTHY",
+                            "class": "C5",
+                            "source": "https://github.com/anza-xyz/agave/blob/v2.1.0/rpc-client-api/src/custom_error.rs"
+                        },
+                        {
+                            "id": "solana.slot_skipped",
+                            "interface": "jsonrpc",
+                            "code": -32007,
+                            "error": "CHAIN_SOLANA_LEDGER_JUMP",
+                            "class": "C3",
+                            "reason": "pruned",
+                            "source": "https://github.com/anza-xyz/agave/blob/v2.1.0/rpc-client-api/src/custom_error.rs",
+                            "note": "Skipped, or missing on this node after a ledger jump to a recent snapshot: another node may hold it."
+                        },
+                        {
+                            "id": "solana.long_term_storage_slot_skipped",
+                            "interface": "jsonrpc",
+                            "code": -32009,
+                            "error": "CHAIN_SOLANA_MISSING_LONG_TERM",
+                            "source": "https://github.com/anza-xyz/agave/blob/v2.1.0/rpc-client-api/src/custom_error.rs"
+                        },
+                        {
+                            "id": "solana.missing_in_long_term_storage",
+                            "interface": "jsonrpc",
+                            "contains": "missing in long-term storage",
+                            "error": "CHAIN_SOLANA_MISSING_LONG_TERM",
+                            "source": "https://github.com/anza-xyz/agave/blob/v2.1.0/rpc-client-api/src/custom_error.rs",
+                            "note": "The same answer read by its text, for a reply whose code was rewritten."
+                        },
+                        {
+                            "id": "solana.key_excluded_from_secondary_index",
+                            "interface": "jsonrpc",
+                            "code": -32010,
+                            "error": "CHAIN_SOLANA_EXCLUDED_FROM_INDEX",
+                            "class": "C2",
+                            "source": "https://github.com/anza-xyz/agave/blob/v2.1.0/rpc-client-api/src/custom_error.rs"
+                        },
+                        {
+                            "id": "solana.transaction_signature_len_mismatch",
+                            "interface": "jsonrpc",
+                            "code": -32013,
+                            "error": "CHAIN_SOLANA_SIGNATURE_LENGTH_MISMATCH",
+                            "class": "C2",
+                            "source": "https://github.com/anza-xyz/agave/blob/v2.1.0/rpc-client-api/src/custom_error.rs"
+                        },
+                        {
+                            "id": "solana.block_status_not_available_yet",
+                            "interface": "jsonrpc",
+                            "code": -32014,
+                            "error": "CHAIN_SOLANA_BLOCK_STATUS_UNAVAILABLE",
+                            "class": "C3",
+                            "reason": "behind",
+                            "source": "https://github.com/anza-xyz/agave/blob/v2.1.0/rpc-client-api/src/custom_error.rs"
+                        },
+                        {
+                            "id": "solana.unsupported_transaction_version",
+                            "interface": "jsonrpc",
+                            "code": -32015,
+                            "error": "CHAIN_SOLANA_TX_VERSION_UNSUPPORTED",
+                            "class": "C2",
+                            "source": "https://github.com/anza-xyz/agave/blob/v2.1.0/rpc-client-api/src/custom_error.rs"
+                        },
+                        {
+                            "id": "solana.min_context_slot",
+                            "interface": "jsonrpc",
+                            "code": -32016,
+                            "error": "CHAIN_SOLANA_MIN_CONTEXT_SLOT_NOT_REACHED",
+                            "class": "C3",
+                            "reason": "behind",
+                            "source": "https://github.com/anza-xyz/agave/blob/v2.1.0/rpc-client-api/src/custom_error.rs"
+                        },
+                        {
+                            "id": "solana.blockhash_not_found",
+                            "interface": "jsonrpc",
+                            "contains": "blockhash not found",
+                            "error": "CHAIN_SOLANA_BLOCKHASH_NOT_FOUND",
+                            "class": "C2",
+                            "source": "https://github.com/anza-xyz/agave/blob/v2.1.0/sdk/transaction-error/src/lib.rs"
+                        }
+                    ]
+                },
                 "api_collections": [
                     {
                         "enabled": true,
