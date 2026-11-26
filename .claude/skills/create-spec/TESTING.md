@@ -338,7 +338,7 @@ Runs **before** boot, hitting each upstream **directly** (the router isn't up ye
 
 Result per pair: `SUPPORTED` / `UNSUPPORTED (code)` / `INCONCLUSIVE (timeout)`.
 
-Only *supported* addons are written into the upstream's `addons:` config list. Adding an unsupported one would make its startup verification (severity `Fail`) exclude that provider from serving **everything**. An addon supported by zero upstreams → `NOT_TESTABLE`, left out of the config, carried to the report with per-upstream evidence.
+Only *supported* addons are written into the upstream's `addons:` config list. Adding an unsupported one tests nothing of it: where the spec checks that add-on with no `severity`, the router switches it off on that url (`PartialFail`); where its only check is `Warning`, or it has none, the router keeps routing it there and its methods fail. A spec `Fail` on that check, or a `standalone-addons` url whose only add-on fails, takes the url out. An addon supported by zero upstreams → `NOT_TESTABLE`, left out of the config, carried to the report with per-upstream evidence.
 
 ### Step 3 — Boot readiness *is* a spec test
 
