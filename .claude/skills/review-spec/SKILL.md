@@ -171,12 +171,17 @@ If `$ARGUMENTS[2]` was provided:
 
 ### Phase 10: Error rows audit (the `errors` section)
 
-Only when the spec carries an `errors` section (smart-router's per-chain error classification, PRD on Magma-Devs/smart-router#661). For every row and shape the change adds or edits:
+Only when the spec or its base carries an `errors` section (smart-router's per-chain error classification, PRD on Magma-Devs/smart-router#661). The base is the same file on the branch the change goes into: `git show origin/main:<file>`, or the PR's base branch when reviewing a PR. A file that isn't there is new, and every row and shape in it is added. Compare the two by `id`, per spec entry (`.proposal.specs[].errors`: `rows`, `shapes`, `write_rows`, `inherit`).
 
-1. **Source.** `source` links the node software's own definition of the code, message or field, in its repository and pinned to a tag or commit. A provider's or vendor's documentation, wording, code or field is never a source (rulebook R-0.2). A missing, unpinned or vendor source is CRITICAL.
-2. **A reply per matcher.** Every `code`, `contains` and `regex`, and every alternative of a regex, has a representative reply the node software sends, quoted from the source or from a test or fixture in that repository. A matcher with no reply is CRITICAL. A regex alternative without one is MEDIUM.
-3. **Write verdicts need product.** A row that adds or changes `write`, and any change to the spec's `write_rows`, needs product's approval (Q229). Report it CRITICAL until the change names that approval.
-4. **No production evidence in public.** A row's production example and its Lava-Guid belong in the change's private evidence. They never go in the spec, a commit, a PR description or this report: lava-specs is public.
+For every row and shape the change adds or edits (a disabling entry, `disabled: true`, carries only `id`, `disabled` and an optional `note`, so items 1 and 2 don't apply to it):
+
+1. **Source.** `source` links the official definition of the code, message or field: the node software's own repository, or the protocol specification it implements (PRD §4.4 allows node-software and protocol-spec origins), pinned to a tag or commit. A provider's or vendor's documentation, wording, code or field is never a source (rulebook R-0.2). A missing, unpinned or vendor source is CRITICAL. So is a matcher that holds a vendor's own code, wording or field, whatever its source (PRD invariant 8).
+2. **A reply per matcher.** Every `code`, `contains` and `regex`, every alternative of a regex, every `status`-only row (gRPC, or a bare HTTP 409) and every answer row has a representative reply the node software sends, quoted from the source or from a test or fixture in that repository. A shape's reply shows its `code`, `space` and `message` pointers resolving, and its `when` holding where it has one. Each reply names the node software and the version it came from: the versions checked, which live in the review evidence, not in the row. A matcher, regex alternative or shape with no reply is CRITICAL (PRD §4.4: CI requires one for each).
+
+For every change to the section, removals included:
+
+3. **Write verdicts need product.** These change the chain's write verdicts and need product's approval (Q229, PRD §8.1): a row that adds, changes or drops `write`; deleting or disabling a row that has `write`; an `inherit` change that drops or restores a parent's rows with `write`; any change to the spec's `write_rows`, deleting the section included. Report each CRITICAL until the change names that approval.
+4. **No production evidence in public.** A row's production example and its Lava-Guid belong in the change's private evidence. They never go in the spec, a commit or a PR description: lava-specs is public. Check the spec and, when reviewing a PR, its commits (`git log <base>..HEAD`) and description (`gh pr view <n> --json body`). A production reply or Lava-Guid in any of them is CRITICAL. The report names where it sits, never the value.
 
 ## Output
 
@@ -185,7 +190,7 @@ Produce a gap report in markdown with:
 - **Evidence**: cite specific line numbers from the spec, API docs, and spec guide
 - **Impact**: explain what breaks or degrades if the gap is not fixed
 - **Cleanup findings**: every removed field reported by the Phase 0 guard, with the JSON path of each occurrence
-- **Error-row findings**: every Phase 10 finding, by row or shape `id`
+- **Error-row findings**: every Phase 10 finding, by row or shape `id`, and the base the change was compared against
 
 Save the report to `$ARGUMENTS[3]` when it was given, otherwise to
 `docs/<CHAIN_NAME>/SPEC_REVIEW_GAPS.md`. Create the parent directory if needed.
