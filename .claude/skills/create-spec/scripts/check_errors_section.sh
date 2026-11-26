@@ -13,7 +13,10 @@
 #       in jq -S canonical form (key order and whitespace are ignored; every value, every
 #       added or removed field and every row or shape reorder is caught: the first matching
 #       row wins, so order is meaning). An absent section equals an absent section. A spec
-#       only one file holds is other guards' business (check_preservation.sh and friends).
+#       only base holds may not have carried a section: dropping the spec drops its rows. A
+#       spec only candidate holds may not carry one: a new spec gets its family's rows
+#       through `imports`. Whether such a spec may come or go at all is other guards' business
+#       (check_preservation.sh and friends).
 #
 #   check_errors_section.sh none <candidate.json>
 #       No spec in candidate carries an `errors` section. For a file create-spec wrote
@@ -64,11 +67,22 @@ case "$mode" in
     readable "$CAND"
     while IFS= read -r idx; do
       [[ -z "$idx" ]] && continue
-      in_cand=$(jq -r --arg i "$idx" '[.proposal.specs[]? | select(.index == $i)] | length' "$CAND")
-      [[ "$in_cand" == "0" ]] && continue
-      b=$(jq -S -c --arg i "$idx" '[.proposal.specs[] | select(.index == $i) | .errors]' "$BASE")
-      c=$(jq -S -c --arg i "$idx" '[.proposal.specs[] | select(.index == $i) | .errors]' "$CAND")
-      if [[ "$b" == "$c" ]]; then
+      # "[]": the file has no spec with this index. "[null]": it has one, with no section.
+      b=$(jq -S -c --arg i "$idx" '[.proposal.specs[]? | select(.index == $i) | .errors]' "$BASE")
+      c=$(jq -S -c --arg i "$idx" '[.proposal.specs[]? | select(.index == $i) | .errors]' "$CAND")
+      if [[ "$c" == "[]" ]]; then
+        if [[ "$b" == "[null]" ]]; then
+          PASS+=("removed|$idx|candidate removes a spec that had no errors section")
+        else
+          FAIL+=("spec-dropped|$idx|candidate removes a spec that carries an errors section, and its rows with it")
+        fi
+      elif [[ "$b" == "[]" ]]; then
+        if [[ "$c" == "[null]" ]]; then
+          PASS+=("new|$idx|candidate's new spec carries no errors section")
+        else
+          FAIL+=("added|$idx|candidate's new spec carries an errors section; a new spec gets its family's rows through imports")
+        fi
+      elif [[ "$b" == "$c" ]]; then
         if [[ "$b" == "[null]" ]]; then
           PASS+=("absent|$idx|no errors section in either")
         else
@@ -81,7 +95,7 @@ case "$mode" in
       else
         FAIL+=("changed|$idx|candidate changes the errors section (a value, a field, or the order of rows or shapes)")
       fi
-    done < <(jq -r '.proposal.specs[]?.index' "$BASE" | LC_ALL=C sort -u)
+    done < <(jq -r '.proposal.specs[]?.index | strings' "$BASE" "$CAND" | LC_ALL=C sort -u)
     report
     ;;
   none)

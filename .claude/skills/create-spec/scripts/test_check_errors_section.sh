@@ -61,13 +61,33 @@ run preserve "$T/with.json" "$T/reordered.json"
 echo "$OUT" | grep -q "changed|MAIN" || fail "reordered: missing changed|MAIN ($OUT)"
 echo "reordered: OK"
 
-# 7) a spec only one side holds is out of scope here: PASS
+# 7) a spec only one side holds, with no section on it: PASS (whether it may come or go is
+#    other guards' business)
 jq '.proposal.specs += [{"index":"EXTRA","name":"extra","imports":["MAIN"]}]' "$T/with.json" > "$T/extra.json"
 run preserve "$T/with.json" "$T/extra.json"
 [ "$RC" -eq 0 ] || fail "extra spec: exit=$RC want 0 ($OUT)"
-echo "extra spec: OK"
+echo "$OUT" | grep -q "new|EXTRA" || fail "extra spec: missing new|EXTRA ($OUT)"
+jq 'del(.proposal.specs[] | select(.index == "MAINT"))' "$T/with.json" > "$T/no_maint.json"
+run preserve "$T/with.json" "$T/no_maint.json"
+[ "$RC" -eq 0 ] || fail "removed spec: exit=$RC want 0 ($OUT)"
+echo "$OUT" | grep -q "removed|MAINT" || fail "removed spec: missing removed|MAINT ($OUT)"
+echo "extra and removed spec: OK"
 
-# 8) none: a file without a section passes, one with a section names the spec
+# 8) a new spec with a copied section: FAIL — a new spec gets its family's rows through imports
+jq --argjson e "$ROWS" '.proposal.specs += [{"index":"EXTRA","name":"extra","imports":["MAIN"],"errors":$e}]' "$T/with.json" > "$T/copied.json"
+run preserve "$T/with.json" "$T/copied.json"
+[ "$RC" -eq 1 ] || fail "copied: exit=$RC want 1 ($OUT)"
+echo "$OUT" | grep -q "added|EXTRA" || fail "copied: missing added|EXTRA ($OUT)"
+echo "copied: OK"
+
+# 9) a removed spec that carried a section: FAIL — its rows go with it
+jq 'del(.proposal.specs[] | select(.index == "MAIN"))' "$T/with.json" > "$T/no_main.json"
+run preserve "$T/with.json" "$T/no_main.json"
+[ "$RC" -eq 1 ] || fail "spec dropped: exit=$RC want 1 ($OUT)"
+echo "$OUT" | grep -q "spec-dropped|MAIN" || fail "spec dropped: missing spec-dropped|MAIN ($OUT)"
+echo "spec dropped: OK"
+
+# 10) none: a file without a section passes, one with a section names the spec
 run none "$BASE"
 [ "$RC" -eq 0 ] || fail "none clean: exit=$RC want 0 ($OUT)"
 run none "$T/with.json"
@@ -75,7 +95,7 @@ run none "$T/with.json"
 echo "$OUT" | grep -q "present|MAIN" || fail "none present: missing present|MAIN ($OUT)"
 echo "none: OK"
 
-# 9) usage and unreadable input: exit 2
+# 11) usage and unreadable input: exit 2
 run preserve "$BASE"
 [ "$RC" -eq 2 ] || fail "usage: exit=$RC want 2"
 echo '{' > "$T/broken.json"

@@ -92,7 +92,7 @@ for f in ./*.json; do jq -e --arg i "<MAINNET_INDEX>" 'any((.proposal.specs // [
   - **add-collection** — add one or more `api_collections` (typically a new `api_interface`, e.g. REST alongside an existing jsonrpc) to specs that already exist, changing no spec-level field and no pre-existing collection. This is the right choice for "serve chain X over interface Y too". It runs **Phase 1C — Add-collection mode** below and SKIPS Phases 2–7. Neither of the other existing-file modes can do this: add-testnet's guard rejects it (no index is added, and a pre-existing spec IS modified), and regenerating drops sibling entries — on `btc.json`, whose four entries include BTCT4 and BTCS, a regeneration to the canonical 2-entry shape would delete two live testnets.
   - **base / adapt** — use the existing file as a starting point and regenerate (runs the full Phases 2–7 pipeline). Reach for this only when the spec is structurally wrong — a wrong parent, the wrong interface, a collection layout that cannot be amended.
   - **scratch** — overwrite and regenerate from nothing.
-  - **Whatever the mode, a spec's `errors` section stays exactly as it is.** It holds the chain's error rows, shapes and write rows, which smart-router reads (its per-chain error classification design, PRD on Magma-Devs/smart-router#661). Each row carries evidence and approvals no research pass can reproduce: a pinned node-software source, a reply per matcher, product's approval of every write verdict. add-testnet, update and add-collection keep the section by construction, and their guards fail any change to it. base / adapt and scratch re-derive the file, so they must carry each spec's `errors` section over verbatim. Phase 6's errors-section guard checks it. create-spec itself writes no error rows yet (MAG-4898 Part 3).
+  - **Whatever the mode, a spec's `errors` section stays exactly as it is.** It holds the chain's error rows, shapes and write rows, which smart-router reads (its per-chain error classification design, PRD on Magma-Devs/smart-router#661). Each row carries evidence and approvals no research pass can reproduce: a pinned node-software source, a reply per matcher, product's approval of every write verdict. add-testnet, update and add-collection keep the section by construction, and their guards fail any change to it. base / adapt and scratch re-derive the file, so they must carry each spec's `errors` section over verbatim, keep every spec that carries one, and give a spec they add none. Phase 6's errors-section guard checks it. create-spec itself writes no error rows yet (MAG-4898 Part 3).
 - If no file matches, this is a new chain — proceed to Phase 2 (the new file will be named `<index-lowercased>.json`).
 
 ## Phase 1A — Add-testnet mode (append a testnet to an existing spec)
@@ -464,7 +464,7 @@ bash .claude/skills/create-spec/scripts/check_unused_fields.sh <chain>.json
 
 It exits 0 with `RESULT: PASS (no removed fields)` on a clean spec. On a non-zero exit it prints one `REMOVED_FIELD | <file> | <json-path>` line per offender — dispatch the Phase 6 fixer subagent to delete every reported field (do NOT open and edit the spec body yourself), then re-run both this guard and the `jq` check.
 
-Then run the **errors-section guard**, a hard static gate like the one above. A new chain carries no `errors` section: create-spec writes no error rows, and a chain's family rows reach it through `imports`, never as a copy. A regenerated file (base / adapt / scratch over a file on main) carries every spec's section exactly as on main:
+Then run the **errors-section guard**, a hard static gate like the one above. A new chain carries no `errors` section: create-spec writes no error rows, and a chain's family rows reach it through `imports`, never as a copy. A regenerated file (base / adapt / scratch over a file on main) keeps every spec on main that carries a section, with that section exactly as on main, and a spec it adds carries none:
 
 ```bash
 # a new chain (no file on main)
@@ -474,7 +474,7 @@ git show origin/main:<chain>.json > /tmp/spec_<chain>_main.json
 bash .claude/skills/create-spec/scripts/check_errors_section.sh preserve /tmp/spec_<chain>_main.json <chain>.json
 ```
 
-A FAIL is fixed through the Phase 6 fixer by removing the section (a new chain), or by copying each spec's `errors` section from main verbatim (a regeneration). Never fix it by editing a row.
+A FAIL is fixed through the Phase 6 fixer by removing the section (a new chain), or, for a regeneration, by copying each spec's `errors` section from main verbatim and restoring any spec on main that carries one. Never fix it by editing a row.
 
 **If the spec sets `internal_path` anywhere**, run the internal-path guard too — a chain serving several API surfaces at different URL sub-paths (TON's `/v2` + `/v3`, AVAX's `/P` + `/X`) has three failure modes that are invisible in review and fatal in production:
 
