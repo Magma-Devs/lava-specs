@@ -9,6 +9,142 @@
                 "blocks_in_finalization_proof": 3,
                 "average_block_time": 1690,
                 "allowed_block_lag_for_qos_sync": 6,
+                "errors": {
+                    "schema_version": 1,
+                    "rows": [
+                        {
+                            "id": "starknet.failed_to_receive_txn",
+                            "interface": "jsonrpc",
+                            "code": 1,
+                            "error": "CHAIN_STARKNET_FAILED_TO_RECEIVE_TX",
+                            "class": "C2",
+                            "source": "https://github.com/starkware-libs/starknet-specs/blob/v0.8.1/api/starknet_api_openrpc.json"
+                        },
+                        {
+                            "id": "starknet.contract_not_found",
+                            "interface": "jsonrpc",
+                            "code": 20,
+                            "error": "CHAIN_STARKNET_CONTRACT_NOT_FOUND",
+                            "class": "C2",
+                            "source": "https://github.com/starkware-libs/starknet-specs/blob/v0.8.1/api/starknet_api_openrpc.json"
+                        },
+                        {
+                            "id": "starknet.block_not_found",
+                            "interface": "jsonrpc",
+                            "code": 24,
+                            "error": "CHAIN_STARKNET_BLOCK_NOT_FOUND",
+                            "class": "C3",
+                            "reason": "not_found",
+                            "source": "https://github.com/starkware-libs/starknet-specs/blob/v0.8.1/api/starknet_api_openrpc.json"
+                        },
+                        {
+                            "id": "starknet.class_hash_not_found",
+                            "interface": "jsonrpc",
+                            "code": 28,
+                            "error": "CHAIN_STARKNET_CLASS_NOT_FOUND",
+                            "class": "C2",
+                            "source": "https://github.com/starkware-libs/starknet-specs/blob/v0.8.1/api/starknet_api_openrpc.json"
+                        },
+                        {
+                            "id": "starknet.txn_hash_not_found",
+                            "interface": "jsonrpc",
+                            "code": 29,
+                            "error": "CHAIN_STARKNET_TX_HASH_NOT_FOUND",
+                            "class": "C3",
+                            "reason": "not_found",
+                            "source": "https://github.com/starkware-libs/starknet-specs/blob/v0.8.1/api/starknet_api_openrpc.json"
+                        },
+                        {
+                            "id": "starknet.contract_error",
+                            "interface": "jsonrpc",
+                            "code": 40,
+                            "error": "CHAIN_STARKNET_CONTRACT_ERROR",
+                            "class": "C2",
+                            "source": "https://github.com/starkware-libs/starknet-specs/blob/v0.8.1/api/starknet_api_openrpc.json"
+                        },
+                        {
+                            "id": "starknet.transaction_execution_error",
+                            "interface": "jsonrpc",
+                            "code": 41,
+                            "error": "CHAIN_STARKNET_TX_EXEC_ERROR",
+                            "class": "C2",
+                            "source": "https://github.com/starkware-libs/starknet-specs/blob/v0.8.1/api/starknet_api_openrpc.json"
+                        },
+                        {
+                            "id": "starknet.class_already_declared",
+                            "interface": "jsonrpc",
+                            "code": 51,
+                            "error": "CHAIN_STARKNET_CLASS_ALREADY_DECLARED",
+                            "class": "C2",
+                            "source": "https://github.com/starkware-libs/starknet-specs/blob/v0.8.1/api/starknet_write_api.json"
+                        },
+                        {
+                            "id": "starknet.invalid_transaction_nonce",
+                            "interface": "jsonrpc",
+                            "code": 52,
+                            "error": "CHAIN_STARKNET_INVALID_NONCE",
+                            "class": "C2",
+                            "source": "https://github.com/starkware-libs/starknet-specs/blob/v0.8.1/api/starknet_write_api.json"
+                        },
+                        {
+                            "id": "starknet.insufficient_resources_for_validate",
+                            "interface": "jsonrpc",
+                            "code": 53,
+                            "error": "CHAIN_STARKNET_INSUFFICIENT_FEE",
+                            "class": "C2",
+                            "source": "https://github.com/starkware-libs/starknet-specs/blob/v0.8.1/api/starknet_write_api.json",
+                            "note": "INSUFFICIENT_RESOURCES_FOR_VALIDATE from spec v0.8; INSUFFICIENT_MAX_FEE in v0.7, the same code."
+                        },
+                        {
+                            "id": "starknet.insufficient_account_balance",
+                            "interface": "jsonrpc",
+                            "code": 54,
+                            "error": "CHAIN_STARKNET_INSUFFICIENT_BALANCE",
+                            "class": "C2",
+                            "source": "https://github.com/starkware-libs/starknet-specs/blob/v0.8.1/api/starknet_write_api.json"
+                        },
+                        {
+                            "id": "starknet.validation_failure",
+                            "interface": "jsonrpc",
+                            "code": 55,
+                            "error": "CHAIN_STARKNET_VALIDATION_FAILURE",
+                            "class": "C2",
+                            "source": "https://github.com/starkware-libs/starknet-specs/blob/v0.8.1/api/starknet_write_api.json"
+                        },
+                        {
+                            "id": "starknet.compilation_failed",
+                            "interface": "jsonrpc",
+                            "code": 56,
+                            "error": "CHAIN_STARKNET_COMPILATION_FAILED",
+                            "class": "C2",
+                            "source": "https://github.com/starkware-libs/starknet-specs/blob/v0.8.1/api/starknet_write_api.json"
+                        },
+                        {
+                            "id": "starknet.duplicate_tx",
+                            "interface": "jsonrpc",
+                            "code": 59,
+                            "error": "CHAIN_STARKNET_DUPLICATE_TX",
+                            "class": "C2",
+                            "source": "https://github.com/starkware-libs/starknet-specs/blob/v0.8.1/api/starknet_write_api.json"
+                        },
+                        {
+                            "id": "starknet.unsupported_tx_version",
+                            "interface": "jsonrpc",
+                            "code": 61,
+                            "error": "CHAIN_STARKNET_TX_VERSION_UNSUPPORTED",
+                            "class": "C2",
+                            "source": "https://github.com/starkware-libs/starknet-specs/blob/v0.8.1/api/starknet_write_api.json"
+                        },
+                        {
+                            "id": "starknet.unexpected_error",
+                            "interface": "jsonrpc",
+                            "code": 63,
+                            "error": "CHAIN_STARKNET_UNEXPECTED_ERROR",
+                            "class": "C5",
+                            "source": "https://github.com/starkware-libs/starknet-specs/blob/v0.8.1/api/starknet_write_api.json"
+                        }
+                    ]
+                },
                 "api_collections": [
                     {
                         "enabled": false,
