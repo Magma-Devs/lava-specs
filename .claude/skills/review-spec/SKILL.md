@@ -171,7 +171,7 @@ If `$ARGUMENTS[2]` was provided:
 
 ### Phase 10: Error rows audit (the `errors` section)
 
-Only when the spec or its base carries an `errors` section (smart-router's per-chain error classification, PRD on Magma-Devs/smart-router#661). The base is the same file on the branch the change goes into: `git show origin/main:<file>`, or the PR's base branch when reviewing a PR. A file that isn't there is new, and every row and shape in it is added. Compare the two by `id`, per spec entry (`.proposal.specs[].errors`: `rows`, `shapes`, `write_rows`, `inherit`).
+Only when the spec or its base carries an `errors` section (smart-router's per-chain error classification, PRD on Magma-Devs/smart-router#661). The base is the same file on the branch the change goes into: `git show origin/main:<file>`, or the PR's base branch when reviewing a PR. A file that isn't there is new, and every row and shape in it is added. Compare the two by `id`, per spec entry (`.proposal.specs[].errors`: `rows`, `shapes`, `write_rows`, `inherit`), and compare the order of `rows` and `shapes` separately: the first one that matches wins, so a reorder is a change.
 
 For every row and shape the change adds or edits (a disabling entry, `disabled: true`, carries only `id`, `disabled` and an optional `note`, so items 1 and 2 don't apply to it):
 
@@ -180,7 +180,7 @@ For every row and shape the change adds or edits (a disabling entry, `disabled: 
 
 For every change to the section, removals included:
 
-3. **Write verdicts need product.** These change the chain's write verdicts and need product's approval (Q229, PRD §8.1): a row that adds, changes or drops `write`; deleting or disabling a row that has `write`; an `inherit` change that drops or restores a parent's rows with `write`; any change to the spec's `write_rows`, deleting the section included. Report each CRITICAL until the change names that approval.
+3. **Write verdicts need product.** These change the chain's write verdicts and need product's approval (Q229, PRD §8.1): a row that adds, changes or drops `write`; deleting, disabling or reordering a row that has `write`; an `inherit` change that drops or restores a parent's rows with `write`; any change to the spec's `write_rows`, deleting the section included. Report each CRITICAL until the change names that approval.
 4. **No production evidence in public.** A row's production example and its Lava-Guid belong in the change's private evidence. They never go in the spec, a commit or a PR description: lava-specs is public. Check the spec and, when reviewing a PR, its commits (`git log <base>..HEAD`) and description (`gh pr view <n> --json body`). A production reply or Lava-Guid in any of them is CRITICAL. The report names where it sits, never the value.
 
 ## Output
