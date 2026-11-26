@@ -952,6 +952,9 @@
                 "index": "STRKS",
                 "name": "StarkNet Sepolia Testnet",
                 "enabled": true,
+                "imports": [
+                    "STRK"
+                ],
                 "block_distance_for_finalized_data": 1,
                 "blocks_in_finalization_proof": 3,
                 "average_block_time": 1690,
