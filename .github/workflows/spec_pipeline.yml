@@ -481,18 +481,6 @@ jobs:
           echo "Guarding removed fields in: ${present[*]}"
           bash .claude/skills/create-spec/scripts/check_unused_fields.sh "${present[@]}"
 
-      # Add-testnet preservation guard. Runs AFTER the Phase-10 fix pass and
-      # BEFORE the commit, beside the removed-fields guard above. create_spec.yml
-      # guards the CREATION half; this closes the post-PR half so the whole
-      # add-testnet flow is drift-proof — the Phase-10 fix pass cannot silently
-      # change the mainnet (or any pre-existing spec) and get committed.
-      #
-      # Fires ONLY when the PR — AS OPENED — was a clean add of exactly one spec
-      # index to a catalog file that already exists on main (i.e. a real
-      # add-testnet PR). New-chain PRs (file not on main), mainnet-edit PRs (no
-      # index added), and PRs already mixed when opened are N/A and skipped, so
-      # this never blocks a legitimately intended mainnet change. `check_unused_
-      # fields` above is name-level only; THIS catches semantic value drift.
       # Errors-section guard (MAG-4898). A spec's `errors` section holds the error rows
       # smart-router reads, each with evidence and approvals the fix pass can't reproduce (a
       # pinned node-software source, product's approval of a write verdict). Runs AFTER the
@@ -505,9 +493,24 @@ jobs:
         if: steps.cmd.outputs.IS_COMMAND == 'true'
         run: |
           set -euo pipefail
-          G=.claude/skills/create-spec/scripts/check_errors_section.sh
+          # The guard script comes from main, never the PR branch: a branch made before this
+          # guard existed has no copy, and main's copy is the one that judges a fix pass. The
+          # script reads no other file.
+          git fetch --quiet origin main || { echo "::error::could not fetch origin/main — cannot verify errors sections."; exit 1; }
+          G="$(mktemp)"
+          git show FETCH_HEAD:.claude/skills/create-spec/scripts/check_errors_section.sh > "$G" \
+            || { echo "::error::check_errors_section.sh is not on main — cannot verify errors sections."; exit 1; }
           head_copy="$(mktemp)"
           rc=0
+          # judge <script exit> <file> <what exit 1 means>. Exit 2 is a copy the script could
+          # not read as JSON, which says nothing about the errors section.
+          judge() {
+            case "$1" in
+              0) ;;
+              1) echo "::error file=$2::$3. Refusing to commit."; rc=1 ;;
+              *) echo "::error file=$2::could not check its errors sections: HEAD's or the working tree's copy is not valid JSON (exit $1). Refusing to commit."; rc=1 ;;
+            esac
+          }
           while IFS= read -r f; do
             [ -n "$f" ] || continue
             if git cat-file -e "HEAD:$f" 2>/dev/null; then
@@ -519,14 +522,28 @@ jobs:
                 fi
                 continue
               fi
-              bash "$G" preserve "$head_copy" "$f" || { echo "::error file=$f::the fix pass changed an errors section. Refusing to commit."; rc=1; }
+              r=0; bash "$G" preserve "$head_copy" "$f" || r=$?
+              judge "$r" "$f" "the fix pass changed an errors section"
             elif [ -f "$f" ]; then
-              bash "$G" none "$f" || { echo "::error file=$f::the fix pass created a spec file with an errors section. Refusing to commit."; rc=1; }
+              r=0; bash "$G" none "$f" || r=$?
+              judge "$r" "$f" "the fix pass created a spec file with an errors section"
             fi
           done < <(git diff --name-only HEAD -- ':(glob)*.json'; git ls-files --others --exclude-standard -- ':(glob)*.json')
-          rm -f "$head_copy"
+          rm -f "$head_copy" "$G"
           exit $rc
 
+      # Add-testnet preservation guard. Runs AFTER the Phase-10 fix pass and
+      # BEFORE the commit, beside the removed-fields guard above. create_spec.yml
+      # guards the CREATION half; this closes the post-PR half so the whole
+      # add-testnet flow is drift-proof — the Phase-10 fix pass cannot silently
+      # change the mainnet (or any pre-existing spec) and get committed.
+      #
+      # Fires ONLY when the PR — AS OPENED — was a clean add of exactly one spec
+      # index to a catalog file that already exists on main (i.e. a real
+      # add-testnet PR). New-chain PRs (file not on main), mainnet-edit PRs (no
+      # index added), and PRs already mixed when opened are N/A and skipped, so
+      # this never blocks a legitimately intended mainnet change. `check_unused_
+      # fields` above is name-level only; THIS catches semantic value drift.
       - name: Guard — preservation (add-testnet PRs)
         if: steps.cmd.outputs.IS_COMMAND == 'true'
         env:
