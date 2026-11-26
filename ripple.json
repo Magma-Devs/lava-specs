@@ -12,6 +12,90 @@
                 "average_block_time": 4000,
                 "allowed_block_lag_for_qos_sync": 3,
                 "imports": [],
+                "errors": {
+                    "schema_version": 1,
+                    "rows": [
+                        {
+                            "id": "xrp.tef_past_seq",
+                            "interface": "jsonrpc",
+                            "regex": "^(?:tefPAST_SEQ)\\b",
+                            "error": "CHAIN_NONCE_TOO_LOW",
+                            "source": "https://github.com/XRPLF/rippled/blob/3.4.1/src/libxrpl/protocol/TER.cpp"
+                        },
+                        {
+                            "id": "xrp.ter_pre_seq",
+                            "interface": "jsonrpc",
+                            "regex": "^(?:terPRE_SEQ)\\b",
+                            "error": "CHAIN_NONCE_TOO_HIGH",
+                            "source": "https://github.com/XRPLF/rippled/blob/3.4.1/src/libxrpl/protocol/TER.cpp"
+                        },
+                        {
+                            "id": "xrp.not_synced",
+                            "interface": "jsonrpc",
+                            "regex": "^(?:noNetwork|noCurrent|noClosed|notSynced|notReady)\\b",
+                            "error": "NODE_SYNCING",
+                            "source": "https://github.com/XRPLF/rippled/blob/3.4.1/src/libxrpl/protocol/ErrorCodes.cpp"
+                        },
+                        {
+                            "id": "xrp.amendment_blocked",
+                            "interface": "jsonrpc",
+                            "regex": "^(?:amendmentBlocked|unlBlocked)\\b",
+                            "error": "NODE_SERVICE_UNAVAILABLE",
+                            "source": "https://github.com/XRPLF/rippled/blob/3.4.1/src/libxrpl/protocol/ErrorCodes.cpp"
+                        },
+                        {
+                            "id": "xrp.internal",
+                            "interface": "jsonrpc",
+                            "regex": "^(?:internal|internalJson|internalSubmit|internalTransaction|dbDeserialization|json_rpc)\\b",
+                            "error": "NODE_INTERNAL_ERROR",
+                            "source": "https://github.com/XRPLF/rippled/blob/3.4.1/src/libxrpl/protocol/ErrorCodes.cpp",
+                            "note": "internalJson and internalSubmit are set in src/xrpld/rpc/handlers/transaction/Submit.cpp; internalTransaction has no rippled source at 3.4.1, 2.0.0 or 1.12.0."
+                        },
+                        {
+                            "id": "xrp.ledger_not_found",
+                            "interface": "jsonrpc",
+                            "regex": "^(?:lgrNotFound|lgrNotValidated)\\b",
+                            "error": "CHAIN_BLOCK_NOT_FOUND",
+                            "source": "https://github.com/XRPLF/rippled/blob/3.4.1/src/libxrpl/protocol/ErrorCodes.cpp"
+                        },
+                        {
+                            "id": "xrp.txn_not_found",
+                            "interface": "jsonrpc",
+                            "regex": "^(?:txnNotFound)\\b",
+                            "error": "CHAIN_TX_NOT_FOUND",
+                            "source": "https://github.com/XRPLF/rippled/blob/3.4.1/src/libxrpl/protocol/ErrorCodes.cpp"
+                        },
+                        {
+                            "id": "xrp.entry_not_found",
+                            "interface": "jsonrpc",
+                            "regex": "^(?:actNotFound|srcActNotFound|dstActNotFound|delegateActNotFound|entryNotFound|objectNotFound|badCredentials)\\b",
+                            "error": "NODE_RESOURCE_NOT_FOUND",
+                            "source": "https://github.com/XRPLF/rippled/blob/3.4.1/src/libxrpl/protocol/ErrorCodes.cpp"
+                        },
+                        {
+                            "id": "xrp.unknown_cmd",
+                            "interface": "jsonrpc",
+                            "regex": "^(?:unknownCmd)\\b",
+                            "error": "NODE_METHOD_NOT_FOUND",
+                            "source": "https://github.com/XRPLF/rippled/blob/3.4.1/src/libxrpl/protocol/ErrorCodes.cpp"
+                        },
+                        {
+                            "id": "xrp.not_enabled",
+                            "interface": "jsonrpc",
+                            "regex": "^(?:notEnabled|notImpl)\\b",
+                            "error": "NODE_UNIMPLEMENTED",
+                            "source": "https://github.com/XRPLF/rippled/blob/3.4.1/src/libxrpl/protocol/ErrorCodes.cpp"
+                        },
+                        {
+                            "id": "xrp.invalid_params",
+                            "interface": "jsonrpc",
+                            "regex": "^(?:invalidParams|invalidTransaction|badSyntax|notSupported|highFee|badSecret|actMalformed|badIssuer|badKeyType|channelAmtMalformed|channelMalformed|commandMissing|domainMalformed|dstActMalformed|dstActMissing|dstAmtMalformed|dstAmtMissing|dstIsrMalformed|excessiveLgrRange|invalidLgrRange|issueMalformed|lgrIdxMalformed|lgrIdxsInvalid|malformedStream|oracleMalformed|publicMalformed|sendMaxMalformed|signingMalformed|srcActMalformed|srcActMissing|srcCurMalformed|srcIsrMalformed|transactionSigned|unexpectedLedgerType|wrongNetwork|badFeature|noEvents|badMarket|noPathRequest|deprecated|invalidHotWallet|badSeed|masterDisabled|alreadyMultisig|alreadySingleSig)\\b",
+                            "error": "USER_INVALID_PARAMS",
+                            "source": "https://github.com/XRPLF/rippled/blob/3.4.1/src/libxrpl/protocol/ErrorCodes.cpp",
+                            "note": "invalidTransaction is set in src/xrpld/rpc/handlers/transaction/Submit.cpp."
+                        }
+                    ]
+                },
                 "api_collections": [
                     {
                         "enabled": true,
