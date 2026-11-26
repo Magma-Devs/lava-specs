@@ -10,6 +10,44 @@
                 "blocks_in_finalization_proof": 1,
                 "average_block_time": 6500,
                 "allowed_block_lag_for_qos_sync": 2,
+                "errors": {
+                    "schema_version": 1,
+                    "shapes": [
+                        {
+                            "id": "cosmossdk.broadcast_tx_sync",
+                            "interface": "tendermintrpc",
+                            "methods": [
+                                "broadcast_tx_sync",
+                                "broadcast_tx_async"
+                            ],
+                            "when": {
+                                "at": "/result/code",
+                                "not": 0
+                            },
+                            "code": "/result/code",
+                            "space": "/result/codespace",
+                            "message": "/result/log",
+                            "source": "https://github.com/cometbft/cometbft/blob/v0.38.26/rpc/core/types/responses.go",
+                            "note": "broadcast_tx_async answers before CheckTx, so its code is 0 and the shape never applies there."
+                        },
+                        {
+                            "id": "cosmossdk.broadcast_tx_commit",
+                            "interface": "tendermintrpc",
+                            "methods": [
+                                "broadcast_tx_commit"
+                            ],
+                            "when": {
+                                "at": "/result/check_tx/code",
+                                "not": 0
+                            },
+                            "code": "/result/check_tx/code",
+                            "space": "/result/check_tx/codespace",
+                            "message": "/result/check_tx/log",
+                            "source": "https://github.com/cometbft/cometbft/blob/v0.38.26/rpc/core/types/responses.go",
+                            "note": "CheckTx's code only: a non-zero tx_result code is the transaction's own outcome, the same from every node."
+                        }
+                    ]
+                },
                 "api_collections": [
                     {
                         "enabled": true,

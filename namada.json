@@ -12,6 +12,43 @@
         "blocks_in_finalization_proof": 1,
         "average_block_time": 10000,
         "allowed_block_lag_for_qos_sync": 2,
+        "errors": {
+          "schema_version": 1,
+          "rows": [
+            {
+              "id": "cosmossdk.account_sequence_mismatch",
+              "interface": "tendermintrpc",
+              "contains": "account sequence mismatch",
+              "error": "CHAIN_INVALID_SEQUENCE",
+              "source": "https://github.com/cosmos/cosmos-sdk/blob/v0.50.10/x/auth/ante/sigverify.go",
+              "note": "Copy of COSMOSSDK's row: the router makes this chain Cosmos SDK through TENDERMINT, which COSMOSSDK imports, not the reverse."
+            },
+            {
+              "id": "cosmossdk.insufficient_fees",
+              "interface": "tendermintrpc",
+              "contains": "insufficient fees",
+              "error": "CHAIN_INSUFFICIENT_FEE",
+              "source": "https://github.com/cosmos/cosmos-sdk/blob/v0.50.10/x/auth/ante/validator_tx_fee.go",
+              "note": "Copy of COSMOSSDK's row: the router makes this chain Cosmos SDK through TENDERMINT, which COSMOSSDK imports, not the reverse."
+            },
+            {
+              "id": "cosmossdk.insufficient_fee",
+              "interface": "tendermintrpc",
+              "contains": "insufficient fee",
+              "error": "CHAIN_INSUFFICIENT_FEE",
+              "source": "https://github.com/cosmos/cosmos-sdk/blob/v0.50.10/types/errors/errors.go",
+              "note": "Copy of COSMOSSDK's row: the router makes this chain Cosmos SDK through TENDERMINT, which COSMOSSDK imports, not the reverse."
+            },
+            {
+              "id": "cosmossdk.account_not_found",
+              "interface": "tendermintrpc",
+              "contains": "account not found",
+              "error": "CHAIN_ACCOUNT_NOT_FOUND",
+              "source": "https://github.com/cosmos/cosmos-sdk/blob/v0.50.10/x/auth/keeper/grpc_query.go",
+              "note": "Copy of COSMOSSDK's row: the router makes this chain Cosmos SDK through TENDERMINT, which COSMOSSDK imports, not the reverse; no cosmos-sdk node reply carries this phrase."
+            }
+          ]
+        },
         "api_collections": [
           {
             "enabled": true,
