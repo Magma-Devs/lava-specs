@@ -9,6 +9,46 @@
                 "blocks_in_finalization_proof": 3,
                 "average_block_time": 600,
                 "allowed_block_lag_for_qos_sync": 17,
+                "errors": {
+                    "schema_version": 1,
+                    "rows": [
+                        {
+                            "id": "near.unknown_block",
+                            "interface": "jsonrpc",
+                            "contains": "UNKNOWN_BLOCK",
+                            "error": "CHAIN_NEAR_UNKNOWN_BLOCK",
+                            "class": "C3",
+                            "reason": "not_found",
+                            "source": "https://github.com/near/nearcore/blob/2.3.0/chain/jsonrpc-primitives/src/types/blocks.rs",
+                            "note": "Not produced yet, or garbage-collected on this node: another node may hold it."
+                        },
+                        {
+                            "id": "near.unknown_chunk",
+                            "interface": "jsonrpc",
+                            "contains": "UNKNOWN_CHUNK",
+                            "error": "CHAIN_NEAR_UNKNOWN_CHUNK",
+                            "class": "C3",
+                            "reason": "not_found",
+                            "source": "https://github.com/near/nearcore/blob/2.3.0/chain/jsonrpc-primitives/src/types/chunks.rs"
+                        },
+                        {
+                            "id": "near.invalid_shard_id",
+                            "interface": "jsonrpc",
+                            "contains": "INVALID_SHARD_ID",
+                            "error": "CHAIN_NEAR_INVALID_SHARD_ID",
+                            "class": "C2",
+                            "source": "https://github.com/near/nearcore/blob/2.3.0/chain/jsonrpc-primitives/src/types/chunks.rs"
+                        },
+                        {
+                            "id": "near.not_synced_yet",
+                            "interface": "jsonrpc",
+                            "contains": "NOT_SYNCED_YET",
+                            "error": "CHAIN_NEAR_NOT_SYNCED_YET",
+                            "class": "C5",
+                            "source": "https://github.com/near/nearcore/blob/2.3.0/chain/jsonrpc-primitives/src/types/blocks.rs"
+                        }
+                    ]
+                },
                 "api_collections": [
                     {
                         "enabled": true,
