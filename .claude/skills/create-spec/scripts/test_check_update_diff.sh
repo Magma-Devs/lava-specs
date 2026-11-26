@@ -154,8 +154,8 @@ echo "$OUT" | grep -q "RESULT: FAIL" || fail "empty-json: did not fail closed"
 echo "empty-json: OK"
 
 ROWS='{"schema_version":1,"rows":[{"id":"demo.one","interface":"jsonrpc","code":-32001,"error":"CHAIN_STATE_PRUNED","source":"https://example.invalid/node/v1/errors.go"}]}'
-# The `errors` section (MAG-4898): update mode may not touch a spec's error rows unless the plan
-# declares the change, and may never drop the section.
+# The `errors` section (MAG-4898): update mode may not touch a spec's error rows, declared in the
+# plan or not (no `errors.*` leaf is an allowed MODIFY field), and may never drop the section.
 jq --argjson e "$ROWS" '.proposal.specs[0].errors = $e' "$F/update_base.json" > "$TDIR/errors_base.json"
 jq '.proposal.specs[0].errors.rows[0].code = -32002' "$TDIR/errors_base.json" > "$TDIR/errors_changed.json"
 jq 'del(.proposal.specs[0].errors)' "$TDIR/errors_base.json" > "$TDIR/errors_dropped.json"
@@ -165,6 +165,10 @@ echo "errors untouched: OK"
 run "$TDIR/errors_base.json" "$TDIR/errors_changed.json" "$(plan '')"
 [ "$RC" -eq 1 ] || fail "errors undeclared edit: exit=$RC want 1 ($OUT)"
 echo "errors undeclared edit: OK"
+run "$TDIR/errors_base.json" "$TDIR/errors_changed.json" "$(plan 'MODIFY\tS:DEMO\terrors.rows[0].code\trow fix\thttps://example.invalid/node/v2/errors.go\n')"
+[ "$RC" -eq 1 ] || fail "errors declared edit: exit=$RC want 1 ($OUT)"
+echo "$OUT" | grep -q "forbidden-field|S:DEMO|'errors.rows\[0\].code'" || fail "errors declared edit: missing forbidden-field ($OUT)"
+echo "errors declared edit: OK"
 run "$TDIR/errors_base.json" "$TDIR/errors_dropped.json" "$(plan '')"
 [ "$RC" -eq 1 ] || fail "errors dropped: exit=$RC want 1 ($OUT)"
 echo "errors dropped: OK"
