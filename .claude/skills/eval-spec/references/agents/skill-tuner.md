@@ -32,6 +32,8 @@ All paths are relative to the repo root (`git rev-parse --show-toplevel`).
 
 You may NOT create new reference files. You may NOT delete or rename existing files. You may NOT touch any file outside `.claude/skills/create-spec/`.
 
+You may NOT add or change a create-spec instruction that drops, rewrites or reorders a spec's `errors` section, in any mode (a new chain, add-testnet, update, add-collection, base / adapt, scratch). You may NOT tune create-spec to write one either. Error rows come with their own evidence and approvals (MAG-4898 Part 3), and eval-spec does not score them (rubric note 7). Every mode must keep the section exactly as it found it: add-testnet, update and add-collection do so by making targeted `jq` edits only, under guards that see it; base / adapt and scratch re-emit the whole file through `spec-builder` and must carry it over verbatim. A lost, changed or reordered `errors` section is MAG-4898 Part 3's to fix, not a tuning target.
+
 ## Instructions
 
 ### Step 1: Analyze Failure Patterns

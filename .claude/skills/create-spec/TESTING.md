@@ -466,7 +466,7 @@ Three fresh subagents, each running `/review-spec` on the candidate, `sonnet` by
 
 **No worktree isolation.** `git worktree add` checks out HEAD, and this skill never commits — a reviewer in a worktree would review the previously-committed (stale) spec and emit phantom CRITICALs with line references outside the real file. Anchoring isolation comes from fresh subagent context alone.
 
-Each reviewer first reads `docs/<chain>/METHOD_PROBE_REPORT.md` and folds the probe findings (especially FAIL and WARN) into its review, then runs the 9-phase `/review-spec` audit:
+Each reviewer first reads `docs/<chain>/METHOD_PROBE_REPORT.md` and folds the probe findings (especially FAIL and WARN) into its review, then runs the 10-phase `/review-spec` audit:
 
 | # | `/review-spec` phase | Checks |
 |---|---|---|
@@ -479,6 +479,7 @@ Each reviewer first reads `docs/<chain>/METHOD_PROBE_REPORT.md` and folds the pr
 | 7 | Collection inheritance | child-overrides-parent semantics; **empty `headers: []` / `verifications: []` / `extensions: []` in a child OVERRIDE the parent's values** — a common bug source |
 | 8 | Headers | REST auth headers with `pass_send`; content-type overrides that don't break sibling endpoints |
 | 9 | Live testing | only if a credentials path was passed |
+| 10 | Error rows | only if the spec or its base on `origin/main` carries an `errors` section: each added or edited row's pinned official source (node software or protocol spec, never a vendor) and a reply per matcher; product's approval for any `write` or `write_rows` change, removals included; no production evidence in public |
 
 Rules corpus: `.claude/skills/review-spec/SPEC_GUIDE.md` (2226 lines), which each reviewer full-reads to a sentinel before starting.
 

@@ -463,3 +463,5 @@ The evaluator outputs a JSON report for each spec and a summary for the batch:
 5. **Rounding:** Round final scores to nearest integer (0–100). Round intermediate percentages (precision, recall) to 2 decimal places for reporting.
 
 6. **Early termination:** If gate fails, stop category evaluation and report gate failure only. Do not compute category scores.
+
+7. **The `errors` section is not scored.** A gold spec may carry an `errors` section: per-chain error rows, shapes and write rows (smart-router's per-chain error classification, PRD on Magma-Devs/smart-router#661). create-spec does not write one until its error-rows part ships (MAG-4898 Part 3), and each row carries evidence and approvals the generator can't produce. Leave `errors` out of every gate and category on both specs. A generated spec without it is not a miss, and one with it is not a gate failure.

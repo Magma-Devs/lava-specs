@@ -20,6 +20,8 @@ A spec passes the gate if it is valid JSON with the right structure. Wrong metho
 Gate = "can the SmartRouter parse this file?"
 Categories = "is the content correct?"
 
+**The `errors` section is out of scope (rubric note 7).** Ignore it on both specs. Don't extract it, don't compare it, and don't report its absence from the generated spec as a failure: create-spec doesn't write error rows yet.
+
 ## Step 1: Gate Checks (structural only)
 
 Run these jq commands on the GENERATED spec. If any fails, return gate=fail with score 0.
