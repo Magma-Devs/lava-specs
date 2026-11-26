@@ -99,7 +99,7 @@
                             "contains": "already spent",
                             "error": "CHAIN_DOUBLE_SPEND",
                             "source": "https://github.com/bitcoin/bitcoin/blob/v28.1/src/validation.cpp",
-                            "note": "No Bitcoin Core v28.1 node reply carries this phrase (only wallet and GUI strings do); copied unchanged from the router's table pending the decision on evidence for migrated rows."
+                            "note": "No Bitcoin Core v28.1 node reply carries this phrase (only wallet and GUI strings do); kept unchanged from the router's table."
                         },
                         {
                             "id": "bitcoin.double_spend",
@@ -110,7 +110,7 @@
                             "contains": "double spend",
                             "error": "CHAIN_DOUBLE_SPEND",
                             "source": "https://github.com/bitcoin/bitcoin/blob/v28.1/src/validation.cpp",
-                            "note": "No Bitcoin Core v28.1 node reply carries this phrase (only wallet and GUI strings do); copied unchanged from the router's table pending the decision on evidence for migrated rows."
+                            "note": "No Bitcoin Core v28.1 node reply carries this phrase (only wallet and GUI strings do); kept unchanged from the router's table."
                         },
                         {
                             "id": "bitcoin.txn_mempool_conflict",
