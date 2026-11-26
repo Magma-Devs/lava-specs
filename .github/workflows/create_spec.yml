@@ -557,6 +557,25 @@ jobs:
           set -euo pipefail
           bash .claude/skills/create-spec/scripts/check_unused_fields.sh "${{ steps.verify.outputs.spec }}"
 
+      # Errors-section safety net (MAG-4898), every mode. The file the agent wrote keeps each
+      # spec's `errors` section exactly as the branch point has it, and a new chain's file
+      # carries none: create-spec writes no error rows, and a chain's family rows reach it
+      # through imports, never as a copy. The mode guards below also fail a changed section;
+      # this one also covers a new chain and a regeneration (base / adapt / scratch), which
+      # have no other guard. Base = the file at the branch point, as above.
+      - name: Guard — errors sections (every mode)
+        env:
+          SPEC: ${{ steps.verify.outputs.spec }}
+        run: |
+          set -euo pipefail
+          G=.claude/skills/create-spec/scripts/check_errors_section.sh
+          if git cat-file -e HEAD:"$SPEC" 2>/dev/null; then
+            git show HEAD:"$SPEC" > /tmp/errors_base_spec.json
+            bash "$G" preserve /tmp/errors_base_spec.json "$SPEC"
+          else
+            bash "$G" none "$SPEC"
+          fi
+
       # Add-testnet safety net: fail the run BEFORE commit/PR if the append drifted
       # the mainnet or any pre-existing spec. The removed-fields guard above only
       # catches removed field NAMES; this catches semantic drift (changed values,

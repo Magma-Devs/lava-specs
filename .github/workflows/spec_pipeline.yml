@@ -481,6 +481,57 @@ jobs:
           echo "Guarding removed fields in: ${present[*]}"
           bash .claude/skills/create-spec/scripts/check_unused_fields.sh "${present[@]}"
 
+      # Errors-section guard (MAG-4898). A spec's `errors` section holds the error rows
+      # smart-router reads, each with evidence and approvals the fix pass can't reproduce (a
+      # pinned node-software source, product's approval of a write verdict). Runs AFTER the
+      # Phase-10 fix pass and BEFORE the commit, beside the guards above. Every root JSON the
+      # fix pass changed must keep each spec's `errors` section exactly as the PR's head has
+      # it, and a root JSON the fix pass created may carry none. So a row only ever reaches a
+      # branch through its author's own commit, never through the fix pass. HEAD is the PR's
+      # head: the fix pass edits the working tree only, and the commit step is still to come.
+      - name: Guard — errors sections unchanged by the fix pass
+        if: steps.cmd.outputs.IS_COMMAND == 'true'
+        run: |
+          set -euo pipefail
+          # The guard script comes from main, never the PR branch: a branch made before this
+          # guard existed has no copy, and main's copy is the one that judges a fix pass. The
+          # script reads no other file.
+          git fetch --quiet origin main || { echo "::error::could not fetch origin/main — cannot verify errors sections."; exit 1; }
+          G="$(mktemp)"
+          git show FETCH_HEAD:.claude/skills/create-spec/scripts/check_errors_section.sh > "$G" \
+            || { echo "::error::check_errors_section.sh is not on main — cannot verify errors sections."; exit 1; }
+          head_copy="$(mktemp)"
+          rc=0
+          # judge <script exit> <file> <what exit 1 means>. Exit 2 is a copy the script could
+          # not read as JSON, which says nothing about the errors section.
+          judge() {
+            case "$1" in
+              0) ;;
+              1) echo "::error file=$2::$3. Refusing to commit."; rc=1 ;;
+              *) echo "::error file=$2::could not check its errors sections: HEAD's or the working tree's copy is not valid JSON (exit $1). Refusing to commit."; rc=1 ;;
+            esac
+          }
+          while IFS= read -r f; do
+            [ -n "$f" ] || continue
+            if git cat-file -e "HEAD:$f" 2>/dev/null; then
+              git show "HEAD:$f" > "$head_copy"
+              if [ ! -f "$f" ]; then
+                if jq -e '[.proposal.specs[]? | has("errors")] | any' "$head_copy" >/dev/null; then
+                  echo "::error file=$f::the fix pass deleted a spec file that carries an errors section. Refusing to commit."
+                  rc=1
+                fi
+                continue
+              fi
+              r=0; bash "$G" preserve "$head_copy" "$f" || r=$?
+              judge "$r" "$f" "the fix pass changed an errors section"
+            elif [ -f "$f" ]; then
+              r=0; bash "$G" none "$f" || r=$?
+              judge "$r" "$f" "the fix pass created a spec file with an errors section"
+            fi
+          done < <(git diff --name-only HEAD -- ':(glob)*.json'; git ls-files --others --exclude-standard -- ':(glob)*.json')
+          rm -f "$head_copy" "$G"
+          exit $rc
+
       # Add-testnet preservation guard. Runs AFTER the Phase-10 fix pass and
       # BEFORE the commit, beside the removed-fields guard above. create_spec.yml
       # guards the CREATION half; this closes the post-PR half so the whole

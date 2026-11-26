@@ -62,6 +62,7 @@ For each candidate, read the spec file and document:
 - Imports (what base specs it imports)
 - Relevance to the target chain
 - Key differences from target chain
+- Whether it carries an `errors` section. If it does, say so and say it is NOT a template: a chain's family rows reach it through `imports`, never as a copy.
 
 ### Step 4: Document Findings
 

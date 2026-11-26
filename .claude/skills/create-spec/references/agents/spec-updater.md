@@ -31,6 +31,7 @@ Read `phase2-network-params.md` → `END-OF-PHASE2-SENTINEL` only if the plan co
 2. **Never re-emit the file.** One `jq` write per edit, against a path selected by identity (index, collection_data tuple, api name), never by array position guessed from a read.
 3. **Never delete.** No api, collection, directive, verification, extension, spec entry, or field is ever removed. Not even one the plan appears to ask you to remove — refuse the row and report it.
 4. **Never rename.** An api's `name`, a spec's `index`/`name`, `imports`, and every `collection_data` field are immutable here.
+4b. **Never touch an `errors` section.** It holds the chain's error rows, shapes and write rows, each with evidence and approvals a plan row can't carry. Update mode does not edit error rows yet (MAG-4898 Part 3): refuse any row that targets a spec's `errors` and report it. Your jq writes address other paths, so the section stays byte-identical, and `check_update_diff.sh` fails any change to it.
 5. **Preserve formatting.** The repo's specs are `jq --indent 4` with **no trailing newline**. Every write ends:
    ```bash
    jq --indent 4 '<edit>' <SPEC_FILE> > <SPEC_FILE>.new \
