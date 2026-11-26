@@ -493,6 +493,40 @@ jobs:
       # index added), and PRs already mixed when opened are N/A and skipped, so
       # this never blocks a legitimately intended mainnet change. `check_unused_
       # fields` above is name-level only; THIS catches semantic value drift.
+      # Errors-section guard (MAG-4898). A spec's `errors` section holds the error rows
+      # smart-router reads, each with evidence and approvals the fix pass can't reproduce (a
+      # pinned node-software source, product's approval of a write verdict). Runs AFTER the
+      # Phase-10 fix pass and BEFORE the commit, beside the guards above. Every root JSON the
+      # fix pass changed must keep each spec's `errors` section exactly as the PR's head has
+      # it, and a root JSON the fix pass created may carry none. So a row only ever reaches a
+      # branch through its author's own commit, never through the fix pass. HEAD is the PR's
+      # head: the fix pass edits the working tree only, and the commit step is still to come.
+      - name: Guard — errors sections unchanged by the fix pass
+        if: steps.cmd.outputs.IS_COMMAND == 'true'
+        run: |
+          set -euo pipefail
+          G=.claude/skills/create-spec/scripts/check_errors_section.sh
+          head_copy="$(mktemp)"
+          rc=0
+          while IFS= read -r f; do
+            [ -n "$f" ] || continue
+            if git cat-file -e "HEAD:$f" 2>/dev/null; then
+              git show "HEAD:$f" > "$head_copy"
+              if [ ! -f "$f" ]; then
+                if jq -e '[.proposal.specs[]? | has("errors")] | any' "$head_copy" >/dev/null; then
+                  echo "::error file=$f::the fix pass deleted a spec file that carries an errors section. Refusing to commit."
+                  rc=1
+                fi
+                continue
+              fi
+              bash "$G" preserve "$head_copy" "$f" || { echo "::error file=$f::the fix pass changed an errors section. Refusing to commit."; rc=1; }
+            elif [ -f "$f" ]; then
+              bash "$G" none "$f" || { echo "::error file=$f::the fix pass created a spec file with an errors section. Refusing to commit."; rc=1; }
+            fi
+          done < <(git diff --name-only HEAD -- ':(glob)*.json'; git ls-files --others --exclude-standard -- ':(glob)*.json')
+          rm -f "$head_copy"
+          exit $rc
+
       - name: Guard — preservation (add-testnet PRs)
         if: steps.cmd.outputs.IS_COMMAND == 'true'
         env:

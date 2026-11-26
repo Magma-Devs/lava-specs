@@ -25,6 +25,9 @@
 #     NEW_INDEX      the uppercase index of the testnet that should be the ONLY
 #                    added spec (e.g. APTOST)
 #
+# The new testnet may not carry an `errors` section: it inherits its mainnet's error rows
+# through its import (new-spec-errors).
+#
 # Exit: 0 PASS · 1 FAIL (drift/structure) · 2 usage or unparseable input.
 set -euo pipefail
 export LC_ALL=C
@@ -116,6 +119,11 @@ if [[ "$saw_new" -eq 1 ]]; then
     done < <(jq -r --arg i "$NEW_INDEX" '.proposal.specs[] | select(.index==$i) | .imports[]?' "$CAND")
     [[ "$hit" -eq 1 ]] && PASS+=("imports|$NEW_INDEX|inherits an existing in-file spec") \
       || FAIL+=("imports-unresolved|$NEW_INDEX|imports none of the pre-existing specs")
+  fi
+  # A testnet inherits its mainnet's error rows through its import. A copy would carry rows
+  # whose evidence and approvals belong to the mainnet's spec (MAG-4898).
+  if [[ "$(jq -r --arg i "$NEW_INDEX" '[.proposal.specs[] | select(.index==$i) | has("errors")] | any' "$CAND")" == "true" ]]; then
+    FAIL+=("new-spec-errors|$NEW_INDEX|a new testnet inherits its mainnet's error rows through imports; it carries no errors section")
   fi
 fi
 

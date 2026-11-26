@@ -91,4 +91,20 @@ set -e
 echo "$OUT" | grep -q "RESULT: FAIL" || fail "invalid-json: did not fail closed ($OUT)"
 echo "invalid-json: OK"
 
+ROWS='{"schema_version":1,"rows":[{"id":"demo.one","interface":"jsonrpc","code":-32001,"error":"CHAIN_STATE_PRUNED","source":"https://example.invalid/node/v1/errors.go"}]}'
+# The `errors` section (MAG-4898): an add-collection edit keeps every spec's error rows exactly.
+ET=$(mktemp -d "${TMPDIR:-/tmp}/check_collection_addition_errors.XXXXXX")
+jq --argjson e "$ROWS" '(.proposal.specs[] | select(.index == "MAIN")).errors = $e' "$BASE" > "$ET/base.json"
+jq --argjson e "$ROWS" '(.proposal.specs[] | select(.index == "MAIN")).errors = $e' "$DIR/fixtures/colladd_good.json" > "$ET/good.json"
+jq '(.proposal.specs[] | select(.index == "MAIN")).errors.rows[0].code = -32002' "$ET/good.json" > "$ET/changed.json"
+runp() { set +e; OUT="$("$SCRIPT" "$ET/base.json" "$ET/$1" MAIN 2>&1)"; RC=$?; set -e; }
+runp good.json
+[ "$RC" -eq 0 ] || fail "errors kept: exit=$RC want 0 ($OUT)"
+echo "errors kept: OK"
+runp changed.json
+[ "$RC" -eq 1 ] || fail "errors changed: exit=$RC want 1 ($OUT)"
+echo "$OUT" | grep -q "modified-spec-fields|MAIN" || fail "errors changed: missing modified-spec-fields|MAIN ($OUT)"
+echo "errors changed: OK"
+rm -rf "$ET"
+
 echo "ALL TESTS PASSED"

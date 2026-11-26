@@ -85,4 +85,26 @@ rm -f "$EMPTY"
 echo "$OUT" | grep -q "RESULT: FAIL" || fail "empty: did not fail closed ($OUT)"
 echo "empty: OK"
 
+ROWS='{"schema_version":1,"rows":[{"id":"demo.one","interface":"jsonrpc","code":-32001,"error":"CHAIN_STATE_PRUNED","source":"https://example.invalid/node/v1/errors.go"}]}'
+# The `errors` section (MAG-4898): a pre-existing spec's error rows survive an add-testnet edit
+# exactly, and the new testnet inherits them through its import rather than carrying a copy.
+ET=$(mktemp -d "${TMPDIR:-/tmp}/check_preservation_errors.XXXXXX")
+jq --argjson e "$ROWS" '.proposal.specs[0].errors = $e' "$BASE" > "$ET/base.json"
+jq --argjson e "$ROWS" '(.proposal.specs[] | select(.index == "MAIN")).errors = $e' "$DIR/fixtures/preservation_good.json" > "$ET/good.json"
+jq 'del((.proposal.specs[] | select(.index == "MAIN")).errors)' "$ET/good.json" > "$ET/dropped.json"
+jq --argjson e "$ROWS" '(.proposal.specs[] | select(.index == "MAINT2")).errors = $e' "$ET/good.json" > "$ET/copied.json"
+runp() { set +e; OUT="$("$SCRIPT" "$ET/base.json" "$ET/$1" "$2" 2>&1)"; RC=$?; set -e; }
+runp good.json MAINT2
+[ "$RC" -eq 0 ] || fail "errors kept: exit=$RC want 0 ($OUT)"
+echo "errors kept: OK"
+runp dropped.json MAINT2
+[ "$RC" -eq 1 ] || fail "errors dropped: exit=$RC want 1 ($OUT)"
+echo "$OUT" | grep -q "modified-spec|MAIN" || fail "errors dropped: missing modified-spec|MAIN ($OUT)"
+echo "errors dropped: OK"
+runp copied.json MAINT2
+[ "$RC" -eq 1 ] || fail "errors copied: exit=$RC want 1 ($OUT)"
+echo "$OUT" | grep -q "new-spec-errors|MAINT2" || fail "errors copied: missing new-spec-errors|MAINT2 ($OUT)"
+echo "errors copied: OK"
+rm -rf "$ET"
+
 echo "ALL TESTS PASSED"
