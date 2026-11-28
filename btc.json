@@ -9,6 +9,121 @@
                 "blocks_in_finalization_proof": 3,
                 "average_block_time": 600000,
                 "allowed_block_lag_for_qos_sync": 1,
+                "errors": {
+                    "schema_version": 1,
+                    "rows": [
+                        {
+                            "id": "bitcoin.in_warmup",
+                            "interface": [
+                                "jsonrpc",
+                                "rest"
+                            ],
+                            "code": -28,
+                            "error": "NODE_BITCOIN_WARMUP",
+                            "class": "C5",
+                            "source": "https://github.com/bitcoin/bitcoin/blob/v28.1/src/rpc/protocol.h"
+                        },
+                        {
+                            "id": "bitcoin.client_in_initial_download",
+                            "interface": [
+                                "jsonrpc",
+                                "rest"
+                            ],
+                            "code": -10,
+                            "error": "NODE_BITCOIN_INITIAL_DOWNLOAD",
+                            "class": "C5",
+                            "source": "https://github.com/bitcoin/bitcoin/blob/v28.1/src/rpc/protocol.h"
+                        },
+                        {
+                            "id": "bitcoin.client_not_connected",
+                            "interface": [
+                                "jsonrpc",
+                                "rest"
+                            ],
+                            "code": -9,
+                            "error": "NODE_BITCOIN_NOT_CONNECTED",
+                            "class": "C5",
+                            "source": "https://github.com/bitcoin/bitcoin/blob/v28.1/src/rpc/protocol.h"
+                        },
+                        {
+                            "id": "bitcoin.verify_error",
+                            "interface": [
+                                "jsonrpc",
+                                "rest"
+                            ],
+                            "code": -25,
+                            "error": "CHAIN_BITCOIN_VERIFY_ERROR",
+                            "class": "C2",
+                            "source": "https://github.com/bitcoin/bitcoin/blob/v28.1/src/rpc/protocol.h"
+                        },
+                        {
+                            "id": "bitcoin.verify_rejected",
+                            "interface": [
+                                "jsonrpc",
+                                "rest"
+                            ],
+                            "code": -26,
+                            "error": "CHAIN_BITCOIN_VERIFY_REJECTED",
+                            "class": "C2",
+                            "source": "https://github.com/bitcoin/bitcoin/blob/v28.1/src/rpc/protocol.h"
+                        },
+                        {
+                            "id": "bitcoin.verify_already_in_utxo_set",
+                            "interface": [
+                                "jsonrpc",
+                                "rest"
+                            ],
+                            "code": -27,
+                            "error": "CHAIN_BITCOIN_ALREADY_IN_CHAIN",
+                            "class": "C2",
+                            "source": "https://github.com/bitcoin/bitcoin/blob/v28.1/src/rpc/protocol.h",
+                            "note": "RPC_VERIFY_ALREADY_IN_UTXO_SET; named RPC_VERIFY_ALREADY_IN_CHAIN before Bitcoin Core v25."
+                        },
+                        {
+                            "id": "bitcoin.wallet_insufficient_funds",
+                            "interface": [
+                                "jsonrpc",
+                                "rest"
+                            ],
+                            "code": -6,
+                            "error": "CHAIN_BITCOIN_WALLET_INSUFFICIENT_FUNDS",
+                            "class": "C2",
+                            "source": "https://github.com/bitcoin/bitcoin/blob/v28.1/src/rpc/protocol.h"
+                        },
+                        {
+                            "id": "bitcoin.already_spent",
+                            "interface": [
+                                "jsonrpc",
+                                "rest"
+                            ],
+                            "contains": "already spent",
+                            "error": "CHAIN_DOUBLE_SPEND",
+                            "source": "https://github.com/bitcoin/bitcoin/blob/v28.1/src/validation.cpp",
+                            "note": "No Bitcoin Core v28.1 node reply carries this phrase (only wallet and GUI strings do); kept unchanged from the router's table."
+                        },
+                        {
+                            "id": "bitcoin.double_spend",
+                            "interface": [
+                                "jsonrpc",
+                                "rest"
+                            ],
+                            "contains": "double spend",
+                            "error": "CHAIN_DOUBLE_SPEND",
+                            "source": "https://github.com/bitcoin/bitcoin/blob/v28.1/src/validation.cpp",
+                            "note": "No Bitcoin Core v28.1 node reply carries this phrase (only wallet and GUI strings do); kept unchanged from the router's table."
+                        },
+                        {
+                            "id": "bitcoin.txn_mempool_conflict",
+                            "interface": [
+                                "jsonrpc",
+                                "rest"
+                            ],
+                            "contains": "txn-mempool-conflict",
+                            "error": "CHAIN_DOUBLE_SPEND",
+                            "source": "https://github.com/bitcoin/bitcoin/blob/v28.1/src/validation.cpp"
+                        }
+                    ]
+                },
                 "api_collections": [
                     {
                         "enabled": true,

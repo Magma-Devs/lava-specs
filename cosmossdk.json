@@ -13,6 +13,74 @@
                 "blocks_in_finalization_proof": 1,
                 "average_block_time": 6500,
                 "allowed_block_lag_for_qos_sync": 2,
+                "errors": {
+                    "schema_version": 1,
+                    "shapes": [
+                        {
+                            "id": "cosmossdk.broadcast",
+                            "interface": "rest",
+                            "methods": [
+                                "POST /cosmos/tx/v1beta1/txs"
+                            ],
+                            "when": {
+                                "at": "/tx_response/code",
+                                "not": 0
+                            },
+                            "code": "/tx_response/code",
+                            "space": "/tx_response/codespace",
+                            "message": "/tx_response/raw_log",
+                            "source": "https://github.com/cosmos/cosmos-sdk/blob/v0.50.10/proto/cosmos/tx/v1beta1/service.proto",
+                            "note": "TxResponse (code, codespace, raw_log) is defined in proto/cosmos/base/abci/v1beta1/abci.proto."
+                        }
+                    ],
+                    "rows": [
+                        {
+                            "id": "cosmossdk.account_sequence_mismatch",
+                            "interface": [
+                                "rest",
+                                "grpc",
+                                "tendermintrpc"
+                            ],
+                            "contains": "account sequence mismatch",
+                            "error": "CHAIN_INVALID_SEQUENCE",
+                            "source": "https://github.com/cosmos/cosmos-sdk/blob/v0.50.10/x/auth/ante/sigverify.go"
+                        },
+                        {
+                            "id": "cosmossdk.insufficient_fees",
+                            "interface": [
+                                "rest",
+                                "grpc",
+                                "tendermintrpc"
+                            ],
+                            "contains": "insufficient fees",
+                            "error": "CHAIN_INSUFFICIENT_FEE",
+                            "source": "https://github.com/cosmos/cosmos-sdk/blob/v0.50.10/x/auth/ante/validator_tx_fee.go"
+                        },
+                        {
+                            "id": "cosmossdk.insufficient_fee",
+                            "interface": [
+                                "rest",
+                                "grpc",
+                                "tendermintrpc"
+                            ],
+                            "contains": "insufficient fee",
+                            "error": "CHAIN_INSUFFICIENT_FEE",
+                            "source": "https://github.com/cosmos/cosmos-sdk/blob/v0.50.10/types/errors/errors.go"
+                        },
+                        {
+                            "id": "cosmossdk.account_not_found",
+                            "interface": [
+                                "rest",
+                                "grpc",
+                                "tendermintrpc"
+                            ],
+                            "contains": "account not found",
+                            "error": "CHAIN_ACCOUNT_NOT_FOUND",
+                            "source": "https://github.com/cosmos/cosmos-sdk/blob/v0.50.10/x/auth/keeper/grpc_query.go",
+                            "note": "No cosmos-sdk v0.50.10 node reply carries this phrase: x/auth answers \"account %s not found\" or \"account %s does not exist\"; kept unchanged from the router's table."
+                        }
+                    ]
+                },
                 "api_collections": [
                     {
                         "enabled": true,

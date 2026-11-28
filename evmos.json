@@ -14,6 +14,63 @@
                 "blocks_in_finalization_proof": 1,
                 "average_block_time": 3900,
                 "allowed_block_lag_for_qos_sync": 2,
+                "errors": {
+                    "schema_version": 1,
+                    "rows": [
+                        {
+                            "id": "cosmossdk.account_sequence_mismatch",
+                            "interface": [
+                                "rest",
+                                "grpc",
+                                "tendermintrpc",
+                                "jsonrpc"
+                            ],
+                            "contains": "account sequence mismatch",
+                            "error": "CHAIN_INVALID_SEQUENCE",
+                            "source": "https://github.com/cosmos/cosmos-sdk/blob/v0.50.10/x/auth/ante/sigverify.go",
+                            "note": "COSMOSSDK's row, also on jsonrpc: the router's Cosmos rows read this chain's jsonrpc replies too."
+                        },
+                        {
+                            "id": "cosmossdk.insufficient_fees",
+                            "interface": [
+                                "rest",
+                                "grpc",
+                                "tendermintrpc",
+                                "jsonrpc"
+                            ],
+                            "contains": "insufficient fees",
+                            "error": "CHAIN_INSUFFICIENT_FEE",
+                            "source": "https://github.com/cosmos/cosmos-sdk/blob/v0.50.10/x/auth/ante/validator_tx_fee.go",
+                            "note": "COSMOSSDK's row, also on jsonrpc: the router's Cosmos rows read this chain's jsonrpc replies too."
+                        },
+                        {
+                            "id": "cosmossdk.insufficient_fee",
+                            "interface": [
+                                "rest",
+                                "grpc",
+                                "tendermintrpc",
+                                "jsonrpc"
+                            ],
+                            "contains": "insufficient fee",
+                            "error": "CHAIN_INSUFFICIENT_FEE",
+                            "source": "https://github.com/cosmos/cosmos-sdk/blob/v0.50.10/types/errors/errors.go",
+                            "note": "COSMOSSDK's row, also on jsonrpc: the router's Cosmos rows read this chain's jsonrpc replies too."
+                        },
+                        {
+                            "id": "cosmossdk.account_not_found",
+                            "interface": [
+                                "rest",
+                                "grpc",
+                                "tendermintrpc",
+                                "jsonrpc"
+                            ],
+                            "contains": "account not found",
+                            "error": "CHAIN_ACCOUNT_NOT_FOUND",
+                            "source": "https://github.com/cosmos/cosmos-sdk/blob/v0.50.10/x/auth/keeper/grpc_query.go",
+                            "note": "COSMOSSDK's row, also on jsonrpc: the router's Cosmos rows read this chain's jsonrpc replies too; no cosmos-sdk node reply carries this phrase."
+                        }
+                    ]
+                },
                 "api_collections": [
                     {
                         "enabled": true,
